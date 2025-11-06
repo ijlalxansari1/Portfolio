@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "title": "Building Ethical Data Pipelines",
+    "category": "Data Engineering",
+    "date": "2024-04-20",
+    "excerpt": "Learn how to build data pipelines that prioritize ethics, transparency, and responsible AI practices.",
+    "image": "/blog/blog1.jpg",
+    "content": "Full blog content here..."
+  },
+  {
+    "id": 2,
+    "title": "Understanding Attention Engineering",
+    "category": "AI Ethics",
+    "date": "2024-03-15",
+    "excerpt": "Exploring the concept of attention-aware analytics and its applications in ethical AI systems.",
+    "image": "/blog/blog2.jpg",
+    "content": "Full blog content here..."
+  },
+  {
+    "id": 3,
+    "title": "Human-Centered AI Systems",
+    "category": "AI Ethics",
+    "date": "2024-02-10",
+    "excerpt": "Designing AI systems that prioritize human values and ethical considerations.",
+    "image": "/blog/blog3.jpg",
+    "content": "Full blog content here..."
+  },
+  {
+    "title": "Data pipeline ",
+    "description": "This is the test blog ",
+    "category": "tech",
+    "technologies": [],
+    "image": "/blog/1762453397117-Fig_3-01_pipeline_FHD.png",
+    "date": "2025-11-06",
+    "excerpt": "test excertp",
+    "content": "This is a test blog for viewing purposes",
+    "id": 4
+  }
+]

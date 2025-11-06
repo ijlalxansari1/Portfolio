@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Churn Prediction — SLAM Dataset",
+    "category": "Machine Learning",
+    "description": "Ethical churn prediction model using the SLAM dataset with attention-aware analytics and transparent decision-making processes.",
+    "technologies": ["Python", "Scikit-learn", "TensorFlow", "Pandas"],
+    "image": "/projects/project1.jpg",
+    "date": "2024-01-15"
+  },
+  {
+    "id": 2,
+    "title": "Ethical AI Audit Toolkit",
+    "category": "AI Ethics",
+    "description": "Comprehensive toolkit for auditing AI systems for bias, fairness, and ethical compliance with automated reporting.",
+    "technologies": ["Python", "PyTorch", "Fairness Indicators", "MLflow"],
+    "image": "/projects/project2.jpg",
+    "date": "2024-02-20"
+  },
+  {
+    "id": 3,
+    "title": "Kafka + Spark Streaming Pipeline",
+    "category": "Data Engineering",
+    "description": "Real-time data streaming pipeline using Apache Kafka and Spark for processing high-volume event data with low latency.",
+    "technologies": ["Kafka", "Spark", "Python", "AWS"],
+    "image": "/projects/project3.jpg",
+    "date": "2024-03-10"
+  }
+]
+
