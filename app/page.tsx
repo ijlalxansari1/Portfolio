@@ -11,6 +11,7 @@ import Projects from "./components/Projects";
 import Experience from "./components/Experience";
 import Blog from "./components/Blog";
 import Contact from "./components/Contact";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function Home() {
   return (
@@ -18,14 +19,15 @@ export default function Home() {
       <BackgroundVideo />
       
       <div className="relative z-10 flex min-h-screen">
-        {/* Fixed Left Sidebar Space (Desktop) */}
-        <div className="hidden md:block w-80 flex-shrink-0" />
+        {/* Left Sidebar (Icon Column + Profile Card) */}
+        <LeftSidebar />
+        
+        {/* Fixed Left Sidebar Space (Desktop) - Account for icon column + profile card */}
+        <div className="hidden md:block w-[19rem] flex-shrink-0" />
         
         {/* Scrollable Right Content */}
         <div className="flex-1 min-w-0 relative z-20">
-          <LeftSidebar />
-          
-          <div className="relative z-20 md:ml-0">
+          <div className="relative z-20">
             <About />
             <Technologies />
             <Skills />
@@ -38,6 +40,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <ScrollToTop />
     </main>
   );
 }

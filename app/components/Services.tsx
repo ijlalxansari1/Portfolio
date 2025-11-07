@@ -6,48 +6,58 @@ import { Database, Cloud, Shield, BarChart3 } from "lucide-react";
 const services = [
   {
     icon: Database,
-    developers: "2 Developers",
-    title: "ETL Design",
-    description:
-      "Data models in SAP PowerDesigner ETL process design & implementation: Apache Airflow / AWS / Python.",
+    title: "Data Engineering & ETL",
+    description: "Design and implementation of robust ETL pipelines, data modeling, and data warehouse solutions using modern cloud technologies. Expertise in Apache Airflow, dbt, and cloud-native data platforms.",
+    features: ["ETL Pipeline Design", "Data Warehousing", "Data Modeling", "Pipeline Optimization"],
   },
   {
     icon: Cloud,
-    developers: "5 Developers",
-    title: "ETL Development",
-    description:
-      "ETL pipelines according to the DWH design and architecture (Azure Synapse, Databricks, Azure DevOps).",
+    title: "Cloud Architecture",
+    description: "Scalable cloud-based data infrastructure on AWS, Azure, and GCP with focus on cost optimization, reliability, and security. Experience with serverless architectures and containerization.",
+    features: ["AWS/Azure/GCP", "Serverless Architecture", "Cost Optimization", "Security Best Practices"],
   },
   {
     icon: Shield,
-    developers: "3 Developers",
-    title: "Azure Cloud",
-    description:
-      "Rebuild of legacy on-premise Oracle-based data warehouse to a data lake based on Azure Cloud.",
+    title: "AI Ethics & Governance",
+    description: "Ethical AI system design, responsible data practices, and governance frameworks for transparent machine learning. Specialized in fairness metrics and bias detection.",
+    features: ["Fairness Auditing", "Bias Detection", "Model Interpretability", "Ethical Guidelines"],
   },
   {
     icon: BarChart3,
-    developers: "1 Developer",
-    title: "Technical Preparation",
-    description:
-      "Detailed data workflow description, solution design and architecture, technical requirements specification.",
+    title: "BI & Analytics Dashboards",
+    description: "Interactive business intelligence dashboards and data visualization solutions using Tableau, Power BI, and custom tools. Transforming raw data into actionable insights.",
+    features: ["Tableau & Power BI", "Custom Dashboards", "Real-time Analytics", "Data Storytelling"],
   },
 ];
 
 export default function Services() {
   return (
-    <section id="services" className="min-h-screen py-20 px-8 md:px-16 relative z-20">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
+      <section id="services" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
+      <div className="max-w-6xl mx-auto w-full">
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"
+          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
         >
-          What Services I Provide?
-        </motion.h2>
+          <motion.h2
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"
+          >
+            SERVICES
+          </motion.h2>
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl md:text-3xl font-semibold text-gray-300 mb-12 text-center"
+          >
+            What Services I Provide ?
+          </motion.h3>
 
-        <motion.div
+          <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -70,31 +80,39 @@ export default function Services() {
                 }}
                 className="glass rounded-xl p-8 border border-white/10 hover:border-neon-mint/50 transition-all"
               >
-                <div className="mb-4">
-                  <span className="text-sm text-neon-mint font-medium">{service.developers}</span>
-                </div>
                 <div className="mb-6">
                   <Icon
                     size={48}
                     className="text-neon-mint mb-4"
                   />
                 </div>
-                <h3 className="text-2xl font-semibold text-white mb-4">
+                <h3 className="text-2xl font-semibold text-white mb-3">
                   {service.title}
                 </h3>
-                <p className="text-gray-400 leading-relaxed mb-6">
+                <p className="text-secondary leading-relaxed mb-4 text-sm">
                   {service.description}
                 </p>
+                {service.features && (
+                  <ul className="mb-6 space-y-2">
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-xs text-tertiary">
+                        <span className="text-neon-mint">•</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2 bg-neon-mint/10 border border-neon-mint text-neon-mint rounded-lg hover:bg-neon-mint/20 transition-all font-medium"
+                  className="px-6 py-2.5 bg-neon-mint/10 border border-neon-mint text-neon-mint rounded-lg hover:bg-neon-mint/20 transition-all font-medium text-sm"
                 >
                   Get Started
                 </motion.button>
               </motion.div>
             );
           })}
+          </motion.div>
         </motion.div>
       </div>
     </section>

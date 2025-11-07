@@ -1,9 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import { Download, Mail, ArrowDown } from "lucide-react";
 
 function Counter({ end, duration = 2 }: { end: number; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -25,112 +24,136 @@ function Counter({ end, duration = 2 }: { end: number; duration?: number }) {
     }
   }, [isInView, end, duration]);
 
-  return <span ref={ref}>{count}+</span>;
+  return <span ref={ref}>{count}</span>;
 }
 
+const dataDomains = [
+  "Data Engineer",
+  "Data Scientist",
+  "BI Engineer",
+  "ETL Developer",
+  "Data Architect",
+  "ML Engineer",
+  "Data Analyst",
+  "Cloud Data Engineer",
+  "Big Data Engineer",
+  "Analytics Engineer",
+  "Data Pipeline Engineer",
+  "Data Warehouse Architect",
+  "Business Intelligence Developer",
+  "Data Platform Engineer",
+  "AI/ML Engineer",
+];
+
 export default function About() {
+  const [currentDomain, setCurrentDomain] = useState(0);
+  const [currentGreeting, setCurrentGreeting] = useState(0);
+
+  const greetings = [
+    "Hello, I'm Ijlal Ansari",
+    "Hi, I'm Ijlal Ansari",
+    "Hey, I'm Ijlal Ansari",
+    "Welcome, I'm Ijlal Ansari",
+  ];
+
+  useEffect(() => {
+    const domainInterval = setInterval(() => {
+      setCurrentDomain((prev) => (prev + 1) % dataDomains.length);
+    }, 3000);
+
+    const greetingInterval = setInterval(() => {
+      setCurrentGreeting((prev) => (prev + 1) % greetings.length);
+    }, 4000);
+
+    return () => {
+      clearInterval(domainInterval);
+      clearInterval(greetingInterval);
+    };
+  }, []);
+
   return (
-    <section id="about" className="min-h-screen flex items-center justify-center py-20 px-8 md:px-16 relative z-20">
+      <section id="about" className="min-h-screen flex items-center justify-center py-4 px-8 md:px-16 relative z-20">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="max-w-5xl mx-auto text-center"
+        className="max-w-5xl mx-auto w-full glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
       >
-        {/* Hero Badge */}
+        {/* Hero Badge - Dynamic */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-block mb-6"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8 flex justify-center"
         >
-          <span className="px-4 py-2 glass rounded-full text-neon-mint text-sm font-medium border border-neon-mint/30">
-            Data Engineer & AI Ethics Researcher
-          </span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={currentGreeting}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.5 }}
+              className="px-5 py-2.5 glass rounded-full text-neon-mint text-sm md:text-base font-semibold border-2 border-neon-mint/50 inline-block neon-glow"
+            >
+              {greetings[currentGreeting]}
+            </motion.span>
+          </AnimatePresence>
         </motion.div>
 
-        {/* Main Heading */}
+        {/* Main Heading - Dynamic with Data Domains */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white mb-8 leading-tight text-center"
         >
-          Hello, I&apos;m{" "}
-          <span className="text-neon-mint neon-text">Ijlal Ansari</span>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={currentDomain}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="block"
+            >
+              <span className="text-neon-mint neon-text text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight">
+                {dataDomains[currentDomain]}
+              </span>
+            </motion.span>
+          </AnimatePresence>
         </motion.h1>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-2xl md:text-3xl font-semibold text-gray-300 mb-8"
-        >
-          Senior Data Engineer and Data Scientist Based in California, Los Angeles.
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-3xl mx-auto"
-        >
-          I am a Data Engineering specialist focused on automation, ethical machine
-          learning systems, and attention-aware analytics. I build reliable data
-          pipelines, interpretive ML workflows, and transparent AI components using
-          modern cloud and distributed systems.
-        </motion.p>
-
-        {/* CTA Buttons */}
+        {/* Description - Updated */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-wrap justify-center gap-4 mb-16"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-4 mb-12 max-w-4xl text-left"
         >
-          <motion.a
-            href="#contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 bg-neon-mint text-black rounded-lg font-semibold flex items-center gap-2 hover:bg-neon-mint/90 transition-all shadow-lg shadow-neon-mint/30"
-          >
-            <Mail size={20} />
-            Get In Touch
-          </motion.a>
-          <motion.a
-            href="/Ijlal-Ansari-Resume.pdf"
-            download
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 glass border-2 border-neon-mint text-neon-mint rounded-lg font-semibold flex items-center gap-2 hover:bg-neon-mint/10 transition-all"
-          >
-            <Download size={20} />
-            Download CV
-          </motion.a>
+          <p className="text-base md:text-lg lg:text-xl text-secondary leading-relaxed">
+            I&apos;m an experienced data professional specializing in scalable data pipelines, cloud-based architectures, and ethical AI solutions. My work focuses on transforming complex data into actionable insights that drive business growth and informed decision-making.
+          </p>
+          <p className="text-base md:text-lg lg:text-xl text-secondary leading-relaxed">
+            With a deep commitment to data integrity, governance, and responsible AI, I strive to build systems that are not only efficient but also trustworthy and transparent.
+          </p>
         </motion.div>
 
         {/* Counters */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 max-w-2xl mx-auto"
         >
           <motion.div
             whileHover={{ scale: 1.05, y: -5 }}
             className="glass rounded-xl p-8 text-center border border-white/10 hover:border-neon-mint/50 transition-all"
           >
             <div className="text-6xl font-bold text-neon-mint mb-3">
-              <Counter end={5} />
+              1+
             </div>
-            <p className="text-gray-400 text-lg">Completed Projects</p>
+            <p className="text-secondary text-lg font-medium">Year of Experience</p>
           </motion.div>
 
           <motion.div
@@ -138,36 +161,9 @@ export default function About() {
             className="glass rounded-xl p-8 text-center border border-white/10 hover:border-neon-mint/50 transition-all"
           >
             <div className="text-6xl font-bold text-neon-mint mb-3">
-              <Counter end={2} />
+              10+
             </div>
-            <p className="text-gray-400 text-lg">Years Experience</p>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="glass rounded-xl p-8 text-center border border-white/10 hover:border-neon-mint/50 transition-all"
-          >
-            <div className="text-6xl font-bold text-neon-mint mb-3">
-              <Counter end={4} />
-            </div>
-            <p className="text-gray-400 text-lg">Certifications</p>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8 }}
-          className="mt-16 flex flex-col items-center gap-2"
-        >
-          <span className="text-gray-500 text-sm">Scroll to explore</span>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <ArrowDown className="text-neon-mint" size={24} />
+            <p className="text-secondary text-lg font-medium">Completed Projects</p>
           </motion.div>
         </motion.div>
       </motion.div>

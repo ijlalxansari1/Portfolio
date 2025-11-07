@@ -18,12 +18,62 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Typography System */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+p {
+  color: #d1d5db;
+  line-height: 1.7;
+}
+
+/* Consistent Color System */
+.text-primary {
+  color: #ffffff;
+}
+
+.text-secondary {
+  color: #d1d5db;
+}
+
+.text-tertiary {
+  color: #9ca3af;
+}
+
+.text-muted {
+  color: #6b7280;
+}
+
+.text-accent {
+  color: var(--neon-mint);
 }
 
 /* Custom scrollbar */
@@ -44,13 +94,19 @@ body {
   background: rgba(0, 255, 179, 0.5);
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism utility - RyanCV Style */
 .glass {
-  background: rgba(15, 15, 15, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.glass:hover {
+  border-color: rgba(0, 255, 179, 0.5);
+  box-shadow: 0 0 20px rgba(0, 255, 179, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .glass-light {
@@ -60,16 +116,18 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Neon glow effects */
+/* Neon glow effects - Minimized */
 .neon-glow {
-  box-shadow: 0 0 10px rgba(0, 255, 179, 0.3),
-              0 0 20px rgba(0, 255, 179, 0.2),
-              0 0 30px rgba(0, 255, 179, 0.1);
+  box-shadow: 0 0 5px rgba(0, 255, 179, 0.3), 0 0 10px rgba(0, 255, 179, 0.2);
 }
 
 .neon-text {
-  text-shadow: 0 0 10px rgba(0, 255, 179, 0.5),
-               0 0 20px rgba(0, 255, 179, 0.3);
+  color: var(--neon-mint);
+  text-shadow: 0 0 5px rgba(0, 255, 179, 0.4), 0 0 10px rgba(0, 255, 179, 0.2);
+  background: linear-gradient(135deg, #00FFB3 0%, #4BE1EC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Smooth transitions */
@@ -83,7 +141,7 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="dark"] body {
-  background: #0a0a0a;
+  background: #000000;
   color: #ffffff;
 }
 
@@ -192,7 +250,7 @@ html.dark {
 }
 
 html.dark body {
-  background: #0a0a0a;
+  background: #000000;
   color: #ffffff;
 }
 

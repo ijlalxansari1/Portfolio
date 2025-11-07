@@ -12,7 +12,13 @@ import {
   Edit,
   Trash2,
   Save,
-  X
+  X,
+  Search,
+  Filter,
+  Download,
+  RefreshCw,
+  ExternalLink,
+  Home
 } from "lucide-react";
 import AdminForm from "./components/AdminForm";
 import { useToast } from "@/app/components/Toast";
@@ -66,6 +72,9 @@ export default function AdminDashboard() {
   const [editingItem, setEditingItem] = useState<number | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formType, setFormType] = useState<"project" | "blog" | "certification">("project");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -75,6 +84,7 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
       loadData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogin = () => {
@@ -95,12 +105,13 @@ export default function AdminDashboard() {
   };
 
   const loadData = async () => {
+    setIsLoading(true);
     try {
       const [projRes, certRes, blogRes, emailRes] = await Promise.all([
         fetch("/api/data/projects"),
         fetch("/api/data/certifications"),
         fetch("/api/data/blogs"),
-        fetch("/api/data/emails.json"),
+        fetch("/api/data/emails"),
       ]);
       
       const [projData, certData, blogData, emailData] = await Promise.all([
@@ -116,8 +127,88 @@ export default function AdminDashboard() {
       setEmails(emailData);
     } catch (error) {
       console.error("Error loading data:", error);
+      toast.error("Failed to load data");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const exportData = () => {
+    const data = {
+      projects,
+      certifications,
+      blogs,
+      emails,
+      exportedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `portfolio-data-${new Date().toISOString().split("T")[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Data exported successfully!");
+  };
+
+  const getStats = () => {
+    return {
+      totalProjects: projects.length,
+      totalCertifications: certifications.length,
+      totalBlogs: blogs.length,
+      totalEmails: emails.length,
+      recentEmails: emails.filter((e) => {
+        const emailDate = new Date(e.date);
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return emailDate > weekAgo;
+      }).length,
+    };
+  };
+
+  const filteredData = () => {
+    let data: any[] = [];
+    if (activeTab === "projects") data = projects;
+    else if (activeTab === "certifications") data = certifications;
+    else if (activeTab === "blogs") data = blogs;
+    else if (activeTab === "emails") data = emails;
+
+    let filtered = data;
+
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter((item) => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          item.title?.toLowerCase().includes(searchLower) ||
+          item.description?.toLowerCase().includes(searchLower) ||
+          item.category?.toLowerCase().includes(searchLower) ||
+          item.name?.toLowerCase().includes(searchLower) ||
+          item.email?.toLowerCase().includes(searchLower) ||
+          item.message?.toLowerCase().includes(searchLower)
+        );
+      });
+    }
+
+    // Category filter
+    if (filterCategory !== "all" && activeTab !== "emails") {
+      filtered = filtered.filter((item) => item.category === filterCategory);
+    }
+
+    return filtered;
+  };
+
+  const categories = Array.from(
+    new Set(
+      activeTab === "projects"
+        ? projects.map((p) => p.category)
+        : activeTab === "blogs"
+        ? blogs.map((b) => b.category)
+        : []
+    )
+  );
 
   if (!isAuthenticated) {
     return (
@@ -156,21 +247,72 @@ export default function AdminDashboard() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-between items-center mb-8 flex-wrap gap-4"
+          className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-white">Admin Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <AITestButton />
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 glass border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition-all"
-            >
-              <LogOut size={20} />
-              Logout
-            </motion.button>
+          <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+            <h1 className="text-4xl font-bold text-white">Admin Dashboard</h1>
+            <div className="flex items-center gap-4">
+              <motion.a
+                href="/"
+                target="_blank"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 px-4 py-2 glass border border-white/10 text-white rounded-lg hover:border-neon-mint/50 transition-all"
+              >
+                <Home size={18} />
+                View Portfolio
+              </motion.a>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={loadData}
+                disabled={isLoading}
+                className="flex items-center gap-2 px-4 py-2 glass border border-white/10 text-white rounded-lg hover:border-neon-mint/50 transition-all disabled:opacity-50"
+              >
+                <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
+                Refresh
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={exportData}
+                className="flex items-center gap-2 px-4 py-2 glass border border-neon-mint/50 text-neon-mint rounded-lg hover:bg-neon-mint/10 transition-all"
+              >
+                <Download size={18} />
+                Export
+              </motion.button>
+              <AITestButton />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 glass border border-red-500/50 text-red-400 rounded-lg hover:bg-red-500/10 transition-all"
+              >
+                <LogOut size={20} />
+                Logout
+              </motion.button>
+            </div>
           </div>
+
+          {/* Stats Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"
+          >
+            {Object.entries(getStats()).map(([key, value]) => (
+              <motion.div
+                key={key}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="glass rounded-lg p-4 border border-white/10 text-center"
+              >
+                <div className="text-2xl font-bold text-neon-mint mb-1">{value}</div>
+                <div className="text-xs text-secondary capitalize">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* Tabs */}
@@ -205,6 +347,43 @@ export default function AdminDashboard() {
           })}
         </motion.div>
 
+        {/* Search and Filter Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass rounded-xl p-4 border border-white/10 mb-6"
+        >
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder={`Search ${activeTab}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-neon-mint"
+              />
+            </div>
+            {activeTab !== "emails" && categories.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Filter size={20} className="text-gray-400" />
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                >
+                  <option value="all">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
         {/* Content Area */}
         <motion.div
           key={activeTab}
@@ -216,7 +395,9 @@ export default function AdminDashboard() {
           {activeTab === "projects" && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">Projects</h2>
+                <h2 className="text-2xl font-bold text-white">
+                  Projects {searchQuery || filterCategory !== "all" ? `(${filteredData().length})` : `(${projects.length})`}
+                </h2>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -232,15 +413,36 @@ export default function AdminDashboard() {
                 </motion.button>
               </div>
               <div className="space-y-4">
-                {projects.map((project) => (
-                  <div key={project.id} className="glass rounded-lg p-4 border border-white/10">
+                {filteredData().length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    {searchQuery || filterCategory !== "all" 
+                      ? "No projects match your filters" 
+                      : "No projects yet. Add your first project!"}
+                  </div>
+                ) : (
+                  filteredData().map((project: Project) => (
+                  <div key={project.id} className="glass rounded-lg p-4 border border-white/10 hover:border-neon-mint/30 transition-all">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h3 className="text-white font-semibold text-lg">{project.title}</h3>
                         <p className="text-gray-400 text-sm mt-1">{project.category}</p>
-                        <p className="text-gray-300 mt-2">{project.description}</p>
+                        <p className="text-gray-300 mt-2 text-sm">{project.description}</p>
+                        {project.technologies && project.technologies.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            {project.technologies.slice(0, 3).map((tech) => (
+                              <span key={tech} className="px-2 py-1 glass border border-white/10 rounded text-xs text-tertiary">
+                                {tech}
+                              </span>
+                            ))}
+                            {project.technologies.length > 3 && (
+                              <span className="px-2 py-1 text-xs text-tertiary">
+                                +{project.technologies.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 ml-4">
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
@@ -293,7 +495,9 @@ export default function AdminDashboard() {
           {activeTab === "certifications" && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">Certifications</h2>
+                <h2 className="text-2xl font-bold text-white">
+                  Certifications {searchQuery ? `(${filteredData().length})` : `(${certifications.length})`}
+                </h2>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -309,10 +513,12 @@ export default function AdminDashboard() {
                 </motion.button>
               </div>
               <div className="space-y-4">
-                {certifications.length === 0 ? (
-                  <p className="text-gray-400 text-center py-8">No certifications yet. Add your first certification!</p>
+                {filteredData().length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    {searchQuery ? "No certifications match your search" : "No certifications yet. Add your first certification!"}
+                  </div>
                 ) : (
-                  certifications.map((cert) => (
+                  filteredData().map((cert: Certification) => (
                     <div key={cert.id} className="glass rounded-lg p-4 border border-white/10">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
@@ -389,10 +595,14 @@ export default function AdminDashboard() {
                 </motion.button>
               </div>
               <div className="space-y-4">
-                {blogs.length === 0 ? (
-                  <p className="text-gray-400 text-center py-8">No blog posts yet. Add your first blog post!</p>
+                {filteredData().length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">
+                    {searchQuery || filterCategory !== "all"
+                      ? "No blog posts match your filters"
+                      : "No blog posts yet. Add your first blog post!"}
+                  </div>
                 ) : (
-                  blogs.map((blog) => (
+                  filteredData().map((blog: Blog) => (
                     <div key={blog.id} className="glass rounded-lg p-4 border border-white/10">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
@@ -451,13 +661,17 @@ export default function AdminDashboard() {
 
           {/* Emails Tab */}
           {activeTab === "emails" && (
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-6">Email Submissions</h2>
-              <div className="space-y-4">
-                {emails.length === 0 ? (
-                  <p className="text-gray-400 text-center py-8">No email submissions yet</p>
-                ) : (
-                  emails.map((email) => (
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-6">
+                  Email Submissions {searchQuery ? `(${filteredData().length})` : `(${emails.length})`}
+                </h2>
+                <div className="space-y-4">
+                  {filteredData().length === 0 ? (
+                    <div className="text-center py-12 text-gray-400">
+                      {searchQuery ? "No emails match your search" : "No email submissions yet"}
+                    </div>
+                  ) : (
+                    filteredData().map((email: Email) => (
                     <div key={email.id} className="glass rounded-lg p-4 border border-white/10">
                       <div className="flex justify-between items-start mb-2">
                         <div>
@@ -467,10 +681,42 @@ export default function AdminDashboard() {
                         <span className="text-gray-400 text-xs">{email.date}</span>
                       </div>
                       <p className="text-gray-300 mt-3">{email.message}</p>
-                      <button className="mt-3 p-2 glass rounded-lg text-red-400 hover:bg-red-500/10 text-sm">
-                        <Trash2 size={16} className="inline mr-1" />
-                        Delete
-                      </button>
+                      <div className="flex gap-2 mt-3">
+                        <motion.a
+                          href={`mailto:${email.email}?subject=Re: ${email.name}`}
+                          whileHover={{ scale: 1.05 }}
+                          className="px-3 py-1.5 glass rounded-lg text-neon-mint hover:bg-neon-mint/10 text-sm flex items-center gap-1"
+                        >
+                          <Mail size={14} />
+                          Reply
+                        </motion.a>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={async () => {
+                            if (confirm(`Are you sure you want to delete this email from ${email.name}?`)) {
+                              try {
+                                const response = await fetch(`/api/data/emails?id=${email.id}`, {
+                                  method: "DELETE",
+                                });
+                                if (response.ok) {
+                                  toast.success("Email deleted successfully!");
+                                  loadData();
+                                } else {
+                                  toast.error("Failed to delete email");
+                                }
+                              } catch (error) {
+                                console.error("Error deleting email:", error);
+                                toast.error("Failed to delete email");
+                              }
+                            }
+                          }}
+                          className="px-3 py-1.5 glass rounded-lg text-red-400 hover:bg-red-500/10 text-sm flex items-center gap-1"
+                        >
+                          <Trash2 size={14} />
+                          Delete
+                        </motion.button>
+                      </div>
                     </div>
                   ))
                 )}

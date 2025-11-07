@@ -2,27 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Linkedin, Github, Mail, Menu, X, Home, User, Briefcase, FolderOpen, FileText, BookOpen, MessageSquare, Sun, Moon } from "lucide-react";
+import { Linkedin, Github, Mail, Sun, Moon, User, Briefcase, FolderOpen, FileText, BookOpen, MessageSquare, Send, Code, DollarSign } from "lucide-react";
 import Image from "next/image";
 
 export default function LeftSidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
   const [activeSection, setActiveSection] = useState("about");
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [currentTitle, setCurrentTitle] = useState(0);
   const [currentTheme, setCurrentTheme] = useState<string>("dark");
 
   const themes = ["dark", "light", "blue", "purple", "green"] as const;
-  const themeNames = ["Dark", "Light", "Blue", "Purple", "Green"] as const;
 
   const titles = [
-    "DATA ENGINEER",
-    "DATA ANALYST",
-    "BI ENGINEER",
-    "ETL DEVELOPER",
-    "DATA ARCHITECT",
-    "SOFTWARE ENGINEER",
+    "Data Engineer",
+    "Data Analyst",
+    "BI Engineer",
+    "ETL Developer",
+    "Data Architect",
+    "Software Engineer",
   ];
 
   useEffect(() => {
@@ -36,10 +34,9 @@ export default function LeftSidebar() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    // Update active section on scroll
     const handleScroll = () => {
-      const sections = ["about", "skills", "services", "projects", "experience", "blog", "contact"];
-      const scrollPosition = window.scrollY + 200;
+      const sections = ["about", "technologies", "skills", "services", "pricing", "projects", "experience", "blog", "contact"];
+      const scrollPosition = window.scrollY + 300;
 
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -60,45 +57,38 @@ export default function LeftSidebar() {
     };
   }, []);
 
-  // Rotate titles dynamically
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTitle((prev) => (prev + 1) % titles.length);
-    }, 3000); // Change every 3 seconds
-
+    }, 3000);
     return () => clearInterval(interval);
   }, [titles.length]);
 
-  // Load theme preference on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setCurrentTheme(savedTheme);
-    setIsDarkMode(savedTheme === 'dark');
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    const savedTheme = (localStorage.getItem('theme') || 'dark') as typeof themes[number];
+    if (themes.includes(savedTheme)) {
+      setCurrentTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   }, []);
 
   const toggleTheme = () => {
-    const currentIndex = themes.indexOf(currentTheme);
+    const currentIndex = themes.indexOf(currentTheme as typeof themes[number]);
     const nextIndex = (currentIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
     
     setCurrentTheme(nextTheme);
-    setIsDarkMode(nextTheme === 'dark');
-    
-    // Apply theme to document
     document.documentElement.setAttribute('data-theme', nextTheme);
     if (nextTheme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
-    // Store theme preference
     localStorage.setItem('theme', nextTheme);
   };
 
@@ -109,52 +99,184 @@ export default function LeftSidebar() {
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className="fixed top-4 left-4 z-50 md:hidden glass p-3 rounded-lg text-neon-mint hover:neon-glow"
       >
-        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        {isMobileMenuOpen ? "✕" : "☰"}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar Container - Icon Column + Profile Card */}
       <motion.aside
         initial={false}
         animate={{
-          x: isMobile ? (isMobileMenuOpen ? 0 : -300) : 0,
+          x: isMobile ? (isMobileMenuOpen ? 0 : -400) : 0,
         }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed left-0 top-0 h-full w-80 z-30 glass border-r border-white/10 p-8 flex flex-col items-center md:translate-x-0"
+        className="fixed left-0 top-0 h-full z-30 flex md:translate-x-0"
       >
-        {/* Profile Card - Top Frame */}
+        {/* Narrow Vertical Icon Column */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="flex flex-col items-center gap-2 p-2 glass rounded-full my-2 ml-2 border border-white/10 bg-black/30 backdrop-blur-xl"
+        >
+          <motion.button
+            onClick={toggleTheme}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              currentTheme !== 'dark' ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <Sun size={18} />
+          </motion.button>
+          
+          <motion.a
+            href="#about"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "about" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <User size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#technologies"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "technologies" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <Code size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#skills"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "skills" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <Briefcase size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#services"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "services" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <FolderOpen size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#pricing"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "pricing" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <DollarSign size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#projects"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "projects" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <FileText size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#experience"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "experience" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <BookOpen size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#blog"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "blog" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <MessageSquare size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="#contact"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${
+              activeSection === "contact" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
+            }`}
+          >
+            <Send size={18} />
+          </motion.a>
+        </motion.div>
+
+        {/* Profile Card */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="w-full mb-6 glass rounded-2xl p-6 border border-white/10 relative overflow-hidden"
+          className="w-72 glass rounded-2xl p-5 border border-white/10 relative overflow-hidden my-2 ml-1 flex flex-col bg-black/30 backdrop-blur-xl"
         >
           {/* Top Gradient Bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800" />
           
-          {/* Profile Picture */}
+          {/* Profile Picture Frame */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
-            className="relative w-full aspect-square mb-6 rounded-xl overflow-hidden border-2 border-neon-mint/30"
+            className="relative w-full aspect-square mb-3 rounded-xl overflow-hidden mx-auto"
+            style={{
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)"
+            }}
           >
             <Image
               src="/profile.png"
               alt="Ijlal Ansari"
               fill
-              className="object-cover"
+              className="object-cover rounded-xl"
               priority
             />
             {/* Online Status Indicator */}
             <div className="absolute top-2 left-2 w-3 h-3 bg-neon-mint rounded-full border-2 border-gray-900 z-10" />
           </motion.div>
 
-          {/* Title Below Picture */}
-          <motion.div
+          {/* Name */}
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-center mb-6"
+            className="text-xl font-bold text-white text-center mb-1"
+          >
+            Ijlal Ansari
+          </motion.h1>
+
+          {/* Dynamic Title */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="text-center mb-2"
           >
             <AnimatePresence mode="wait">
               <motion.p
@@ -162,200 +284,86 @@ export default function LeftSidebar() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.3 }}
-                className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2"
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="text-xs text-white uppercase tracking-wider font-semibold"
               >
                 {titles[currentTitle]}
               </motion.p>
             </AnimatePresence>
-            <h1 className="text-2xl font-bold text-white">Ijlal Ansari</h1>
           </motion.div>
 
-          {/* Social Media Icons - Bottom of Card */}
-          <motion.div
+          {/* Location */}
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="flex justify-center gap-3"
+            className="text-xs text-gray-500 mb-4 text-center"
+          >
+            Gilgit-Baltistan, Pakistan
+          </motion.p>
+
+          {/* Social Media Icons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex justify-center gap-2 mb-3"
           >
             <motion.a
-              href="https://www.linkedin.com/in/ijlal-ansari"
+              href="https://linkedin.com/in/ijlal-ansari-56b0371b0"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.15, boxShadow: "0 0 20px rgba(0, 255, 179, 0.5)" }}
-              className="w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:text-neon-mint hover:border-neon-mint transition-all"
-              aria-label="LinkedIn Profile"
+              whileHover={{ scale: 1.05 }}
+              className="w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:text-neon-mint transition-all"
+              aria-label="LinkedIn"
             >
-              <Linkedin size={18} />
+              <Linkedin size={16} />
             </motion.a>
             <motion.a
-              href="https://github.com/ijlalansari"
+              href="https://github.com/ijlalxansari1"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.15, boxShadow: "0 0 20px rgba(0, 255, 179, 0.5)" }}
-              className="w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:text-neon-mint hover:border-neon-mint transition-all"
-              aria-label="GitHub Profile"
+              whileHover={{ scale: 1.05 }}
+              className="w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:text-neon-mint transition-all"
+              aria-label="GitHub"
             >
-              <Github size={18} />
+              <Github size={16} />
             </motion.a>
             <motion.a
-              href="mailto:poono.data@gmail.com"
-              whileHover={{ scale: 1.15, boxShadow: "0 0 20px rgba(0, 255, 179, 0.5)" }}
-              className="w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:text-neon-mint hover:border-neon-mint transition-all"
+              href="mailto:ansariijlal90@gmail.com"
+              whileHover={{ scale: 1.05 }}
+              className="w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:text-neon-mint transition-all"
+              aria-label="Email"
             >
-              <Mail size={18} />
+              <Mail size={16} />
             </motion.a>
           </motion.div>
-        </motion.div>
 
-        {/* Theme Toggle Button */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          onClick={toggleTheme}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="w-14 h-14 rounded-full glass border border-white/10 flex items-center justify-center text-white hover:border-neon-mint/50 transition-all shadow-lg mb-2 relative"
-          title={`Current Theme: ${themeNames[themes.indexOf(currentTheme)] || "Dark"} - Click to change`}
-        >
-          {isDarkMode ? <Sun size={22} /> : <Moon size={22} />}
-          {/* Theme Indicator */}
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-neon-mint rounded-full border-2 border-gray-900" />
-        </motion.button>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.65 }}
-          className="text-xs text-gray-500 mb-4"
-        >
-          {(() => {
-            const themeIndex = themes.indexOf(currentTheme);
-            return themeIndex >= 0 ? themeNames[themeIndex] : "Dark";
-          })()} Theme
-        </motion.p>
-
-        {/* Languages Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="w-full mb-6 px-4"
-        >
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">
-            Languages
-          </p>
-          <div className="space-y-1">
-            <p className="text-xs text-gray-400">English — Professional proficiency</p>
-            <p className="text-xs text-gray-400">German — Learning (Beginner)</p>
-          </div>
-        </motion.div>
-
-        {/* Navigation Menu */}
-        <motion.nav
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="w-full mb-6"
-        >
-          <ul className="space-y-1">
-            {[
-              { icon: Home, label: "About", href: "#about", id: "about" },
-              { icon: User, label: "Skills", href: "#skills", id: "skills" },
-              { icon: Briefcase, label: "Services", href: "#services", id: "services" },
-              { icon: FolderOpen, label: "Projects", href: "#projects", id: "projects" },
-              { icon: FileText, label: "Resume", href: "#experience", id: "experience" },
-              { icon: BookOpen, label: "Articles", href: "#blog", id: "blog" },
-              { icon: MessageSquare, label: "Contact", href: "#contact", id: "contact" },
-            ].map((item) => {
-              const Icon = item.icon;
-              const isActive = activeSection === item.id;
-              return (
-                <li key={item.label}>
-                  <motion.a
-                    href={item.href}
-                    onClick={() => setActiveSection(item.id)}
-                    whileHover={{ x: 5 }}
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all group ${
-                      isActive
-                        ? "bg-neon-mint/20 text-neon-mint border border-neon-mint/50"
-                        : "text-gray-400 hover:text-neon-mint hover:bg-white/5"
-                    }`}
-                  >
-                    <Icon
-                      size={18}
-                      className={`transition-colors ${
-                        isActive ? "text-neon-mint" : "group-hover:text-neon-mint"
-                      }`}
-                    />
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </motion.a>
-                </li>
-              );
-            })}
-          </ul>
-        </motion.nav>
-
-        {/* Social Icons - Additional */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          className="flex gap-4 mb-6"
-        >
-          <motion.a
-            href="https://www.linkedin.com/in/ijlal-ansari"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.1, boxShadow: "0 0 20px rgba(0, 255, 179, 0.5)" }}
-            className="w-10 h-10 rounded-full glass flex items-center justify-center text-neon-mint hover:text-neon-mint hover:border-neon-mint border border-transparent transition-all"
-            aria-label="LinkedIn Profile"
+          {/* Action Buttons - Side by Side */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="flex gap-2"
           >
-            <Linkedin size={18} />
-          </motion.a>
-          <motion.a
-            href="https://github.com/ijlalansari"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.1, boxShadow: "0 0 20px rgba(0, 255, 179, 0.5)" }}
-            className="w-10 h-10 rounded-full glass flex items-center justify-center text-neon-mint hover:text-neon-mint hover:border-neon-mint border border-transparent transition-all"
-            aria-label="GitHub Profile"
-          >
-            <Github size={18} />
-          </motion.a>
-          <motion.a
-            href="mailto:poono.data@gmail.com"
-            whileHover={{ scale: 1.1, boxShadow: "0 0 20px rgba(0, 255, 179, 0.5)" }}
-            className="w-10 h-10 rounded-full glass flex items-center justify-center text-neon-mint hover:text-neon-mint hover:border-neon-mint border border-transparent transition-all"
-          >
-            <Mail size={18} />
-          </motion.a>
-        </motion.div>
-
-        {/* Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0 }}
-          className="w-full space-y-3 mt-auto"
-        >
-          <motion.a
-            href="#contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="block w-full py-3 px-6 text-center glass border border-neon-mint/50 text-neon-mint rounded-lg hover:bg-neon-mint/10 hover:border-neon-mint transition-all font-medium"
-          >
-            Contact Me
-          </motion.a>
-          <motion.a
-            href="/Ijlal-Ansari-Resume.pdf"
-            download
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="block w-full py-3 px-6 text-center glass border border-neon-mint/50 text-neon-mint rounded-lg hover:bg-neon-mint/10 hover:border-neon-mint transition-all font-medium"
-          >
-            Download CV
-          </motion.a>
+            <motion.a
+              href="/Poono-Resume.pdf"
+              download
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 py-2.5 px-3 text-center glass border border-white/10 text-white rounded-lg hover:bg-white/5 transition-all font-medium text-xs bg-black/20"
+            >
+              Download CV
+            </motion.a>
+            <motion.a
+              href="#contact"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 py-2.5 px-3 text-center bg-neon-mint text-black rounded-lg hover:bg-neon-mint/90 transition-all font-medium text-xs"
+            >
+              Contact Me
+            </motion.a>
+          </motion.div>
         </motion.div>
       </motion.aside>
 
