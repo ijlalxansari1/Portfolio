@@ -12,6 +12,7 @@ import Experience from "./components/Experience";
 import Blog from "./components/Blog";
 import Contact from "./components/Contact";
 import ScrollToTop from "./components/ScrollToTop";
+import SpotifyPlayer from "./components/SpotifyPlayer";
 
 export default function Home() {
   return (
@@ -41,6 +42,9 @@ export default function Home() {
         </div>
       </div>
       <ScrollToTop />
+      <SpotifyPlayer 
+        playlistId="37i9dQZF1DXcBWIGoYBM5M" // You can change this to your own playlist
+      />
     </main>
   );
 }
