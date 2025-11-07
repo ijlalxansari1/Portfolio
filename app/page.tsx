@@ -43,7 +43,7 @@ export default function Home() {
       </div>
       <ScrollToTop />
       <SpotifyPlayer 
-        playlistId="37i9dQZF1DXcBWIGoYBM5M" // You can change this to your own playlist
+        playlistId="5tgedOtPVkzWy9sI8gajzt" // Ultramode playlist by ijlal Ansari
       />
     </main>
   );
