@@ -56,20 +56,20 @@ export default function About() {
     "Welcome, I'm Ijlal Ansari",
   ];
 
-  useEffect(() => {
-    const domainInterval = setInterval(() => {
-      setCurrentDomain((prev) => (prev + 1) % dataDomains.length);
-    }, 3000);
+    useEffect(() => {
+      const domainInterval = setInterval(() => {
+        setCurrentDomain((prev) => (prev + 1) % dataDomains.length);
+      }, 3000);
 
-    const greetingInterval = setInterval(() => {
-      setCurrentGreeting((prev) => (prev + 1) % greetings.length);
-    }, 4000);
+      const greetingInterval = setInterval(() => {
+        setCurrentGreeting((prev) => (prev + 1) % greetings.length);
+      }, 4000);
 
-    return () => {
-      clearInterval(domainInterval);
-      clearInterval(greetingInterval);
-    };
-  }, []);
+      return () => {
+        clearInterval(domainInterval);
+        clearInterval(greetingInterval);
+      };
+    }, [dataDomains.length, greetings.length]);
 
   return (
       <section id="about" className="min-h-screen flex items-center justify-center py-4 px-8 md:px-16 relative z-20">

@@ -56,7 +56,7 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"
         >
-          Here's what my clients say
+          Here&apos;s what my clients say
         </motion.h2>
 
         <div className="relative mb-16">
@@ -81,7 +81,7 @@ export default function Testimonials() {
                   ))}
                 </div>
                 <p className="text-gray-300 mb-6 leading-relaxed italic text-lg">
-                  "{testimonials[currentIndex].text}"
+                  &quot;{testimonials[currentIndex].text}&quot;
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-neon-mint/50">

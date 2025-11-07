@@ -75,6 +75,7 @@ export default function LeftSidebar() {
         document.documentElement.classList.remove('dark');
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleTheme = () => {
