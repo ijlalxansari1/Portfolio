@@ -20,7 +20,7 @@ export default function SpotifyPlayer({
   albumId,
   artistId,
   width = "100%",
-  height = "380",
+  height = "352",
   compact = false,
 }: SpotifyPlayerProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -116,14 +116,16 @@ export default function SpotifyPlayer({
                   className="rounded-lg overflow-hidden"
                 >
                   <iframe
-                    src={`${spotifyUrl}?utm_source=generator&theme=0&t=0`}
+                    data-testid="embed-iframe"
+                    src={`${spotifyUrl}?utm_source=generator`}
                     width={width}
                     height={height}
                     frameBorder="0"
+                    allowFullScreen
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"
-                    className="rounded-lg"
                     style={{
+                      borderRadius: "12px",
                       filter: "brightness(0.95)",
                     }}
                   />
