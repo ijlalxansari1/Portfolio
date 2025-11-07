@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, Tag } from "lucide-react";
+import { Calendar, Tag, Clock } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -14,6 +14,13 @@ interface BlogPost {
   image: string;
   content?: string;
 }
+
+// Calculate reading time (average reading speed: 200 words per minute)
+const calculateReadingTime = (text: string): number => {
+  const words = text.split(/\s+/).length;
+  const minutes = Math.ceil(words / 200);
+  return minutes || 1; // Minimum 1 minute
+};
 
 export default function Blog() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
@@ -128,7 +135,7 @@ export default function Blog() {
                 )}
               </div>
               <div className="p-6">
-                <div className="flex items-center gap-4 mb-3 text-xs text-gray-400">
+                <div className="flex items-center gap-4 mb-3 text-xs text-gray-400 flex-wrap">
                   <span className="flex items-center gap-1">
                     <Calendar size={14} />
                     {post.date}
@@ -136,6 +143,10 @@ export default function Blog() {
                   <span className="flex items-center gap-1">
                     <Tag size={14} />
                     {post.category}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock size={14} />
+                    {calculateReadingTime(post.content || post.excerpt)} min read
                   </span>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">{post.title}</h3>
