@@ -13,25 +13,11 @@ import Blog from "./components/Blog";
 import Contact from "./components/Contact";
 import ScrollToTop from "./components/ScrollToTop";
 import SpotifyPlayer from "./components/SpotifyPlayer";
-import ThemeToggle from "./components/ThemeToggle";
-import Search from "./components/Search";
-import Analytics from "./components/Analytics";
-import Certifications from "./components/Certifications";
-import Testimonials from "./components/Testimonials";
-import Newsletter from "./components/Newsletter";
-import VisitorCounter from "./components/VisitorCounter";
-import DataVisualization from "./components/DataVisualization";
-import DownloadableResources from "./components/DownloadableResources";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-x-hidden">
       <BackgroundVideo />
-      
-      {/* Global Components */}
-      <ThemeToggle />
-      <Search />
-      <VisitorCounter />
       
       <div className="relative z-10 flex min-h-screen">
         {/* Left Sidebar (Icon Column + Profile Card) */}
@@ -44,19 +30,13 @@ export default function Home() {
         <div className="flex-1 min-w-0 relative z-20">
           <div className="relative z-20">
             <About />
-            <Analytics />
             <Technologies />
             <Skills />
-            <DataVisualization />
             <Services />
             <Pricing />
             <Projects />
-            <Certifications />
             <Experience />
-            <Testimonials />
             <Blog />
-            <DownloadableResources />
-            <Newsletter />
             <Contact />
           </div>
         </div>

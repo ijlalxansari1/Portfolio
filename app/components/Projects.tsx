@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ExternalLink, Github, Play } from "lucide-react";
 
 interface Project {
   id: number;
@@ -15,9 +14,6 @@ interface Project {
   date?: string;
   status?: string;
   year?: string;
-  demoUrl?: string;
-  githubUrl?: string;
-  liveUrl?: string;
 }
 
 export default function Projects() {
@@ -168,7 +164,7 @@ export default function Projects() {
                   <span className="text-xs text-tertiary">{project.year}</span>
                 </div>
                 <p className="text-secondary text-sm mb-4 leading-relaxed">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2">
                   {project.technologies.map((tech) => (
                     <span
                       key={tech}
@@ -178,49 +174,6 @@ export default function Projects() {
                     </span>
                   ))}
                 </div>
-                {(project.demoUrl || project.githubUrl || project.liveUrl) && (
-                  <div className="flex gap-2 mt-4">
-                    {project.liveUrl && (
-                      <motion.a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-neon-mint text-black text-sm font-semibold hover:bg-neon-mint/90 transition-all"
-                      >
-                        <ExternalLink size={16} />
-                        Live Demo
-                      </motion.a>
-                    )}
-                    {project.demoUrl && (
-                      <motion.a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg glass border border-white/10 text-neon-mint text-sm font-semibold hover:border-neon-mint/50 transition-all"
-                      >
-                        <Play size={16} />
-                        View Demo
-                      </motion.a>
-                    )}
-                    {project.githubUrl && (
-                      <motion.a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg glass border border-white/10 text-white text-sm font-semibold hover:border-neon-mint/50 transition-all"
-                      >
-                        <Github size={16} />
-                        Code
-                      </motion.a>
-                    )}
-                  </div>
-                )}
               </div>
             </motion.div>
               ))}
