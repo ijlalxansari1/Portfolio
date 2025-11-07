@@ -69,7 +69,8 @@ export default function About() {
         clearInterval(domainInterval);
         clearInterval(greetingInterval);
       };
-    }, [dataDomains.length, greetings.length]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   return (
       <section id="about" className="min-h-screen flex items-center justify-center py-4 px-8 md:px-16 relative z-20">
