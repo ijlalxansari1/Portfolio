@@ -5,9 +5,9 @@ import path from "path";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, message, serviceType } = body;
 
-    if (!name || !email || !message) {
+    if (!name || !email || !message || !serviceType) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
@@ -23,11 +23,15 @@ export async function POST(request: NextRequest) {
       emails = JSON.parse(fileContent);
     }
 
-    // Add new email
+    // Generate ID (find max ID + 1)
+    const maxId = emails.length > 0 ? Math.max(...emails.map((e: any) => e.id || 0)) : 0;
+
+    // Add new email with all form details
     const newEmail = {
-      id: emails.length + 1,
+      id: maxId + 1,
       name,
       email,
+      serviceType,
       message,
       date: new Date().toISOString(),
     };

@@ -3,10 +3,12 @@
     "id": 1,
     "title": "Churn Prediction — SLAM Dataset",
     "category": "Machine Learning",
-    "description": "Ethical churn prediction model using the SLAM dataset with attention-aware analytics and transparent decision-making processes.",
-    "technologies": ["Python", "Scikit-learn", "TensorFlow", "Pandas"],
+    "description": "Ethical churn prediction model using the SLAM dataset with attention-aware analytics and transparent decision-making processes. Bachelor's Thesis Research project investigating user churn prediction across social media platforms.",
+    "technologies": ["Python", "Scikit-learn", "TensorFlow", "Pandas", "LSTM", "XGBoost"],
     "image": "/projects/project1.jpg",
-    "date": "2024-01-15"
+    "date": "2024-01-15",
+    "githubUrl": "https://github.com/ijlalxansari1/Predicting-Churn-using-ML-and-DL",
+    "demoUrl": "https://github.com/ijlalxansari1/Predicting-Churn-using-ML-and-DL"
   },
   {
     "id": 2,

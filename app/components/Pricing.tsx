@@ -97,13 +97,14 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <motion.button
+              <motion.a
+                href="#contact"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full py-3 px-6 bg-neon-mint/10 border border-neon-mint text-neon-mint rounded-lg hover:bg-neon-mint/20 transition-all font-medium"
+                className="w-full py-3 px-6 bg-neon-mint/10 border border-neon-mint text-neon-mint rounded-lg hover:bg-neon-mint/20 transition-all font-medium text-center block"
               >
                 Order Now
-              </motion.button>
+              </motion.a>
             </motion.div>
           ))}
           </motion.div>

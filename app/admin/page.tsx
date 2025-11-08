@@ -18,7 +18,10 @@ import {
   Download,
   RefreshCw,
   ExternalLink,
-  Home
+  Home,
+  MessageSquare,
+  Calendar,
+  Briefcase
 } from "lucide-react";
 import AdminForm from "./components/AdminForm";
 import { useToast } from "@/app/components/Toast";
@@ -51,12 +54,24 @@ interface Blog {
   excerpt: string;
   image: string;
   content: string;
+  allowComments?: boolean;
+  comments?: Array<{
+    id?: number;
+    name: string;
+    email: string;
+    message: string;
+    date: string;
+  }>;
+  emojiReactions?: {
+    [key: string]: number;
+  };
 }
 
 interface Email {
   id: number;
   name: string;
   email: string;
+  serviceType?: string;
   message: string;
   date: string;
 }
@@ -114,20 +129,51 @@ export default function AdminDashboard() {
         fetch("/api/data/emails"),
       ]);
       
+      // Check if responses are ok
+      if (!projRes.ok) {
+        console.error("Projects API error:", projRes.status, projRes.statusText);
+      }
+      if (!certRes.ok) {
+        console.error("Certifications API error:", certRes.status, certRes.statusText);
+      }
+      if (!blogRes.ok) {
+        console.error("Blogs API error:", blogRes.status, blogRes.statusText);
+      }
+      if (!emailRes.ok) {
+        console.error("Emails API error:", emailRes.status, emailRes.statusText);
+      }
+      
       const [projData, certData, blogData, emailData] = await Promise.all([
-        projRes.json(),
-        certRes.json(),
-        blogRes.json(),
-        emailRes.json(),
+        projRes.ok ? projRes.json().catch(() => []) : Promise.resolve([]),
+        certRes.ok ? certRes.json().catch(() => []) : Promise.resolve([]),
+        blogRes.ok ? blogRes.json().catch(() => []) : Promise.resolve([]),
+        emailRes.ok ? emailRes.json().catch(() => []) : Promise.resolve([]),
       ]);
 
-      setProjects(projData);
-      setCertifications(certData);
-      setBlogs(blogData);
-      setEmails(emailData);
+      // Ensure we have arrays and log what we got
+      const projectsArray = Array.isArray(projData) ? projData : [];
+      const certsArray = Array.isArray(certData) ? certData : [];
+      const blogsArray = Array.isArray(blogData) ? blogData : [];
+      const emailsArray = Array.isArray(emailData) ? emailData : [];
+      
+      setProjects(projectsArray);
+      setCertifications(certsArray);
+      setBlogs(blogsArray);
+      setEmails(emailsArray);
+      
+      console.log("Loaded data:", {
+        projects: projectsArray.length,
+        certifications: certsArray.length,
+        blogs: blogsArray.length,
+        emails: emailsArray.length,
+      });
+      
+      if (projectsArray.length === 0 && certsArray.length === 0 && blogsArray.length === 0) {
+        console.warn("No data loaded. Check API routes and JSON files.");
+      }
     } catch (error) {
       console.error("Error loading data:", error);
-      toast.error("Failed to load data");
+      toast.error("Failed to load data. Check console for details.");
     } finally {
       setIsLoading(false);
     }
@@ -187,7 +233,8 @@ export default function AdminDashboard() {
           item.category?.toLowerCase().includes(searchLower) ||
           item.name?.toLowerCase().includes(searchLower) ||
           item.email?.toLowerCase().includes(searchLower) ||
-          item.message?.toLowerCase().includes(searchLower)
+          item.message?.toLowerCase().includes(searchLower) ||
+          item.serviceType?.toLowerCase().includes(searchLower)
         );
       });
     }
@@ -391,6 +438,13 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, x: 0 }}
           className="glass rounded-xl p-6 border border-white/10"
         >
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neon-mint"></div>
+              <p className="text-gray-400 mt-4">Loading data...</p>
+            </div>
+          ) : (
+            <>
           {/* Projects Tab */}
           {activeTab === "projects" && (
             <div>
@@ -609,6 +663,24 @@ export default function AdminDashboard() {
                           <h3 className="text-white font-semibold text-lg">{blog.title}</h3>
                           <p className="text-gray-400 text-sm mt-1">{blog.category} • {blog.date}</p>
                           <p className="text-gray-300 mt-2">{blog.excerpt}</p>
+                          <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
+                            {blog.comments && blog.comments.length > 0 && (
+                              <span className="flex items-center gap-1">
+                                <MessageSquare size={14} />
+                                {blog.comments.length} {blog.comments.length === 1 ? 'comment' : 'comments'}
+                              </span>
+                            )}
+                            {blog.emojiReactions && Object.keys(blog.emojiReactions).length > 0 && (
+                              <span className="flex items-center gap-1">
+                                {Object.entries(blog.emojiReactions).map(([emoji, count]) => (
+                                  <span key={emoji}>{emoji} {count}</span>
+                                ))}
+                              </span>
+                            )}
+                            {blog.allowComments === false && (
+                              <span className="text-red-400">Comments disabled</span>
+                            )}
+                          </div>
                         </div>
                         <div className="flex gap-2">
                           <motion.button
@@ -672,23 +744,106 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     filteredData().map((email: Email) => (
-                    <div key={email.id} className="glass rounded-lg p-4 border border-white/10">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="text-white font-semibold">{email.name}</h3>
-                          <p className="text-neon-mint text-sm">{email.email}</p>
+                    <div key={email.id} className="glass rounded-lg p-6 border border-white/10 hover:border-neon-mint/30 transition-all">
+                      {/* Header Section */}
+                      <div className="flex justify-between items-start mb-6 pb-4 border-b border-white/10">
+                        <div className="flex-1">
+                          <h3 className="text-white font-bold text-2xl mb-2">{email.name || "Unknown"}</h3>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Mail size={16} className="text-neon-mint" />
+                              <a 
+                                href={`mailto:${email.email}`}
+                                className="text-neon-mint text-sm hover:underline"
+                              >
+                                {email.email || "No email"}
+                              </a>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Calendar size={16} className="text-gray-400" />
+                              <span className="text-gray-400 text-sm">
+                                {email.date ? new Date(email.date).toLocaleString('en-US', { 
+                                  year: 'numeric', 
+                                  month: 'long', 
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                }) : "No date"}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <span className="text-gray-400 text-xs">{email.date}</span>
                       </div>
-                      <p className="text-gray-300 mt-3">{email.message}</p>
-                      <div className="flex gap-2 mt-3">
+                      
+                      {/* Service Type Section */}
+                      <div className="mb-4">
+                        <label className="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Service Type / Project Type</label>
+                        {email.serviceType ? (
+                          <div className="inline-flex items-center gap-2 px-4 py-2 bg-neon-mint/10 border border-neon-mint/30 rounded-lg text-neon-mint font-medium">
+                            <Briefcase size={16} />
+                            {email.serviceType}
+                          </div>
+                        ) : (
+                          <span className="text-gray-500 text-sm italic">Not specified</span>
+                        )}
+                      </div>
+
+                      {/* Message Section */}
+                      <div className="mb-6">
+                        <label className="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Message / Inquiry Details</label>
+                        <div className="glass rounded-lg p-4 border border-white/10 bg-black/20 min-h-[100px]">
+                          <p className="text-white leading-relaxed whitespace-pre-wrap text-base">
+                            {email.message || "No message provided"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Additional Details Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div className="glass rounded-lg p-3 border border-white/10 bg-black/20">
+                          <label className="text-gray-400 text-xs font-medium uppercase tracking-wider block mb-1">Name</label>
+                          <p className="text-white font-medium">{email.name || "Not provided"}</p>
+                        </div>
+                        <div className="glass rounded-lg p-3 border border-white/10 bg-black/20">
+                          <label className="text-gray-400 text-xs font-medium uppercase tracking-wider block mb-1">Email Address</label>
+                          <p className="text-white font-medium break-all">{email.email || "Not provided"}</p>
+                        </div>
+                        <div className="glass rounded-lg p-3 border border-white/10 bg-black/20">
+                          <label className="text-gray-400 text-xs font-medium uppercase tracking-wider block mb-1">Service Type</label>
+                          <p className="text-white font-medium">{email.serviceType || "Not specified"}</p>
+                        </div>
+                        <div className="glass rounded-lg p-3 border border-white/10 bg-black/20">
+                          <label className="text-gray-400 text-xs font-medium uppercase tracking-wider block mb-1">Date & Time</label>
+                          <p className="text-white font-medium text-sm">
+                            {email.date ? new Date(email.date).toLocaleString('en-US', { 
+                              year: 'numeric', 
+                              month: 'short', 
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            }) : "Not available"}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-3 pt-4 border-t border-white/10">
                         <motion.a
-                          href={`mailto:${email.email}?subject=Re: ${email.name}`}
+                          href={`mailto:${email.email || ''}?subject=${encodeURIComponent(`Re: ${email.serviceType || 'Your Inquiry'} - ${email.name || ''}`)}&body=${encodeURIComponent(`Hi ${email.name || 'there'},\n\nThank you for your inquiry regarding: ${email.serviceType || 'your project'}.\n\nBest regards,\nIjlal Ansari`)}`}
+                          onClick={(e) => {
+                            if (!email.email) {
+                              e.preventDefault();
+                              toast.error("No email address available");
+                              return;
+                            }
+                            // Let the browser handle the mailto link naturally
+                          }}
                           whileHover={{ scale: 1.05 }}
-                          className="px-3 py-1.5 glass rounded-lg text-neon-mint hover:bg-neon-mint/10 text-sm flex items-center gap-1"
+                          whileTap={{ scale: 0.95 }}
+                          className={`flex-1 px-4 py-3 glass rounded-lg text-neon-mint hover:bg-neon-mint/10 text-sm flex items-center justify-center gap-2 font-medium border border-neon-mint/30 no-underline ${!email.email ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                         >
-                          <Mail size={14} />
-                          Reply
+                          <Mail size={18} />
+                          Reply via Email
                         </motion.a>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
@@ -711,9 +866,9 @@ export default function AdminDashboard() {
                               }
                             }
                           }}
-                          className="px-3 py-1.5 glass rounded-lg text-red-400 hover:bg-red-500/10 text-sm flex items-center gap-1"
+                          className="px-4 py-3 glass rounded-lg text-red-400 hover:bg-red-500/10 text-sm flex items-center gap-2 font-medium border border-red-400/30"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={18} />
                           Delete
                         </motion.button>
                       </div>
@@ -722,6 +877,8 @@ export default function AdminDashboard() {
                 )}
               </div>
             </div>
+          )}
+            </>
           )}
         </motion.div>
 

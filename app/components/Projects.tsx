@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { X, ExternalLink, Github } from "lucide-react";
 
 interface Project {
   id: number;
@@ -14,12 +15,15 @@ interface Project {
   date?: string;
   status?: string;
   year?: string;
+  githubUrl?: string;
+  demoUrl?: string;
 }
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -131,6 +135,7 @@ export default function Projects() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.02, y: -5 }}
+              onClick={() => setSelectedProject(project)}
               className="glass rounded-xl overflow-hidden border border-white/10 hover:border-neon-mint/50 transition-all group cursor-pointer"
             >
               <div className="relative h-48 bg-gradient-to-br from-neon-mint/20 to-neon-cyan/20 overflow-hidden">
@@ -181,6 +186,119 @@ export default function Projects() {
           )}
         </motion.div>
       </div>
+
+      {/* Project Detail Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedProject(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="glass rounded-xl p-8 max-w-4xl w-full border border-neon-mint/50 relative max-h-[90vh] overflow-y-auto"
+            >
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
+              >
+                <X size={24} />
+              </button>
+
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden">
+                {selectedProject.image ? (
+                  <Image
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neon-mint/20 to-neon-cyan/20">
+                    <span className="text-6xl text-neon-mint/50">{selectedProject.title[0]}</span>
+                  </div>
+                )}
+              </div>
+
+              <h2 className="text-3xl font-bold text-white mb-4">{selectedProject.title}</h2>
+              <div className="flex items-center gap-4 mb-6">
+                <span className="px-3 py-1 bg-neon-mint/10 border border-neon-mint/30 rounded-full text-sm text-neon-mint font-medium">
+                  {selectedProject.category}
+                </span>
+                <span className="text-sm text-tertiary">{selectedProject.year}</span>
+                <span className="px-3 py-1 bg-neon-mint/10 border border-neon-mint/30 rounded-full text-sm text-neon-mint">
+                  {selectedProject.status}
+                </span>
+              </div>
+
+              <p className="text-secondary text-lg mb-6 leading-relaxed">{selectedProject.description}</p>
+
+              <div className="mb-6">
+                <h3 className="text-white font-semibold mb-3">Technologies Used:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProject.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3 py-1.5 glass border border-white/10 rounded-full text-sm text-tertiary"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                {selectedProject.demoUrl && (
+                  <motion.a
+                    href={selectedProject.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-6 py-3 bg-neon-mint text-black rounded-lg font-semibold hover:bg-neon-mint/90 transition-all"
+                  >
+                    <ExternalLink size={18} />
+                    View Project
+                  </motion.a>
+                )}
+                {selectedProject.githubUrl && (
+                  <motion.a
+                    href={selectedProject.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-6 py-3 glass border border-white/10 text-white rounded-lg hover:bg-white/5 transition-all"
+                  >
+                    <Github size={18} />
+                    View Code
+                  </motion.a>
+                )}
+                {!selectedProject.demoUrl && !selectedProject.githubUrl && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-6 py-3 glass border border-white/10 text-white rounded-lg hover:bg-white/5 transition-all"
+                    disabled
+                  >
+                    <ExternalLink size={18} />
+                    No Links Available
+                  </motion.button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
