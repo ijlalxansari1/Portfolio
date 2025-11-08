@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Wand2 } from "lucide-react";
 import ImageUpload from "@/app/components/ImageUpload";
@@ -53,8 +53,11 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     const categoryType = type === "project" ? "projects" : "blogs";
     fetch(`/api/data/categories?type=${categoryType}`)
       .then((res) => res.json())
-      .then((data) => setCategories(data || []))
-      .catch((err) => console.error("Error loading categories:", err));
+      .then((data) => setCategories(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error("Error loading categories:", err);
+        setCategories([]);
+      });
   }, [type]);
 
   // Sync form data with initialData when it changes
@@ -112,7 +115,7 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     }
   }, [initialData, type]);
 
-  const handleAIGenerate = async (field: string, prompt: string) => {
+  const handleAIGenerate = useCallback(async (field: string, prompt: string) => {
     setAiGenerating(true);
     try {
       const response = await fetch("/api/ai", {
@@ -133,7 +136,7 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     } finally {
       setAiGenerating(false);
     }
-  };
+  }, [toast]);
 
   const handleImageAIAnalysis = async (imageBase64: string) => {
     setAiGenerating(true);

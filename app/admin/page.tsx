@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { 
   FolderOpen, 
@@ -21,7 +21,9 @@ import {
   Home,
   MessageSquare,
   Calendar,
-  Briefcase
+  Briefcase,
+  Copy,
+  Check
 } from "lucide-react";
 import AdminForm from "./components/AdminForm";
 import { useToast } from "@/app/components/Toast";
@@ -92,6 +94,42 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const [projRes, certRes, blogRes, emailRes] = await Promise.all([
+        fetch("/api/data/projects"),
+        fetch("/api/data/certifications"),
+        fetch("/api/data/blogs"),
+        fetch("/api/data/emails"),
+      ]);
+      
+      const [projData, certData, blogData, emailData] = await Promise.all([
+        projRes.ok ? projRes.json().catch(() => []) : Promise.resolve([]),
+        certRes.ok ? certRes.json().catch(() => []) : Promise.resolve([]),
+        blogRes.ok ? blogRes.json().catch(() => []) : Promise.resolve([]),
+        emailRes.ok ? emailRes.json().catch(() => []) : Promise.resolve([]),
+      ]);
+
+      // Ensure we have arrays
+      const projectsArray = Array.isArray(projData) ? projData : [];
+      const certsArray = Array.isArray(certData) ? certData : [];
+      const blogsArray = Array.isArray(blogData) ? blogData : [];
+      const emailsArray = Array.isArray(emailData) ? emailData : [];
+      
+      setProjects(projectsArray);
+      setCertifications(certsArray);
+      setBlogs(blogsArray);
+      setEmails(emailsArray);
+    } catch (error) {
+      console.error("Error loading data:", error);
+      toast.error("Failed to load data. Check console for details.");
+    } finally {
+      setIsLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     // Check authentication
     const auth = localStorage.getItem("admin_auth");
@@ -101,6 +139,27 @@ export default function AdminDashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Auto-refresh emails when switching to emails tab (only once per tab switch)
+  useEffect(() => {
+    if (isAuthenticated && activeTab === "emails") {
+      const refreshEmails = async () => {
+        try {
+          const emailRes = await fetch("/api/data/emails");
+          if (emailRes.ok) {
+            const emailData = await emailRes.json();
+            const emailsArray = Array.isArray(emailData) ? emailData : [];
+            setEmails(emailsArray);
+          }
+        } catch (error) {
+          console.error("Error refreshing emails:", error);
+        }
+      };
+      // Small delay to avoid conflicts with main loadData
+      const timeoutId = setTimeout(refreshEmails, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [activeTab, isAuthenticated]);
 
   const handleLogin = () => {
     // Simple password check (in production, use proper authentication)
@@ -117,66 +176,6 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("admin_auth");
-  };
-
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      const [projRes, certRes, blogRes, emailRes] = await Promise.all([
-        fetch("/api/data/projects"),
-        fetch("/api/data/certifications"),
-        fetch("/api/data/blogs"),
-        fetch("/api/data/emails"),
-      ]);
-      
-      // Check if responses are ok
-      if (!projRes.ok) {
-        console.error("Projects API error:", projRes.status, projRes.statusText);
-      }
-      if (!certRes.ok) {
-        console.error("Certifications API error:", certRes.status, certRes.statusText);
-      }
-      if (!blogRes.ok) {
-        console.error("Blogs API error:", blogRes.status, blogRes.statusText);
-      }
-      if (!emailRes.ok) {
-        console.error("Emails API error:", emailRes.status, emailRes.statusText);
-      }
-      
-      const [projData, certData, blogData, emailData] = await Promise.all([
-        projRes.ok ? projRes.json().catch(() => []) : Promise.resolve([]),
-        certRes.ok ? certRes.json().catch(() => []) : Promise.resolve([]),
-        blogRes.ok ? blogRes.json().catch(() => []) : Promise.resolve([]),
-        emailRes.ok ? emailRes.json().catch(() => []) : Promise.resolve([]),
-      ]);
-
-      // Ensure we have arrays and log what we got
-      const projectsArray = Array.isArray(projData) ? projData : [];
-      const certsArray = Array.isArray(certData) ? certData : [];
-      const blogsArray = Array.isArray(blogData) ? blogData : [];
-      const emailsArray = Array.isArray(emailData) ? emailData : [];
-      
-      setProjects(projectsArray);
-      setCertifications(certsArray);
-      setBlogs(blogsArray);
-      setEmails(emailsArray);
-      
-      console.log("Loaded data:", {
-        projects: projectsArray.length,
-        certifications: certsArray.length,
-        blogs: blogsArray.length,
-        emails: emailsArray.length,
-      });
-      
-      if (projectsArray.length === 0 && certsArray.length === 0 && blogsArray.length === 0) {
-        console.warn("No data loaded. Check API routes and JSON files.");
-      }
-    } catch (error) {
-      console.error("Error loading data:", error);
-      toast.error("Failed to load data. Check console for details.");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const exportData = () => {
@@ -214,7 +213,7 @@ export default function AdminDashboard() {
     };
   };
 
-  const filteredData = () => {
+  const filteredData = useMemo(() => {
     let data: any[] = [];
     if (activeTab === "projects") data = projects;
     else if (activeTab === "certifications") data = certifications;
@@ -225,8 +224,8 @@ export default function AdminDashboard() {
 
     // Search filter
     if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
       filtered = filtered.filter((item) => {
-        const searchLower = searchQuery.toLowerCase();
         return (
           item.title?.toLowerCase().includes(searchLower) ||
           item.description?.toLowerCase().includes(searchLower) ||
@@ -245,17 +244,19 @@ export default function AdminDashboard() {
     }
 
     return filtered;
-  };
+  }, [activeTab, projects, certifications, blogs, emails, searchQuery, filterCategory]);
 
-  const categories = Array.from(
-    new Set(
-      activeTab === "projects"
-        ? projects.map((p) => p.category)
-        : activeTab === "blogs"
-        ? blogs.map((b) => b.category)
-        : []
-    )
-  );
+  const categories = useMemo(() => {
+    return Array.from(
+      new Set(
+        activeTab === "projects"
+          ? projects.map((p) => p.category)
+          : activeTab === "blogs"
+          ? blogs.map((b) => b.category)
+          : []
+      )
+    );
+  }, [activeTab, projects, blogs]);
 
   if (!isAuthenticated) {
     return (
@@ -450,7 +451,7 @@ export default function AdminDashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-white">
-                  Projects {searchQuery || filterCategory !== "all" ? `(${filteredData().length})` : `(${projects.length})`}
+                  Projects {searchQuery || filterCategory !== "all" ? `(${filteredData.length})` : `(${projects.length})`}
                 </h2>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -467,14 +468,14 @@ export default function AdminDashboard() {
                 </motion.button>
               </div>
               <div className="space-y-4">
-                {filteredData().length === 0 ? (
+                {filteredData.length === 0 ? (
                   <div className="text-center py-12 text-gray-400">
                     {searchQuery || filterCategory !== "all" 
                       ? "No projects match your filters" 
                       : "No projects yet. Add your first project!"}
                   </div>
                 ) : (
-                  filteredData().map((project: Project) => (
+                  filteredData.map((project: Project) => (
                   <div key={project.id} className="glass rounded-lg p-4 border border-white/10 hover:border-neon-mint/30 transition-all">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -550,7 +551,7 @@ export default function AdminDashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-white">
-                  Certifications {searchQuery ? `(${filteredData().length})` : `(${certifications.length})`}
+                  Certifications {searchQuery ? `(${filteredData.length})` : `(${certifications.length})`}
                 </h2>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -567,12 +568,12 @@ export default function AdminDashboard() {
                 </motion.button>
               </div>
               <div className="space-y-4">
-                {filteredData().length === 0 ? (
+                {filteredData.length === 0 ? (
                   <div className="text-center py-12 text-gray-400">
                     {searchQuery ? "No certifications match your search" : "No certifications yet. Add your first certification!"}
                   </div>
                 ) : (
-                  filteredData().map((cert: Certification) => (
+                  filteredData.map((cert: Certification) => (
                     <div key={cert.id} className="glass rounded-lg p-4 border border-white/10">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
@@ -649,14 +650,14 @@ export default function AdminDashboard() {
                 </motion.button>
               </div>
               <div className="space-y-4">
-                {filteredData().length === 0 ? (
+                {filteredData.length === 0 ? (
                   <div className="text-center py-12 text-gray-400">
                     {searchQuery || filterCategory !== "all"
                       ? "No blog posts match your filters"
                       : "No blog posts yet. Add your first blog post!"}
                   </div>
                 ) : (
-                  filteredData().map((blog: Blog) => (
+                  filteredData.map((blog: Blog) => (
                     <div key={blog.id} className="glass rounded-lg p-4 border border-white/10">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
@@ -735,15 +736,15 @@ export default function AdminDashboard() {
           {activeTab === "emails" && (
               <div>
                 <h2 className="text-2xl font-bold text-white mb-6">
-                  Email Submissions {searchQuery ? `(${filteredData().length})` : `(${emails.length})`}
+                  Email Submissions {searchQuery ? `(${filteredData.length})` : `(${emails.length})`}
                 </h2>
                 <div className="space-y-4">
-                  {filteredData().length === 0 ? (
+                  {filteredData.length === 0 ? (
                     <div className="text-center py-12 text-gray-400">
                       {searchQuery ? "No emails match your search" : "No email submissions yet"}
                     </div>
                   ) : (
-                    filteredData().map((email: Email) => (
+                    filteredData.map((email: Email) => (
                     <div key={email.id} className="glass rounded-lg p-6 border border-white/10 hover:border-neon-mint/30 transition-all">
                       {/* Header Section */}
                       <div className="flex justify-between items-start mb-6 pb-4 border-b border-white/10">
@@ -827,27 +828,63 @@ export default function AdminDashboard() {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex gap-3 pt-4 border-t border-white/10">
+                      <div className="flex flex-wrap gap-3 pt-4 border-t border-white/10">
                         <motion.a
-                          href={`mailto:${email.email || ''}?subject=${encodeURIComponent(`Re: ${email.serviceType || 'Your Inquiry'} - ${email.name || ''}`)}&body=${encodeURIComponent(`Hi ${email.name || 'there'},\n\nThank you for your inquiry regarding: ${email.serviceType || 'your project'}.\n\nBest regards,\nIjlal Ansari`)}`}
+                          href={email.email && email.email.trim() 
+                            ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email.email.trim())}&su=${encodeURIComponent(`Re: ${email.serviceType || 'Your Inquiry'} - ${email.name || ''}`)}&body=${encodeURIComponent(`Hi ${email.name || 'there'},\n\nThank you for your inquiry regarding: ${email.serviceType || 'your project'}.\n\nBest regards,\nIjlal Ansari`)}`
+                            : '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                           onClick={(e) => {
-                            if (!email.email) {
+                            if (!email.email || !email.email.trim()) {
                               e.preventDefault();
-                              toast.error("No email address available");
-                              return;
+                              toast.error("No email address available for this contact");
                             }
-                            // Let the browser handle the mailto link naturally
                           }}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`flex-1 px-4 py-3 glass rounded-lg text-neon-mint hover:bg-neon-mint/10 text-sm flex items-center justify-center gap-2 font-medium border border-neon-mint/30 no-underline ${!email.email ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                          className={`flex-1 min-w-[160px] px-4 py-3 glass rounded-lg text-sm flex items-center justify-center gap-2 font-medium border transition-all no-underline ${
+                            email.email && email.email.trim()
+                              ? 'text-neon-mint hover:bg-neon-mint/10 border-neon-mint/30 cursor-pointer'
+                              : 'text-gray-500 border-gray-500/30 opacity-50 cursor-not-allowed pointer-events-none'
+                          }`}
                         >
                           <Mail size={18} />
-                          Reply via Email
+                          <span>Open in Gmail</span>
                         </motion.a>
+                        
                         <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
+                          type="button"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={async () => {
+                            if (!email.email || !email.email.trim()) {
+                              toast.error("No email address to copy");
+                              return;
+                            }
+                            
+                            try {
+                              await navigator.clipboard.writeText(email.email.trim());
+                              toast.success(`Email copied: ${email.email.trim()}`);
+                            } catch (error) {
+                              console.error("Failed to copy email:", error);
+                              toast.error("Failed to copy email address");
+                            }
+                          }}
+                          disabled={!email.email || !email.email.trim()}
+                          className={`flex-1 min-w-[140px] px-4 py-3 glass rounded-lg text-sm flex items-center justify-center gap-2 font-medium border transition-all ${
+                            email.email && email.email.trim()
+                              ? 'text-blue-400 hover:bg-blue-400/10 border-blue-400/30 cursor-pointer'
+                              : 'text-gray-500 border-gray-500/30 opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          <Copy size={18} />
+                          <span>Copy Email</span>
+                        </motion.button>
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                           onClick={async () => {
                             if (confirm(`Are you sure you want to delete this email from ${email.name}?`)) {
                               try {
@@ -866,10 +903,10 @@ export default function AdminDashboard() {
                               }
                             }
                           }}
-                          className="px-4 py-3 glass rounded-lg text-red-400 hover:bg-red-500/10 text-sm flex items-center gap-2 font-medium border border-red-400/30"
+                          className="flex-1 min-w-[120px] px-4 py-3 glass rounded-lg text-red-400 hover:bg-red-500/10 text-sm flex items-center justify-center gap-2 font-medium border border-red-400/30 cursor-pointer transition-all"
                         >
                           <Trash2 size={18} />
-                          Delete
+                          <span>Delete</span>
                         </motion.button>
                       </div>
                     </div>

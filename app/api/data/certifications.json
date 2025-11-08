@@ -41,22 +41,5 @@
     "date": "2023-11-20",
     "credentialId": "GCP-PDE-67890",
     "image": "/certifications/gcp.jpg"
-  },
-  {
-    "id": 6,
-    "title": "Databricks Certified Data Engineer",
-    "issuer": "Databricks",
-    "date": "2023-09-10",
-    "credentialId": "DB-CDE-11111",
-    "image": "/certifications/databricks.jpg"
-  },
-  {
-    "id": 7,
-    "title": "Apache Spark Developer Certification",
-    "issuer": "Databricks",
-    "date": "2023-07-05",
-    "credentialId": "SPARK-DEV-22222",
-    "image": "/certifications/spark.jpg"
   }
 ]
-

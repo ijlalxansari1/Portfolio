@@ -27,17 +27,6 @@
     "content": "Full blog content here..."
   },
   {
-    "title": "Data pipeline ",
-    "description": "This is the test blog ",
-    "category": "tech",
-    "technologies": [],
-    "image": "/blog/1762453397117-Fig_3-01_pipeline_FHD.png",
-    "date": "2025-11-06",
-    "excerpt": "test excertp",
-    "content": "This is a test blog for viewing purposes",
-    "id": 4
-  },
-  {
     "title": "The Age of Surveillance Capitalism: What You Need to Know",
     "description": "The Age of Surveillance Capitalism by Shoshana Zuboff is an incisive examination of how technology companies have ushered in a new economic era powered by data collection and behavior modification. Zuboff explores the rise of “behavioral futures markets,” where predictions about individuals’ actions are bought and sold, and warns of the threat posed by powerful digital architectures free from democratic oversight. The book illuminates the consequences of unchecked commercial surveillance, offering a timely warning about risks to personal autonomy, democracy, and human freedom.",
     "category": "Technology & Ethics",
