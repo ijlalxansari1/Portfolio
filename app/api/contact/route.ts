@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { sql } from "@vercel/postgres";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,32 +13,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read existing emails
-    const emailsPath = path.join(process.cwd(), "app/api/data/emails.json");
-    let emails = [];
-    
-    if (fs.existsSync(emailsPath)) {
-      const fileContent = fs.readFileSync(emailsPath, "utf-8");
-      emails = JSON.parse(fileContent);
-    }
-
-    // Generate ID (find max ID + 1)
-    const maxId = emails.length > 0 ? Math.max(...emails.map((e: any) => e.id || 0)) : 0;
-
-    // Add new email with all form details
-    const newEmail = {
-      id: maxId + 1,
-      name,
-      email,
-      serviceType,
-      message,
-      date: new Date().toISOString(),
-    };
-
-    emails.push(newEmail);
-
-    // Write back to file
-    fs.writeFileSync(emailsPath, JSON.stringify(emails, null, 2));
+    // Insert into Vercel Postgres
+    await sql`
+      INSERT INTO emails (name, email, service_type, message, date, status)
+      VALUES (
+        ${name}, 
+        ${email}, 
+        ${serviceType}, 
+        ${message}, 
+        ${new Date().toISOString()}, 
+        'unread'
+      )
+    `;
 
     return NextResponse.json(
       { success: true, message: "Email submitted successfully" },
