@@ -110,7 +110,7 @@ export default function LeftSidebar() {
           x: isMobile ? (isMobileMenuOpen ? 0 : -400) : 0,
         }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed left-0 top-0 h-full z-30 flex md:translate-x-0"
+        className="fixed left-0 top-0 h-full z-40 flex md:translate-x-0"
       >
         {/* Narrow Vertical Icon Column */}
         <motion.div
