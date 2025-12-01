@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Wand2 } from "lucide-react";
 import ImageUpload from "@/app/components/ImageUpload";
@@ -18,11 +18,29 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     title: "",
     description: "",
     category: "",
-    technologies: type === "project" ? "" : undefined,
     image: "",
     date: new Date().toISOString().split("T")[0],
-    ...(type === "blog" && { excerpt: "", content: "" }),
-    ...(type === "certification" && { issuer: "", credentialId: "" }),
+    // Project-specific fields
+    ...(type === "project" && { 
+      technologies: "", 
+      githubUrl: "", 
+      demoUrl: "", 
+      status: "Completed" 
+    }),
+    // Blog-specific fields
+    ...(type === "blog" && { 
+      excerpt: "", 
+      content: "", 
+      allowComments: true,
+      comments: [],
+      emojiReactions: {}
+    }),
+    // Certification-specific fields
+    ...(type === "certification" && { 
+      issuer: "", 
+      credentialId: "",
+      verificationUrl: ""
+    }),
   });
   const [aiGenerating, setAiGenerating] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -35,11 +53,69 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     const categoryType = type === "project" ? "projects" : "blogs";
     fetch(`/api/data/categories?type=${categoryType}`)
       .then((res) => res.json())
-      .then((data) => setCategories(data || []))
-      .catch((err) => console.error("Error loading categories:", err));
+      .then((data) => setCategories(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error("Error loading categories:", err);
+        setCategories([]);
+      });
   }, [type]);
 
-  const handleAIGenerate = async (field: string, prompt: string) => {
+  // Sync form data with initialData when it changes
+  useEffect(() => {
+    if (initialData) {
+      // Convert technologies array to comma-separated string if it's an array
+      const processedData = {
+        ...initialData,
+        technologies: Array.isArray(initialData.technologies) 
+          ? initialData.technologies.join(", ") 
+          : initialData.technologies || "",
+        // Ensure all type-specific fields are present
+        ...(type === "project" && {
+          githubUrl: initialData.githubUrl || "",
+          demoUrl: initialData.demoUrl || "",
+          status: initialData.status || "Completed"
+        }),
+        ...(type === "blog" && {
+          allowComments: initialData.allowComments !== undefined ? initialData.allowComments : true,
+          comments: initialData.comments || [],
+          emojiReactions: initialData.emojiReactions || {}
+        }),
+        ...(type === "certification" && {
+          verificationUrl: initialData.verificationUrl || ""
+        }),
+      };
+      setFormData(processedData);
+    } else {
+      // Reset form when adding new item
+      setFormData({
+        title: "",
+        description: "",
+        category: "",
+        image: "",
+        date: new Date().toISOString().split("T")[0],
+        ...(type === "project" && { 
+          technologies: "", 
+          githubUrl: "", 
+          demoUrl: "", 
+          status: "Completed" 
+        }),
+        ...(type === "blog" && { 
+          excerpt: "", 
+          content: "", 
+          allowComments: true,
+          comments: [],
+          emojiReactions: {}
+        }),
+        ...(type === "certification" && { 
+          issuer: "", 
+          credentialId: "",
+          verificationUrl: ""
+        }),
+      });
+    }
+  }, [initialData, type]);
+
+  const handleAIGenerate = useCallback(async (field: string, prompt: string) => {
     setAiGenerating(true);
     try {
       const response = await fetch("/api/ai", {
@@ -60,7 +136,7 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     } finally {
       setAiGenerating(false);
     }
-  };
+  }, [toast]);
 
   const handleImageAIAnalysis = async (imageBase64: string) => {
     setAiGenerating(true);
@@ -93,7 +169,13 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     e.preventDefault();
     const processedData = {
       ...formData,
-      technologies: formData.technologies ? formData.technologies.split(",").map((t: string) => t.trim()) : [],
+      technologies: formData.technologies 
+        ? (typeof formData.technologies === "string" 
+            ? formData.technologies.split(",").map((t: string) => t.trim()).filter((t: string) => t.length > 0)
+            : Array.isArray(formData.technologies) 
+              ? formData.technologies 
+              : [])
+        : [],
     };
     onSave(processedData);
   };
@@ -267,20 +349,55 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
             </select>
           </div>
 
-          {/* Technologies (for projects) */}
+          {/* Project-specific fields */}
           {type === "project" && (
-            <div>
-              <label className="block text-white font-medium mb-2">
-                Technologies (comma-separated)
-              </label>
-              <input
-                type="text"
-                value={formData.technologies}
-                onChange={(e) => setFormData((prev: any) => ({ ...prev, technologies: e.target.value }))}
-                placeholder="Python, React, AWS"
-                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
-              />
-            </div>
+            <>
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Technologies (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  value={formData.technologies || ""}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, technologies: e.target.value }))}
+                  placeholder="Python, React, AWS"
+                  className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-2">GitHub URL</label>
+                <input
+                  type="url"
+                  value={formData.githubUrl || ""}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, githubUrl: e.target.value }))}
+                  placeholder="https://github.com/username/repo"
+                  className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-2">Demo URL</label>
+                <input
+                  type="url"
+                  value={formData.demoUrl || ""}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, demoUrl: e.target.value }))}
+                  placeholder="https://demo.example.com"
+                  className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-2">Status</label>
+                <select
+                  value={formData.status || "Completed"}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, status: e.target.value }))}
+                  className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                >
+                  <option value="Completed">Completed</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="On Hold">On Hold</option>
+                  <option value="Planning">Planning</option>
+                </select>
+              </div>
+            </>
           )}
 
           {/* Blog-specific fields */}
@@ -289,21 +406,66 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
               <div>
                 <label className="block text-white font-medium mb-2">Excerpt</label>
                 <textarea
-                  value={formData.excerpt}
+                  value={formData.excerpt || ""}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, excerpt: e.target.value }))}
                   rows={2}
+                  placeholder="Short summary of the blog post"
                   className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint resize-none"
                 />
               </div>
               <div>
                 <label className="block text-white font-medium mb-2">Content</label>
                 <textarea
-                  value={formData.content}
+                  value={formData.content || ""}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, content: e.target.value }))}
-                  rows={8}
+                  rows={12}
+                  placeholder="Full blog content (supports markdown)"
                   className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint resize-none"
                 />
               </div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="allowComments"
+                  checked={formData.allowComments !== false}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, allowComments: e.target.checked }))}
+                  className="w-4 h-4 text-neon-mint bg-black/30 border-white/10 rounded focus:ring-neon-mint"
+                />
+                <label htmlFor="allowComments" className="text-white font-medium">
+                  Allow Comments
+                </label>
+              </div>
+              {initialData && formData.comments && formData.comments.length > 0 && (
+                <div className="glass rounded-lg p-4 border border-white/10">
+                  <h4 className="text-white font-semibold mb-3">Comments ({formData.comments.length})</h4>
+                  <div className="space-y-3 max-h-60 overflow-y-auto">
+                    {formData.comments.map((comment: any, idx: number) => (
+                      <div key={idx} className="bg-black/20 rounded p-3">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <p className="text-white font-medium text-sm">{comment.name || "Anonymous"}</p>
+                            <p className="text-gray-400 text-xs">{comment.email || ""}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newComments = formData.comments.filter((_: any, i: number) => i !== idx);
+                              setFormData((prev: any) => ({ ...prev, comments: newComments }));
+                            }}
+                            className="text-red-400 hover:text-red-300 text-xs"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                        <p className="text-secondary text-sm">{comment.message}</p>
+                        {comment.date && (
+                          <p className="text-gray-500 text-xs mt-1">{new Date(comment.date).toLocaleDateString()}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
 
@@ -314,17 +476,30 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
                 <label className="block text-white font-medium mb-2">Issuer</label>
                 <input
                   type="text"
-                  value={formData.issuer}
+                  value={formData.issuer || ""}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, issuer: e.target.value }))}
+                  placeholder="Coursera, AWS, Google Cloud, etc."
                   className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                  required
                 />
               </div>
               <div>
                 <label className="block text-white font-medium mb-2">Credential ID</label>
                 <input
                   type="text"
-                  value={formData.credentialId}
+                  value={formData.credentialId || ""}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, credentialId: e.target.value }))}
+                  placeholder="Certificate number or ID"
+                  className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-2">Verification URL</label>
+                <input
+                  type="url"
+                  value={formData.verificationUrl || ""}
+                  onChange={(e) => setFormData((prev: any) => ({ ...prev, verificationUrl: e.target.value }))}
+                  placeholder="https://www.credly.com/earner/earned/badge/..."
                   className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
                 />
               </div>

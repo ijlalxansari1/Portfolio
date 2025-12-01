@@ -1,190 +1,123 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Languages, List } from "lucide-react";
+import { useState } from "react";
 
-const database = [
-  { name: "Databricks", percentage: 90 },
-  { name: "Oracle 12c", percentage: 75 },
-  { name: "AWS Redshift", percentage: 85 },
-  { name: "PostgreSQL", percentage: 95 },
+const generalSkills = [
+  { name: "ETL Pipelines", category: "Data Engineering", icon: "⚙️" },
+  { name: "Data Modeling", category: "Data Engineering", icon: "📊" },
+  { name: "Cloud Architecture", category: "Infrastructure", icon: "☁️" },
+  { name: "Machine Learning Fundamentals", category: "AI/ML", icon: "🤖" },
+  { name: "Data Visualization", category: "BI & Analytics", icon: "📈" },
+  { name: "Data Governance", category: "Data Management", icon: "🛡️" },
+  { name: "Responsible AI", category: "AI Ethics", icon: "⚖️" },
+  { name: "Attention Engineering", category: "AI/ML", icon: "🎯" },
+  { name: "API Integration", category: "Development", icon: "🔌" },
+  { name: "Version Control", category: "Development", icon: "📝" },
+  // BI & Analytics Tools
+  { name: "Tableau Dashboard Design", category: "BI & Analytics", icon: "📊" },
+  { name: "Power BI Development", category: "BI & Analytics", icon: "💼" },
+  { name: "SQL Query Optimization", category: "Database", icon: "🗄️" },
+  { name: "Data Warehousing", category: "Data Engineering", icon: "🏗️" },
+  { name: "Real-time Analytics", category: "BI & Analytics", icon: "⚡" },
+  { name: "Predictive Analytics", category: "BI & Analytics", icon: "🔮" },
+  { name: "Business Intelligence", category: "BI & Analytics", icon: "💡" },
+  { name: "Data Storytelling", category: "BI & Analytics", icon: "📖" },
 ];
-
-const languages = [
-  { name: "English", proficiency: 90, flag: "🇬🇧" },
-  { name: "Spanish", proficiency: 60, flag: "🇪🇸" },
-  { name: "Italian", proficiency: 30, flag: "🇮🇹" },
-  { name: "French", proficiency: 70, flag: "🇫🇷" },
-];
-
-const engineeringPractices = [
-  "DWH & DB Concepts",
-  "Data Analytics Engineering",
-  "Data Preparation",
-  "Oracle SQL",
-  "Data Integration",
-  "Data Provisioning",
-  "Data Solution Architecture",
-  "ETL/ELT Solutions",
-];
-
-function DotProgress({ percentage }: { percentage: number }) {
-  const totalDots = 10;
-  const filledDots = Math.round((percentage / 100) * totalDots);
-
-  return (
-    <div className="flex items-center gap-1">
-      {Array.from({ length: totalDots }).map((_, index) => (
-        <div
-          key={index}
-          className={`w-2 h-2 rounded-full ${
-            index < filledDots ? "bg-neon-mint" : "bg-gray-600"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function Skills() {
-  return (
-    <section id="skills" className="min-h-screen py-20 px-8 md:px-16 relative z-20">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"
-        >
-          General Skills
-        </motion.h2>
+  const categories = Array.from(new Set(generalSkills.map(s => s.category)));
+  const [activeCategory, setActiveCategory] = useState<string>("All");
 
-        {/* Database Section */}
+  const filteredSkills = activeCategory === "All" 
+    ? generalSkills 
+    : generalSkills.filter(s => s.category === activeCategory);
+
+  return (
+      <section id="skills" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
+      <div className="max-w-6xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12"
+          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
         >
-          <h3 className="text-2xl font-semibold text-white mb-6">Database</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {database.map((db, index) => (
-              <motion.div
-                key={db.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="glass rounded-lg p-4 border border-white/10"
+          <motion.h2
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"
+          >
+            General Skills
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-secondary text-center mb-8 max-w-2xl mx-auto"
+          >
+            Core competencies spanning data engineering, BI & analytics, AI ethics, and cloud technologies
+          </motion.p>
+
+          {/* Category Filter */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-3 mb-8"
+          >
+            {["All", ...categories].map((category) => (
+              <motion.button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+                  activeCategory === category
+                    ? "bg-neon-mint text-black border-2 border-neon-mint"
+                    : "glass text-gray-300 border border-white/10 hover:border-neon-mint/50 hover:text-neon-mint"
+                }`}
               >
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-white font-medium">{db.name}</span>
-                  <span className="text-neon-mint text-sm font-semibold">{db.percentage}%</span>
+                {category}
+              </motion.button>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ staggerChildren: 0.05 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            {filteredSkills.map((skill, index) => (
+              <motion.div
+                key={skill.name}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  borderColor: "#00FFB3", 
+                  y: -5,
+                  boxShadow: "0 10px 30px rgba(0, 255, 179, 0.2)"
+                }}
+                className="flex items-center gap-3 glass rounded-lg p-4 border border-white/10 hover:border-neon-mint/50 transition-all cursor-default group"
+              >
+                <span className="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                  {skill.icon}
+                </span>
+                <div className="flex-1">
+                  <span className="text-white text-sm font-semibold block">{skill.name}</span>
+                  <span className="text-tertiary text-xs">{skill.category}</span>
                 </div>
-                <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${db.percentage}%` }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 + 0.3, duration: 1 }}
-                    className="h-full bg-gradient-to-r from-neon-mint to-neon-cyan rounded-full"
-                  />
-                </div>
+                <span className="text-neon-mint text-lg font-bold flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">✓</span>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
-
-        {/* Two Column Layout: Languages and Engineering Practices */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Languages Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-4"
-          >
-            {/* Languages Header Button */}
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-2 px-4 py-2 glass rounded-lg border border-white/10 hover:border-neon-mint/50 transition-all mb-6"
-            >
-              <Languages size={18} className="text-neon-mint" />
-              <span className="text-sm font-semibold text-white uppercase tracking-wider">
-                Languages
-              </span>
-            </motion.button>
-
-            {/* Languages List */}
-            <div className="space-y-4">
-              {languages.map((lang, index) => (
-                <motion.div
-                  key={lang.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-center gap-4"
-                >
-                  {/* Flag Icon */}
-                  <div className="w-10 h-10 rounded-lg bg-gray-800/50 border border-white/10 flex items-center justify-center text-2xl flex-shrink-0">
-                    {lang.flag}
-                  </div>
-
-                  {/* Language Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-medium text-sm">{lang.name}</span>
-                      <span className="text-neon-mint text-sm font-semibold">{lang.proficiency}%</span>
-                    </div>
-                    <DotProgress percentage={lang.proficiency} />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Engineering Practices Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-4"
-          >
-            {/* Engineering Practices Header Button */}
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-2 px-4 py-2 glass rounded-lg border border-white/10 hover:border-neon-mint/50 transition-all mb-6"
-            >
-              <List size={18} className="text-neon-mint" />
-              <span className="text-sm font-semibold text-white uppercase tracking-wider">
-                Engineering Practices
-              </span>
-            </motion.button>
-
-            {/* Engineering Practices List */}
-            <div className="space-y-2">
-              {engineeringPractices.map((practice, index) => (
-                <motion.div
-                  key={practice}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  className="flex items-center gap-3 glass rounded-lg p-3 border border-white/10 hover:border-neon-mint/30 transition-all"
-                >
-                  <span className="text-neon-mint text-lg">✓</span>
-                  <span className="text-gray-300 text-sm">{practice}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
       </div>
     </section>
   );

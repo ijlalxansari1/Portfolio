@@ -1,6 +1,33 @@
 [
   {
     "id": 1,
+    "title": "Business Intelligence Essentials",
+    "issuer": "Coursera",
+    "date": "2025-03-03",
+    "credentialId": "IBM Developer Skills Network",
+    "image": "/certifications/bi-essentials.jpg",
+    "verificationUrl": "https://www.credly.com/earner/earned/badge/4bdc6804-ffab-4957-ad6e-1f7357ad52d5"
+  },
+  {
+    "id": 2,
+    "title": "Data Engineering Essentials",
+    "issuer": "Coursera",
+    "date": "2025-04-04",
+    "credentialId": "IBM Developer Skills Network",
+    "image": "/certifications/de-essentials.jpg",
+    "verificationUrl": "https://www.credly.com/earner/earned/badge/6b688d0d-87a4-4582-84a0-4fe4b0ea2bf5"
+  },
+  {
+    "id": 3,
+    "title": "Python for Data Science and AI",
+    "issuer": "Coursera",
+    "date": "2025-05-26",
+    "credentialId": "IBM Developer Skills Network",
+    "image": "/certifications/python-ds-ai.jpg",
+    "verificationUrl": "https://www.credly.com/earner/earned/badge/740a3633-bdd5-49e7-b54c-045cc0488322"
+  },
+  {
+    "id": 4,
     "title": "AWS Certified Solutions Architect",
     "issuer": "Amazon Web Services",
     "date": "2024-01-15",
@@ -8,28 +35,11 @@
     "image": "/certifications/aws.jpg"
   },
   {
-    "id": 2,
+    "id": 5,
     "title": "Google Cloud Professional Data Engineer",
     "issuer": "Google Cloud",
     "date": "2023-11-20",
     "credentialId": "GCP-PDE-67890",
     "image": "/certifications/gcp.jpg"
-  },
-  {
-    "id": 3,
-    "title": "Databricks Certified Data Engineer",
-    "issuer": "Databricks",
-    "date": "2023-09-10",
-    "credentialId": "DB-CDE-11111",
-    "image": "/certifications/databricks.jpg"
-  },
-  {
-    "id": 4,
-    "title": "Apache Spark Developer Certification",
-    "issuer": "Databricks",
-    "date": "2023-07-05",
-    "credentialId": "SPARK-DEV-22222",
-    "image": "/certifications/spark.jpg"
   }
 ]
-

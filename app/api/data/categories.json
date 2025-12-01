@@ -1,0 +1,31 @@
+{
+  "projects": [
+    "Data Engineering",
+    "Machine Learning",
+    "AI Ethics",
+    "Data Analytics",
+    "Cloud Architecture",
+    "ETL/ELT",
+    "Data Pipeline",
+    "Data Warehousing",
+    "Big Data",
+    "Data Science",
+    "Business Intelligence",
+    "Data Governance",
+    "Data Quality",
+    "Streaming Data",
+    "Data Modeling"
+  ],
+  "blogs": [
+    "Data Engineering",
+    "AI Ethics",
+    "Machine Learning",
+    "Data Analytics",
+    "Cloud Computing",
+    "Best Practices",
+    "Tutorials",
+    "Case Studies",
+    "Industry Insights",
+    "Technology & Ethics"
+  ]
+}

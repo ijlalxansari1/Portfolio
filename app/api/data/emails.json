@@ -7,10 +7,58 @@
     "date": "2025-11-06T09:43:27.012Z"
   },
   {
-    "id": 2,
+    "id": 3,
     "name": "ijlal haider ansari",
     "email": "northernlad9023@gmail.com",
-    "message": "test mesage",
-    "date": "2025-11-06T18:24:44.829Z"
+    "message": "ddddd asassaasasa dasdsdd",
+    "date": "2025-11-08T10:30:41.002Z"
+  },
+  {
+    "id": 4,
+    "name": "ijlal haider ansari",
+    "email": "ansariijlal90@gmail.com",
+    "serviceType": "Consultation",
+    "message": "helllo dsdsd sdsdvgg fast    ",
+    "date": "2025-11-08T16:49:29.126Z"
+  },
+  {
+    "id": 5,
+    "name": "ijlal haider ansari",
+    "email": "northernlad9023@gmail.com",
+    "serviceType": "BI & Analytics Dashboards",
+    "message": "ggggggggggdvddddddddddddd",
+    "date": "2025-11-08T16:53:16.841Z"
+  },
+  {
+    "id": 6,
+    "name": "asssssasss",
+    "email": "rew@test.com",
+    "serviceType": "Data Engineering & ETL",
+    "message": "fffff fsdsdsdddd dsdsddsd ",
+    "date": "2025-11-08T16:57:09.188Z"
+  },
+  {
+    "id": 7,
+    "name": "ijlal haider ansari",
+    "email": "northernlad9023@gmail.com",
+    "serviceType": "Cloud Architecture",
+    "message": "ggggggg ggggtyuuuu  iooytyty",
+    "date": "2025-11-08T17:01:41.611Z"
+  },
+  {
+    "id": 8,
+    "name": "ijlal haider ansar   vggi",
+    "email": "northernlad9023@gmail.com",
+    "serviceType": "Machine Learning Solutions",
+    "message": "qsw ghkj jjj j",
+    "date": "2025-11-08T17:08:13.562Z"
+  },
+  {
+    "id": 9,
+    "name": "wqqwqww",
+    "email": "ansariijlal90@gmail.com",
+    "serviceType": "Cloud Architecture",
+    "message": "qwqqqqqqqqqqqqqqqqqqqqqqqww eefeded",
+    "date": "2025-11-08T17:31:51.424Z"
   }
 ]
