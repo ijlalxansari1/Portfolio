@@ -60,5 +60,13 @@
     "serviceType": "Cloud Architecture",
     "message": "qwqqqqqqqqqqqqqqqqqqqqqqqww eefeded",
     "date": "2025-11-08T17:31:51.424Z"
+  },
+  {
+    "id": 10,
+    "name": "Ijlal Haider Ansari",
+    "email": "ansariijlal90@gmail.com",
+    "serviceType": "Machine Learning Solutions",
+    "message": "this is a test message for testing",
+    "date": "2025-12-01T15:57:59.339Z"
   }
 ]
