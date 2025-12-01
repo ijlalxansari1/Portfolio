@@ -131,7 +131,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#about"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "about" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -142,7 +142,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#technologies"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "technologies" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -153,7 +153,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#skills"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "skills" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -164,7 +164,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#services"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "services" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -175,7 +175,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#pricing"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "pricing" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -186,7 +186,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#projects"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "projects" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -197,7 +197,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#experience"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "experience" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -208,7 +208,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#blog"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "blog" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -219,7 +219,7 @@ export default function LeftSidebar() {
 
           <motion.a
             href="#contact"
-            onClick={() => isMobile && setIsMobileMenuOpen(false)}
+
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`w-10 h-10 rounded-full glass border border-white/10 flex items-center justify-center transition-all ${activeSection === "contact" ? "text-neon-mint bg-neon-mint/20" : "text-white hover:text-neon-mint"
@@ -375,7 +375,6 @@ export default function LeftSidebar() {
             </motion.a>
             <motion.a
               href="#contact"
-              onClick={() => isMobile && setIsMobileMenuOpen(false)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="flex-1 py-2.5 px-3 text-center bg-neon-mint text-black rounded-lg hover:bg-neon-mint/90 transition-all font-medium text-xs"
