@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
-
-const filePath = path.join(process.cwd(), "app", "api", "data", "certifications.json");
+import { sql } from "@vercel/postgres";
 
 export async function GET() {
   try {
-    const fileContents = await readFile(filePath, "utf8");
-    const data = JSON.parse(fileContents);
-    return NextResponse.json(data);
+    const { rows } = await sql`SELECT * FROM certifications ORDER BY id ASC`;
+    return NextResponse.json(rows);
   } catch (error) {
     console.error("Error reading certifications:", error);
     return NextResponse.json({ error: "Failed to read certifications" }, { status: 500 });
@@ -18,18 +14,24 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const newCert = await request.json();
-    const fileContents = await readFile(filePath, "utf8");
-    const certifications = JSON.parse(fileContents);
 
-    // Generate ID if not provided
-    if (!newCert.id) {
-      newCert.id = certifications.length > 0 ? Math.max(...certifications.map((c: any) => c.id)) + 1 : 1;
-    }
+    const { rows } = await sql`
+      INSERT INTO certifications (
+        title, issuer, date, image, credential_url, description, skills
+      )
+      VALUES (
+        ${newCert.title}, 
+        ${newCert.issuer}, 
+        ${newCert.date}, 
+        ${newCert.image}, 
+        ${newCert.credential_url}, 
+        ${newCert.description}, 
+        ${newCert.skills || []}
+      )
+      RETURNING *
+    `;
 
-    certifications.push(newCert);
-    await writeFile(filePath, JSON.stringify(certifications, null, 2), "utf8");
-
-    return NextResponse.json({ success: true, certification: newCert });
+    return NextResponse.json({ success: true, certification: rows[0] });
   } catch (error) {
     console.error("Error saving certification:", error);
     return NextResponse.json({ error: "Failed to save certification" }, { status: 500 });
@@ -39,18 +41,30 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const updatedCert = await request.json();
-    const fileContents = await readFile(filePath, "utf8");
-    const certifications = JSON.parse(fileContents);
 
-    const index = certifications.findIndex((c: any) => c.id === updatedCert.id);
-    if (index === -1) {
+    if (!updatedCert.id) {
+      return NextResponse.json({ error: "Certification ID is required" }, { status: 400 });
+    }
+
+    const { rows } = await sql`
+      UPDATE certifications 
+      SET 
+        title = ${updatedCert.title},
+        issuer = ${updatedCert.issuer},
+        date = ${updatedCert.date},
+        image = ${updatedCert.image},
+        credential_url = ${updatedCert.credential_url},
+        description = ${updatedCert.description},
+        skills = ${updatedCert.skills}
+      WHERE id = ${updatedCert.id}
+      RETURNING *
+    `;
+
+    if (rows.length === 0) {
       return NextResponse.json({ error: "Certification not found" }, { status: 404 });
     }
 
-    certifications[index] = updatedCert;
-    await writeFile(filePath, JSON.stringify(certifications, null, 2), "utf8");
-
-    return NextResponse.json({ success: true, certification: updatedCert });
+    return NextResponse.json({ success: true, certification: rows[0] });
   } catch (error) {
     console.error("Error updating certification:", error);
     return NextResponse.json({ error: "Failed to update certification" }, { status: 500 });
@@ -62,11 +76,15 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get("id") || "0");
 
-    const fileContents = await readFile(filePath, "utf8");
-    const certifications = JSON.parse(fileContents);
+    if (!id) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
 
-    const filteredCerts = certifications.filter((c: any) => c.id !== id);
-    await writeFile(filePath, JSON.stringify(filteredCerts, null, 2), "utf8");
+    const { rowCount } = await sql`DELETE FROM certifications WHERE id = ${id}`;
+
+    if (rowCount === 0) {
+      return NextResponse.json({ error: "Certification not found" }, { status: 404 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

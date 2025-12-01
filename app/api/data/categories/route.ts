@@ -1,37 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
+import { sql } from "@vercel/postgres";
 
-const filePath = path.join(process.cwd(), "app", "api", "data", "categories.json");
-
-// Common Data domain categories
+// Common Data domain categories (fallback)
 const defaultCategories = {
   projects: [
-    "Data Engineering",
-    "Machine Learning",
-    "AI Ethics",
-    "Data Analytics",
-    "Cloud Architecture",
-    "ETL/ELT",
-    "Data Pipeline",
-    "Data Warehousing",
-    "Big Data",
-    "Data Science",
-    "Business Intelligence",
-    "Data Governance",
-    "Data Quality",
-    "Streaming Data",
-    "Data Modeling",
+    "Data Engineering", "Machine Learning", "AI Ethics", "Data Analytics",
+    "Cloud Architecture", "ETL/ELT", "Data Pipeline", "Data Warehousing",
+    "Big Data", "Data Science", "Business Intelligence", "Data Governance",
+    "Data Quality", "Streaming Data", "Data Modeling",
   ],
   blogs: [
-    "Data Engineering",
-    "AI Ethics",
-    "Machine Learning",
-    "Data Analytics",
-    "Cloud Computing",
-    "Best Practices",
-    "Tutorials",
-    "Case Studies",
+    "Data Engineering", "AI Ethics", "Machine Learning", "Data Analytics",
+    "Cloud Computing", "Best Practices", "Tutorials", "Case Studies",
     "Industry Insights",
   ],
 };
@@ -41,15 +21,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type") || "projects";
 
-    // Try to read existing categories
-    try {
-      const fileContents = await readFile(filePath, "utf8");
-      const data = JSON.parse(fileContents);
-      return NextResponse.json(data[type] || defaultCategories[type as keyof typeof defaultCategories] || []);
-    } catch {
-      // If file doesn't exist, return defaults
-      return NextResponse.json(defaultCategories[type as keyof typeof defaultCategories] || []);
+    const { rows } = await sql`SELECT name FROM categories WHERE type = ${type} ORDER BY name ASC`;
+
+    // If no categories found in DB, return defaults
+    if (rows.length === 0 && (type === 'projects' || type === 'blogs')) {
+      return NextResponse.json(defaultCategories[type as keyof typeof defaultCategories]);
     }
+
+    return NextResponse.json(rows.map(r => r.name));
   } catch (error) {
     console.error("Error reading categories:", error);
     return NextResponse.json({ error: "Failed to read categories" }, { status: 500 });
@@ -64,26 +43,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Type and category are required" }, { status: 400 });
     }
 
-    let data: any = {};
+    // Insert if not exists (handled by UNIQUE constraint in schema)
     try {
-      const fileContents = await readFile(filePath, "utf8");
-      data = JSON.parse(fileContents);
-    } catch {
-      // File doesn't exist, use defaults
-      data = defaultCategories;
+      await sql`
+        INSERT INTO categories (type, name)
+        VALUES (${type}, ${category})
+        ON CONFLICT (type, name) DO NOTHING
+      `;
+    } catch (error) {
+      // Ignore unique constraint violation
     }
 
-    if (!data[type]) {
-      data[type] = [];
-    }
-
-    // Add category if it doesn't exist
-    if (!data[type].includes(category)) {
-      data[type].push(category);
-      await writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
-    }
-
-    return NextResponse.json({ success: true, categories: data[type] });
+    // Return updated list
+    const { rows } = await sql`SELECT name FROM categories WHERE type = ${type} ORDER BY name ASC`;
+    return NextResponse.json({ success: true, categories: rows.map(r => r.name) });
   } catch (error) {
     console.error("Error adding category:", error);
     return NextResponse.json({ error: "Failed to add category" }, { status: 500 });
