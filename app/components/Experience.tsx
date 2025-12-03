@@ -5,7 +5,7 @@ import { Briefcase, GraduationCap } from "lucide-react";
 
 const experience = [
   {
-    period: "2025 - Present",
+    period: " July 2025 - August 2025",
     title: "Data Engineering Intern",
     company: "LivingPath",
     description: "Designing and implementing automated data pipelines for real-time analytics. Optimizing cloud infrastructure on AWS, reducing costs by 30% while improving data processing speed. Working with Apache Airflow, Python, and PostgreSQL to build scalable ETL solutions.",
@@ -23,8 +23,8 @@ const experience = [
 const education = [
   {
     period: "2021 – 2025",
-    title: "BS Computer Science",
-    institution: "University",
+    title: "BS Software Engineering",
+    institution: "Karakorum International University",
     description: "Specialized in data engineering, machine learning, and ethical AI systems. Relevant coursework includes Database Systems, Machine Learning, Cloud Computing, and Software Engineering. Maintained strong academic performance while working on research projects.",
     achievements: ["Dean's List", "Research Publications", "Open Source Contributions"],
   },
