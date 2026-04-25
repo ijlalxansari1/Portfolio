@@ -1,205 +1,168 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
-interface SkillRingProps {
-  name: string;
-  percentage: number;
-  index: number;
-  icon?: string;
-}
-
-function SkillRing({ name, percentage, index, icon }: SkillRingProps) {
-  const [animatedPercentage, setAnimatedPercentage] = useState(0);
-  const [imgError, setImgError] = useState(false);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  useEffect(() => {
-    if (isInView) {
-      const duration = 2000;
-      const startTime = Date.now();
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        setAnimatedPercentage(Math.floor(progress * percentage));
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-      animate();
-    }
-  }, [isInView, percentage]);
-
-  const radius = 60;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (animatedPercentage / 100) * circumference;
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      whileHover={{ scale: 1.1 }}
-      className="flex flex-col items-center glass rounded-xl p-6 border border-white/10 hover:border-neon-mint/50 transition-all"
-    >
-      <div className="relative w-32 h-32 mb-4">
-        <svg className="transform -rotate-90 w-32 h-32">
-          <circle
-            cx="64"
-            cy="64"
-            r={radius}
-            stroke="rgba(255, 255, 255, 0.1)"
-            strokeWidth="8"
-            fill="none"
-          />
-          <defs>
-            <linearGradient id={`gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#00FFB3" />
-              <stop offset="100%" stopColor="#4BE1EC" />
-            </linearGradient>
-          </defs>
-          <motion.circle
-            cx="64"
-            cy="64"
-            r={radius}
-            stroke={`url(#gradient-${index})`}
-            strokeWidth="8"
-            fill="none"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 2, ease: "easeOut" }}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          {icon && !imgError ? (
-            <div className="w-12 h-12 relative">
-              <Image
-                src={icon}
-                alt={name}
-                fill
-                className="object-contain"
-                onError={() => setImgError(true)}
-              />
-            </div>
-          ) : (
-            <span className="text-2xl font-bold text-neon-mint">{animatedPercentage}%</span>
-          )}
-        </div>
-      </div>
-      <h3 className="text-white font-semibold text-center">{name}</h3>
-    </motion.div>
-  );
-}
-
-const technologies = [
-  { name: "Python", percentage: 95, icon: "/icons/python.svg", category: "Programming" },
-  { name: "PostgreSQL", percentage: 90, icon: "/icons/postgresql.svg", category: "Database" },
-  { name: "AWS", percentage: 85, icon: "/icons/aws.svg", category: "Cloud" },
-  { name: "Azure", percentage: 80, icon: "/icons/azure.svg", category: "Cloud" },
-  { name: "GitHub", percentage: 90, icon: "/icons/github.svg", category: "DevOps" },
-  { name: "Ansible", percentage: 75, icon: "/icons/ansible.svg", category: "DevOps" },
-  { name: "DBeaver", percentage: 85, icon: "/icons/dbeaver.svg", category: "Database" },
-  { name: "VS Code", percentage: 90, icon: "/icons/visual-studio.svg", category: "IDE" },
-  { name: "Jira", percentage: 80, icon: "/icons/jira.svg", category: "Collaboration" },
-  { name: "Confluence", percentage: 75, icon: "/icons/confluence.svg", category: "Collaboration" },
-  // BI & Analytics Tools
-  { name: "Tableau", percentage: 88, icon: "/icons/tableau.svg", category: "BI" },
-  { name: "Power BI", percentage: 85, icon: "/icons/powerbi.svg", category: "BI" },
-  { name: "Apache Spark", percentage: 82, icon: "/icons/spark.svg", category: "Big Data" },
-  { name: "Kafka", percentage: 80, icon: "/icons/kafka.svg", category: "Streaming" },
-  { name: "Airflow", percentage: 85, icon: "/icons/airflow.svg", category: "Orchestration" },
-  { name: "dbt", percentage: 83, icon: "/icons/dbt.svg", category: "ETL" },
-  { name: "Snowflake", percentage: 78, icon: "/icons/snowflake.svg", category: "Data Warehouse" },
-  { name: "Databricks", percentage: 80, icon: "/icons/databricks.svg", category: "Big Data" },
+const defaultSkills = [
+  { name: "Python", value: 92 },
+  { name: "PostgreSQL", value: 85 },
+  { name: "DuckDB", value: 90 },
+  { name: "FastAPI", value: 87 },
+  { name: "Kafka", value: 75 },
+  { name: "Next.js", value: 88 },
+  { name: "Docker", value: 90 },
+  { name: "Airflow", value: 85 },
 ];
 
 export default function Technologies() {
-  const categories = Array.from(new Set(technologies.map(t => t.category)));
-  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [skillData, setSkillData] = useState(defaultSkills);
 
-  const filteredTechs = activeCategory === "All" 
-    ? technologies 
-    : technologies.filter(t => t.category === activeCategory);
+  useEffect(() => {
+    const handleUpdate = () => {
+      const adminData = localStorage.getItem("admin-skills-radar");
+      if (adminData) {
+        const parsed = JSON.parse(adminData);
+        if (parsed.length > 0) setSkillData(parsed);
+      }
+    };
+    handleUpdate();
+    window.addEventListener("admin-updated", handleUpdate);
+    return () => window.removeEventListener("admin-updated", handleUpdate);
+  }, []);
+
+  useEffect(() => {
+    // Load D3 from CDN if not present
+    if (!(window as any).d3) {
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js";
+      script.async = true;
+      script.onload = () => drawChart();
+      document.body.appendChild(script);
+    } else {
+      drawChart();
+    }
+
+    function drawChart() {
+      // @ts-ignore
+      const d3 = window.d3;
+      if (!d3 || !svgRef.current) return;
+
+      const width = 340;
+      const height = 340;
+      const margin = 50;
+      const radius = Math.min(width, height) / 2 - margin;
+      const levels = 5;
+      const angleSlice = (Math.PI * 2) / skillData.length;
+
+      const svg = d3.select(svgRef.current);
+      svg.selectAll("*").remove();
+
+      const g = svg
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+      // Grid circles (concentric polygons)
+      for (let j = 0; j < levels; j++) {
+        const levelRadius = (radius / levels) * (j + 1);
+        g.append("polygon")
+          .attr("points", skillData.map((_, i) => [
+            levelRadius * Math.cos(angleSlice * i - Math.PI / 2),
+            levelRadius * Math.sin(angleSlice * i - Math.PI / 2)
+          ].join(",")).join(" "))
+          .style("fill", "none")
+          .style("stroke", "#222")
+          .style("stroke-width", "1px");
+      }
+
+      // Axes
+      const axis = g.selectAll(".axis").data(skillData).enter().append("g").attr("class", "axis");
+      axis.append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", (d: any, i: number) => radius * Math.cos(angleSlice * i - Math.PI / 2))
+        .attr("y2", (d: any, i: number) => radius * Math.sin(angleSlice * i - Math.PI / 2))
+        .style("stroke", "#222")
+        .style("stroke-width", "1px");
+
+      // Labels
+      axis.append("text")
+        .attr("class", "legend")
+        .style("font-size", "11px")
+        .style("font-weight", "bold")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .attr("x", (d: any, i: number) => (radius + 20) * Math.cos(angleSlice * i - Math.PI / 2))
+        .attr("y", (d: any, i: number) => (radius + 20) * Math.sin(angleSlice * i - Math.PI / 2))
+        .text((d: any) => d.name)
+        .style("fill", "#666")
+        .style("cursor", "pointer")
+        .on("mouseover", (e: any, d: any) => setHoveredSkill(d.name))
+        .on("mouseout", () => setHoveredSkill(null));
+
+      // The Radar Area
+      const radarLine = d3.lineRadial()
+        // @ts-ignore
+        .radius((d: any) => (d.value / 100) * radius)
+        .angle((d: any, i: number) => i * angleSlice)
+        .curve(d3.curveLinearClosed);
+
+      g.append("path")
+        .datum(skillData)
+        .attr("d", radarLine)
+        .style("fill", "rgba(0, 232, 122, 0.15)")
+        .style("stroke", "var(--accent)")
+        .style("stroke-width", "2px")
+        .style("filter", "drop-shadow(0 0 8px rgba(0, 232, 122, 0.4))")
+        .style("opacity", 0)
+        .transition()
+        .duration(1000)
+        .style("opacity", 1);
+
+      // Center dot
+      g.append("circle")
+        .attr("r", 4)
+        .style("fill", "var(--accent)")
+        .style("stroke", "#000")
+        .style("stroke-width", "2px");
+    }
+  }, []);
 
   return (
-      <section id="technologies" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
-      <div className="max-w-6xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"
-          >
-            Technical Skills
-          </motion.h2>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-secondary text-center mb-8 max-w-2xl mx-auto"
-          >
-            Comprehensive expertise across programming languages, cloud platforms, BI tools, and data analytics technologies
-          </motion.p>
+    <div className="w-full">
+      <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">Technologies</p>
+      <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">Technical Proficiency Radar</h2>
+      
+      <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+        {/* Radar Chart */}
+        <div className="w-full md:w-[60%] flex justify-center">
+          <svg ref={svgRef} width="340" height="340" className="overflow-visible" />
+        </div>
 
-          {/* Category Filter */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center gap-3 mb-8"
-          >
-            {["All", ...categories].map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
-                  activeCategory === category
-                    ? "bg-neon-mint text-black border-2 border-neon-mint"
-                    : "glass text-gray-300 border border-white/10 hover:border-neon-mint/50 hover:text-neon-mint"
-                }`}
-              >
-                {category}
-              </motion.button>
-            ))}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-          >
-            {filteredTechs.map((tech, index) => (
-              <SkillRing
-                key={tech.name}
-                name={tech.name}
-                percentage={tech.percentage}
-                index={index}
-                icon={tech.icon}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
+        {/* Legend */}
+        <div className="w-full md:w-[40%] space-y-4">
+          {skillData.map((skill) => (
+            <div 
+              key={skill.name}
+              className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${hoveredSkill === skill.name ? 'border-[var(--accent)] bg-[var(--accent)]/5 scale-105' : 'border-transparent bg-[var(--bg-card)]/50'}`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[var(--accent)]" />
+                <span className={`text-[12px] font-black uppercase tracking-wider ${hoveredSkill === skill.name ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}>
+                  {skill.name}
+                </span>
+              </div>
+              <span className="text-[12px] font-mono text-white/50">{skill.value}%</span>
+            </div>
+          ))}
+          <p className="text-[10px] text-[var(--text-secondary)] opacity-30 italic mt-6">
+            💡 The radar polygon visualizes skill synergy across 8 core axes.
+          </p>
+        </div>
+        
+        {/* Background Decorative */}
+        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[var(--accent)]/5 rounded-full blur-[100px] pointer-events-none" />
       </div>
-    </section>
+    </div>
   );
 }

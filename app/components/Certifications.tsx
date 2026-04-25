@@ -13,6 +13,7 @@ interface Certification {
   credentialId: string;
   image: string;
   verificationUrl?: string;
+  verification_url?: string;
 }
 
 export default function Certifications() {
@@ -21,184 +22,124 @@ export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
   useEffect(() => {
-    const loadCertifications = async () => {
+    const load = async () => {
       try {
-        const response = await fetch("/api/data/certifications");
-        if (response.ok) {
-          const data = await response.json();
-          setCertifications(data);
+        const res = await fetch("/api/data/certifications");
+        if (res.ok) {
+          const data = await res.json();
+          setCertifications(data.map((c: Certification) => ({
+            ...c,
+            verificationUrl: c.verificationUrl || c.verification_url,
+          })));
         }
-      } catch (error) {
-        console.error("Error loading certifications:", error);
-      } finally {
-        setLoading(false);
-      }
+      } catch {}
+      setLoading(false);
     };
-    loadCertifications();
+    load();
   }, []);
 
-  if (loading) {
-    return (
-      <section id="certifications" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="glass rounded-2xl p-8 md:p-12 border border-white/10 bg-black/40 backdrop-blur-xl">
-            <div className="text-center text-secondary">Loading certifications...</div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (loading) return <div className="text-center py-20 text-gray-400 text-sm">Loading certifications…</div>;
 
   return (
-    <section id="certifications" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
-      <div className="max-w-6xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"
-          >
-            Certifications & Achievements
-          </motion.h2>
-
-          {certifications.length === 0 ? (
-            <div className="text-center text-secondary py-12">
-              <p className="text-lg mb-2">No certifications yet</p>
-              <p className="text-sm text-tertiary">Add certifications from the admin dashboard</p>
-            </div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ staggerChildren: 0.1 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {certifications.map((cert, index) => (
-                <motion.div
-                  key={cert.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  onClick={() => setSelectedCert(cert)}
-                  className="glass rounded-xl overflow-hidden border border-white/10 hover:border-neon-mint/50 transition-all group cursor-pointer"
-                >
-                  <div className="relative h-48 bg-gradient-to-br from-neon-mint/20 to-neon-cyan/20 overflow-hidden">
-                    {cert.image ? (
-                      <Image
-                        src={cert.image}
-                        alt={cert.title}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Award className="text-6xl text-neon-mint/50" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-all flex items-end">
-                      <div className="p-4 w-full transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                        <h3 className="text-xl font-bold text-white mb-1">{cert.title}</h3>
-                        <p className="text-sm text-neon-mint">{cert.issuer}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Calendar size={14} className="text-tertiary" />
-                      <span className="text-xs text-tertiary">
-                        {new Date(cert.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
-                      </span>
-                    </div>
-                    <p className="text-secondary text-sm">ID: {cert.credentialId}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </motion.div>
+    <section id="certifications" className="w-full">
+      <div className="mb-12">
+        <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">My Credentials</p>
+        <h2 className="text-4xl font-bold text-[var(--text-primary)]">Certifications <span>& Awards</span></h2>
+        <div className="w-16 h-1 mt-4 bg-neon-mint rounded-full" />
       </div>
 
-      {/* Certification Detail Modal */}
+      {certifications.length === 0 ? (
+        <div className="text-center py-20 text-[var(--text-muted)] text-sm font-medium">No certifications discovered yet.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {certifications.map((cert, i) => (
+            <motion.div
+              key={cert.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              whileHover={{ y: -8 }}
+              onClick={() => setSelectedCert(cert)}
+              className="rc-card overflow-hidden cursor-pointer group transition-all duration-500 shadow-sm hover:shadow-xl"
+            >
+              <div className="relative h-44 bg-[var(--border-color)] overflow-hidden">
+                {cert.image ? (
+                  <Image src={cert.image} alt={cert.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-[var(--bg-sidebar)]">
+                    <Award size={48} className="text-neon-mint/20" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)]/80 to-transparent" />
+              </div>
+              <div className="p-8">
+                <p className="text-neon-mint text-[10px] font-black uppercase tracking-widest mb-2">{cert.issuer}</p>
+                <h3 className="text-[var(--text-primary)] font-bold text-base mb-4 line-clamp-2 group-hover:text-neon-mint transition-colors">{cert.title}</h3>
+                <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] font-bold uppercase tracking-wider">
+                  <Calendar size={12} className="text-neon-mint" />
+                  <span>{cert.date ? new Date(cert.date).toLocaleDateString("en-US", { year: "numeric", month: "long" }) : "N/A"}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
       <AnimatePresence>
         {selectedCert && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4"
             onClick={() => setSelectedCert(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass rounded-xl p-8 max-w-2xl w-full border border-neon-mint/50 relative max-h-[90vh] overflow-y-auto"
+              className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl p-0 max-w-xl w-full relative shadow-2xl overflow-hidden transition-colors duration-300"
             >
-              <button
-                onClick={() => setSelectedCert(null)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
+              <button 
+                onClick={() => setSelectedCert(null)} 
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/20 hover:bg-neon-mint hover:text-black flex items-center justify-center text-white z-50 transition-all"
               >
-                <X size={24} />
+                <X size={18} />
               </button>
 
-              <div className="relative h-64 mb-6 rounded-lg overflow-hidden">
+              <div className="relative h-56 bg-[var(--border-color)]">
                 {selectedCert.image ? (
-                  <Image
-                    src={selectedCert.image}
-                    alt={selectedCert.title}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
+                  <Image src={selectedCert.image} alt={selectedCert.title} fill className="object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neon-mint/20 to-neon-cyan/20">
-                    <Award className="text-8xl text-neon-mint/50" />
+                  <div className="w-full h-full flex items-center justify-center bg-[var(--bg-sidebar)]">
+                    <Award size={64} className="text-neon-mint/10" />
                   </div>
                 )}
               </div>
 
-              <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold text-white mb-2">{selectedCert.title}</h2>
-                <p className="text-neon-mint text-lg mb-4">{selectedCert.issuer}</p>
-                <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <Calendar size={16} />
-                    {new Date(selectedCert.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </span>
+              <div className="p-10">
+                <p className="text-neon-mint text-[10px] font-black uppercase tracking-widest mb-2">{selectedCert.issuer}</p>
+                <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 leading-tight">{selectedCert.title}</h2>
+
+                {selectedCert.credentialId && (
+                  <div className="bg-[var(--border-color)]/30 rounded-xl p-5 mb-6 border border-[var(--border-color)]">
+                    <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1">Credential ID</p>
+                    <p className="text-[var(--text-primary)] text-sm font-mono break-all">{selectedCert.credentialId}</p>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 text-[var(--text-muted)] text-xs font-bold uppercase tracking-wider mb-8">
+                  <Calendar size={14} className="text-neon-mint" />
+                  <span>Issued: {selectedCert.date ? new Date(selectedCert.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "N/A"}</span>
                 </div>
-              </div>
 
-              <div className="glass rounded-lg p-4 border border-white/10 mb-6">
-                <h3 className="text-white font-semibold mb-2">Credential ID</h3>
-                <p className="text-secondary">{selectedCert.credentialId}</p>
+                <a
+                  href={selectedCert.verificationUrl || "#"}
+                  target={selectedCert.verificationUrl ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-3 py-4 bg-neon-mint text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-neon-mint/80 shadow-lg shadow-neon-mint/20 transition-all"
+                >
+                  <ExternalLink size={16} />
+                  {selectedCert.verificationUrl ? "Verify Credential" : "View Details"}
+                </a>
               </div>
-
-              <motion.a
-                href={selectedCert.verificationUrl || "#"}
-                target={selectedCert.verificationUrl ? "_blank" : undefined}
-                rel={selectedCert.verificationUrl ? "noopener noreferrer" : undefined}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-neon-mint text-black rounded-lg font-semibold hover:bg-neon-mint/90 transition-all"
-              >
-                <ExternalLink size={18} />
-                {selectedCert.verificationUrl ? "Verify Credential" : "View Credential"}
-              </motion.a>
             </motion.div>
           </motion.div>
         )}
@@ -206,4 +147,3 @@ export default function Certifications() {
     </section>
   );
 }
-

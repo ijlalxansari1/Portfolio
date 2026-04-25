@@ -95,6 +95,27 @@ async function setupDatabase() {
     `;
     console.log('✅ Categories table created\n');
 
+    // Create skills table
+    console.log('Creating skills table...');
+    await sql`
+      CREATE TABLE IF NOT EXISTS skills (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        category TEXT,
+        icon TEXT,
+        image TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+    
+    console.log('Ensuring image column exists in skills table...');
+    await sql`ALTER TABLE skills ADD COLUMN IF NOT EXISTS image TEXT`;
+    
+    console.log('Ensuring percentage column exists in skills table...');
+    await sql`ALTER TABLE skills ADD COLUMN IF NOT EXISTS percentage INTEGER DEFAULT 85`;
+    
+    console.log('✅ Skills table setup and ready\n');
+
     console.log('🎉 Database setup complete!');
     console.log('\n📊 Created tables:');
     console.log('   - projects');
@@ -102,6 +123,7 @@ async function setupDatabase() {
     console.log('   - certifications');
     console.log('   - emails');
     console.log('   - categories');
+    console.log('   - skills');
     console.log('\n✅ Ready to migrate data! Run: npm run migrate:data');
 
   } catch (error) {

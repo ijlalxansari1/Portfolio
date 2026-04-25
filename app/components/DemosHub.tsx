@@ -1,0 +1,115 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap } from "lucide-react";
+import { trackEvent } from "./AnalyticsTracker";
+
+import AetherDemo from "./demos/AetherDemo";
+import ETLPipelineDemo from "./demos/ETLPipelineDemo";
+import BiasAuditDemo from "./demos/BiasAuditDemo";
+import FastAPIGatewayDemo from "./demos/FastAPIGatewayDemo";
+import AnalyticsDashboardDemo from "./demos/AnalyticsDashboardDemo";
+import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
+
+const demoList = [
+  { id: 1, title: "AETHER Platform", tag: "Python", icon: <FlaskConical size={24} />, description: "Run a full 10-stage ethical bias analysis on sample data.", component: <AetherDemo /> },
+  { id: 2, title: "Data Eng Tracker", tag: "Next.js", icon: <GraduationCap size={24} />, description: "Interactive curriculum manager with real-time progress tracking.", component: <DataEngTrackerDemo /> },
+  { id: 3, title: "ETL Pipeline", tag: "SQL", icon: <Database size={24} />, description: "Design SQL transformations and view automated dbt lineage.", component: <ETLPipelineDemo /> },
+  { id: 4, title: "Bias Audit System", tag: "Python", icon: <ShieldCheck size={24} />, description: "Execute automated fairness audits using disparate impact metrics.", component: <BiasAuditDemo /> },
+  { id: 5, title: "FastAPI Gateway", tag: "FastAPI", icon: <Zap size={24} />, description: "Live REST API builder with JWT security and latency tests.", component: <FastAPIGatewayDemo /> },
+  { id: 6, title: "Analytics Dashboard", tag: "Next.js", icon: <BarChart3 size={24} />, description: "Interactive OLAP dashboard powered by DuckDB architecture.", component: <AnalyticsDashboardDemo /> },
+];
+
+export default function DemosHub() {
+  const [activeDemo, setActiveDemo] = useState<number | null>(null);
+
+  const currentDemo = demoList.find(d => d.id === activeDemo);
+
+  return (
+    <div className="w-full">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">Live Experiences</p>
+          <h2 className="section-heading text-[32px] font-black text-white">Project Demos Hub</h2>
+        </div>
+        <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed">
+          Interactive sandboxes for my core engineering projects. Launch a demo to see the internal logic in action.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {demoList.map((demo) => (
+          <div 
+            key={demo.id} 
+            className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 hover:border-[var(--accent)]/30 transition-all cursor-pointer relative overflow-hidden"
+            onClick={() => setActiveDemo(demo.id)}
+          >
+            <div className="relative z-10">
+              <div className="w-14 h-14 bg-[var(--bg-card)] rounded-2xl flex items-center justify-center text-[var(--accent)] border border-[var(--border)] mb-6 group-hover:scale-110 transition-all duration-500">
+                {demo.icon}
+              </div>
+              
+              <div className="space-y-1 mb-4">
+                <span className="px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] text-[9px] font-black uppercase tracking-widest rounded">{demo.tag}</span>
+                <h3 className="text-[18px] font-black text-white">{demo.title}</h3>
+              </div>
+              
+              <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-relaxed mb-8">
+                {demo.description}
+              </p>
+              
+              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[2px] text-[var(--accent)] group-hover:gap-4 transition-all">
+                Launch Demo <Play size={14} fill="currentColor" />
+              </button>
+            </div>
+
+            {/* Background Decorative */}
+            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-[60px] pointer-events-none group-hover:bg-[var(--accent)]/10 transition-all" />
+          </div>
+        ))}
+      </div>
+
+      {/* Demo Modal Overlay */}
+      <AnimatePresence>
+        {activeDemo !== null && currentDemo && (
+          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 md:p-10">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/95 backdrop-blur-md"
+              onClick={() => setActiveDemo(null)}
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-[800px] relative z-10"
+            >
+              <button 
+                onClick={() => setActiveDemo(null)}
+                className="absolute -top-12 right-0 md:-right-12 text-white hover:text-[var(--accent)] transition-all"
+              >
+                <X size={32} />
+              </button>
+
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden">
+                <div className="p-2">
+                  {currentDemo.component}
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-[3px] text-[var(--text-secondary)] opacity-40">
+                <span className="flex items-center gap-2"><FlaskConical size={12} /> Sandbox Mode</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                <span>Isolated Environment</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

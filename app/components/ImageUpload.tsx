@@ -7,7 +7,7 @@ import Image from "next/image";
 
 interface ImageUploadProps {
   onUpload: (url: string) => void;
-  type?: "projects" | "blog" | "certifications";
+  type?: "projects" | "blog" | "certifications" | "skills";
   currentImage?: string;
   onAIGenerate?: (prompt: string) => Promise<string>;
 }

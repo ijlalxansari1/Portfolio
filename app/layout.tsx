@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "./components/Toast";
+import { ThemeProvider } from "./components/ThemeProvider";
+import CustomCursor from "./components/CustomCursor";
 
-const inter = Inter({ 
+const poppins = Poppins({ 
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-poppins",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-jakarta",
 });
 
 export const metadata: Metadata = {
@@ -30,11 +40,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="antialiased">
-        <ToastProvider>{children}</ToastProvider>
+    <html lang="en" className={`${poppins.variable} ${jakarta.variable}`} suppressHydrationWarning>
+      <body className="antialiased font-sans transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <CustomCursor />
+          <ToastProvider>{children}</ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-

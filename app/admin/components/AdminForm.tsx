@@ -7,7 +7,7 @@ import ImageUpload from "@/app/components/ImageUpload";
 import { useToast } from "@/app/components/Toast";
 
 interface AdminFormProps {
-  type: "project" | "blog" | "certification";
+  type: "project" | "blog" | "certification" | "skill";
   onClose: () => void;
   onSave: (data: any) => void;
   initialData?: any;
@@ -41,6 +41,12 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
       credentialId: "",
       verificationUrl: ""
     }),
+    // Skill-specific fields
+    ...(type === "skill" && {
+      icon: "⚡",
+      image: "",
+      percentage: 80
+    }),
   });
   const [aiGenerating, setAiGenerating] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -50,29 +56,37 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
 
   useEffect(() => {
     // Load categories
-    const categoryType = type === "project" ? "projects" : "blogs";
-    fetch(`/api/data/categories?type=${categoryType}`)
-      .then((res) => res.json())
-      .then((data) => setCategories(Array.isArray(data) ? data : []))
-      .catch((err) => {
-        console.error("Error loading categories:", err);
-        setCategories([]);
-      });
+    const categoryType = type === "project" ? "projects" : type === "skill" ? "skills" : "blogs";
+    if (type !== "certification") {
+      fetch(`/api/data/categories?type=${categoryType}`)
+        .then((res) => res.json())
+        .then((data) => setCategories(Array.isArray(data) ? data : []))
+        .catch((err) => {
+          console.error("Error loading categories:", err);
+          setCategories([]);
+        });
+    }
   }, [type]);
 
   // Sync form data with initialData when it changes
   useEffect(() => {
     if (initialData) {
+      // Fix API keys that come in snake_case
+      const githubUrl = initialData.githubUrl || initialData.github_url || "";
+      const demoUrl = initialData.demoUrl || initialData.demo_url || "";
+      const verificationUrl = initialData.verificationUrl || initialData.credential_url || "";
+
       // Convert technologies array to comma-separated string if it's an array
       const processedData = {
         ...initialData,
+        title: initialData.title || initialData.name || "",
         technologies: Array.isArray(initialData.technologies) 
           ? initialData.technologies.join(", ") 
           : initialData.technologies || "",
         // Ensure all type-specific fields are present
         ...(type === "project" && {
-          githubUrl: initialData.githubUrl || "",
-          demoUrl: initialData.demoUrl || "",
+          githubUrl: githubUrl,
+          demoUrl: demoUrl,
           status: initialData.status || "Completed"
         }),
         ...(type === "blog" && {
@@ -81,7 +95,12 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
           emojiReactions: initialData.emojiReactions || {}
         }),
         ...(type === "certification" && {
-          verificationUrl: initialData.verificationUrl || ""
+          verificationUrl: verificationUrl
+        }),
+        ...(type === "skill" && {
+          icon: initialData.icon || "⚡",
+          image: initialData.image || "",
+          percentage: initialData.percentage ?? 80
         }),
       };
       setFormData(processedData);
@@ -110,6 +129,10 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
           issuer: "", 
           credentialId: "",
           verificationUrl: ""
+        }),
+        ...(type === "skill" && {
+          icon: "⚡",
+          image: ""
         }),
       });
     }
@@ -167,8 +190,27 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for "skill" type specifically
+    if (type === "skill") {
+      const dbData = {
+        id: formData.id,
+        name: formData.title,
+        category: formData.category,
+        icon: formData.icon,
+        image: formData.image,
+        percentage: Number(formData.percentage) || 80,
+      };
+      onSave(dbData);
+      return;
+    }
+
     const processedData = {
       ...formData,
+      // Map UI properties to DB keys
+      github_url: formData.githubUrl,
+      demo_url: formData.demoUrl,
+      credential_url: formData.verificationUrl,
       technologies: formData.technologies 
         ? (typeof formData.technologies === "string" 
             ? formData.technologies.split(",").map((t: string) => t.trim()).filter((t: string) => t.length > 0)
@@ -209,9 +251,9 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Image Upload */}
           <div>
-            <label className="block text-white font-medium mb-2">Image</label>
+            <label className="block text-white font-medium mb-2">{type === "skill" ? "Logo / Image (Optional)" : "Image"}</label>
             <ImageUpload
-              type={type === "project" ? "projects" : type === "blog" ? "blog" : "certifications"}
+              type={type === "project" ? "projects" : type === "blog" ? "blog" : type === "skill" ? "skills" : "certifications"}
               onUpload={(url) => setFormData((prev: any) => ({ ...prev, image: url }))}
               currentImage={formData.image}
               onAIGenerate={async (prompt) => {
@@ -226,10 +268,10 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
             />
           </div>
 
-          {/* Title */}
+          {/* Title / Name */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-white font-medium">Title</label>
+              <label className="block text-white font-medium">{type === "skill" ? "Skill Name" : "Title"}</label>
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.05 }}
@@ -251,103 +293,122 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
             />
           </div>
 
-          {/* Description */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-white font-medium">Description</label>
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleAIGenerate("description", `Write a professional description for a ${type} titled "${formData.title}"`)}
-                disabled={aiGenerating}
-                className="flex items-center gap-1 px-2 py-1 text-xs glass rounded text-neon-mint hover:bg-neon-mint/10 disabled:opacity-50"
-              >
-                <Wand2 size={12} />
-                AI Generate
-              </motion.button>
+          {/* Percentage - Skills only */}
+          {type === "skill" && (
+            <div>
+              <label className="block text-white font-medium mb-2">Proficiency % (0-100)</label>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                value={formData.percentage ?? 80}
+                onChange={(e) => setFormData((prev: any) => ({ ...prev, percentage: parseInt(e.target.value) || 80 }))}
+                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+              />
             </div>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData((prev: any) => ({ ...prev, description: e.target.value }))}
-              rows={4}
-              className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint resize-none"
-              required
-            />
-          </div>
+          )}
 
-          {/* Category */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-white font-medium">Category</label>
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowAddCategory(!showAddCategory)}
-                className="text-xs text-neon-mint hover:underline"
-              >
-                {showAddCategory ? "Cancel" : "+ Add New Category"}
-              </motion.button>
-            </div>
-            {showAddCategory ? (
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  placeholder="Enter new category name"
-                  className="flex-1 px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
-                />
+          {/* Description - Not for skills */}
+          {type !== "skill" && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-white font-medium">Description</label>
                 <motion.button
                   type="button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={async () => {
-                    if (newCategory.trim()) {
-                      try {
-                        const categoryType = type === "project" ? "projects" : "blogs";
-                        const response = await fetch("/api/data/categories", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ type: categoryType, category: newCategory.trim() }),
-                        });
-                        if (response.ok) {
-                          const data = await response.json();
-                          setCategories(data.categories);
-                          setFormData((prev: any) => ({ ...prev, category: newCategory.trim() }));
-                          setNewCategory("");
-                          setShowAddCategory(false);
-                          toast.success("Category added successfully!");
-                        } else {
-                          toast.error("Failed to add category");
-                        }
-                      } catch (error) {
-                        console.error("Error adding category:", error);
-                        toast.error("Failed to add category");
-                      }
-                    }
-                  }}
-                  className="px-4 py-2 bg-neon-mint text-black rounded-lg font-semibold hover:bg-neon-mint/90"
+                  onClick={() => handleAIGenerate("description", `Write a professional description for a ${type} titled "${formData.title}"`)}
+                  disabled={aiGenerating}
+                  className="flex items-center gap-1 px-2 py-1 text-xs glass rounded text-neon-mint hover:bg-neon-mint/10 disabled:opacity-50"
                 >
-                  Add
+                  <Wand2 size={12} />
+                  AI Generate
                 </motion.button>
               </div>
-            ) : null}
-            <select
-              value={formData.category}
-              onChange={(e) => setFormData((prev: any) => ({ ...prev, category: e.target.value }))}
-              className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
-              required
-            >
-              <option value="">Select a category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData((prev: any) => ({ ...prev, description: e.target.value }))}
+                rows={4}
+                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint resize-none"
+                required
+              />
+            </div>
+          )}
+
+          {/* Category - Not for certifications */}
+          {type !== "certification" && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-white font-medium">Category</label>
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowAddCategory(!showAddCategory)}
+                  className="text-xs text-neon-mint hover:underline"
+                >
+                  {showAddCategory ? "Cancel" : "+ Add New Category"}
+                </motion.button>
+              </div>
+              {showAddCategory ? (
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder="Enter new category name"
+                    className="flex-1 px-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                  />
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={async () => {
+                      if (newCategory.trim()) {
+                        try {
+                          const categoryType = type === "project" ? "projects" : type === "skill" ? "skills" : "blogs";
+                          const response = await fetch("/api/data/categories", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ type: categoryType, category: newCategory.trim() }),
+                          });
+                          if (response.ok) {
+                            const data = await response.json();
+                            setCategories(data.categories);
+                            setFormData((prev: any) => ({ ...prev, category: newCategory.trim() }));
+                            setNewCategory("");
+                            setShowAddCategory(false);
+                            toast.success("Category added successfully!");
+                          } else {
+                            toast.error("Failed to add category");
+                          }
+                        } catch (error) {
+                          console.error("Error adding category:", error);
+                          toast.error("Failed to add category");
+                        }
+                      }
+                    }}
+                    className="px-4 py-2 bg-neon-mint text-black rounded-lg font-semibold hover:bg-neon-mint/90"
+                  >
+                    Add
+                  </motion.button>
+                </div>
+              ) : null}
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData((prev: any) => ({ ...prev, category: e.target.value }))}
+                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                required
+              >
+                <option value="">Select a category</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Project-specific fields */}
           {type === "project" && (
@@ -506,17 +567,34 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
             </>
           )}
 
-          {/* Date */}
-          <div>
-            <label className="block text-white font-medium mb-2">Date</label>
-            <input
-              type="date"
-              value={formData.date}
-              onChange={(e) => setFormData((prev: any) => ({ ...prev, date: e.target.value }))}
-              className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
-              required
-            />
-          </div>
+          {/* Skill-specific fields */}
+          {type === "skill" && (
+            <div>
+              <label className="block text-white font-medium mb-2">Icon (Emoji)</label>
+              <input
+                type="text"
+                value={formData.icon || "⚡"}
+                onChange={(e) => setFormData((prev: any) => ({ ...prev, icon: e.target.value }))}
+                placeholder="⚙️, 📊, ☁️"
+                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                required
+              />
+            </div>
+          )}
+
+          {/* Date - Not for skills */}
+          {type !== "skill" && (
+            <div>
+              <label className="block text-white font-medium mb-2">Date</label>
+              <input
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData((prev: any) => ({ ...prev, date: e.target.value }))}
+                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-lg text-white focus:outline-none focus:border-neon-mint"
+                required
+              />
+            </div>
+          )}
 
           {/* Submit Buttons */}
           <div className="flex gap-4 pt-4">

@@ -45,18 +45,19 @@ export default function SpotifyPlayer({
 
   return (
     <>
-      {/* Floating Toggle Button */}
+      {/* Floating Toggle Button - Reference Style */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-20 right-6 z-40 p-4 rounded-full glass border border-neon-mint/50 text-neon-mint hover:bg-neon-mint/10 hover:border-neon-mint transition-all shadow-lg backdrop-blur-xl bg-black/40"
+            className="fixed bottom-10 right-10 z-50 w-12 h-12 rounded-full bg-[#1a1a1b] border border-[#2a2a2e] text-neon-mint flex items-center justify-center shadow-2xl hover:scale-110 transition-all group"
             aria-label="Open Spotify Player"
           >
-            <Music size={24} />
+            <Music size={20} className="group-hover:rotate-12 transition-transform" />
+            <div className="absolute inset-0 rounded-full border border-neon-mint opacity-20 scale-125 group-hover:scale-150 transition-transform duration-700" />
           </motion.button>
         )}
       </AnimatePresence>

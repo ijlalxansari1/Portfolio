@@ -1,30 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 
-const pricingPlans = [
+const plans = [
   {
-    period: "per hour",
-    price: "$29",
+    label: "per hour",
+    price: "$25",
     popular: false,
     features: [
-      "Data pipeline design and consultation",
-      "ETL development and optimization",
-      "Data modeling and architecture review",
-      "Code review and best practices",
-      "Email support during business hours",
+      "Design and document data pipeline architecture",
+      "Consultation and project scoping sessions",
+      "Code review and technical mentoring",
+      "Support for 1 month",
     ],
   },
   {
-    period: "per day",
-    price: "$119",
+    label: "per day",
+    price: "$90",
     popular: true,
     features: [
-      "Full-day dedicated development",
-      "End-to-end project implementation",
-      "Cloud infrastructure setup and optimization",
-      "Documentation and knowledge transfer",
-      "Priority support and consultation",
+      "Full pipeline build and deployment",
+      "Ethical AI audit and fairness report",
+      "RBAC and data governance setup",
+      "Platform architecture design",
       "Extended support for 3 months",
     ],
   },
@@ -32,85 +31,55 @@ const pricingPlans = [
 
 export default function Pricing() {
   return (
-      <section id="pricing" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
-      <div className="max-w-5xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
+    <div className="w-full">
+      <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">Pricing</p>
+      <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-10">Amazing Pricing For Your Projects</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-[720px]">
+        {plans.map((plan, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"
+            transition={{ delay: i * 0.1 }}
+            className={`relative p-8 rounded-2xl flex flex-col ${
+              plan.popular
+                ? "bg-[var(--accent)] text-black"
+                : "bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-primary)]"
+            }`}
           >
-            Amazing Pricing For Your Projects
-          </motion.h2>
-
-          <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ staggerChildren: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
-        >
-          {pricingPlans.map((plan, index) => (
-            <motion.div
-              key={plan.period}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{
-                y: -10,
-                borderColor: "#00FFB3",
-                boxShadow: "0 10px 40px rgba(0, 255, 179, 0.2)",
-              }}
-              className={`glass rounded-xl p-8 border transition-all relative ${
-                plan.popular 
-                  ? "border-neon-mint/50 hover:border-neon-mint" 
-                  : "border-white/10 hover:border-neon-mint/50"
+            {plan.popular && (
+              <span className="absolute top-5 right-5 px-3 py-1 bg-black/10 text-black text-[10px] font-black uppercase tracking-widest rounded-full">
+                Most Popular
+              </span>
+            )}
+            <p className={`text-[11px] font-black uppercase tracking-widest mb-2 ${plan.popular ? "text-black/60" : "text-[var(--text-secondary)] opacity-50"}`}>
+              {plan.label}
+            </p>
+            <p className={`text-[56px] font-black leading-none mb-8 tracking-tight ${plan.popular ? "text-black" : "text-[var(--text-primary)]"}`}>
+              {plan.price}
+            </p>
+            <div className="space-y-4 flex-1 mb-8">
+              {plan.features.map((f, j) => (
+                <div key={j} className="flex items-start gap-3">
+                  <Check size={15} className={`mt-0.5 shrink-0 ${plan.popular ? "text-black" : "text-[var(--accent)]"}`} />
+                  <span className={`text-[13px] leading-relaxed ${plan.popular ? "text-black/70" : "text-[var(--text-secondary)] opacity-60"}`}>{f}</span>
+                </div>
+              ))}
+            </div>
+            <button
+              className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-[12px] transition-all hover:opacity-90 ${
+                plan.popular
+                  ? "bg-black text-[var(--accent)]"
+                  : "bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)] hover:bg-[var(--accent)]/20"
               }`}
             >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-neon-mint text-black text-xs font-bold rounded-full">
-                  POPULAR
-                </div>
-              )}
-              <div className="text-center mb-6">
-                <p className="text-tertiary text-sm mb-2 uppercase tracking-wider font-medium">
-                  {plan.period}
-                </p>
-                <p className="text-5xl font-bold text-neon-mint mb-4">
-                  {plan.price}
-                </p>
-              </div>
-
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="text-neon-mint mt-1 flex-shrink-0">✓</span>
-                    <span className="text-secondary text-sm leading-relaxed">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <motion.a
-                href="#contact"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full py-3 px-6 bg-neon-mint/10 border border-neon-mint text-neon-mint rounded-lg hover:bg-neon-mint/20 transition-all font-medium text-center block"
-              >
-                Order Now
-              </motion.a>
-            </motion.div>
-          ))}
+              Order Now
+            </button>
           </motion.div>
-        </motion.div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
-

@@ -1,379 +1,119 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "./Toast";
+import { motion } from "framer-motion";
+import { Send, CheckCircle2, Mail, MapPin } from "lucide-react";
+import { trackEvent } from "./AnalyticsTracker";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    serviceType: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [focusedField, setFocusedField] = useState<string | null>(null);
-  const toast = useToast();
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const serviceTypes = [
-    "Data Engineering & ETL",
-    "Cloud Architecture",
-    "AI Ethics & Governance",
-    "BI & Analytics Dashboards",
-    "Machine Learning Solutions",
-    "Data Pipeline Development",
-    "Consultation",
-    "Other",
-  ];
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    
-    // Real-time validation
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-    
-    if (!formData.serviceType) {
-      newErrors.serviceType = "Please select a service type";
-    }
-    
-    if (!formData.message.trim()) {
-      newErrors.message = "Message is required";
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = "Message must be at least 10 characters";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) { setStatus("error"); return; }
     
-    if (!validateForm()) {
-      toast.error("Please fix the errors in the form");
-      return;
-    }
+    const submission = {
+      ...formData,
+      id: Date.now(),
+      date: new Date().toLocaleString(),
+      read: false
+    };
     
-    setIsSubmitting(true);
+    const existing = JSON.parse(localStorage.getItem("admin-submissions") || "[]");
+    localStorage.setItem("admin-submissions", JSON.stringify([submission, ...existing]));
+    window.dispatchEvent(new Event('admin-updated'));
+    trackEvent("form_submit", { name: formData.name });
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        toast.success("Message sent successfully! I'll get back to you soon.");
-        setFormData({ name: "", email: "", serviceType: "", message: "" });
-        setErrors({});
-        setFocusedField(null);
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.error || "Failed to send message.");
-      }
-    } catch (error) {
-      console.error("Contact form submission error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    setStatus("success");
+    setFormData({ name: "", email: "", subject: "", message: "" });
+    setTimeout(() => setStatus("idle"), 5000);
   };
 
   return (
-      <section id="contact" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
-      <div className="max-w-6xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-white mb-12 text-center"
-          >
-            CONTACT
-          </motion.h2>
+    <div className="w-full">
+      <div className="max-w-4xl mx-auto">
+        <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center text-[var(--accent)]">Get in Touch</p>
+        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">Ready to Start a Project?</h2>
+        <p className="text-[16px] text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto leading-relaxed">
+          I'm currently available for freelance work and technical consultations. 
+          Fill out the form below and I'll get back to you within 24 hours.
+        </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {/* Contact Info - Left Column */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="glass rounded-lg p-6 border border-white/10"
-            >
-              <div className="flex items-center gap-4 mb-2">
-                <Mail className="text-neon-mint" size={24} />
-                <h3 className="text-white font-semibold">Email</h3>
-              </div>
-              <a
-                href="mailto:ansariijlal90@gmail.com"
-                className="text-neon-mint text-sm hover:underline"
-              >
-                ansariijlal90@gmail.com
-              </a>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="glass rounded-lg p-6 border border-white/10"
-            >
-              <div className="flex items-center gap-4 mb-2">
-                <MapPin className="text-neon-mint" size={24} />
-                <h3 className="text-white font-semibold">Location</h3>
-              </div>
-              <p className="text-secondary text-sm">Gilgit-Baltistan, Pakistan</p>
-            </motion.div>
-          </motion.div>
-
-          {/* Contact Form - Right Column */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="glass rounded-xl p-8 border border-white/10"
-          >
-            <h3 className="text-2xl font-bold text-white mb-6">Let&apos;s make your project brilliant!</h3>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-secondary mb-2">
-                  Name <span className="text-neon-mint">*</span>
-                </label>
-                <motion.input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("name")}
-                  onBlur={() => setFocusedField(null)}
-                  placeholder="Your Name"
-                  required
-                  whileFocus={{ scale: 1.02 }}
-                  className={`w-full px-4 py-3 bg-black/30 border rounded-lg text-white placeholder-tertiary focus:outline-none transition-all ${
-                    errors.name 
-                      ? "border-red-500 focus:border-red-500" 
-                      : focusedField === "name"
-                      ? "border-neon-mint focus:border-neon-mint"
-                      : "border-white/10 focus:border-neon-mint"
-                  }`}
+        {/* Simplified Form */}
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Full Name</label>
+                <input type="text" placeholder="John Doe" value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
                 />
-                {errors.name && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-xs mt-1"
-                  >
-                    {errors.name}
-                  </motion.p>
-                )}
-                {formData.name && !errors.name && (
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-neon-mint text-xs mt-1"
-                  >
-                    ✓ Looks good!
-                  </motion.p>
-                )}
               </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-secondary mb-2">
-                  Email <span className="text-neon-mint">*</span>
-                </label>
-                <motion.input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("email")}
-                  onBlur={() => setFocusedField(null)}
-                  placeholder="your.email@example.com"
-                  required
-                  whileFocus={{ scale: 1.02 }}
-                  className={`w-full px-4 py-3 bg-black/30 border rounded-lg text-white placeholder-tertiary focus:outline-none transition-all ${
-                    errors.email 
-                      ? "border-red-500 focus:border-red-500" 
-                      : focusedField === "email"
-                      ? "border-neon-mint focus:border-neon-mint"
-                      : "border-white/10 focus:border-neon-mint"
-                  }`}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Email Address</label>
+                <input type="email" placeholder="john@example.com" value={formData.email}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
                 />
-                {errors.email && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-xs mt-1"
-                  >
-                    {errors.email}
-                  </motion.p>
-                )}
-                {formData.email && !errors.email && validateEmail(formData.email) && (
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-neon-mint text-xs mt-1"
-                  >
-                    ✓ Valid email format
-                  </motion.p>
-                )}
               </div>
-              <div>
-                <label htmlFor="serviceType" className="block text-sm font-medium text-secondary mb-2">
-                  Service Type <span className="text-neon-mint">*</span>
-                </label>
-                <motion.select
-                  id="serviceType"
-                  name="serviceType"
-                  value={formData.serviceType}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("serviceType")}
-                  onBlur={() => setFocusedField(null)}
-                  required
-                  whileFocus={{ scale: 1.02 }}
-                  className={`w-full px-4 py-3 bg-black/30 border rounded-lg text-white focus:outline-none transition-all ${
-                    errors.serviceType 
-                      ? "border-red-500 focus:border-red-500" 
-                      : focusedField === "serviceType"
-                      ? "border-neon-mint focus:border-neon-mint"
-                      : "border-white/10 focus:border-neon-mint"
-                  }`}
-                >
-                  <option value="" className="bg-gray-900">Select a service type...</option>
-                  {serviceTypes.map((service) => (
-                    <option key={service} value={service} className="bg-gray-900">
-                      {service}
-                    </option>
-                  ))}
-                </motion.select>
-                {errors.serviceType && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-xs mt-1"
-                  >
-                    {errors.serviceType}
-                  </motion.p>
-                )}
-                {formData.serviceType && !errors.serviceType && (
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-neon-mint text-xs mt-1"
-                  >
-                    ✓ Service type selected
-                  </motion.p>
-                )}
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-secondary mb-2">
-                  Message <span className="text-neon-mint">*</span>
-                </label>
-                <motion.textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  onFocus={() => setFocusedField("message")}
-                  onBlur={() => setFocusedField(null)}
-                  placeholder="Tell me about your project..."
-                  rows={6}
-                  required
-                  whileFocus={{ scale: 1.01 }}
-                  className={`w-full px-4 py-3 bg-black/30 border rounded-lg text-white placeholder-tertiary focus:outline-none resize-none transition-all ${
-                    errors.message 
-                      ? "border-red-500 focus:border-red-500" 
-                      : focusedField === "message"
-                      ? "border-neon-mint focus:border-neon-mint"
-                      : "border-white/10 focus:border-neon-mint"
-                  }`}
-                ></motion.textarea>
-                <div className="flex justify-between items-center mt-1">
-                  {errors.message && (
-                    <motion.p 
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-red-400 text-xs"
-                    >
-                      {errors.message}
-                    </motion.p>
-                  )}
-                  <span className={`text-xs ml-auto ${
-                    formData.message.length < 10 
-                      ? "text-tertiary" 
-                      : formData.message.length > 500
-                      ? "text-red-400"
-                      : "text-neon-mint"
-                  }`}>
-                    {formData.message.length} / 500
-                  </span>
-                </div>
-              </div>
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={isSubmitting}
-                className="w-full py-3 bg-neon-mint text-black rounded-lg font-semibold hover:bg-neon-mint/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? "Sending..." : (
-                  <>
-                    Send Message
-                    <Send size={18} />
-                  </>
-                )}
-              </motion.button>
-            </form>
-          </motion.div>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Subject</label>
+              <input type="text" placeholder="Project Inquiry" value={formData.subject}
+                onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Your Message</label>
+              <textarea rows={6} placeholder="Tell me about your project goals..." value={formData.message}
+                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20 resize-none"
+              />
+            </div>
+
+            <button type="submit" className="w-full py-5 bg-[var(--accent)] text-black font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)]">
+              {status === "success" ? <><CheckCircle2 size={20} /> Message Sent Successfully!</> : <><Send size={20} /> Send Message Now</>}
+            </button>
+            {status === "error" && <p className="text-red-400 text-[12px] font-bold text-center">Please fill in all required fields to proceed.</p>}
+          </form>
         </div>
 
-          {/* Footer */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center text-tertiary text-sm mt-12"
-          >
-            © 2025 Ijlal Ansari — Data Engineering & AI Ethics Portfolio
-          </motion.p>
-        </motion.div>
+        {/* High-Fidelity Contact Info Zone */}
+        <div className="flex flex-col md:flex-row justify-center items-center gap-6 mt-16">
+          {[
+            { label: "Email", value: "ansariijlal90@gmail.com", icon: <Mail size={16} />, href: "mailto:ansariijlal90@gmail.com", color: "from-blue-400/20 to-cyan-400/20" },
+            { label: "Location", value: "Remote / Worldwide", icon: <MapPin size={16} />, color: "from-[var(--accent)]/20 to-emerald-400/20" }
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="relative group flex items-center gap-4 px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-white/10 hover:bg-white/[0.05] transition-all"
+            >
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white group-hover:scale-110 transition-all shadow-lg`}>
+                {item.icon}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] opacity-40 group-hover:opacity-100 transition-all">{item.label}</span>
+                {item.href ? (
+                  <a href={item.href} className="text-[14px] font-black text-white hover:text-[var(--accent)] transition-all">
+                    {item.value}
+                  </a>
+                ) : (
+                  <span className="text-[14px] font-black text-white">{item.value}</span>
+                )}
+              </div>
+              
+              {/* Subtle Ambient Glow */}
+              <div className={`absolute -inset-1 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-20 blur-xl transition-all pointer-events-none`} />
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

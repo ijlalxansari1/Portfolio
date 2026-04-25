@@ -1,121 +1,73 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Database, Cloud, Shield, BarChart3 } from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, Layers, BarChart3 } from "lucide-react";
 
 const services = [
   {
-    icon: Database,
-    title: "Data Engineering & ETL",
-    description: "Design and implementation of robust ETL pipelines, data modeling, and data warehouse solutions using modern cloud technologies. Expertise in Apache Airflow, dbt, and cloud-native data platforms.",
-    features: ["ETL Pipeline Design", "Data Warehousing", "Data Modeling", "Pipeline Optimization"],
+    badge: "End-to-End",
+    icon: <Activity size={24} />,
+    title: "Data Pipeline Engineering",
+    body: "Design and build scalable ETL/ELT pipelines using Python, dbt, Dagster, and Airflow. From raw ingestion to clean, tested, documented data models ready for analytics.",
+    link: "Get Started →"
   },
   {
-    icon: Cloud,
-    title: "Cloud Architecture",
-    description: "Scalable cloud-based data infrastructure on AWS, Azure, and GCP with focus on cost optimization, reliability, and security. Experience with serverless architectures and containerization.",
-    features: ["AWS/Azure/GCP", "Serverless Architecture", "Cost Optimization", "Security Best Practices"],
+    badge: "Governance",
+    icon: <ShieldCheck size={24} />,
+    title: "Ethical AI Auditing",
+    body: "Bias detection, fairness evaluation, and SHAP-based explainability audits for ML models and analytical systems using Fairlearn and custom audit metrics.",
+    link: "Get Started →"
   },
   {
-    icon: Shield,
-    title: "AI Ethics & Governance",
-    description: "Ethical AI system design, responsible data practices, and governance frameworks for transparent machine learning. Specialized in fairness metrics and bias detection.",
-    features: ["Fairness Auditing", "Bias Detection", "Model Interpretability", "Ethical Guidelines"],
+    badge: "Full Stack",
+    icon: <Layers size={24} />,
+    title: "Platform Architecture",
+    body: "Full-stack data platform design: Next.js frontends, FastAPI backends, PostgreSQL + DuckDB storage, JWT auth, RBAC systems, and AES-256 encryption.",
+    link: "Get Started →"
   },
   {
-    icon: BarChart3,
-    title: "BI & Analytics Dashboards",
-    description: "Interactive business intelligence dashboards and data visualization solutions using Tableau, Power BI, and custom tools. Transforming raw data into actionable insights.",
-    features: ["Tableau & Power BI", "Custom Dashboards", "Real-time Analytics", "Data Storytelling"],
+    badge: "Analytics",
+    icon: <BarChart3 size={24} />,
+    title: "Data Storytelling & Reporting",
+    body: "Transform raw data into honest, interpretable narratives. Dashboard design, data validation, and analytical workflows documented for non-technical stakeholders.",
+    link: "Get Started →"
   },
 ];
 
 export default function Services() {
   return (
-      <section id="services" className="min-h-screen py-4 px-8 md:px-16 relative z-20">
-      <div className="max-w-6xl mx-auto w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass rounded-2xl p-8 md:p-12 border border-white/10 hover:border-neon-mint/30 transition-all bg-black/40 backdrop-blur-xl"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-white mb-4 text-center"
-          >
-            SERVICES
-          </motion.h2>
-          <motion.h3
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-2xl md:text-3xl font-semibold text-gray-300 mb-12 text-center"
-          >
-            What Services I Provide ?
-          </motion.h3>
+    <div className="w-full">
+      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">SERVICES</p>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">What Services I Provide?</h2>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {services.map((s, i) => (
           <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ staggerChildren: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12"
-        >
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{
-                  scale: 1.02,
-                  borderColor: "#00FFB3",
-                  boxShadow: "0 0 30px rgba(0, 255, 179, 0.2)",
-                }}
-                className="glass rounded-xl p-8 border border-white/10 hover:border-neon-mint/50 transition-all"
-              >
-                <div className="mb-6">
-                  <Icon
-                    size={48}
-                    className="text-neon-mint mb-4"
-                  />
-                </div>
-                <h3 className="text-2xl font-semibold text-white mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-secondary leading-relaxed mb-4 text-sm">
-                  {service.description}
-                </p>
-                {service.features && (
-                  <ul className="mb-6 space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-xs text-tertiary">
-                        <span className="text-neon-mint">•</span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <motion.a
-                  href="#contact"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2.5 bg-neon-mint/10 border border-neon-mint text-neon-mint rounded-lg hover:bg-neon-mint/20 transition-all font-medium text-sm inline-block text-center"
-                >
-                  Get Started
-                </motion.a>
-              </motion.div>
-            );
-          })}
+            key={i}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.08 }}
+            className="service-card p-8 bg-[#141414] border border-[#222222] rounded-xl hover:border-[var(--accent)] hover:translate-y-[-4px] transition-all group flex flex-col"
+          >
+            <div className="flex justify-between items-start mb-6">
+               <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-[var(--accent)] border border-white/5 group-hover:scale-110 transition-all">
+                  {s.icon}
+               </div>
+               <span className="inline-block px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">
+                 {s.badge}
+               </span>
+            </div>
+            
+            <h3 className="text-[18px] font-black text-[var(--text-primary)] mb-4 leading-tight">{s.title}</h3>
+            <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-[1.8] flex-1 mb-6">{s.body}</p>
+            
+            <a href="#contact" className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-[var(--accent)] hover:gap-4 transition-all">
+              {s.link}
+            </a>
           </motion.div>
-        </motion.div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
