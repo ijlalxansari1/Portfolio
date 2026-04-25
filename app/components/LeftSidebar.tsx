@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { Linkedin, Github, Twitter, Mail, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 import { trackEvent } from "./AnalyticsTracker";
-
-const titles = ["Data Engineer", "AI Researcher", "Platform Architect", "Data Scientist"];
 
 interface LeftSidebarProps {
   activeTab: string;
@@ -14,11 +14,31 @@ interface LeftSidebarProps {
 }
 
 export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
+  const { language } = useLanguage();
+  const t = translations[language].sidebar;
+  
+  const [streak, setStreak] = useState(602);
   const [titleIndex, setTitleIndex] = useState(0);
   const [availability, setAvailability] = useState<any>({
-    status: "Available",
-    availableFrom: "Now"
+    status: language === 'en' ? "Available" : "Verfügbar",
+    availableFrom: language === 'en' ? "Now" : "Jetzt"
   });
+
+  useEffect(() => {
+    fetch("/api/duolingo")
+      .then(res => res.json())
+      .then(data => {
+        if (data.streak) setStreak(data.streak);
+      })
+      .catch(() => {});
+  }, []);
+
+  const titles = [
+    language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
+    language === 'en' ? "AI Researcher" : "KI-Forscher",
+    language === 'en' ? "Platform Architect" : "Plattform-Architekt",
+    language === 'en' ? "Data Scientist" : "Datenwissenschaftler"
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => setTitleIndex((prev) => (prev + 1) % titles.length), 3000);
@@ -34,7 +54,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       clearInterval(interval);
       window.removeEventListener("admin-updated", handleUpdate);
     };
-  }, []);
+  }, [titles.length]);
 
   const downloadResume = () => {
     trackEvent("cv_download");
@@ -54,9 +74,18 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
 
   const getStatusColor = () => {
-    if (availability.status === "Available") return "var(--accent)";
-    if (availability.status === "Busy") return "#ff5f56";
+    const status = availability.status.toLowerCase();
+    if (status.includes("available") || status.includes("verfügbar")) return "var(--accent)";
+    if (status.includes("busy") || status.includes("besetzt")) return "#ff5f56";
     return "#ffbd2e";
+  };
+
+  const getStatusLabel = () => {
+    const status = availability.status.toLowerCase();
+    if (status.includes("available") || status.includes("verfügbar")) return `${t.status_available} ${t.now}`;
+    if (status.includes("busy") || status.includes("besetzt")) return `${t.status_busy}`;
+    if (status.includes("away") || status.includes("abwesend")) return `${t.status_away}`;
+    return availability.status;
   };
 
   return (
@@ -96,12 +125,12 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <h2 className="text-[30px] font-black text-white tracking-[-0.02em] mb-4 leading-none">Ijlal Ansari</h2>
         <div className="flex items-center gap-3 px-4 py-1.5 bg-[var(--bg-primary)] border border-[var(--border)] rounded-full mb-6 shadow-inner">
           <div className="w-2.5 h-2.5 rounded-full relative" style={{ backgroundColor: getStatusColor() }}>
-            {availability.status === 'Available' && (
+            {(availability.status.toLowerCase().includes('available') || availability.status.toLowerCase().includes('verfügbar')) && (
               <div className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ backgroundColor: getStatusColor() }} />
             )}
           </div>
           <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)]">
-            {availability.status} Now
+            {getStatusLabel()}
           </span>
         </div>
         
@@ -111,13 +140,30 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
             { Icon: Twitter, href: "https://twitter.com/ijlalansari" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
-            { Icon: MessageSquare, href: "https://wa.me/93711880807" }
+            { Icon: MessageSquare, href: "https://wa.me/93711880807" },
+            { Icon: () => <span className="text-[16px] leading-none">🦉</span>, href: "https://www.duolingo.com/profile/ijlal_ansari" }
           ].map(({ Icon, href }, i) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
-              <Icon size={16} />
+              {typeof Icon === 'function' ? <Icon /> : <Icon size={16} />}
             </a>
           ))}
         </div>
+
+        {/* Duolingo Streak Badge */}
+        <a 
+          href="https://www.duolingo.com/profile/ijlal_ansari" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-4 py-2 bg-orange-500/5 border border-orange-500/10 rounded-2xl mb-6 group hover:bg-orange-500/10 transition-all cursor-pointer"
+        >
+           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(249,115,22,0.3)] group-hover:scale-110 transition-transform">
+             <span className="text-sm">🔥</span>
+           </div>
+           <div className="text-left">
+             <div className="text-[12px] font-black text-orange-500 leading-none">{streak}</div>
+             <div className="text-[8px] font-black uppercase tracking-widest text-orange-500/50 leading-none mt-1">Day Streak</div>
+           </div>
+        </a>
       </div>
 
       <div className="w-full flex border-t border-[#222] h-[70px] bg-[#141414] mt-auto">
@@ -125,7 +171,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
           onClick={downloadResume}
           className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[#222]"
         >
-          Download CV
+          {t.download_cv}
         </button>
         <button 
           onClick={() => {
@@ -135,7 +181,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
           }}
           className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
         >
-          Contact Me
+          {t.contact_me}
         </button>
       </div>
     </div>

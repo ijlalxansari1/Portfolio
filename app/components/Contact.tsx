@@ -5,7 +5,13 @@ import { motion } from "framer-motion";
 import { Send, CheckCircle2, Mail, MapPin } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
 
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
+
 export default function Contact() {
+  const { language } = useLanguage();
+  const t = translations[language].contact;
+
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -33,11 +39,10 @@ export default function Contact() {
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
-        <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center text-[var(--accent)]">Get in Touch</p>
-        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">Ready to Start a Project?</h2>
+        <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center text-[var(--accent)]">{t.label}</p>
+        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">{t.title}</h2>
         <p className="text-[16px] text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-          I&apos;m currently available for freelance work and technical consultations. 
-          Fill out the form below and I&apos;ll get back to you within 24 hours.
+          {t.bio}
         </p>
 
         {/* Simplified Form */}
@@ -45,57 +50,57 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Full Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.name}</label>
                 <input type="text" placeholder="John Doe" value={formData.name}
-                  onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
+                   onChange={e => setFormData({ ...formData, name: e.target.value })}
+                   className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Email Address</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.email}</label>
                 <input type="email" placeholder="john@example.com" value={formData.email}
-                  onChange={e => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
+                   onChange={e => setFormData({ ...formData, email: e.target.value })}
+                   className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
                 />
               </div>
             </div>
             
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Subject</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.subject}</label>
               <select 
                 value={formData.subject}
                 onChange={e => setFormData({ ...formData, subject: e.target.value })}
                 className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all appearance-none cursor-pointer"
               >
-                <option value="" disabled>Select a Subject</option>
-                <option value="Data Infrastructure">Data Infrastructure</option>
-                <option value="AI/ML Research">AI/ML Research</option>
-                <option value="Technical Consultation">Technical Consultation</option>
-                <option value="Freelance Project">Freelance Project</option>
-                <option value="Other">Other</option>
+                <option value="" disabled>{t.subject_placeholder}</option>
+                <option value="Data Infrastructure">{language === 'en' ? "Data Infrastructure" : "Dateninfrastruktur"}</option>
+                <option value="AI/ML Research">{language === 'en' ? "AI/ML Research" : "KI/ML-Forschung"}</option>
+                <option value="Technical Consultation">{language === 'en' ? "Technical Consultation" : "Technische Beratung"}</option>
+                <option value="Freelance Project">{language === 'en' ? "Freelance Project" : "Freiberufliches Projekt"}</option>
+                <option value="Other">{language === 'en' ? "Other" : "Sonstiges"}</option>
               </select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Your Message</label>
-              <textarea rows={6} placeholder="Tell me about your project goals..." value={formData.message}
+              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.message}</label>
+              <textarea rows={6} placeholder={t.message_placeholder} value={formData.message}
                 onChange={e => setFormData({ ...formData, message: e.target.value })}
                 className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20 resize-none"
               />
             </div>
 
             <button type="submit" className="w-full py-5 bg-[var(--accent)] text-black font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)]">
-              {status === "success" ? <><CheckCircle2 size={20} /> Message Sent Successfully!</> : <><Send size={20} /> Send Message Now</>}
+              {status === "success" ? <><CheckCircle2 size={20} /> {t.submit_success}</> : <><Send size={20} /> {t.submit_idle}</>}
             </button>
-            {status === "error" && <p className="text-red-400 text-[12px] font-bold text-center">Please fill in all required fields to proceed.</p>}
+            {status === "error" && <p className="text-red-400 text-[12px] font-bold text-center">{t.error}</p>}
           </form>
         </div>
 
         {/* High-Fidelity Contact Info Zone */}
         <div className="flex flex-col md:flex-row justify-center items-center gap-6 mt-16">
           {[
-            { label: "Email", value: "ansariijlal90@gmail.com", icon: <Mail size={16} />, href: "mailto:ansariijlal90@gmail.com", color: "from-blue-400/20 to-cyan-400/20" },
-            { label: "Location", value: "Remote / Worldwide", icon: <MapPin size={16} />, color: "from-[var(--accent)]/20 to-emerald-400/20" }
+            { label: t.email_label, value: "ansariijlal90@gmail.com", icon: <Mail size={16} />, href: "mailto:ansariijlal90@gmail.com", color: "from-blue-400/20 to-cyan-400/20" },
+            { label: t.location_label, value: t.location_value, icon: <MapPin size={16} />, color: "from-[var(--accent)]/20 to-emerald-400/20" }
           ].map((item, i) => (
             <motion.div
               key={i}

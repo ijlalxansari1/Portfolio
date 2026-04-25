@@ -21,7 +21,7 @@ import Blog from "./components/Blog";
 import Contact from "./components/Contact";
 import AdminPanel from "./components/AdminPanel";
 import LoginModal from "./components/LoginModal";
-import AudioPlayer from "./components/AudioPlayer";
+
 import ThemeBuddy from "./components/ThemeBuddy";
 
 // New Feature Imports
@@ -29,7 +29,7 @@ import Terminal from "./components/Terminal";
 import GitHubFeed from "./components/GitHubFeed";
 import EthicsPledge from "./components/EthicsPledge";
 import DemosHub from "./components/DemosHub";
-import Testimonials from "./components/Testimonials";
+
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 
 export default function Home() {
@@ -88,7 +88,7 @@ export default function Home() {
     if (!isMounted || !scrollPanelRef.current) return;
 
     const panel = scrollPanelRef.current;
-    const sections = ["about", "skills", "services", "pledge", "demo", "projects", "resume", "github", "testimonials", "blog", "contact"];
+    const sections = ["about", "skills", "services", "pledge", "demo", "projects", "resume", "github", "blog", "contact"];
     
     const handleScroll = () => {
       const panelRect = panel.getBoundingClientRect();
@@ -127,7 +127,7 @@ export default function Home() {
     { id: "projects", icon: <Briefcase size={18} />,  label: "Projects" },
     { id: "resume",   icon: <Landmark size={18} />,   label: "Resume"   },
     { id: "github",   icon: <Github size={18} />,     label: "GitHub"   },
-    { id: "testimonials", icon: <Quote size={18} />,  label: "Testimonials" },
+
     { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
     { id: "contact",  icon: <Send size={18} />,       label: "Contact"  },
   ];
@@ -295,16 +295,6 @@ export default function Home() {
                   initial={{ opacity: 0, y: 30 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true, margin: "-100px" }}
-                  id="testimonials"
-                >
-                  <Testimonials />
-                </motion.section>
-
-                <div className="h-px w-full bg-white/[0.05]" />
-                <motion.section 
-                  initial={{ opacity: 0, y: 30 }} 
-                  whileInView={{ opacity: 1, y: 0 }} 
-                  viewport={{ once: true, margin: "-100px" }}
                   id="blog"
                 >
                   <Blog />
@@ -367,7 +357,6 @@ export default function Home() {
       <Terminal isOpen={showTerminal} onClose={() => setShowTerminal(false)} />
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onLoginSuccess={() => { setShowLogin(false); setShowAdmin(true); }} />
       <AdminPanel isOpen={showAdmin} onClose={() => setShowAdmin(false)} />
-      <AudioPlayer />
       
       <AnimatePresence>
         {showScrollTop && (

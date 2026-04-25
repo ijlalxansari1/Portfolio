@@ -26,8 +26,18 @@ const fallbackEvents = [
 export default function GitHubFeed() {
   const [events, setEvents] = useState<any[]>([]);
   const [stats, setStats] = useState({ repos: 12, stars: 8, followers: 24 });
+  const [streak, setStreak] = useState(602);
   const [loading, setLoading] = useState(true);
   const username = "ijlalansari";
+
+  useEffect(() => {
+    fetch("/api/duolingo")
+      .then(res => res.json())
+      .then(data => {
+        if (data.streak) setStreak(data.streak);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const fetchGitHubData = async () => {
@@ -120,6 +130,14 @@ export default function GitHubFeed() {
          <div className="px-4 py-2 bg-[#141414] border border-[#222] rounded-full text-[12px] font-black text-white/40 flex items-center gap-2">
             <Users size={14} className="text-[var(--accent)]" /> Followers: <span className="text-white">{stats.followers}</span>
          </div>
+         <a 
+           href="https://www.duolingo.com/profile/ijlal_ansari" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           className="px-4 py-2 bg-orange-500/5 border border-orange-500/20 rounded-full text-[12px] font-black text-orange-500 flex items-center gap-2 hover:bg-orange-500/10 transition-all shadow-[0_0_10px_rgba(249,115,22,0.1)]"
+         >
+           <span className="text-[14px]">🔥</span> Streak: <span className="text-orange-500 font-black">{streak}</span>
+         </a>
       </div>
     </div>
   );

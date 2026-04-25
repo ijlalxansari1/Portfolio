@@ -4,6 +4,7 @@ import "./globals.css";
 import { ToastProvider } from "./components/Toast";
 import { ThemeProvider } from "./components/ThemeProvider";
 import CustomCursor from "./components/CustomCursor";
+import { LanguageProvider } from "./context/LanguageContext";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -43,8 +44,10 @@ export default function RootLayout({
     <html lang="en" className={`${poppins.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <body className="antialiased font-sans transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <CustomCursor />
-          <ToastProvider>{children}</ToastProvider>
+          <LanguageProvider>
+            <CustomCursor />
+            <ToastProvider>{children}</ToastProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -13,7 +13,13 @@ const defaultSkills = [
   { name: "Airflow", value: 85 },
 ];
 
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
+
 export default function Technologies() {
+  const { language } = useLanguage();
+  const t = translations[language].settings;
+
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
   const [skillData, setSkillData] = useState(defaultSkills);
@@ -130,8 +136,12 @@ export default function Technologies() {
 
   return (
     <div className="w-full">
-      <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">Technologies</p>
-      <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">Technical Proficiency Radar</h2>
+      <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
+        {language === 'en' ? "Technologies" : "Technologien"}
+      </p>
+      <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">
+        {language === 'en' ? "Technical Proficiency Radar" : "Technisches Kompetenz-Radar"}
+      </h2>
       
       <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
         {/* Radar Chart */}
@@ -156,7 +166,7 @@ export default function Technologies() {
             </div>
           ))}
           <p className="text-[10px] text-[var(--text-secondary)] opacity-30 italic mt-6">
-            💡 The radar polygon visualizes skill synergy across 8 core axes.
+            {language === 'en' ? "💡 The radar polygon visualizes skill synergy across 8 core axes." : "💡 Das Radar-Polygon visualisiert die Synergie der Fähigkeiten über 8 Kernachsen."}
           </p>
         </div>
         
