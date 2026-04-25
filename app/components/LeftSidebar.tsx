@@ -16,23 +16,12 @@ interface LeftSidebarProps {
 export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   const { language } = useLanguage();
   const t = translations[language].sidebar;
-  
-  const [streak, setStreak] = useState(602);
   const [titleIndex, setTitleIndex] = useState(0);
   const [availability, setAvailability] = useState<any>({
     status: language === 'en' ? "Available" : "Verfügbar",
     availableFrom: language === 'en' ? "Now" : "Jetzt"
   });
-
-  useEffect(() => {
-    fetch("/api/duolingo")
-      .then(res => res.json())
-      .then(data => {
-        if (data.streak) setStreak(data.streak);
-      })
-      .catch(() => {});
-  }, []);
-
+  
   const titles = [
     language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
     language === 'en' ? "AI Researcher" : "KI-Forscher",
@@ -140,31 +129,13 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
             { Icon: Twitter, href: "https://twitter.com/ijlalansari" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
-            { Icon: MessageSquare, href: "https://wa.me/93711880807" },
-            { Icon: () => <span className="text-[16px] leading-none">🦉</span>, href: "https://www.duolingo.com/profile/ijlal_ansari" }
+            { Icon: MessageSquare, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }: any, i: number) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
               {typeof Icon === 'function' ? <Icon /> : <Icon size={16} />}
             </a>
           ))}
         </div>
-
-        {/* Duolingo Streak Badge */}
-        <a 
-          href="https://www.duolingo.com/profile/ijlal_ansari" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-2 bg-orange-500/5 border border-orange-500/10 rounded-2xl mb-6 group hover:bg-orange-500/10 transition-all cursor-pointer"
-        >
-           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(249,115,22,0.3)] group-hover:scale-110 transition-transform">
-             <span className="text-sm">🔥</span>
-           </div>
-           <div className="text-left">
-             <div className="text-[12px] font-black text-orange-500 leading-none">{streak}</div>
-             <div className="text-[8px] font-black uppercase tracking-widest text-orange-500/50 leading-none mt-1">Day Streak</div>
-           </div>
-        </a>
-      </div>
 
       <div className="w-full flex border-t border-[#222] h-[70px] bg-[#141414] mt-auto">
         <button 

@@ -24,16 +24,6 @@ export default function ThemeBuddy() {
   const { language, setLanguage } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [isBooting, setIsBooting] = useState(false);
-  const [streak, setStreak] = useState(602);
-
-  useEffect(() => {
-    fetch("/api/duolingo")
-      .then(res => res.json())
-      .then(data => {
-        if (data.streak) setStreak(data.streak);
-      })
-      .catch(() => {});
-  }, []);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -180,30 +170,6 @@ export default function ThemeBuddy() {
                 </div>
               </div>
 
-              {/* Duolingo Section */}
-              <div className="pt-4 border-t border-white/5">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30 font-jakarta">Learning</p>
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
-                    <span className="text-[9px] font-black text-orange-500 uppercase tracking-tighter">Live Streak</span>
-                  </div>
-                </div>
-                <a 
-                  href="https://www.duolingo.com/profile/ijlal_ansari" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 flex items-center gap-4 group hover:bg-white/[0.05] transition-all cursor-pointer"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <span className="text-2xl">🦉</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[16px] font-black text-white leading-none">{streak}</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Days on Duolingo</span>
-                  </div>
-                </a>
-              </div>
             </div>
             
             {/* Popover Arrow */}

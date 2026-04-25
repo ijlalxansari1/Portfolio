@@ -27,7 +27,7 @@ const skillGroups = (language: string) => [
     skills: [
       { name: "English", level: "Professional", desc: language === 'en' ? "Technical documentation & collaboration" : "Technische Dokumentation & Zusammenarbeit", icon: <MessageSquare size={14} className="text-emerald-400" /> },
       { name: "Urdu", level: "Native", desc: language === 'en' ? "Primary language proficiency" : "Muttersprachliche Kompetenz", icon: <Globe size={14} className="text-[var(--accent)]" /> },
-      { name: "German", level: "Learning", desc: language === 'en' ? "Actively learning (602 day streak)" : "Aktiv am Lernen (602 Tage Streak)", icon: <Layout size={14} className="text-amber-400" /> },
+      { name: "German", level: "Learning", desc: language === 'en' ? "Actively learning" : "Aktiv am Lernen", icon: <Layout size={14} className="text-amber-400" /> },
     ]
   }
 ];
