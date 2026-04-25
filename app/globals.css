@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -91,67 +91,66 @@ html[data-accent="pink"] { --accent: #ec4899; --accent-rgb: 236, 72, 153; }
 html[data-accent="cyan"] { --accent: #06b6d4; --accent-rgb: 6, 182, 212; }
 html[data-accent="yellow"] { --accent: #f59e0b; --accent-rgb: 245, 158, 11; }
 
-/* CMD Specific Overrides */
+/* ── CMD TRANSFORMATION ── */
+html.cmd body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+  z-index: 9999;
+  background-size: 100% 4px, 4px 100%;
+  pointer-events: none;
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.01; }
+  50% { opacity: 0.04; }
+  100% { opacity: 0.01; }
+}
+
+html.cmd body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: rgba(0, 255, 65, 0.02);
+  z-index: 10000;
+  pointer-events: none;
+  animation: crt-flicker 0.1s infinite;
+}
+
 html.cmd * {
-  /* Inherit fonts from root for consistency as requested */
+  font-family: 'JetBrains Mono', monospace !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.3) !important;
+  text-transform: uppercase !important;
+  border-color: #00ff41 !important;
+  box-shadow: none !important;
 }
 
 html.cmd *:not(circle):not(ellipse) {
   border-radius: 0 !important;
 }
 
-html.cmd * {
-  border-color: #00ff41 !important;
+/* Glitch Effect */
+@keyframes glitch-text {
+  0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, -2px); }
+  20% { clip-path: inset(92% 0 1% 0); transform: translate(1px, 1px); }
+  40% { clip-path: inset(43% 0 1% 0); transform: translate(-1px, 2px); }
+  60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, -1px); }
+  80% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, 1px); }
+  100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
 }
 
-html.cmd body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 255, 65, 0.02) 2px,
-    rgba(0, 255, 65, 0.02) 4px
-  );
-  pointer-events: none;
-  z-index: 9998;
-}
-
-@media (max-width: 768px) {
-  html.cmd body::before {
-    display: none; /* Disable scanlines on mobile per user request */
-  }
-}
-
-html.cmd body {
-  animation: flicker 8s infinite;
-}
-
-@keyframes flicker {
-  0%, 95%, 100% { opacity: 1; }
-  96% { opacity: 0.97; }
-  97% { opacity: 1; }
-  98% { opacity: 0.95; }
-  99% { opacity: 1; }
+html.cmd h1:hover, html.cmd h2:hover {
+  animation: glitch-text 0.2s infinite;
 }
 
 /* CMD Text Prefixes */
-html.cmd .hero-greeting::before {
-  content: 'C:\\Users\\ijlal> ';
-  color: #00ff41;
-}
-
-html.cmd .hero-name::before {
-  content: '> ';
-}
-
-html.cmd .section-label::before {
-  content: '// ';
-  color: #008f11;
-}
+html.cmd .hero-greeting::before { content: 'C:\\Users\\ijlal> '; color: #00ff41; }
+html.cmd .hero-name::before { content: '> '; }
+html.cmd .section-label::before { content: '// '; color: #008f11; }
 
 html.cmd .section-heading::before {
   content: '> ';
