@@ -142,7 +142,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
             { Icon: MessageSquare, href: "https://wa.me/93711880807" },
             { Icon: () => <span className="text-[16px] leading-none">🦉</span>, href: "https://www.duolingo.com/profile/ijlal_ansari" }
-          ].map(({ Icon, href }, i) => (
+          ].map(({ Icon, href }: any, i: number) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
               {typeof Icon === 'function' ? <Icon /> : <Icon size={16} />}
             </a>

@@ -151,7 +151,7 @@ export default function Technologies() {
 
         {/* Legend */}
         <div className="w-full md:w-[40%] space-y-4">
-          {skillData.map((skill) => (
+          {skillData.map((skill: any) => (
             <div 
               key={skill.name}
               className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${hoveredSkill === skill.name ? 'border-[var(--accent)] bg-[var(--accent)]/5 scale-105' : 'border-transparent bg-[var(--bg-card)]/50'}`}
