@@ -47,7 +47,7 @@ export default function Projects() {
 
   useEffect(() => {
     setProjects(defaultProjects);
-  }, [language]);
+  }, [language, defaultProjects]);
 
   useEffect(() => {
     const adminData = localStorage.getItem("admin-projects");

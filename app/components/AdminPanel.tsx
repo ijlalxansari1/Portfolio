@@ -268,7 +268,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           >
                             <div className="flex flex-col lg:flex-row gap-12 relative z-10">
                                <div className="w-full lg:w-64 aspect-video lg:aspect-square bg-white/5 rounded-[32px] border border-white/5 relative overflow-hidden group/img flex items-center justify-center shrink-0 shadow-2xl">
-                                  {p.image ? <img src={p.image} className="w-full h-full object-cover grayscale-[0.5] group-hover/img:grayscale-0 transition-all duration-700 scale-105 group-hover/img:scale-100" /> : <ImageIcon size={40} className="text-white/10" />}
+                                  {p.image ? <img src={p.image} alt={p.title} className="w-full h-full object-cover grayscale-[0.5] group-hover/img:grayscale-0 transition-all duration-700 scale-105 group-hover/img:scale-100" /> : <ImageIcon size={40} className="text-white/10" />}
                                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all">
                                      <label className="cursor-pointer px-5 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:scale-105 transition-all">
                                         Swap Assets

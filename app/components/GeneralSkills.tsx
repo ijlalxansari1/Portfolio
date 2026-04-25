@@ -56,7 +56,7 @@ export default function GeneralSkills() {
       const adminGroups = localStorage.getItem("admin-skills-groups");
       if (adminGroups) {
           const parsed = JSON.parse(adminGroups);
-          parsed.forEach(group => {
+          parsed.forEach((group: any) => {
               if (group.title === "Data Core") group.icon = <Database size={18} className="text-blue-400" />;
               if (group.title === "Linguistic") group.icon = <Globe size={18} className="text-[var(--accent)]" />;
           });
@@ -66,7 +66,7 @@ export default function GeneralSkills() {
       const adminPractices = localStorage.getItem("admin-skills-practices");
       if (adminPractices) {
           const parsed = JSON.parse(adminPractices);
-          parsed.forEach(p => {
+          parsed.forEach((p: any) => {
               if (p.title === "Pipeline Design") p.icon = <Zap size={16} className="text-yellow-400" />;
               if (p.title === "Bias Auditing") p.icon = <ShieldCheck size={16} className="text-blue-400" />;
               if (p.title === "Audit Logging") p.icon = <Activity size={16} className="text-red-400" />;
