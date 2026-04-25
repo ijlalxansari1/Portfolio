@@ -112,6 +112,22 @@ export default function ThemeBuddy() {
                     <TerminalIcon size={14} />
                     <span className="text-[9px] font-bold uppercase">CMD</span>
                   </button>
+                  <button onClick={() => handleThemeChange('midnight')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'midnight' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#0a0b1e]" />
+                    <span className="text-[9px] font-bold uppercase">Midnight</span>
+                  </button>
+                  <button onClick={() => handleThemeChange('forest')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'forest' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#0a1a0f]" />
+                    <span className="text-[9px] font-bold uppercase">Forest</span>
+                  </button>
+                  <button onClick={() => handleThemeChange('slate')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'slate' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#1a1d23]" />
+                    <span className="text-[9px] font-bold uppercase">Slate</span>
+                  </button>
+                  <button onClick={() => handleThemeChange('bordeaux')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'bordeaux' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#1a0a0a]" />
+                    <span className="text-[9px] font-bold uppercase">Bordeaux</span>
+                  </button>
                 </div>
               </div>
 

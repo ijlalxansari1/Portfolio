@@ -47,6 +47,42 @@ html.cmd {
   --border-subtle: rgba(0, 255, 65, 0.2);
 }
 
+/* ── MIDNIGHT THEME ── */
+html.midnight {
+  --bg-primary: #05060f;
+  --bg-secondary: #0a0b1e;
+  --bg-card: #0f112a;
+  --border: #1a1c3d;
+  --text-secondary: #8a8fb5;
+}
+
+/* ── FOREST THEME ── */
+html.forest {
+  --bg-primary: #040806;
+  --bg-secondary: #0a1a0f;
+  --bg-card: #0f2516;
+  --border: #1a3d24;
+  --text-secondary: #8ab596;
+}
+
+/* ── SLATE THEME ── */
+html.slate {
+  --bg-primary: #0f1115;
+  --bg-secondary: #1a1d23;
+  --bg-card: #242930;
+  --border: #3d444d;
+  --text-secondary: #b5bdc8;
+}
+
+/* ── BORDEAUX THEME ── */
+html.bordeaux {
+  --bg-primary: #080404;
+  --bg-secondary: #1a0a0a;
+  --bg-card: #250f0f;
+  --border: #3d1a1a;
+  --text-secondary: #b58a8a;
+}
+
 /* ── ACCENT COLOR VARIANTS ── */
 html[data-accent="blue"] { --accent: #3b82f6; --accent-rgb: 59, 130, 246; }
 html[data-accent="purple"] { --accent: #a855f7; --accent-rgb: 168, 85, 247; }

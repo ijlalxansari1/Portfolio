@@ -62,10 +62,18 @@ export default function Contact() {
             
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">Subject</label>
-              <input type="text" placeholder="Project Inquiry" value={formData.subject}
+              <select 
+                value={formData.subject}
                 onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
-              />
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all appearance-none cursor-pointer"
+              >
+                <option value="" disabled>Select a Subject</option>
+                <option value="Data Infrastructure">Data Infrastructure</option>
+                <option value="AI/ML Research">AI/ML Research</option>
+                <option value="Technical Consultation">Technical Consultation</option>
+                <option value="Freelance Project">Freelance Project</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
             <div className="space-y-2">

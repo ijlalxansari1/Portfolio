@@ -42,7 +42,7 @@ export default function AudioPlayer() {
         onMouseLeave={() => setShowTooltip(false)}
         onClick={togglePlay}
         whileHover={{ scale: 1.1, rotate: 5 }}
-        whileActive={{ scale: 0.9 }}
+        whileTap={{ scale: 0.9 }}
         className={`relative w-14 h-14 rounded-2xl flex items-center justify-center border transition-all duration-500 overflow-hidden ${
           isPlaying 
             ? "bg-[var(--accent)] text-black border-transparent shadow-[0_20px_50px_rgba(var(--accent-rgb),0.3)]" 
