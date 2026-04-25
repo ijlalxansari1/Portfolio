@@ -67,7 +67,7 @@ export default function EthicsPledge() {
                 animate={{ opacity: 1, y: 0 }}
                 className="pt-8 border-t border-[var(--border)] mt-8"
               >
-                <p className="text-[18px] font-black text-white mb-6">"This is why I built AETHER."</p>
+                <p className="text-[18px] font-black text-white mb-6">&quot;This is why I built AETHER.&quot;</p>
                 <button 
                   onClick={() => {
                     const panel = document.getElementById("content-scroll-panel");

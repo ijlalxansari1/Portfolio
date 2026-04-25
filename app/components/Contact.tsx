@@ -36,8 +36,8 @@ export default function Contact() {
         <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center text-[var(--accent)]">Get in Touch</p>
         <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">Ready to Start a Project?</h2>
         <p className="text-[16px] text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-          I'm currently available for freelance work and technical consultations. 
-          Fill out the form below and I'll get back to you within 24 hours.
+          I&apos;m currently available for freelance work and technical consultations. 
+          Fill out the form below and I&apos;ll get back to you within 24 hours.
         </p>
 
         {/* Simplified Form */}

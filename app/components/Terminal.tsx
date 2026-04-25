@@ -42,7 +42,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
       }, 500);
       return () => clearInterval(interval);
     }
-  }, [isOpen]);
+  }, [isOpen, bootText]);
 
   useEffect(() => {
     if (scrollRef.current) {

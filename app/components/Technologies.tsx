@@ -126,7 +126,7 @@ export default function Technologies() {
         .style("stroke", "#000")
         .style("stroke-width", "2px");
     }
-  }, []);
+  }, [skillData]);
 
   return (
     <div className="w-full">

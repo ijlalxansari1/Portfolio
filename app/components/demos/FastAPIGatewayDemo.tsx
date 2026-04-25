@@ -94,7 +94,7 @@ export default function FastAPIGatewayDemo() {
             <div className="w-2 h-2 rounded-full bg-yellow-500" />
             <div className="w-2 h-2 rounded-full bg-green-500" />
           </div>
-          <p className="text-[10px] text-emerald-500/50 mb-3 uppercase tracking-widest">// Response Header</p>
+          <p className="text-[10px] text-emerald-500/50 mb-3 uppercase tracking-widest">{'// Response Header'}</p>
           
           {isLoading ? (
             <div className="flex flex-col gap-2">
