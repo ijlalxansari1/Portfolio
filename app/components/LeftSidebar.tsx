@@ -93,7 +93,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
           <Image
             src="/profile.png"
-            alt="Ijlal Ansari" fill className="object-cover object-top" priority
+            alt="Ijlal Ansari" fill className="object-cover object-center" priority
           />
         </motion.div>
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[var(--bg-card)] to-transparent z-20" />
@@ -136,6 +136,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             </a>
           ))}
         </div>
+      </div>
 
       <div className="w-full flex border-t border-[#222] h-[70px] bg-[#141414] mt-auto">
         <button 
