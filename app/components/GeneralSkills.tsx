@@ -104,7 +104,7 @@ export default function GeneralSkills() {
                 {group.icon} {group.title}
               </div>
               <div className="grid grid-cols-1 gap-4">
-                {group.skills.map((skill, i) => (
+                {group.skills.map((skill: any, i: number) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -10 }}

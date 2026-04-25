@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import ProjectModal from "./ProjectModal";
@@ -12,7 +12,7 @@ export default function Projects() {
   const { language } = useLanguage();
   const t = translations[language].projects;
 
-  const defaultProjects = [
+  const defaultProjects = useMemo(() => [
     {
       id: 1, title: language === 'en' ? "AETHER Platform" : "AETHER Plattform", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
       description: language === 'en' ? "Open-source ethical data analysis platform with a 10-stage analytical pipeline, bias detection using Fairlearn and SHAP." : "Open-Source-Plattform für ethische Datenanalyse mit einer 10-stufigen Analyse-Pipeline, Bias-Erkennung mit Fairlearn und SHAP.",
@@ -37,7 +37,7 @@ export default function Projects() {
       id: 6, title: "Analytics Dashboard", tag: "Next.js", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
       description: language === 'en' ? "Real-time analytics dashboard backed by DuckDB for in-process OLAP queries on large datasets." : "Echtzeit-Analyse-Dashboard mit DuckDB für In-Process-OLAP-Abfragen auf großen Datensätzen.",
     },
-  ];
+  ], [language]);
 
   const filters = [t.filter_all, "Python", "SQL", "FastAPI", "Next.js"];
 
