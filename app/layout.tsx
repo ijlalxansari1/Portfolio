@@ -126,7 +126,7 @@ export default function RootLayout({
     <html lang="en" className={`${poppins.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.github.com" />
         <Script
           id="person-schema"
