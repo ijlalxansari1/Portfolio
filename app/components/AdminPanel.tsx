@@ -601,7 +601,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           <h4 className="text-[14px] font-black uppercase tracking-widest">Destructive Actions</h4>
                        </div>
                        <p className="text-[12px] text-white/40 leading-relaxed max-w-2xl">
-                          Wipe all local administrative data and restore original defaults. This will resolve most "database leaks" or synchronization issues but cannot be undone.
+                          Wipe all local administrative data and restore original defaults. This will resolve most &quot;database leaks&quot; or synchronization issues but cannot be undone.
                        </p>
                        <div className="flex gap-4">
                           <button 

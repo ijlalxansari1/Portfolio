@@ -65,7 +65,7 @@ export default function Testimonials() {
             >
               <Quote size={40} className="text-[var(--accent)] opacity-20 mb-8" />
               <p className="text-[18px] md:text-[22px] font-medium text-[var(--text-primary)] leading-[1.6] mb-10 italic">
-                "{testimonials[current].quote}"
+                &quot;{testimonials[current].quote}&quot;
               </p>
               
               <div className="flex flex-col items-center">

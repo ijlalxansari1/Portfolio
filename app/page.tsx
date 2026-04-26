@@ -324,7 +324,7 @@ export default function Home() {
                 >
                   <div>
                     <h3 className="text-[24px] font-black text-white mb-2">Ready to build something ethical?</h3>
-                    <p className="text-[14px] text-white/50">Let's discuss your next data architecture or research project.</p>
+                    <p className="text-[14px] text-white/50">Let&apos;s discuss your next data architecture or research project.</p>
                   </div>
                   <button 
                     onClick={() => scrollToSection('contact')}
