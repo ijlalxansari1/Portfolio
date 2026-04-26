@@ -22,20 +22,36 @@ export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch("/api/data/certifications");
-        if (res.ok) {
-          const data = await res.json();
+    const handleUpdate = () => {
+      const adminData = localStorage.getItem("admin-certs");
+      if (adminData) {
+        const parsed = JSON.parse(adminData);
+        if (parsed.length > 0) {
+          setCertifications(parsed.filter((c: any) => c.status !== 'Draft').map((c: any) => ({
+            ...c,
+            verificationUrl: c.verificationUrl || c.verification_url,
+          })));
+          setLoading(false);
+          return;
+        }
+      }
+      
+      // Fallback to API if no localStorage data
+      fetch("/api/data/certifications")
+        .then(res => res.ok ? res.json() : [])
+        .then(data => {
           setCertifications(data.map((c: Certification) => ({
             ...c,
             verificationUrl: c.verificationUrl || c.verification_url,
           })));
-        }
-      } catch {}
-      setLoading(false);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     };
-    load();
+
+    handleUpdate();
+    window.addEventListener("admin-updated", handleUpdate);
+    return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);
 
   if (loading) return <div className="text-center py-20 text-gray-400 text-sm">Loading certifications…</div>;

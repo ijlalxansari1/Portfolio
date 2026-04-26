@@ -15,22 +15,29 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would be a server-side check
-    // We'll use a slightly more robust simulation for this portfolio
-    const storedAuth = localStorage.getItem("admin-auth-config");
-    const auth = storedAuth ? JSON.parse(storedAuth) : { user: "admin", pass: "ijlal2025" };
-
-    if (username === auth.user && password === auth.pass) {
-      sessionStorage.setItem("aether-admin-session", "active-" + Date.now());
-      onLoginSuccess();
-      setUsername("");
-      setPassword("");
-      setError("");
-    } else {
-      setError("Invalid credentials. Access denied.");
-      // Add a slight shake effect or feedback
+    setError("");
+    
+    try {
+      const response = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        sessionStorage.setItem("aether-admin-session", data.token);
+        onLoginSuccess();
+        setUsername("");
+        setPassword("");
+      } else {
+        setError(data.error || "Invalid credentials. Access denied.");
+      }
+    } catch (err) {
+      setError("Authentication server unreachable.");
     }
   };
 

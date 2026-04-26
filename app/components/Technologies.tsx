@@ -3,14 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const defaultSkills = [
-  { name: "Python", value: 92 },
-  { name: "PostgreSQL", value: 85 },
-  { name: "DuckDB", value: 90 },
-  { name: "FastAPI", value: 87 },
-  { name: "Kafka", value: 75 },
-  { name: "Next.js", value: 88 },
-  { name: "Docker", value: 90 },
-  { name: "Airflow", value: 85 },
+  { name: "Python", value: 82 },
+  { name: "PostgreSQL", value: 78 },
+  { name: "Apache Kafka", value: 65 },
+  { name: "AWS", value: 60 },
 ];
 
 import { useLanguage } from "../context/LanguageContext";
@@ -137,10 +133,10 @@ export default function Technologies() {
   return (
     <div className="w-full">
       <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
-        {language === 'en' ? "Technologies" : "Technologien"}
+        {language === 'en' ? "TECHNICAL SKILLS" : "Technologien"}
       </p>
       <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">
-        {language === 'en' ? "Technical Proficiency Radar" : "Technisches Kompetenz-Radar"}
+        {language === 'en' ? "Technologies" : "Technisches Kompetenz-Radar"}
       </h2>
       
       <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">

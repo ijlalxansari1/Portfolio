@@ -15,27 +15,33 @@ export default function Projects() {
   const defaultProjects = useMemo(() => [
     {
       id: 1, title: language === 'en' ? "AETHER Platform" : "AETHER Plattform", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "Open-source ethical data analysis platform with a 10-stage analytical pipeline, bias detection using Fairlearn and SHAP." : "Open-Source-Plattform für ethische Datenanalyse mit einer 10-stufigen Analyse-Pipeline, Bias-Erkennung mit Fairlearn und SHAP.",
+      description: language === 'en' ? "My flagship project — an open-source ethical data analysis platform" : "Open-Source-Plattform für ethische Datenanalyse mit einer 10-stufigen Analyse-Pipeline, Bias-Erkennung mit Fairlearn und SHAP.",
+      alt: "AETHER Platform - ethical data analysis pipeline with bias detection by Ijlal Ansari"
     },
     {
       id: 2, title: "Data Engineering Tracker", tag: "Next.js", image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "Interactive 20-hour data engineering curriculum tracker built on the 80/20 principle." : "Interaktiver Tracker für ein 20-stündiges Data-Engineering-Curriculum, basierend auf dem 80/20-Prinzip.",
+      description: language === 'en' ? "Interactive 20-hour curriculum tracker built on the 80/20 learning principle" : "Interaktiver Tracker für ein 20-stündiges Data-Engineering-Curriculum, basierend auf dem 80/20-Prinzip.",
+      alt: "Data Engineering Curriculum Tracker - 20-hour learning path built with Next.js"
     },
     {
       id: 3, title: "ETL Pipeline — dbt + Dagster", tag: "SQL", image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "End-to-end ELT pipeline using dbt Core and Dagster for orchestration, with automated data quality tests." : "End-to-End ELT-Pipeline mit dbt Core und Dagster für die Orchestrierung, inklusive automatisierter Datenqualitätstests.",
+      description: language === 'en' ? "Production-grade ELT pipeline with automated testing and lineage documentation" : "End-to-End ELT-Pipeline mit dbt Core und Dagster für die Orchestrierung, inklusive automatisierter Datenqualitätstests.",
+      alt: "ETL Pipeline with dbt and Dagster - production-grade ELT by Ijlal Ansari"
     },
     {
       id: 4, title: "Bias Audit System", tag: "Python", image: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "Automated fairness auditing module using Fairlearn and SHAP to detect demographic bias in ML model outputs." : "Automatisiertes Fairness-Audit-Modul mit Fairlearn und SHAP zur Erkennung demografischer Verzerrungen in ML-Modellergebnissen.",
+      description: language === 'en' ? "Automated ML fairness auditing using Fairlearn and SHAP with PDF report export" : "Automatisiertes Fairness-Audit-Modul mit Fairlearn und SHAP zur Erkennung demografischer Verzerrungen in ML-Modellergebnissen.",
+      alt: "Bias Audit System using Fairlearn and SHAP for ML fairness evaluation"
     },
     {
       id: 5, title: "FastAPI Data Gateway", tag: "FastAPI", image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "Secure REST API gateway with JWT authentication, role-based access control, and rate limiting." : "Sicheres REST-API-Gateway mit JWT-Authentifizierung, rollenbasierter Zugriffskontrolle und Ratenbegrenzung.",
+      description: language === 'en' ? "Secure multi-tenant API with JWT auth, RBAC, rate limiting, and structured logging" : "Sicheres REST-API-Gateway mit JWT-Authentifizierung, rollenbasierter Zugriffskontrolle und Ratenbegrenzung.",
+      alt: "FastAPI Data Gateway with JWT auth and RBAC for multi-tenant data access"
     },
     {
       id: 6, title: "Analytics Dashboard", tag: "Next.js", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "Real-time analytics dashboard backed by DuckDB for in-process OLAP queries on large datasets." : "Echtzeit-Analyse-Dashboard mit DuckDB für In-Process-OLAP-Abfragen auf großen Datensätzen.",
+      description: language === 'en' ? "Self-hosted analytics backed by DuckDB for in-process OLAP on million-row datasets" : "Echtzeit-Analyse-Dashboard mit DuckDB für In-Process-OLAP-Abfragen auf großen Datensätzen.",
+      alt: "Analytics Dashboard powered by DuckDB for in-process OLAP queries"
     },
   ], [language]);
 
@@ -84,7 +90,8 @@ export default function Projects() {
   return (
     <div className="w-full">
       <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">{t.title}</p>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-8">{t.subtitle}</h2>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.subtitle}</h2>
+      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.subheading}</p>
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-3 mb-8">
@@ -116,7 +123,7 @@ export default function Projects() {
               className="group relative rounded-2xl overflow-hidden cursor-pointer bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--accent)]/30 transition-all"
             >
               <div className="relative w-full aspect-[4/3] overflow-hidden">
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.3] group-hover:grayscale-0" />
+                <img src={project.image} alt={project.alt || project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.3] group-hover:grayscale-0" />
                 <span className="absolute bottom-3 left-3 px-3 py-1 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-full z-20">
                   {project.tag}
                 </span>

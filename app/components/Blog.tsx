@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
@@ -39,13 +40,33 @@ const articles = [
 ];
 
 export default function Blog() {
+  const [posts, setPosts] = useState(articles);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      const adminData = localStorage.getItem("admin-posts");
+      if (adminData) {
+        const parsed = JSON.parse(adminData);
+        if (parsed.length > 0) {
+          setPosts(parsed.filter((p: any) => p.status !== 'Draft'));
+        } else {
+          setPosts(articles);
+        }
+      }
+    };
+    handleUpdate();
+    window.addEventListener("admin-updated", handleUpdate);
+    return () => window.removeEventListener("admin-updated", handleUpdate);
+  }, []);
+
   return (
     <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">MY BLOG</p>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">Exploring My Articles</h2>
+      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">ARTICLES</p>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">Blog & Research</h2>
+      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">A collection of research notes, technical walkthroughs, and thoughts on ethical data systems.</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {articles.map((article, i) => (
+        {posts.map((article, i) => (
           <motion.div
             key={article.id}
             initial={{ opacity: 0, scale: 0.96 }}

@@ -24,9 +24,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
   
   const titles = [
     language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
-    language === 'en' ? "AI Researcher" : "KI-Forscher",
-    language === 'en' ? "Platform Architect" : "Plattform-Architekt",
-    language === 'en' ? "Data Scientist" : "Datenwissenschaftler"
+    language === 'en' ? "AI Ethics Researcher" : "KI-Ethik-Forscher",
+    language === 'en' ? "Pipeline Developer" : "Pipeline-Entwickler",
+    language === 'en' ? "Platform Builder" : "Plattform-Entwickler"
   ];
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
 
   const getStatusColor = () => {
     const status = availability.status.toLowerCase();
-    if (status.includes("available") || status.includes("verfügbar")) return "var(--accent)";
+    if (status.includes("available") || status.includes("verfügbar")) return "#00e87a";
     if (status.includes("busy") || status.includes("besetzt")) return "#ff5f56";
     return "#ffbd2e";
   };
@@ -93,7 +93,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
           <Image
             src="/profile.png"
-            alt="Ijlal Ansari" fill className="object-cover object-center" priority
+            alt="Ijlal Ansari - Junior Data Engineer & AI Ethics Researcher" fill className="object-cover object-center" priority
           />
         </motion.div>
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[var(--bg-card)] to-transparent z-20" />
@@ -105,7 +105,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             <motion.p
               key={titles[titleIndex]}
               initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }}
-              className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-[0.25em]"
+              className="text-[11px] font-bold text-[#00e87a] uppercase tracking-[0.25em]"
             >
               {titles[titleIndex]}
             </motion.p>
@@ -127,11 +127,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
           {[
             { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
-            { Icon: Twitter, href: "https://twitter.com/ijlalansari" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
-            { Icon: MessageSquare, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }: any, i: number) => (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[#00e87a] hover:scale-110 transition-all shadow-lg">
               {typeof Icon === 'function' ? <Icon /> : <Icon size={16} />}
             </a>
           ))}
@@ -141,7 +139,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       <div className="w-full flex border-t border-[#222] h-[70px] bg-[#141414] mt-auto">
         <button 
           onClick={downloadResume}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[#222]"
+          className="flex-1 flex items-center justify-center text-[10px] font-black text-[#00e87a] hover:bg-[#00e87a]/10 tracking-[0.15em] uppercase transition-all border-r border-[#222]"
         >
           {t.download_cv}
         </button>
@@ -151,7 +149,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             const target = document.getElementById("contact");
             if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
           }}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
+          className="flex-1 flex items-center justify-center text-[10px] font-black text-[#00e87a] hover:bg-[#00e87a]/10 tracking-[0.15em] uppercase transition-all"
         >
           {t.contact_me}
         </button>

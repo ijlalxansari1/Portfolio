@@ -5,40 +5,43 @@ import { motion } from "framer-motion";
 import { 
   CheckCircle2, Database, Globe, Zap, Cpu, ShieldCheck, Search, 
   FileCode, Terminal, Layout, MessageSquare, Layers, Server, 
-  Code, Activity, Lock, Share2
+  Code, Activity, Lock, Share2, Package
 } from "lucide-react";
 
 import { useLanguage } from "../context/LanguageContext";
 
 const skillGroups = (language: string) => [
   {
-    title: "Data Core",
+    title: "DATABASE",
     icon: <Database size={18} className="text-blue-400" />,
     skills: [
-      { name: "DuckDB", level: "Expert", desc: language === 'en' ? "In-process OLAP & analytical logic" : "In-Process-OLAP & Analyse-Logik", icon: <Layers size={14} className="text-cyan-400" /> },
-      { name: "PostgreSQL", level: "Advanced", desc: language === 'en' ? "Relational modeling & ACID compliance" : "Relationale Modellierung & ACID-Konformität", icon: <Database size={14} className="text-blue-500" /> },
-      { name: "MongoDB", level: "Intermediate", desc: language === 'en' ? "Document storage & flexible schemas" : "Dokumentspeicherung & flexible Schemas", icon: <FileCode size={14} className="text-green-500" /> },
-      { name: "Redis", level: "Intermediate", desc: language === 'en' ? "High-speed caching & rate limiting" : "Hochgeschwindigkeits-Caching & Ratenbegrenzung", icon: <Zap size={14} className="text-red-500" /> },
+      { name: "DuckDB", level: "82%", desc: language === 'en' ? "In-process OLAP & analytical logic" : "In-Process-OLAP & Analyse-Logik", icon: <Layers size={14} className="text-cyan-400" /> },
+      { name: "PostgreSQL", level: "78%", desc: language === 'en' ? "Relational modeling & ACID compliance" : "Relationale Modellierung & ACID-Konformität", icon: <Database size={14} className="text-blue-500" /> },
+      { name: "MongoDB", level: "62%", desc: language === 'en' ? "Document storage & flexible schemas" : "Dokumentspeicherung & flexible Schemas", icon: <FileCode size={14} className="text-green-500" /> },
+      { name: "Redis", level: "58%", desc: language === 'en' ? "High-speed caching & rate limiting" : "Hochgeschwindigkeits-Caching & Ratenbegrenzung", icon: <Zap size={14} className="text-red-500" /> },
     ]
   },
   {
-    title: language === 'en' ? "Linguistic" : "Linguistik",
+    title: language === 'en' ? "LANGUAGES" : "SPRACHEN",
     icon: <Globe size={18} className="text-[var(--accent)]" />,
     skills: [
-      { name: "English", level: "Professional", desc: language === 'en' ? "Technical documentation & collaboration" : "Technische Dokumentation & Zusammenarbeit", icon: <MessageSquare size={14} className="text-emerald-400" /> },
-      { name: "Urdu", level: "Native", desc: language === 'en' ? "Primary language proficiency" : "Muttersprachliche Kompetenz", icon: <Globe size={14} className="text-[var(--accent)]" /> },
-      { name: "German", level: "Learning", desc: language === 'en' ? "Actively learning" : "Aktiv am Lernen", icon: <Layout size={14} className="text-amber-400" /> },
+      { name: "English", level: "80%", desc: language === 'en' ? "Technical documentation & collaboration" : "Technische Dokumentation & Zusammenarbeit", icon: <MessageSquare size={14} className="text-emerald-400" /> },
+      { name: "Urdu", level: "100%", desc: language === 'en' ? "Primary language proficiency" : "Muttersprachliche Kompetenz", icon: <Globe size={14} className="text-[var(--accent)]" /> },
+      { name: "Arabic", level: "35%", desc: language === 'en' ? "Basic communication & reading" : "Grundkenntnisse", icon: <Layout size={14} className="text-amber-400" /> },
     ]
   }
 ];
 
 const practices = (language: string) => [
-  { title: "Pipeline Design", icon: <Zap size={16} className="text-yellow-400" />, desc: language === 'en' ? "Modular ETL/ELT architecture" : "Modulare ETL/ELT-Architektur" },
-  { title: "Bias Auditing", icon: <ShieldCheck size={16} className="text-blue-400" />, desc: language === 'en' ? "Fairlearn-based governance" : "Fairlearn-basierte Governance" },
-  { title: "Audit Logging", icon: <Activity size={16} className="text-red-400" />, desc: language === 'en' ? "Immutable append-only systems" : "Immutable Append-Only-Systeme" },
-  { title: "XAI / SHAP", icon: <Search size={16} className="text-emerald-400" />, desc: language === 'en' ? "Model-agnostic explainability" : "Modellagnostische Erklärbarkeit" },
-  { title: "API Gateway", icon: <Lock size={16} className="text-purple-400" />, desc: language === 'en' ? "FastAPI + RBAC security" : "FastAPI + RBAC Sicherheit" },
-  { title: "Data Quality", icon: <CheckCircle2 size={16} className="text-[var(--accent)]" />, desc: language === 'en' ? "dbt testing & validation" : "dbt Tests & Validierung" },
+  { title: "Data Pipeline Architecture", icon: <Zap size={16} className="text-yellow-400" />, desc: "Modular ETL/ELT architecture" },
+  { title: "ETL/ELT Design & Implementation", icon: <Layers size={16} className="text-blue-400" />, desc: "End-to-end data processing" },
+  { title: "Bias Detection & Fairness Auditing", icon: <ShieldCheck size={16} className="text-emerald-400" />, desc: "Fairlearn-based governance" },
+  { title: "Data Governance & RBAC Design", icon: <Lock size={16} className="text-red-400" />, desc: "Secure access control systems" },
+  { title: "Append-Only Audit Log Systems", icon: <Activity size={16} className="text-cyan-400" />, desc: "Immutable system tracking" },
+  { title: "SHAP / Explainable AI (XAI)", icon: <Search size={16} className="text-purple-400" />, desc: "Model-agnostic explainability" },
+  { title: "REST API Design with FastAPI", icon: <Server size={16} className="text-orange-400" />, desc: "High-performance interfaces" },
+  { title: "CI/CD for Data Pipelines", icon: <Package size={16} className="text-pink-400" />, desc: "Automated deployment workflows" },
+  { title: "Data Quality Testing with dbt", icon: <CheckCircle2 size={16} className="text-[var(--accent)]" />, desc: "dbt testing & validation" },
 ];
 
 export default function GeneralSkills() {
@@ -87,10 +90,10 @@ export default function GeneralSkills() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
-            {language === 'en' ? "Capabilities" : "Fähigkeiten"}
+            {language === 'en' ? "TOOL SKILLS" : "Fähigkeiten"}
           </p>
           <h2 className="text-[32px] font-black text-white">
-            {language === 'en' ? "General Expertise" : "Allgemeine Expertise"}
+            {language === 'en' ? "General Skills & Domain Mastery" : "Allgemeine Expertise"}
           </h2>
         </div>
       </div>

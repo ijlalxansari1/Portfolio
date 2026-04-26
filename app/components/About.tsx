@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import { Download, ArrowRight, Zap, Clock, Award } from "lucide-react";
+import { Download, Send, Zap, Clock, Award } from "lucide-react";
 import Magnetic from "./Magnetic";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -65,34 +65,34 @@ export default function About() {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="section-label inline-flex items-center gap-3 px-4 py-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.25em] rounded-full"
+          className="section-label inline-flex items-center gap-3 px-4 py-1.5 bg-[#00e87a]/10 border border-[#00e87a]/30 text-[#00e87a] text-[10px] font-black uppercase tracking-[0.25em] rounded-full"
         >
-          <span className="w-2 h-2 bg-[var(--accent)] rounded-full animate-pulse" />
-          {t.label}
+          {t.greeting}
         </motion.div>
 
         <div className="space-y-4">
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="hero-greeting text-[var(--text-secondary)] opacity-50 text-[18px] lg:text-[22px] font-bold"
-          >
-            {t.greeting}
-          </motion.p>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="hero-name text-[64px] lg:text-[92px] font-black text-[var(--text-primary)] leading-[0.95] tracking-tight"
+            className="hero-name text-[64px] lg:text-[92px] font-black text-white leading-[0.95] tracking-tight"
           >
-            Ijlal <span className="text-[var(--accent)]">Ansari.</span>
+            Ijlal <span className="text-[#00e87a]">Ansari.</span>
           </motion.h1>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex px-4 py-1.5 bg-[#00e87a]/10 border border-[#00e87a]/20 rounded-full"
+          >
+            <span className="text-[#00e87a] text-[10px] font-black uppercase tracking-widest">{t.label}</span>
+          </motion.div>
         </div>
 
         <div className="flex items-center gap-4 flex-wrap text-[24px] lg:text-[32px] font-black">
           <span className="text-[var(--text-secondary)] opacity-30">{t.expertIn}</span>
-          <span className="text-[var(--accent)] relative">
+          <span className="text-[#00e87a] relative">
             <span className="typewriter-text">{displayText}</span>
             <span className="cursor">|</span>
           </span>
@@ -109,74 +109,81 @@ export default function About() {
       </motion.p>
 
       {/* Hero Buttons */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex flex-wrap gap-6 mb-16"
-      >
-        <Magnetic>
-          <button 
-            onClick={() => {
-              const panel = document.getElementById("content-scroll-panel");
-              const target = document.getElementById("contact");
-              if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
-            }}
-            className="group px-8 py-5 bg-[var(--accent)] text-black text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:scale-[1.05] active:scale-[0.95] transition-all shadow-[0_15px_35px_rgba(var(--accent-rgb),0.25)]"
-          >
-            {t.cta_talk} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-        </Magnetic>
+      <div className="space-y-6 mb-16">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="flex flex-wrap gap-6"
+        >
+          <Magnetic>
+            <button 
+              onClick={() => {
+                const panel = document.getElementById("content-scroll-panel");
+                const target = document.getElementById("contact");
+                if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+              }}
+              className="px-8 py-5 bg-[#00e87a] text-black text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:scale-[1.05] active:scale-[0.95] transition-all shadow-[0_15px_35px_rgba(0,232,122,0.25)]"
+            >
+              {t.cta_talk} <Send size={18} />
+            </button>
+          </Magnetic>
 
-        <Magnetic>
-          <button 
-            onClick={() => {
-              const link = document.createElement("a");
-              link.href = "/ijlalansari.pdf";
-              link.download = "Ijlal_Ansari_Resume.pdf";
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}
-            className="px-8 py-5 bg-white/5 border border-white/10 text-white text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:bg-white/10 transition-all"
-          >
-            <Download size={18} /> {t.cta_cv}
-          </button>
-        </Magnetic>
-      </motion.div>
+          <Magnetic>
+            <button 
+              onClick={() => {
+                const panel = document.getElementById("content-scroll-panel");
+                const target = document.getElementById("projects");
+                if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+              }}
+              className="px-8 py-5 bg-transparent border border-white/20 text-white text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:bg-white/5 transition-all"
+            >
+              {t.cta_work}
+            </button>
+          </Magnetic>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-xl w-fit"
+        >
+          <span className="w-2 h-2 bg-[#00e87a] rounded-full animate-pulse shadow-[0_0_10px_#00e87a]" />
+          <span className="text-[11px] font-bold text-white/60 uppercase tracking-widest">
+            🟢 {t.availability}
+          </span>
+        </motion.div>
+      </div>
 
       {/* Stats Grid */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
+        transition={{ delay: 0.7 }}
         className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 pt-12 border-t border-white/5"
       >
         {[
-          { num: "15+", label: t.stats.projects, sub: t.stats.projects_sub, icon: <Zap className="text-yellow-400" size={24} />, color: "from-yellow-400 to-orange-500" },
-          { num: "3+", label: t.stats.experience, sub: t.stats.experience_sub, icon: <Clock className="text-blue-400" size={24} />, color: "from-blue-400 to-cyan-500" },
-          { num: "5+", label: t.stats.certs, sub: t.stats.certs_sub, icon: <Award className="text-[var(--accent)]" size={24} />, color: "from-[var(--accent)] to-emerald-500" },
+          { num: t.stats.projects, label: t.stats.projects_sub, icon: <Zap className="text-yellow-400" size={24} />, color: "from-yellow-400 to-orange-500" },
+          { num: t.stats.hours, label: t.stats.hours_sub, icon: <Clock className="text-blue-400" size={24} />, color: "from-blue-400 to-cyan-500" },
+          { num: t.stats.taught, label: t.stats.taught_sub, icon: <Award className="text-[#00e87a]" size={24} />, color: "from-[#00e87a] to-emerald-500" },
         ].map((stat, i) => (
           <motion.div 
             key={i} 
-            whileHover={{ y: -10, rotateX: 5, rotateY: -5 }}
+            whileHover={{ y: -10 }}
             className="flex flex-col group relative"
-            style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="flex items-center gap-4 mb-3" style={{ transform: "translateZ(20px)" }}>
-               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-[var(--accent)]/30 transition-all duration-500 shadow-xl">
+            <div className="flex items-center gap-4 mb-3">
+               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group-hover:border-[#00e87a]/30 transition-all duration-500 shadow-xl">
                   {stat.icon}
                </div>
                <span className={`text-[44px] font-black leading-none tracking-tighter bg-gradient-to-br ${stat.color} bg-clip-text text-transparent`}>
                  {stat.num}
                </span>
             </div>
-            <div className="space-y-1" style={{ transform: "translateZ(10px)" }}>
+            <div className="space-y-1">
               <span className="block text-[11px] font-black text-white uppercase tracking-[0.1em]">
                 {stat.label}
-              </span>
-              <span className="block text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">
-                {stat.sub}
               </span>
             </div>
             <div className={`absolute -inset-4 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-[0.03] blur-2xl transition-all pointer-events-none`} />
@@ -186,9 +193,10 @@ export default function About() {
 
       {/* Scroll Hint */}
       <div className="absolute bottom-0 right-0 flex items-center gap-4 opacity-20 hidden lg:flex">
-         <span className="text-[10px] font-black uppercase tracking-[0.4em] rotate-90 origin-right translate-y-10">{t.scroll}</span>
+         <span className="text-[10px] font-black uppercase tracking-[0.4em] rotate-90 origin-right translate-y-10">Scroll</span>
          <div className="w-px h-24 bg-white/30" />
       </div>
     </div>
   );
 }
+

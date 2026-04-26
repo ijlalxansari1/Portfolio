@@ -5,6 +5,7 @@ import { ToastProvider } from "./components/Toast";
 import { ThemeProvider } from "./components/ThemeProvider";
 import CustomCursor from "./components/CustomCursor";
 import { LanguageProvider } from "./context/LanguageContext";
+import Script from "next/script";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -21,8 +22,37 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Ijlal Ansari - Data Engineer & AI Ethics Researcher",
-  description: "Data Engineering specialist focused on automation, ethical machine learning systems, and attention-aware analytics.",
+  title: "Ijlal Ansari | Data Engineer & AI Ethics Researcher | Python, dbt, FastAPI, AETHER",
+  description: "Data Engineer and AI Ethics Researcher building AETHER — an open-source ethical data platform with bias detection, SHAP explainability, and data governance. Skilled in Python, dbt, Dagster, FastAPI, DuckDB, PostgreSQL, and Kafka.",
+  keywords: "data engineer, data engineering portfolio, Python data engineer, dbt developer, AI ethics researcher, AETHER platform, Fairlearn SHAP bias detection, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Dagster orchestration, open source data platform",
+  authors: [{ name: "Ijlal Ansari" }],
+  robots: "index, follow",
+  alternates: {
+    canonical: "https://dataden.vercel.app/",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://dataden.vercel.app/",
+    title: "Ijlal Ansari — Data Engineer & AI Ethics Researcher",
+    description: "Building AETHER — an open-source ethical data platform with bias detection and explainability. Skilled in Python, dbt, Dagster, FastAPI, and DuckDB.",
+    images: [
+      {
+        url: "https://dataden.vercel.app/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Ijlal Ansari Portfolio",
+      },
+    ],
+    siteName: "Ijlal Ansari Portfolio",
+    locale: "en_GB",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ijlal Ansari — Data Engineer & AI Ethics Researcher",
+    description: "Building AETHER — ethical data platform with bias detection, SHAP explainability & data governance. Python, dbt, FastAPI, DuckDB.",
+    images: ["https://dataden.vercel.app/og-image.jpg"],
+  },
+  themeColor: "#0d0d0d",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -35,6 +65,58 @@ export const metadata: Metadata = {
   },
 };
 
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ijlal Ansari",
+  "url": "https://dataden.vercel.app",
+  "image": "https://dataden.vercel.app/profile.jpg",
+  "jobTitle": "Data Engineer & AI Ethics Researcher",
+  "description": "Data Engineer and AI Ethics Researcher building AETHER — an open-source ethical data analysis platform with bias detection, SHAP explainability, and data governance.",
+  "knowsAbout": [
+    "Data Engineering",
+    "ETL Pipeline Design",
+    "Python",
+    "dbt Core",
+    "Dagster",
+    "Apache Airflow",
+    "Apache Kafka",
+    "FastAPI",
+    "DuckDB",
+    "PostgreSQL",
+    "Fairlearn",
+    "SHAP",
+    "Ethical AI",
+    "Data Governance",
+    "RBAC Design"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Remote"
+  },
+  "sameAs": [
+    "https://github.com/ijlalansari",
+    "https://linkedin.com/in/ijlalansari",
+    "https://dataden.vercel.app"
+  ],
+  "alumniOf": {
+    "@type": "EducationalOrganization",
+    "name": "Self-Taught Researcher"
+  }
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Ijlal Ansari — Data Engineer Portfolio",
+  "url": "https://dataden.vercel.app",
+  "description": "Portfolio of Ijlal Ansari, Data Engineer and AI Ethics Researcher.",
+  "author": {
+    "@type": "Person",
+    "name": "Ijlal Ansari"
+  }
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,6 +124,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppins.variable} ${jakarta.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+        <link rel="dns-prefetch" href="https://api.github.com" />
+        <Script
+          id="person-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
+      </head>
       <body className="antialiased font-sans transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <LanguageProvider>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const skills = [
@@ -18,6 +19,26 @@ const knowledge = [
 ];
 
 export default function Skills() {
+  const [coreSkills, setCoreSkills] = useState(skills);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      const adminData = localStorage.getItem("admin-skills-radar");
+      if (adminData) {
+        const parsed = JSON.parse(adminData);
+        if (parsed.length > 0) {
+          setCoreSkills(parsed.map((s: any) => ({
+            name: s.name,
+            percentage: s.value
+          })));
+        }
+      }
+    };
+    handleUpdate();
+    window.addEventListener("admin-updated", handleUpdate);
+    return () => window.removeEventListener("admin-updated", handleUpdate);
+  }, []);
+
   return (
     <section id="resume" className="w-full">
       <motion.div
@@ -41,7 +62,7 @@ export default function Skills() {
             Engineering Skills
           </h3>
           <div className="space-y-10">
-            {skills.map((s) => (
+            {coreSkills.map((s) => (
               <div key={s.name} className="space-y-4 group">
                 <div className="flex justify-between items-end">
                   <span className="text-[12px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-white transition-colors">{s.name}</span>

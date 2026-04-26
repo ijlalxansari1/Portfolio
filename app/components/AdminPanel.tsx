@@ -9,6 +9,7 @@ import {
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
   ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag
 } from "lucide-react";
+import { storage } from "../utils/storage";
 
 // ── DEFAULT DATA CONSTANTS ──
 const defaultProjects = [
@@ -60,39 +61,24 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [practiceList, setPracticeList] = useState<any[]>([]);
   const [categories, setCategories] = useState<any>(defaultCategories);
   const [isSaving, setIsSaving] = useState(false);
+  const [systemAudit, setSystemAudit] = useState<any>(null);
 
   useEffect(() => {
     if (isOpen) {
       const loadData = () => {
-        const load = (key: string, fallback: any) => {
-          const data = localStorage.getItem(key);
-          if (data === null) {
-            localStorage.setItem(key, JSON.stringify(fallback));
-            return fallback;
-          }
-          try {
-            return JSON.parse(data);
-          } catch (e) {
-            return fallback;
-          }
-        };
-
-        setProjects(load("admin-projects", defaultProjects));
-        setPosts(load("admin-posts", defaultPosts));
-        setCerts(load("admin-certs", defaultCerts));
-        setSubmissions(load("admin-submissions", []));
-        setRadarSkills(load("admin-skills-radar", defaultRadar));
-        setSkillGroups(load("admin-skills-groups", []));
-        setPracticeList(load("admin-skills-practices", []));
-        setCategories(load("admin-categories", defaultCategories));
+        setProjects(storage.get("admin-projects", defaultProjects));
+        setPosts(storage.get("admin-posts", defaultPosts));
+        setCerts(storage.get("admin-certs", defaultCerts));
+        setSubmissions(storage.get("admin-submissions", []));
+        setRadarSkills(storage.get("admin-skills-radar", defaultRadar));
+        setSkillGroups(storage.get("admin-skills-groups", []));
+        setPracticeList(storage.get("admin-skills-practices", []));
+        setCategories(storage.get("admin-categories", defaultCategories));
         
-        const toolsData = localStorage.getItem("admin-skills");
-        if (toolsData === null) {
-          localStorage.setItem("admin-skills", JSON.stringify({ tools: defaultTools }));
-          setToolSkills(defaultTools);
-        } else {
-          try { setToolSkills(JSON.parse(toolsData).tools || defaultTools); } catch(e) { setToolSkills(defaultTools); }
-        }
+        const toolsData = storage.get("admin-skills", { tools: defaultTools });
+        setToolSkills(toolsData.tools || defaultTools);
+        
+        setSystemAudit(storage.audit());
       };
       loadData();
     }
@@ -100,14 +86,19 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
 
   const saveData = (key: string, data: any) => {
     setIsSaving(true);
-    localStorage.setItem(key, JSON.stringify(data));
+    storage.set(key, data);
     window.dispatchEvent(new CustomEvent("admin-updated"));
+    setSystemAudit(storage.audit());
     setTimeout(() => setIsSaving(false), 800);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Optimization: Check file size to prevent quota issues
+      if (file.size > 800000) { // 800KB limit for base64 storage
+        alert("Warning: Asset exceeds 800KB. Large assets may impact system performance.");
+      }
       const reader = new FileReader();
       reader.onloadend = () => callback(reader.result as string);
       reader.readAsDataURL(file);
@@ -153,6 +144,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               { id: "Projects", icon: <Briefcase size={16} />, color: "text-orange-400" },
               { id: "Blog", icon: <Newspaper size={16} />, color: "text-pink-400" },
               { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400" },
+              { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400" },
               { id: "Settings", icon: <Settings size={16} />, color: "text-white/40" },
             ].map((tab) => (
               <button
@@ -345,7 +337,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                            <p className="text-[14px] text-white/40 font-medium max-w-md">Publish your technical insights and research documentation.</p>
                         </div>
                         <button onClick={() => {
-                          const updated = [{ id: Date.now(), title: "Intelligence Refactoring", category: categories.blog[0] || "Data", date: new Date().toLocaleDateString(), status: "Draft" }, ...posts];
+                          const updated = [{ id: Date.now(), title: "New Technical Deep Dive", category: categories.blog[0] || "General", date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }), status: "Draft" }, ...posts];
                           setPosts(updated);
                           saveData("admin-posts", updated);
                         }} className="group flex items-center gap-3 px-8 py-4 bg-pink-500 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
@@ -421,6 +413,119 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                    </motion.div>
                 )}
 
+                {/* ── CERTIFICATIONS TAB ── */}
+                {activeTab === "Certifications" && (
+                   <motion.div key="certs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                      <div className="flex justify-between items-end">
+                        <div className="space-y-2">
+                           <h3 className="text-[12px] font-black text-yellow-400 uppercase tracking-[4px]">Verified Training</h3>
+                           <p className="text-[14px] text-white/40 font-medium max-w-md">Manage your academic and industry certifications.</p>
+                        </div>
+                        <button onClick={() => {
+                          const updated = [{ id: Date.now(), title: "New Certification", provider: "Institution", link: "#", status: "Draft" }, ...certs];
+                          setCerts(updated);
+                          saveData("admin-certs", updated);
+                        }} className="group flex items-center gap-3 px-8 py-4 bg-yellow-400 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                          <Plus size={18} /> Add Credential
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {certs.map((c, i) => (
+                          <motion.div 
+                             key={c.id} 
+                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-yellow-400/30 transition-all space-y-6"
+                          >
+                             <div className="flex justify-between gap-4">
+                                <div className="flex-1 space-y-4">
+                                   <input type="text" value={c.title} onChange={e => { const n = [...certs]; n[i].title = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="Course/Cert Title" />
+                                   <input type="text" value={c.provider} onChange={e => { const n = [...certs]; n[i].provider = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-yellow-400/60 font-bold text-[11px] uppercase tracking-widest outline-none w-full" placeholder="Issuing Institution" />
+                                </div>
+                                <button onClick={() => { if(confirm("Revoke credential?")) { const updated = certs.filter(x => x.id !== c.id); setCerts(updated); saveData("admin-certs", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
+                             </div>
+                             
+                             <div className="flex items-center gap-4">
+                                <div className="flex-1 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
+                                   <LinkIcon size={12} className="text-white/20" />
+                                   <input type="text" value={c.link} onChange={e => { const n = [...certs]; n[i].link = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white/40 text-[11px] outline-none w-full" placeholder="Credential URL" />
+                                </div>
+                                <select value={c.status} onChange={e => { const n = [...certs]; n[i].status = e.target.value; setCerts(n); saveData("admin-certs", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                   <option className="bg-[#111]">Draft</option>
+                                   <option className="bg-[#111]">Active</option>
+                                </select>
+                             </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                   </motion.div>
+                )}
+
+                {/* ── RADAR & TOOLS TAB ── */}
+                {activeTab === "Radar & Tools" && (
+                   <motion.div key="radar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                         <div className="space-y-8">
+                            <div className="flex justify-between items-center">
+                               <h3 className="text-[12px] font-black text-purple-400 uppercase tracking-[4px]">Skill Radar</h3>
+                               <button onClick={() => {
+                                  const updated = [...radarSkills, { name: "New Skill", value: 50 }];
+                                  setRadarSkills(updated);
+                                  saveData("admin-skills-radar", updated);
+                               }} className="w-10 h-10 bg-purple-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
+                            </div>
+                            <div className="space-y-4">
+                               {radarSkills.map((s, i) => (
+                                  <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl group">
+                                     <input type="text" value={s.name} onChange={e => { const n = [...radarSkills]; n[i].name = e.target.value; setRadarSkills(n); }} onBlur={() => saveData("admin-skills-radar", radarSkills)} className="bg-transparent text-white font-bold text-[13px] outline-none flex-1" />
+                                     <input type="number" value={s.value} onChange={e => { const n = [...radarSkills]; n[i].value = parseInt(e.target.value); setRadarSkills(n); }} onBlur={() => saveData("admin-skills-radar", radarSkills)} className="w-12 bg-white/5 border border-white/10 rounded-lg p-1 text-[11px] text-purple-400 font-bold text-center outline-none" />
+                                     <button onClick={() => {
+                                        const updated = radarSkills.filter((_, idx) => idx !== i);
+                                        setRadarSkills(updated);
+                                        saveData("admin-skills-radar", updated);
+                                     }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={14} /></button>
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+
+                         <div className="space-y-8">
+                            <div className="flex justify-between items-center">
+                               <h3 className="text-[12px] font-black text-blue-400 uppercase tracking-[4px]">Tool proficiency</h3>
+                               <button onClick={() => {
+                                  const updated = [...toolSkills, { name: "New Tool", progress: 50, level: "Professional", desc: "" }];
+                                  setToolSkills(updated);
+                                  saveData("admin-skills", { tools: updated });
+                               }} className="w-10 h-10 bg-blue-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
+                            </div>
+                            <div className="space-y-4">
+                               {toolSkills.map((s, i) => (
+                                  <div key={i} className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl group space-y-4">
+                                     <div className="flex justify-between items-start">
+                                        <input type="text" value={s.name} onChange={e => { const n = [...toolSkills]; n[i].name = e.target.value; setToolSkills(n); }} onBlur={() => saveData("admin-skills", { tools: toolSkills })} className="bg-transparent text-white font-bold text-[15px] outline-none" />
+                                        <button onClick={() => {
+                                           const updated = toolSkills.filter((_, idx) => idx !== i);
+                                           setToolSkills(updated);
+                                           saveData("admin-skills", { tools: updated });
+                                        }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={16} /></button>
+                                     </div>
+                                     <div className="flex gap-4">
+                                        <input type="number" value={s.progress} onChange={e => { const n = [...toolSkills]; n[i].progress = parseInt(e.target.value); setToolSkills(n); }} onBlur={() => saveData("admin-skills", { tools: toolSkills })} className="w-16 bg-white/5 border border-white/10 rounded-lg p-2 text-[11px] text-blue-400 font-bold text-center outline-none" placeholder="%" />
+                                        <select value={s.level} onChange={e => { const n = [...toolSkills]; n[i].level = e.target.value; setToolSkills(n); saveData("admin-skills", { tools: n }); }} className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[11px] font-bold text-white/40 outline-none">
+                                           <option className="bg-[#111]">Beginner</option>
+                                           <option className="bg-[#111]">Professional</option>
+                                           <option className="bg-[#111]">Advanced</option>
+                                           <option className="bg-[#111]">Expert</option>
+                                        </select>
+                                     </div>
+                                     <textarea value={s.desc} onChange={e => { const n = [...toolSkills]; n[i].desc = e.target.value; setToolSkills(n); }} onBlur={() => saveData("admin-skills", { tools: toolSkills })} className="w-full bg-transparent text-white/40 text-[11px] outline-none border-t border-white/5 pt-2 resize-none h-12" placeholder="Brief description..." />
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                   </motion.div>
+                )}
+
                 {/* Other tabs maintained but upgraded with creative touches in my imagination (keeping code size manageable) */}
                 {activeTab === "Analytics" && (
                    <div className="flex flex-col items-center justify-center py-40 text-center gap-6">
@@ -457,6 +562,62 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                          <LogOut size={20} /> Terminate Operational Session
                       </button>
                    </motion.div>
+                )}
+                {/* ── SECURITY TAB ── */}
+                {activeTab === "Security" && (
+                  <motion.div key="security" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
+                    <div className="space-y-2">
+                       <h3 className="text-[12px] font-black text-emerald-400 uppercase tracking-[4px]">Security & Architecture Audit</h3>
+                       <p className="text-[14px] text-white/40 font-medium max-w-md">System-wide check for data integrity and security measures.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                          <div className="flex items-center gap-3 text-white/60 mb-2">
+                             <Layers size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Storage Footprint</span>
+                          </div>
+                          <div className="text-3xl font-black text-white">{systemAudit?.totalSize || "0 KB"}</div>
+                          <p className="text-[11px] text-white/30 leading-relaxed font-medium">Current local database usage on this machine.</p>
+                       </div>
+                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                          <div className="flex items-center gap-3 text-emerald-400/60 mb-2">
+                             <ShieldCheck size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Auth Status</span>
+                          </div>
+                          <div className="text-3xl font-black text-white">Active Token</div>
+                          <p className="text-[11px] text-white/30 leading-relaxed font-medium">Session token verified via server-side gateway.</p>
+                       </div>
+                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                          <div className="flex items-center gap-3 text-blue-400/60 mb-2">
+                             <BarChart3 size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Data Objects</span>
+                          </div>
+                          <div className="text-3xl font-black text-white">{systemAudit?.items || 0}</div>
+                          <p className="text-[11px] text-white/30 leading-relaxed font-medium">Total registered entities in local cluster.</p>
+                       </div>
+                    </div>
+
+                    <div className="p-10 bg-red-500/5 border border-red-500/10 rounded-[40px] space-y-6">
+                       <div className="flex items-center gap-4 text-red-400">
+                          <Zap size={20} />
+                          <h4 className="text-[14px] font-black uppercase tracking-widest">Destructive Actions</h4>
+                       </div>
+                       <p className="text-[12px] text-white/40 leading-relaxed max-w-2xl">
+                          Wipe all local administrative data and restore original defaults. This will resolve most "database leaks" or synchronization issues but cannot be undone.
+                       </p>
+                       <div className="flex gap-4">
+                          <button 
+                            onClick={() => {
+                               if (confirm("Initiate total system reset? This wipes ALL local data.")) {
+                                  storage.clearAll();
+                                  window.location.reload();
+                               }
+                            }}
+                            className="px-8 py-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                          >
+                             Factory Reset Database
+                          </button>
+                       </div>
+                    </div>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>

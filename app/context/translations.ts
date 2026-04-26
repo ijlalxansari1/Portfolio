@@ -1,25 +1,32 @@
 export const translations = {
   en: {
     hero: {
-      label: "Senior Data Engineer & AI Researcher",
-      greeting: "Hello, I'm",
+      label: "DATA ENGINEER & AI ETHICS RESEARCHER",
+      greeting: "HELLO, I'M",
       expertIn: "Expert in",
-      titles: ["Data Engineer", "AI Researcher", "Platform Architect", "Data Scientist"],
-      bio: "Architecting truth through technology. I build scalable data infrastructure, govern ethical AI pipelines, and design high-fidelity analytical platforms where data integrity is the primary constraint.",
-      cta_talk: "Start a Conversation",
-      cta_cv: "Get Technical CV",
+      titles: ["Data Engineer", "Pipeline Developer", "AI Ethics Researcher", "Platform Builder"],
+      bio: "Built from a foundation of curiosity and precision, far from the typical tech hubs. I build data pipelines and ethical AI systems — self-taught, self-driven, and convinced that trustworthy data is not a luxury feature. Currently building AETHER — an open-source platform where bias detection, audit logging, and explainability are pipeline requirements, not afterthoughts. Data taught me patience; architecture taught me precision. Stack: Python · dbt · Dagster · FastAPI · DuckDB · PostgreSQL · Kafka · Fairlearn · SHAP",
+      cta_work: "See My Work",
+      cta_talk: "Let's Talk",
       stats: {
-        projects: "Scalable Projects",
-        projects_sub: "Production-grade builds",
-        experience: "Years Impact",
-        experience_sub: "Data engineering focus",
-        certs: "Core Certs",
-        certs_sub: "Verified proficiency"
+        projects: "6+",
+        projects_sub: "Projects Built",
+        hours: "1K+",
+        hours_sub: "Hours Coded",
+        taught: "100%",
+        taught_sub: "Self-Taught"
       },
+      availability: "Open to Opportunities — Remote",
       scroll: "Scroll"
     },
+    story: {
+      label: "THE STORY SO FAR",
+      para1: "I didn't come from a big tech city or a Computer Science degree programme with industry placements. I taught myself data engineering from the ground up, one pipeline at a time. That background shapes how I work: I don't assume resources are unlimited, I document everything, and I don't ship things I don't understand.",
+      para2: "Most data systems are built to be fast. I'm building AETHER to be honest. Bias detection, SHAP explainability, append-only audit logs, and a 24-permission RBAC matrix aren't features I added — they're the reason the platform exists. Data governance isn't a compliance checkbox. It's the foundation.",
+      para3: "I'm early in my career and I know it. What I also know: I've built 6 end-to-end projects, completed structured data engineering training, and I write about what I build. I'm looking for teams who care about doing data work properly — not just quickly."
+    },
     sidebar: {
-      status_available: "Available",
+      status_available: "Open to Opportunities",
       status_busy: "Busy",
       status_away: "Away",
       now: "Now",
@@ -29,52 +36,74 @@ export const translations = {
     services: {
       title: "SERVICES",
       subtitle: "What Services I Provide?",
+      subheading: "Here's what I can build for you. I'm early-career — my rates reflect that. My standards don't.",
       pipelines: {
+        badge: "Pipelines",
         title: "Data Pipeline Engineering",
-        body: "Design and build scalable ETL/ELT pipelines using Python, dbt, Dagster, and Airflow. From raw ingestion to clean, tested, documented data models ready for analytics."
+        body: "End-to-end ETL/ELT pipelines built with Python, dbt Core, and Dagster. Every model tested. Every transformation documented. Lineage tracked from raw source to clean mart."
       },
       ai: {
-        title: "Ethical AI Auditing",
-        body: "Bias detection, fairness evaluation, and SHAP-based explainability audits for ML models and analytical systems using Fairlearn and custom audit metrics."
+        badge: "Ethics & AI",
+        title: "Bias Detection & Explainability",
+        body: "ML fairness audits using Fairlearn and SHAP. Demographic parity, equalized odds, feature importance — delivered as a structured report your team can act on, not just read."
       },
       platform: {
-        title: "Platform Architecture",
-        body: "Full-stack data platform design: Next.js frontends, FastAPI backends, PostgreSQL + DuckDB storage, JWT auth, RBAC systems, and AES-256 encryption."
+        badge: "Platforms",
+        title: "Data Platform Development",
+        body: "Full-stack data systems: Next.js frontends, FastAPI backends, DuckDB and PostgreSQL storage, JWT auth, and RBAC. Built to be auditable from day one."
       },
       storytelling: {
-        title: "Data Storytelling & Reporting",
-        body: "Transform raw data into honest, interpretable narratives. Dashboard design, data validation, and analytical workflows documented for non-technical stakeholders."
+        badge: "Analysis",
+        title: "Data Analysis & Storytelling",
+        body: "Turn raw data into clear, honest narratives. Exploratory analysis, dashboard design, and documented workflows — built for people who need to understand the data, not just see it."
       },
       cta: "Get Started →"
     },
     projects: {
-      title: "Projects",
+      title: "PROJECTS",
       subtitle: "Explore Portfolio By Technology",
+      subheading: "End-to-end projects demonstrating pipeline architecture, ethical AI, and full-stack data platform development.",
       filter_all: "All",
       view_case_study: "View Case Study"
     },
     experience: {
-      label: "My Journey",
-      title: "Resume & Experience",
-      exp_title: "Experience",
-      edu_title: "Education"
+      label: "RESUME",
+      title: "Trajectory & Training",
+      exp_title: "Focus Areas",
+      edu_title: "Education",
+      certs_title: "Certifications & Courses"
     },
     contact: {
-      label: "Get in Touch",
-      title: "Ready to Start a Project?",
-      bio: "I'm currently available for freelance work and technical consultations. Fill out the form below and I'll get back to you within 24 hours.",
-      name: "Full Name",
-      email: "Email Address",
+      label: "CONTACT",
+      title: "Let's Get in Touch!",
+      subheading: "Ready to build something ethical, efficient, and impactful? Let's talk about your data architecture.",
+      bio: "Available for remote work globally.",
+      name: "Your Name*",
+      email: "Your Email*",
       subject: "Subject",
       subject_placeholder: "Select a Subject",
-      message: "Your Message",
+      message: "Message*",
       message_placeholder: "Tell me about your project goals...",
-      submit_success: "Message Sent Successfully!",
-      submit_idle: "Send Message Now",
-      error: "Please fill in all required fields to proceed.",
+      submit_success: "Thanks! I'll get back to you within 24-48 hours.",
+      submit_idle: "Send Message →",
+      error: "Please fill in all required fields.",
       email_label: "Email",
-      location_label: "Location",
-      location_value: "Remote / Worldwide"
+      email_value: "ansariijlal90@gmail.com",
+      location_label: "Focus",
+      location_value: "Global Remote",
+      portfolio_label: "Portfolio",
+      portfolio_value: "dataden.vercel.app",
+      available_label: "Available",
+      available_value: "Immediately (Remote)"
+    },
+    pricing: {
+      label: "HONEST PRICING",
+      title: "Transparent Rates",
+      subheading: "Early-career rates. Production-grade work. Everything documented, tested, and handed over cleanly.",
+      hour_label: "per hour",
+      day_label: "per day",
+      hour_tagline: "Scoping, review, consulting",
+      day_tagline: "End-to-end project delivery"
     },
     settings: {
       title: "Modes",
@@ -86,25 +115,32 @@ export const translations = {
   },
   de: {
     hero: {
-      label: "Senior Data Engineer & KI-Forscher",
-      greeting: "Hallo, ich bin",
+      label: "DATA ENGINEER & KI-ETHIK-FORSCHER",
+      greeting: "HALLO, ICH BIN",
       expertIn: "Experte für",
-      titles: ["Daten-Ingenieur", "KI-Forscher", "Plattform-Architekt", "Datenwissenschaftler"],
-      bio: "Architektur der Wahrheit durch Technologie. Ich entwickle skalierbare Dateninfrastrukturen, leite ethische KI-Pipelines und entwerfe hochpräzise Analyseplattformen, bei denen Datenintegrität an erster Stelle steht.",
-      cta_talk: "Gespräch beginnen",
-      cta_cv: "Lebenslauf abrufen",
+      titles: ["Daten-Ingenieur", "Pipeline-Entwickler", "KI-Ethik-Forscher", "Plattform-Entwickler"],
+      bio: "Entwickelt aus einer Grundlage von Neugier und Präzision, fernab der typischen Tech-Zentren. Ich baue Datenpipelines und ethische KI-Systeme — autodidaktisch, eigenmotiviert und davon überzeugt, dass vertrauenswürdige Daten kein Luxusgut sind. Derzeit entwickle ich AETHER — eine Open-Source-Plattform, bei der Bias-Erkennung, Audit-Logging und Erklärbarkeit Pipeline-Anforderungen sind, keine Nebensache. Daten lehrten mich Geduld; Architektur lehrte mich Präzision. Stack: Python · dbt · Dagster · FastAPI · DuckDB · PostgreSQL · Kafka · Fairlearn · SHAP",
+      cta_work: "Meine Arbeit",
+      cta_talk: "Kontakt",
       stats: {
-        projects: "Skalierbare Projekte",
-        projects_sub: "Produktionsreife Systeme",
-        experience: "Jahre Erfahrung",
-        experience_sub: "Fokus Data Engineering",
-        certs: "Kern-Zertifikate",
-        certs_sub: "Geprüfte Kompetenz"
+        projects: "6+",
+        projects_sub: "Projekte gebaut",
+        hours: "1K+",
+        hours_sub: "Stunden codiert",
+        taught: "100%",
+        taught_sub: "Autodidakt"
       },
+      availability: "Offen für Gelegenheiten — Remote",
       scroll: "Scrollen"
     },
+    story: {
+      label: "DIE BISHERIGE GESCHICHTE",
+      para1: "Ich komme nicht aus einer großen Tech-Stadt oder einem Informatik-Studium mit Praktika in der Industrie. Ich habe mir das Data Engineering von Grund auf selbst beigebracht, eine Pipeline nach der anderen. Dieser Hintergrund prägt meine Arbeitsweise: Ich gehe nicht davon aus, dass Ressourcen unbegrenzt sind, ich dokumentiere alles und ich liefere nichts aus, was ich nicht verstehe.",
+      para2: "Die meisten Datensysteme sind auf Schnelligkeit ausgelegt. Ich baue AETHER, um ehrlich zu sein. Bias-Erkennung, SHAP-Erklärbarkeit, Append-Only-Audit-Logs und eine RBAC-Matrix mit 24 Berechtigungen sind keine Features, die ich hinzugefügt habe — sie sind der Grund, warum die Plattform existiert.",
+      para3: "Ich stehe am Anfang meiner Karriere und das weiß ich. Was ich auch weiß: Ich habe 6 End-to-End-Projekte aufgebaut, eine strukturierte Data-Engineering-Ausbildung absolviert und ich schreibe über das, was ich baue. Ich suche Teams, denen es wichtig ist, Datenarbeit ordentlich zu machen — nicht nur schnell."
+    },
     sidebar: {
-      status_available: "Verfügbar",
+      status_available: "Offen für Gelegenheiten",
       status_busy: "Besetzt",
       status_away: "Abwesend",
       now: "Jetzt",
@@ -113,53 +149,75 @@ export const translations = {
     },
     services: {
       title: "DIENSTLEISTUNGEN",
-      subtitle: "Welche Dienstleistungen biete ich an?",
+      subtitle: "Welche Dienste biete ich an?",
+      subheading: "Hier ist, was ich für Sie bauen kann. Ich stehe am Anfang meiner Karriere — meine Preise spiegeln das wider. Meine Standards nicht.",
       pipelines: {
+        badge: "Pipelines",
         title: "Datenpipeline-Engineering",
-        body: "Entwurf und Aufbau skalierbarer ETL/ELT-Pipelines mit Python, dbt, Dagster und Airflow. Von der Rohdatenerfassung bis zu sauberen, getesteten und dokumentierten Datenmodellen für die Analyse."
+        body: "End-to-End ETL/ELT-Pipelines mit Python, dbt Core und Dagster. Jedes Modell getestet. Jede Transformation dokumentiert. Lineage vom Rohdaten-Source bis zum Clean-Mart verfolgt."
       },
       ai: {
-        title: "Ethisches KI-Auditing",
-        body: "Bias-Erkennung, Fairness-Bewertung und SHAP-basierte Erklärbarkeits-Audits für ML-Modelle und Analysesysteme mit Fairlearn und individuellen Audit-Metriken."
+        badge: "Ethik & KI",
+        title: "Bias-Erkennung & Erklärbarkeit",
+        body: "ML-Fairness-Audits mit Fairlearn und SHAP. Demografische Parität, Equalized Odds, Feature-Bedeutung — geliefert als strukturierter Bericht, mit dem Ihr Team arbeiten kann."
       },
       platform: {
-        title: "Plattform-Architektur",
-        body: "Full-Stack-Design von Datenplattformen: Next.js-Frontends, FastAPI-Backends, PostgreSQL + DuckDB-Speicher, JWT-Auth, RBAC-Systeme und AES-256-Verschlüsselung."
+        badge: "Plattformen",
+        title: "Datenplattform-Entwicklung",
+        body: "Full-Stack-Datensysteme: Next.js-Frontends, FastAPI-Backends, DuckDB- und PostgreSQL-Speicher, JWT-Auth und RBAC. Von Tag eins an auditierbar gebaut."
       },
       storytelling: {
-        title: "Daten-Storytelling & Reporting",
-        body: "Verwandlung von Rohdaten in ehrliche, interpretierbare Geschichten. Dashboard-Design, Datenvalidierung und Analyse-Workflows, dokumentiert für nicht-technische Stakeholder."
+        badge: "Analyse",
+        title: "Datenanalyse & Storytelling",
+        body: "Rohdaten in klare, ehrliche Geschichten verwandeln. Explorative Analyse, Dashboard-Design und dokumentierte Workflows — gebaut für Menschen, die Daten verstehen müssen."
       },
       cta: "Jetzt starten →"
     },
     projects: {
-      title: "Projekte",
+      title: "PROJEKTE",
       subtitle: "Portfolio nach Technologie erkunden",
+      subheading: "Projekte, die Pipeline-Architektur, ethische KI und Plattform-Entwicklung demonstrieren.",
       filter_all: "Alle",
       view_case_study: "Fallstudie ansehen"
     },
     experience: {
-      label: "Mein Werdegang",
-      title: "Lebenslauf & Erfahrung",
-      exp_title: "Erfahrung",
-      edu_title: "Bildung"
+      label: "RESUME",
+      title: "Trajektorie & Training",
+      exp_title: "Schwerpunkte",
+      edu_title: "Bildung",
+      certs_title: "Zertifikate & Kurse"
     },
     contact: {
-      label: "Kontakt aufnehmen",
-      title: "Bereit für ein Projekt?",
-      bio: "Ich stehe derzeit für freiberufliche Projekte und technische Beratungen zur Verfügung. Füllen Sie das Formular aus und ich melde mich innerhalb von 24 Stunden bei Ihnen.",
-      name: "Vollständiger Name",
-      email: "E-Mail-Adresse",
+      label: "KONTAKT",
+      title: "Lassen Sie uns in Kontakt treten!",
+      subheading: "Bereit, etwas Ethisches, Effizientes und Wirkungsvolles zu bauen? Lassen Sie uns über Ihre Datenarchitektur sprechen.",
+      bio: "Weltweit für Remote-Arbeit verfügbar.",
+      name: "Ihr Name*",
+      email: "Ihre E-Mail*",
       subject: "Betreff",
       subject_placeholder: "Betreff auswählen",
-      message: "Ihre Nachricht",
+      message: "Nachricht*",
       message_placeholder: "Erzählen Sie mir von Ihren Projektzielen...",
-      submit_success: "Nachricht erfolgreich gesendet!",
-      submit_idle: "Nachricht jetzt senden",
+      submit_success: "Danke! Ich melde mich innerhalb von 24-48 Stunden.",
+      submit_idle: "Nachricht senden →",
       error: "Bitte füllen Sie alle erforderlichen Felder aus.",
       email_label: "E-Mail",
-      location_label: "Standort",
-      location_value: "Remote / Weltweit"
+      email_value: "ansariijlal90@gmail.com",
+      location_label: "Fokus",
+      location_value: "Global Remote",
+      portfolio_label: "Portfolio",
+      portfolio_value: "dataden.vercel.app",
+      available_label: "Verfügbar",
+      available_value: "Sofort (Remote)"
+    },
+    pricing: {
+      label: "EHRLICHE PREISE",
+      title: "Transparente Raten",
+      subheading: "Frühkarriere-Raten. Produktionsreife Arbeit. Alles dokumentiert, getestet und sauber übergeben.",
+      hour_label: "pro Stunde",
+      day_label: "pro Tag",
+      hour_tagline: "Scoping, Review, Beratung",
+      day_tagline: "End-to-End Projektlieferung"
     },
     settings: {
       title: "Modi",
