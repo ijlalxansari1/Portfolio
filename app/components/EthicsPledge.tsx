@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const pledges = [
@@ -40,7 +40,7 @@ export default function EthicsPledge() {
 
   return (
     <div className="w-full">
-      <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">My Commitment</p>
+      <div className="section-pill"><ShieldCheck size={14} /> My Commitment</div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-8">The Data Ethics Pledge</h2>
 
       <div className="bg-[#0d0d0d] border border-[var(--accent)]/30 rounded-[28px] p-8 md:p-12 shadow-2xl relative overflow-hidden">

@@ -40,7 +40,7 @@ export default function Testimonials() {
 
   return (
     <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center">TESTIMONIALS</p>
+      <div className="flex justify-center"><div className="section-pill"><Quote size={14} /> Testimonials</div></div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12 text-center">Here&apos;s What My Collaborators Say</h2>
 
       <div className="relative max-w-[800px] mx-auto px-12">

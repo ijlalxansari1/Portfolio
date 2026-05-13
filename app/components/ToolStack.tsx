@@ -48,7 +48,7 @@ export default function ToolStack() {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-          <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">TOOL SKILLS</p>
+          <div className="section-pill"><Wrench size={14} /> Tool Skills</div>
           <h2 className="section-heading text-[32px] md:text-[42px] font-black text-white leading-tight">Tool Stack</h2>
         </div>
         <p className="text-[14px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed">

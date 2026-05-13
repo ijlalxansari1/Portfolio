@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Newspaper } from "lucide-react";
 
 const articles = [
   {
@@ -41,7 +41,7 @@ const articles = [
 export default function Blog() {
   return (
     <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">MY BLOG</p>
+      <div className="section-pill"><Newspaper size={14} /> Blog</div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">Exploring My Articles</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

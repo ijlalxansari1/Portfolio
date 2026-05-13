@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Activity, ShieldCheck, Layers, BarChart3 } from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, Layers, BarChart3, Wrench } from "lucide-react";
 
 const services = [
   {
@@ -37,7 +37,7 @@ const services = [
 export default function Services() {
   return (
     <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">SERVICES</p>
+      <div className="section-pill"><Wrench size={14} /> Services</div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">What Services I Provide?</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

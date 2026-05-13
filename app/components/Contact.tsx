@@ -9,32 +9,50 @@ export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) { setStatus("error"); return; }
-    
-    const submission = {
-      ...formData,
-      id: Date.now(),
-      date: new Date().toLocaleString(),
-      read: false
-    };
-    
-    const existing = JSON.parse(localStorage.getItem("admin-submissions") || "[]");
-    localStorage.setItem("admin-submissions", JSON.stringify([submission, ...existing]));
-    window.dispatchEvent(new Event('admin-updated'));
-    trackEvent("form_submit", { name: formData.name });
+    if (!formData.name || !formData.email || !formData.message) {
+      setStatus("error");
+      return;
+    }
 
-    setStatus("success");
-    setFormData({ name: "", email: "", subject: "", message: "" });
-    setTimeout(() => setStatus("idle"), 5000);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      const submission = {
+        ...formData,
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        read: false
+      };
+
+      const existing = JSON.parse(localStorage.getItem("admin-submissions") || "[]");
+      localStorage.setItem("admin-submissions", JSON.stringify([submission, ...existing]));
+      window.dispatchEvent(new Event('admin-updated'));
+      trackEvent("form_submit", { name: formData.name });
+
+      setStatus("success");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch (error) {
+      console.error("Submission error:", error);
+      setStatus("error");
+    }
   };
 
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
-        <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center text-[var(--accent)]">Get in Touch</p>
-        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">Ready to Start a Project?</h2>
+        <div className="flex justify-center"><div className="section-pill"><Send size={14} /> Contact</div></div>
+        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">Let&apos;s Get in Touch!</h2>
         <p className="text-[16px] text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto leading-relaxed">
           I&apos;m currently available for freelance work and technical consultations. 
           Fill out the form below and I&apos;ll get back to you within 24 hours.

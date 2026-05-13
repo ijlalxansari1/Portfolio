@@ -30,7 +30,7 @@ export default function DemosHub() {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-          <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">Live Experiences</p>
+          <div className="section-pill"><FlaskConical size={14} /> Live Experiences</div>
           <h2 className="section-heading text-[32px] font-black text-white">Project Demos Hub</h2>
         </div>
         <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed">

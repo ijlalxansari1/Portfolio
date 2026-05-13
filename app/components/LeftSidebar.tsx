@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Linkedin, Github, Twitter, Mail, MessageSquare } from "lucide-react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { trackEvent } from "./AnalyticsTracker";
 
 const titles = ["Data Engineer", "AI Researcher", "Platform Architect", "Data Scientist"];
@@ -46,13 +46,6 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
     document.body.removeChild(link);
   };
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
-
   const getStatusColor = () => {
     if (availability.status === "Available") return "var(--accent)";
     if (availability.status === "Busy") return "#ff5f56";
@@ -60,24 +53,18 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
   };
 
   return (
-    <div className="sidebar w-full h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border)] transition-all duration-400">
+    <div className="sidebar w-full h-auto lg:h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border)] transition-all duration-400 pb-8 lg:pb-0">
       
       <div 
-        className="relative w-full overflow-hidden" 
-        style={{ height: "55%", perspective: "1000px" }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          x.set((e.clientX - rect.left) / rect.width - 0.5);
-          y.set((e.clientY - rect.top) / rect.height - 0.5);
-        }}
-        onMouseLeave={() => { x.set(0); y.set(0); }}
+        className="relative w-full overflow-hidden px-5 pt-5" 
+        style={{ height: 'auto', aspectRatio: '1/1.1' }}
       >
-        <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="relative h-full w-full">
+        <div className="relative h-full w-full rounded-2xl overflow-hidden border border-[var(--border)]">
           <Image
             src="/profile.png"
             alt="Ijlal Ansari" fill className="object-cover object-top" priority
           />
-        </motion.div>
+        </div>
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[var(--bg-card)] to-transparent z-20" />
       </div>
 
@@ -93,7 +80,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             </motion.p>
           </AnimatePresence>
         </div>
-        <h2 className="text-[30px] font-black text-white tracking-[-0.02em] mb-4 leading-none">Ijlal Ansari</h2>
+        <h2 className="text-[30px] font-black text-[var(--text-primary)] tracking-[-0.02em] mb-4 leading-none">Ijlal Ansari</h2>
         <div className="flex items-center gap-3 px-4 py-1.5 bg-[var(--bg-primary)] border border-[var(--border)] rounded-full mb-6 shadow-inner">
           <div className="w-2.5 h-2.5 rounded-full relative" style={{ backgroundColor: getStatusColor() }}>
             {availability.status === 'Available' && (
@@ -113,17 +100,17 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
             { Icon: MessageSquare, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }, i) => (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[var(--bg-primary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
               <Icon size={16} />
             </a>
           ))}
         </div>
       </div>
 
-      <div className="w-full flex border-t border-[#222] h-[70px] bg-[#141414] mt-auto">
+      <div className="w-full flex border-t border-[var(--border)] h-[70px] bg-[var(--bg-secondary)] mt-auto">
         <button 
           onClick={downloadResume}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[#222]"
+          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[var(--border)]"
         >
           Download CV
         </button>

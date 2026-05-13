@@ -68,7 +68,7 @@ export default function GitHubFeed() {
 
   return (
     <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">LIVE ACTIVITY</p>
+      <div className="section-pill"><Github size={14} /> Live Activity</div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">What I&apos;m Building Right Now</h2>
 
       <div className="space-y-4 mb-10">

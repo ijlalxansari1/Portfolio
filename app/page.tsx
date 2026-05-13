@@ -145,67 +145,76 @@ export default function Home() {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden bg-[var(--bg-primary)] transition-all duration-400"
+      className="relative lg:fixed lg:inset-0 lg:overflow-hidden bg-[var(--bg-primary)] transition-all duration-400 min-h-screen lg:min-h-0"
     >
-      {/* Cinematic Background Video */}
+      {/* Cinematic Background Video (dark themes only) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover opacity-50 scale-105"
-        >
-          <source src="/bg.mp4" type="video/mp4" />
-          <source src="https://ryancv.bslthemes.com/dataops/wp-content/uploads/sites/20/2024/06/r-video-01-1.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-[#080808]/60 backdrop-blur-[1px]" />
-        
-        {/* Animated Cyber Grid */}
-        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
-             style={{ 
-               backgroundImage: 'linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)',
-               backgroundSize: '50px 50px',
-               maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
-             }} 
-        />
-        
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#080808]" />
+        {theme === 'light' ? (
+          /* RyanCV-style lavender gradient for light mode */
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(135deg, #e8e4f0 0%, #d6daf0 25%, #e0d8ee 50%, #dce4f5 75%, #e8e4f0 100%)'
+          }} />
+        ) : (
+          <>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover opacity-50 scale-105"
+            >
+              <source src="/bg.mp4" type="video/mp4" />
+              <source src="https://ryancv.bslthemes.com/dataops/wp-content/uploads/sites/20/2024/06/r-video-01-1.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-[#080808]/50 backdrop-blur-[1px]" />
+            
+            {/* Animated Cyber Grid */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                 style={{ 
+                   backgroundImage: 'linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)',
+                   backgroundSize: '50px 50px',
+                   maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
+                 }} 
+            />
+            
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#080808]" />
+          </>
+        )}
       </div>
 
       <AnalyticsTracker />
       
-      {/* ── Sidebar Navigation ── */}
-      <nav className="absolute left-5 top-[24px] hidden md:flex flex-col w-[64px] bg-[var(--bg-card)] border border-[var(--border)] py-6 rounded-[32px] items-center gap-2 shadow-2xl z-50">
-        <div className="mb-4 pb-4 border-b border-white/5">
+      {/* ── Responsive Navigation ── */}
+      <nav className="fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
+        <div className="hidden lg:block mb-3 pb-3 border-b border-[var(--border-subtle)]">
           <ThemeBuddy />
         </div>
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => scrollToSection(item.id)}
-            className={`group relative w-10 h-10 flex items-center justify-center rounded-[8px] transition-all duration-300 ${
-              activeSection === item.id ? "nav-active" : ""
-            }`}
-          >
-            <div className={activeSection === item.id ? "text-[var(--accent)]" : "text-[#666666] group-hover:text-white"}>
+        <div className="flex flex-row lg:flex-col items-center gap-4 lg:gap-3 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className={`group relative min-w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${
+                activeSection === item.id ? "bg-[var(--accent)]/15 text-[var(--accent)]" : "text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)]"
+              }`}
+            >
               {item.icon}
-            </div>
-            <span className="pointer-events-none absolute left-full ml-4 px-3 py-1.5 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.2em] rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap transition-all -translate-x-2 group-hover:translate-x-0 z-50 shadow-2xl">
-              {item.label}
-            </span>
-          </button>
-        ))}
+              <span className="hidden lg:block pointer-events-none absolute left-full ml-4 px-3 py-1.5 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.2em] rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap transition-all -translate-x-2 group-hover:translate-x-0 z-50 shadow-2xl">
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
       </nav>
 
       {/* ── Main Layout ── */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-6 md:pl-[100px]">
-        <div className="w-full h-full max-w-[1200px] flex flex-col md:flex-row gap-[18px] overflow-y-auto md:overflow-hidden">
-          <div className="w-full md:w-[340px] shrink-0 md:h-full">
+      <div className="relative lg:absolute lg:inset-0 flex items-center justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0">
+        <div className="w-full h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] lg:overflow-hidden">
+          <div className="w-full lg:w-[340px] shrink-0 lg:h-full">
             <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
           </div>
 
-          <div className="flex-1 h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400">
+          <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400 relative top-glow">
             <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
               <div id="sections-container" className="p-10 lg:p-14 space-y-16 relative">
                 <motion.section 

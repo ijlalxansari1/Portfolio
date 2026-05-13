@@ -21,16 +21,17 @@
 
 /* ── LIGHT MODE ── */
 html.light {
-  --bg-primary: #f5f5f5;
-  --bg-secondary: #ffffff;
+  --bg-primary: #e8e4f0;
+  --bg-secondary: #f8f8fc;
   --bg-card: #ffffff;
-  --bg-sidebar: #f1f3f5;
-  --text-primary: #0d0d0d;
-  --text-secondary: #555555;
+  --bg-sidebar: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
   --accent: #00b85e;
   --accent-rgb: 0, 184, 94;
-  --border: #e0e0e0;
-  --border-subtle: rgba(0,0,0,0.05);
+  --border: #e2e2ea;
+  --border-subtle: rgba(0,0,0,0.06);
 }
 
 /* ── CMD TERMINAL MODE ── */
@@ -318,6 +319,57 @@ button, a { transition: all 0.3s ease; }
   font-size: 11px;
   color: var(--accent);
   font-weight: 700;
+}
+
+/* RyanCV-style Section Pill Badge */
+.section-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.section-pill svg {
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* Content Panel Top Glow */
+.top-glow {
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 -30px 80px -20px rgba(255, 255, 255, 0.04);
+}
+
+html.light .top-glow {
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.top-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+html.light .top-glow::before {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
 }
 
 /* Blinking Cursor */

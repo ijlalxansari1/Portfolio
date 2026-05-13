@@ -1,41 +1,61 @@
-import { NextRequest, NextResponse } from "next/server";
-import { sql } from "@vercel/postgres";
+import { NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+// Basic rate limiting map (IP -> timestamp)
+const rateLimitMap = new Map<string, number>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const { name, email, message, serviceType } = body;
+    const ip = req.headers.get('x-forwarded-for') || 'unknown';
+    const now = Date.now();
+    const lastRequest = rateLimitMap.get(ip);
 
-    if (!name || !email || !message || !serviceType) {
+    if (lastRequest && now - lastRequest < RATE_LIMIT_WINDOW) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: 'Too many requests. Please wait a minute.' },
+        { status: 429 }
+      );
+    }
+
+    const { name, email, subject, message } = await req.json();
+
+    // 1. Validation
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    // Insert into Vercel Postgres
-    await sql`
-      INSERT INTO emails (name, email, service_type, message, date, status)
-      VALUES (
-        ${name}, 
-        ${email}, 
-        ${serviceType}, 
-        ${message}, 
-        ${new Date().toISOString()}, 
-        'unread'
-      )
-    `;
+    // 2. Simple email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
+    // 3. Sanitization (basic)
+    const sanitizedName = name.replace(/[<>]/g, '');
+    const sanitizedMessage = message.replace(/[<>]/g, '');
+
+    // Update rate limit
+    rateLimitMap.set(ip, now);
+
+    // TODO: Integrate with an email provider (Resend, SendGrid, etc.)
+    // For now, we simulate a successful send.
+    console.log(`Contact form submission: ${sanitizedName} (${email}) - ${sanitizedMessage}`);
 
     return NextResponse.json(
-      { success: true, message: "Email submitted successfully" },
+      { message: 'Message sent successfully' },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error submitting email:", error);
+    console.error('Contact API Error:', error);
     return NextResponse.json(
-      { error: "Failed to submit email" },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
-

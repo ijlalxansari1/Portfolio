@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import { Download, ArrowRight, Zap, Clock, Award } from "lucide-react";
+import { Download, ArrowRight } from "lucide-react";
 import Magnetic from "./Magnetic";
 
 const titles = [
@@ -62,35 +62,24 @@ export default function About() {
       </div>
 
       <div className="relative z-10 space-y-6 mb-12">
-        <motion.div 
+        <motion.p 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="section-label inline-flex items-center gap-3 px-4 py-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.25em] rounded-full"
+          className="text-[var(--text-secondary)] opacity-50 text-[18px] lg:text-[22px] font-bold"
         >
-          <span className="w-2 h-2 bg-[var(--accent)] rounded-full animate-pulse" />
-          Senior Data Engineer & AI Researcher
-        </motion.div>
+          Hello, I&apos;m <span className="text-[var(--accent)] opacity-100">Ijlal Ansari</span>
+        </motion.p>
 
-        <div className="space-y-4">
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="hero-greeting text-[var(--text-secondary)] opacity-50 text-[18px] lg:text-[22px] font-bold"
-          >
-            Hello, I&apos;m
-          </motion.p>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="hero-name text-[64px] lg:text-[92px] font-black text-[var(--text-primary)] leading-[0.95] tracking-tight"
-          >
-            Ijlal <span className="text-[var(--accent)]">Ansari.</span>
-          </motion.h1>
-        </div>
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="hero-name text-[42px] md:text-[64px] lg:text-[92px] font-black text-[var(--text-primary)] leading-[0.95] tracking-tight"
+        >
+          Ijlal <span className="text-[var(--accent)]">Ansari.</span>
+        </motion.h1>
 
-        <div className="flex items-center gap-4 flex-wrap text-[24px] lg:text-[32px] font-black">
+        <div className="flex items-center gap-4 flex-wrap text-[18px] md:text-[24px] lg:text-[32px] font-black">
           <span className="text-[var(--text-secondary)] opacity-30">Expert in</span>
           <span className="text-[var(--accent)] relative">
             <span className="typewriter-text">{displayText}</span>
@@ -103,7 +92,7 @@ export default function About() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="text-[17px] lg:text-[20px] text-[var(--text-secondary)] opacity-60 leading-[1.8] max-w-[700px] mb-12 font-medium"
+        className="text-[14px] md:text-[17px] lg:text-[20px] text-[var(--text-secondary)] opacity-60 leading-[1.8] max-w-[700px] mb-12 font-medium"
       >
         Architecting truth through technology. I build scalable data infrastructure, 
         govern ethical AI pipelines, and design high-fidelity analytical platforms 
@@ -152,36 +141,29 @@ export default function About() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 pt-12 border-t border-white/5"
+        className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 pt-12 border-t border-[var(--border)]"
       >
         {[
-          { num: "15+", label: "Scalable Projects", sub: "Production-grade builds", icon: <Zap className="text-yellow-400" size={24} />, color: "from-yellow-400 to-orange-500" },
-          { num: "3+", label: "Years Impact", sub: "Data engineering focus", icon: <Clock className="text-blue-400" size={24} />, color: "from-blue-400 to-cyan-500" },
-          { num: "5+", label: "Core Certs", sub: "Verified proficiency", icon: <Award className="text-[var(--accent)]" size={24} />, color: "from-[var(--accent)] to-emerald-500" },
+          { num: "15+", label: "Scalable", sub: "Projects" },
+          { num: "3+", label: "Years", sub: "of Experience" },
+          { num: "5+", label: "Core", sub: "Certifications" },
         ].map((stat, i) => (
           <motion.div 
             key={i} 
-            whileHover={{ y: -10, rotateX: 5, rotateY: -5 }}
-            className="flex flex-col group relative"
-            style={{ transformStyle: "preserve-3d" }}
+            whileHover={{ y: -4 }}
+            className="flex items-baseline gap-4"
           >
-            <div className="flex items-center gap-4 mb-3" style={{ transform: "translateZ(20px)" }}>
-               <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-[var(--accent)]/30 transition-all duration-500 shadow-xl">
-                  {stat.icon}
-               </div>
-               <span className={`text-[44px] font-black leading-none tracking-tighter bg-gradient-to-br ${stat.color} bg-clip-text text-transparent`}>
-                 {stat.num}
-               </span>
-            </div>
-            <div className="space-y-1" style={{ transform: "translateZ(10px)" }}>
-              <span className="block text-[11px] font-black text-white uppercase tracking-[0.1em]">
+            <span className="text-[42px] md:text-[56px] font-black leading-none tracking-tighter text-[var(--text-primary)]">
+              {stat.num}
+            </span>
+            <div className="space-y-0">
+              <span className="block text-[13px] font-bold text-[var(--text-secondary)]">
                 {stat.label}
               </span>
-              <span className="block text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">
+              <span className="block text-[13px] font-bold text-[var(--text-secondary)]">
                 {stat.sub}
               </span>
             </div>
-            <div className={`absolute -inset-4 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-[0.03] blur-2xl transition-all pointer-events-none`} />
           </motion.div>
         ))}
       </motion.div>

@@ -79,7 +79,7 @@ export default function GeneralSkills() {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-          <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">Capabilities</p>
+          <div className="section-pill"><Cpu size={14} /> Capabilities</div>
           <h2 className="text-[32px] font-black text-white">General Expertise</h2>
         </div>
       </div>

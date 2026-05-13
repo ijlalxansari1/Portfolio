@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Briefcase } from "lucide-react";
 import ProjectModal from "./ProjectModal";
 
 const defaultProjects = [
@@ -73,7 +73,7 @@ export default function Projects() {
 
   return (
     <div className="w-full">
-      <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">Projects</p>
+      <div className="section-pill"><Briefcase size={14} /> Projects</div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-8">Explore Portfolio By Technology</h2>
 
       {/* Filter tabs */}
