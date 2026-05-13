@@ -5,51 +5,61 @@ import { motion } from "framer-motion";
 import { 
   CheckCircle2, Database, Globe, Zap, Cpu, ShieldCheck, Search, 
   FileCode, Terminal, Layout, MessageSquare, Layers, Server, 
-  Code, Activity, Lock, Share2
+  Code, Activity, Lock, Share2, Package
 } from "lucide-react";
 
-const skillGroups = [
+import { useLanguage } from "../context/LanguageContext";
+
+const skillGroups = (language: string) => [
   {
-    title: "Data Core",
+    title: "DATABASE",
     icon: <Database size={18} className="text-blue-400" />,
     skills: [
-      { name: "DuckDB", level: "Expert", desc: "In-process OLAP & analytical logic", icon: <Layers size={14} className="text-cyan-400" /> },
-      { name: "PostgreSQL", level: "Advanced", desc: "Relational modeling & ACID compliance", icon: <Database size={14} className="text-blue-500" /> },
-      { name: "MongoDB", level: "Intermediate", desc: "Document storage & flexible schemas", icon: <FileCode size={14} className="text-green-500" /> },
-      { name: "Redis", level: "Intermediate", desc: "High-speed caching & rate limiting", icon: <Zap size={14} className="text-red-500" /> },
+      { name: "DuckDB", level: "82%", desc: language === 'en' ? "In-process OLAP & analytical logic" : "In-Process-OLAP & Analyse-Logik", icon: <Layers size={14} className="text-cyan-400" /> },
+      { name: "PostgreSQL", level: "78%", desc: language === 'en' ? "Relational modeling & ACID compliance" : "Relationale Modellierung & ACID-Konformität", icon: <Database size={14} className="text-blue-500" /> },
+      { name: "MongoDB", level: "62%", desc: language === 'en' ? "Document storage & flexible schemas" : "Dokumentspeicherung & flexible Schemas", icon: <FileCode size={14} className="text-green-500" /> },
+      { name: "Redis", level: "58%", desc: language === 'en' ? "High-speed caching & rate limiting" : "Hochgeschwindigkeits-Caching & Ratenbegrenzung", icon: <Zap size={14} className="text-red-500" /> },
     ]
   },
   {
-    title: "Linguistic",
+    title: language === 'en' ? "LANGUAGES" : "SPRACHEN",
     icon: <Globe size={18} className="text-[var(--accent)]" />,
     skills: [
-      { name: "English", level: "Professional", desc: "Technical documentation & collaboration", icon: <MessageSquare size={14} className="text-emerald-400" /> },
-      { name: "Urdu", level: "Native", desc: "Primary language proficiency", icon: <Globe size={14} className="text-[var(--accent)]" /> },
-      { name: "Arabic", level: "Conversational", desc: "Basic professional interaction", icon: <Layout size={14} className="text-amber-400" /> },
+      { name: "English", level: "80%", desc: language === 'en' ? "Technical documentation & collaboration" : "Technische Dokumentation & Zusammenarbeit", icon: <MessageSquare size={14} className="text-emerald-400" /> },
+      { name: "Urdu", level: "100%", desc: language === 'en' ? "Primary language proficiency" : "Muttersprachliche Kompetenz", icon: <Globe size={14} className="text-[var(--accent)]" /> },
+      { name: "Arabic", level: "35%", desc: language === 'en' ? "Basic communication & reading" : "Grundkenntnisse", icon: <Layout size={14} className="text-amber-400" /> },
     ]
   }
 ];
 
-const practices = [
-  { title: "Pipeline Design", icon: <Zap size={16} className="text-yellow-400" />, desc: "Modular ETL/ELT architecture" },
-  { title: "Bias Auditing", icon: <ShieldCheck size={16} className="text-blue-400" />, desc: "Fairlearn-based governance" },
-  { title: "Audit Logging", icon: <Activity size={16} className="text-red-400" />, desc: "Immutable append-only systems" },
-  { title: "XAI / SHAP", icon: <Search size={16} className="text-emerald-400" />, desc: "Model-agnostic explainability" },
-  { title: "API Gateway", icon: <Lock size={16} className="text-purple-400" />, desc: "FastAPI + RBAC security" },
-  { title: "Data Quality", icon: <CheckCircle2 size={16} className="text-[var(--accent)]" />, desc: "dbt testing & validation" },
+const practices = (language: string) => [
+  { title: "Data Pipeline Architecture", icon: <Zap size={16} className="text-yellow-400" />, desc: "Modular ETL/ELT architecture" },
+  { title: "ETL/ELT Design & Implementation", icon: <Layers size={16} className="text-blue-400" />, desc: "End-to-end data processing" },
+  { title: "Bias Detection & Fairness Auditing", icon: <ShieldCheck size={16} className="text-emerald-400" />, desc: "Fairlearn-based governance" },
+  { title: "Data Governance & RBAC Design", icon: <Lock size={16} className="text-red-400" />, desc: "Secure access control systems" },
+  { title: "Append-Only Audit Log Systems", icon: <Activity size={16} className="text-cyan-400" />, desc: "Immutable system tracking" },
+  { title: "SHAP / Explainable AI (XAI)", icon: <Search size={16} className="text-purple-400" />, desc: "Model-agnostic explainability" },
+  { title: "REST API Design with FastAPI", icon: <Server size={16} className="text-orange-400" />, desc: "High-performance interfaces" },
+  { title: "CI/CD for Data Pipelines", icon: <Package size={16} className="text-pink-400" />, desc: "Automated deployment workflows" },
+  { title: "Data Quality Testing with dbt", icon: <CheckCircle2 size={16} className="text-[var(--accent)]" />, desc: "dbt testing & validation" },
 ];
 
 export default function GeneralSkills() {
-  const [groups, setGroups] = useState(skillGroups);
-  const [practiceList, setPracticeList] = useState(practices);
+  const { language } = useLanguage();
+  const [groups, setGroups] = useState(skillGroups(language));
+  const [practiceList, setPracticeList] = useState(practices(language));
+
+  useEffect(() => {
+    setGroups(skillGroups(language));
+    setPracticeList(practices(language));
+  }, [language]);
 
   useEffect(() => {
     const handleUpdate = () => {
       const adminGroups = localStorage.getItem("admin-skills-groups");
       if (adminGroups) {
           const parsed = JSON.parse(adminGroups);
-          // Restore icons for parsed data since icons don't survive stringify
-          parsed.forEach(group => {
+          parsed.forEach((group: any) => {
               if (group.title === "Data Core") group.icon = <Database size={18} className="text-blue-400" />;
               if (group.title === "Linguistic") group.icon = <Globe size={18} className="text-[var(--accent)]" />;
           });
@@ -59,7 +69,7 @@ export default function GeneralSkills() {
       const adminPractices = localStorage.getItem("admin-skills-practices");
       if (adminPractices) {
           const parsed = JSON.parse(adminPractices);
-          parsed.forEach(p => {
+          parsed.forEach((p: any) => {
               if (p.title === "Pipeline Design") p.icon = <Zap size={16} className="text-yellow-400" />;
               if (p.title === "Bias Auditing") p.icon = <ShieldCheck size={16} className="text-blue-400" />;
               if (p.title === "Audit Logging") p.icon = <Activity size={16} className="text-red-400" />;
@@ -79,8 +89,17 @@ export default function GeneralSkills() {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
+<<<<<<< HEAD
           <div className="section-pill"><Cpu size={14} /> Capabilities</div>
           <h2 className="text-[32px] font-black text-white">General Expertise</h2>
+=======
+          <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
+            {language === 'en' ? "TOOL SKILLS" : "Fähigkeiten"}
+          </p>
+          <h2 className="text-[32px] font-black text-white">
+            {language === 'en' ? "General Skills & Domain Mastery" : "Allgemeine Expertise"}
+          </h2>
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
         </div>
       </div>
 
@@ -93,7 +112,7 @@ export default function GeneralSkills() {
                 {group.icon} {group.title}
               </div>
               <div className="grid grid-cols-1 gap-4">
-                {group.skills.map((skill, i) => (
+                {group.skills.map((skill: any, i: number) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
@@ -110,7 +129,12 @@ export default function GeneralSkills() {
                          <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all">{skill.name}</h4>
                       </div>
                       <span className="px-2 py-0.5 bg-white/5 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-md border border-[var(--accent)]/20">
-                        {skill.level}
+                        {skill.level === 'Expert' ? (language === 'en' ? 'Expert' : 'Experte') : 
+                         skill.level === 'Advanced' ? (language === 'en' ? 'Advanced' : 'Fortgeschritten') :
+                         skill.level === 'Intermediate' ? (language === 'en' ? 'Intermediate' : 'Mittelstufe') :
+                         skill.level === 'Professional' ? (language === 'en' ? 'Professional' : 'Professionell') :
+                         skill.level === 'Native' ? (language === 'en' ? 'Native' : 'Muttersprache') :
+                         skill.level === 'Learning' ? (language === 'en' ? 'Learning' : 'Lernend') : skill.level}
                       </span>
                     </div>
                     <p className="text-[12px] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-all ml-11">{skill.desc}</p>
@@ -124,7 +148,7 @@ export default function GeneralSkills() {
         {/* Practices Grid */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)] mb-6">
-            <CheckCircle2 size={18} className="text-[var(--accent)]" /> Professional Practices
+            <CheckCircle2 size={18} className="text-[var(--accent)]" /> {language === 'en' ? "Professional Practices" : "Professionelle Praktiken"}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {practiceList.map((practice: any, i: number) => (
@@ -148,7 +172,9 @@ export default function GeneralSkills() {
           {/* Decorative Info Box */}
           <div className="mt-8 p-6 bg-[var(--accent)]/[0.03] border border-dashed border-[var(--accent)]/20 rounded-[24px]">
              <p className="text-[11px] text-[var(--accent)] font-bold uppercase tracking-widest leading-relaxed opacity-60">
-               Focused on building systems that are not just technically efficient, but ethically governed and fully documented.
+               {language === 'en' 
+                 ? "Focused on building systems that are not just technically efficient, but ethically governed and fully documented."
+                 : "Fokus auf den Bau von Systemen, die nicht nur technisch effizient, sondern auch ethisch gesteuert und vollständig dokumentiert sind."}
              </p>
           </div>
         </div>

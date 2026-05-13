@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
+import Bio from "./components/Bio";
 import Technologies from "./components/Technologies";
 import ToolStack from "./components/ToolStack";
 import GeneralSkills from "./components/GeneralSkills";
@@ -18,10 +19,11 @@ import Services from "./components/Services";
 import Projects from "./components/Projects";
 import Resume from "./components/Resume";
 import Blog from "./components/Blog";
+import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import AdminPanel from "./components/AdminPanel";
 import LoginModal from "./components/LoginModal";
-import AudioPlayer from "./components/AudioPlayer";
+
 import ThemeBuddy from "./components/ThemeBuddy";
 
 // New Feature Imports
@@ -29,7 +31,7 @@ import Terminal from "./components/Terminal";
 import GitHubFeed from "./components/GitHubFeed";
 import EthicsPledge from "./components/EthicsPledge";
 import DemosHub from "./components/DemosHub";
-import Testimonials from "./components/Testimonials";
+
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 
 export default function Home() {
@@ -83,41 +85,33 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // ── FEATURE: Rock-Solid Scroll Spy ──
+  // ── FEATURE: Rock-Solid Scroll Spy (IntersectionObserver) ──
   useEffect(() => {
-    if (!isMounted || !scrollPanelRef.current) return;
-
-    const panel = scrollPanelRef.current;
-    const sections = ["about", "skills", "services", "pledge", "demo", "projects", "resume", "github", "testimonials", "blog", "contact"];
-    
-    const handleScroll = () => {
-      const panelRect = panel.getBoundingClientRect();
-      const triggerPoint = panelRect.top + 200;
-      
-      let currentSection = activeSectionRef.current;
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
-            currentSection = id;
-            break;
-          }
+    const options = { threshold: 0.2 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
         }
-      }
-      
-      if (currentSection !== activeSectionRef.current) {
-        activeSectionRef.current = currentSection;
-        setActiveSection(currentSection);
-      }
+      });
+    }, options);
+    
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((section) => observer.observe(section));
+    
+    return () => observer.disconnect();
+  }, []);
+
+  // Show Scroll Top Button logic
+  useEffect(() => {
+    const panel = scrollPanelRef.current;
+    if (!panel) return;
+    const handleScroll = () => {
       setShowScrollTop(panel.scrollTop > 300);
     };
-
     panel.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
     return () => panel.removeEventListener("scroll", handleScroll);
-  }, [isMounted]);
+  }, []);
 
   const navItems = [
     { id: "about",    icon: <User size={18} />,       label: "About"    },
@@ -127,7 +121,7 @@ export default function Home() {
     { id: "projects", icon: <Briefcase size={18} />,  label: "Projects" },
     { id: "resume",   icon: <Landmark size={18} />,   label: "Resume"   },
     { id: "github",   icon: <Github size={18} />,     label: "GitHub"   },
-    { id: "testimonials", icon: <Quote size={18} />,  label: "Testimonials" },
+    { id: "testimonials", icon: <Quote size={18} />,  label: "Reviews"  },
     { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
     { id: "contact",  icon: <Send size={18} />,       label: "Contact"  },
   ];
@@ -184,9 +178,15 @@ export default function Home() {
 
       <AnalyticsTracker />
       
+<<<<<<< HEAD
       {/* ── Responsive Navigation ── */}
       <nav className="fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
         <div className="hidden lg:block mb-3 pb-3 border-b border-[var(--border-subtle)]">
+=======
+      {/* ── Sidebar Navigation ── */}
+      <nav className="sidebar absolute left-5 top-[24px] hidden md:flex flex-col w-[64px] bg-[var(--bg-card)] border border-[var(--border)] py-6 rounded-[32px] items-center gap-2 shadow-2xl z-50">
+        <div className="mb-4 pb-4 border-b border-white/5">
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
           <ThemeBuddy />
         </div>
         <div className="flex flex-row lg:flex-col items-center gap-4 lg:gap-3 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
@@ -218,13 +218,15 @@ export default function Home() {
             <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
               <div id="sections-container" className="p-10 lg:p-14 space-y-16 relative">
                 <motion.section 
-                  initial={{ opacity: 0, y: 30 }} 
-                  whileInView={{ opacity: 1, y: 0 }} 
-                  viewport={{ once: true, margin: "-100px" }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
                   id="about"
                 >
                   <About />
                 </motion.section>
+
+                <Bio />
                 <div className="h-px w-full bg-white/[0.05]" />
                 
                 <motion.section 
@@ -304,9 +306,9 @@ export default function Home() {
                   initial={{ opacity: 0, y: 30 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true, margin: "-100px" }}
-                  id="testimonials"
+                  id="blog"
                 >
-                  <Testimonials />
+                  <Blog />
                 </motion.section>
 
                 <div className="h-px w-full bg-white/[0.05]" />
@@ -314,9 +316,9 @@ export default function Home() {
                   initial={{ opacity: 0, y: 30 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true, margin: "-100px" }}
-                  id="blog"
+                  id="testimonials"
                 >
-                  <Blog />
+                  <Testimonials />
                 </motion.section>
 
                 <div className="h-px w-full bg-white/[0.05]" />
@@ -329,27 +331,42 @@ export default function Home() {
                   <Contact />
                 </motion.section>
 
+                {/* CTA Banner */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  className="p-12 bg-gradient-to-r from-[#00e87a]/10 to-transparent border border-[#00e87a]/20 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8"
+                >
+                  <div>
+                    <h3 className="text-[24px] font-black text-white mb-2">Ready to build something ethical?</h3>
+                    <p className="text-[14px] text-white/50">Let&apos;s discuss your next data architecture or research project.</p>
+                  </div>
+                  <button 
+                    onClick={() => scrollToSection('contact')}
+                    className="px-8 py-4 bg-[#00e87a] text-black font-black uppercase tracking-widest text-[12px] rounded-xl hover:scale-105 transition-all"
+                  >
+                    Hire Me Today
+                  </button>
+                </motion.div>
+
                 {/* Footer Zone */}
                 <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row gap-8 justify-between items-center">
                   <div className="flex flex-col md:flex-row items-center gap-6">
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/20">© 2026 Ijlal Ansari</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/20">© 2026 Ijlal Ansari. Designed for Impact.</span>
                     <button 
                       onClick={() => setShowTerminal(true)}
                       className="group flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all"
                     >
-                      <TerminalIcon size={14} className="text-[var(--accent)]" />
+                      <TerminalIcon size={14} className="text-[#00e87a]" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white transition-all">Launch ijlal.sh</span>
                     </button>
-                    <span style={{fontSize:'11px', color:'#333', fontFamily:'monospace'}}>
-                      try typing &apos;ijlal&apos; anywhere ↗
-                    </span>
                   </div>
                   
                   <div className="flex items-center gap-4">
                     {[
                       { icon: <Github size={18} />, href: "https://github.com/ijlalxansari1", color: "text-white hover:bg-white/10" },
                       { icon: <Linkedin size={18} />, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0", color: "text-[#0077B5] hover:bg-[#0077B5]/10" },
-                      { icon: <Send size={18} />, href: "https://wa.me/93711880807", color: "text-[#25D366] hover:bg-[#25D366]/10" },
+                      { icon: <Send size={18} />, href: "https://wa.me/923371880807", color: "text-[#25D366] hover:bg-[#25D366]/10" },
                       { icon: <Newspaper size={18} />, href: "mailto:ansariijlal90@gmail.com", color: "text-[#EA4335] hover:bg-[#EA4335]/10" }
                     ].map((social, i) => (
                       <a 
@@ -376,7 +393,6 @@ export default function Home() {
       <Terminal isOpen={showTerminal} onClose={() => setShowTerminal(false)} />
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onLoginSuccess={() => { setShowLogin(false); setShowAdmin(true); }} />
       <AdminPanel isOpen={showAdmin} onClose={() => setShowAdmin(false)} />
-      <AudioPlayer />
       
       <AnimatePresence>
         {showScrollTop && (

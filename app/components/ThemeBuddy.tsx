@@ -5,6 +5,7 @@ import { Sun, Moon, Check, Palette, Terminal as TerminalIcon } from "lucide-reac
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import BootOverlay from "./BootOverlay";
+import { useLanguage } from "../context/LanguageContext";
 
 const accents = [
   { name: "green", color: "#00e87a" },
@@ -20,6 +21,7 @@ export default function ThemeBuddy() {
   const [isOpen, setIsOpen] = useState(false);
   const [accent, setAccent] = useState("green");
   const { theme, setTheme } = useTheme();
+  const { language, setLanguage } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [isBooting, setIsBooting] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -148,6 +150,26 @@ export default function ThemeBuddy() {
                   ))}
                 </div>
               </div>
+
+              {/* Language Section */}
+              <div className="pt-4 border-t border-white/5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4 font-jakarta">Language</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button 
+                    onClick={() => setLanguage('en')} 
+                    className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border transition-all ${language === 'en' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}
+                  >
+                    <span className="text-[10px] font-black uppercase">English</span>
+                  </button>
+                  <button 
+                    onClick={() => setLanguage('de')} 
+                    className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border transition-all ${language === 'de' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}
+                  >
+                    <span className="text-[10px] font-black uppercase">Deutsch</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
             
             {/* Popover Arrow */}

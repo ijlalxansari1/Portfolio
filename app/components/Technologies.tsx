@@ -3,17 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 
 const defaultSkills = [
-  { name: "Python", value: 92 },
-  { name: "PostgreSQL", value: 85 },
-  { name: "DuckDB", value: 90 },
-  { name: "FastAPI", value: 87 },
-  { name: "Kafka", value: 75 },
-  { name: "Next.js", value: 88 },
-  { name: "Docker", value: 90 },
-  { name: "Airflow", value: 85 },
+  { name: "Python", value: 82 },
+  { name: "PostgreSQL", value: 78 },
+  { name: "Apache Kafka", value: 65 },
+  { name: "AWS", value: 60 },
 ];
 
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
+
 export default function Technologies() {
+  const { language } = useLanguage();
+  const t = translations[language].settings;
+
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
   const [skillData, setSkillData] = useState(defaultSkills);
@@ -130,8 +132,17 @@ export default function Technologies() {
 
   return (
     <div className="w-full">
+<<<<<<< HEAD
       <div className="section-pill"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> Technologies</div>
       <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">Technical Proficiency Radar</h2>
+=======
+      <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
+        {language === 'en' ? "TECHNICAL SKILLS" : "Technologien"}
+      </p>
+      <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">
+        {language === 'en' ? "Technologies" : "Technisches Kompetenz-Radar"}
+      </h2>
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
       
       <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
         {/* Radar Chart */}
@@ -141,7 +152,7 @@ export default function Technologies() {
 
         {/* Legend */}
         <div className="w-full md:w-[40%] space-y-4">
-          {skillData.map((skill) => (
+          {skillData.map((skill: any) => (
             <div 
               key={skill.name}
               className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${hoveredSkill === skill.name ? 'border-[var(--accent)] bg-[var(--accent)]/5 scale-105' : 'border-transparent bg-[var(--bg-card)]/50'}`}
@@ -156,7 +167,7 @@ export default function Technologies() {
             </div>
           ))}
           <p className="text-[10px] text-[var(--text-secondary)] opacity-30 italic mt-6">
-            💡 The radar polygon visualizes skill synergy across 8 core axes.
+            {language === 'en' ? "💡 The radar polygon visualizes skill synergy across 8 core axes." : "💡 Das Radar-Polygon visualisiert die Synergie der Fähigkeiten über 8 Kernachsen."}
           </p>
         </div>
         

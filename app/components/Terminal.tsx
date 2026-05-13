@@ -18,15 +18,15 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const bootText = [
-    "Initializing AETHER terminal v1.0...",
-    "Loading profile: Ijlal Ansari...",
-    "Status: Available for hire ✓",
-    "",
-    "Type 'help' to see available commands.",
-  ];
-
   useEffect(() => {
+    const bootText = [
+      "Initializing AETHER terminal v1.0...",
+      "Loading profile: Ijlal Ansari...",
+      "Status: Available for hire ✓",
+      "",
+      "Type 'help' to see available commands.",
+    ];
+
     if (isOpen) {
       setIsBooting(true);
       setOutput([]);
@@ -42,7 +42,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
       }, 500);
       return () => clearInterval(interval);
     }
-  }, [isOpen, bootText]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {

@@ -3,10 +3,14 @@
 import { useState, useEffect } from "react";
 import { Linkedin, Github, Twitter, Mail, MessageSquare } from "lucide-react";
 import Image from "next/image";
+<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
+=======
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 import { trackEvent } from "./AnalyticsTracker";
-
-const titles = ["Data Engineer", "AI Researcher", "Platform Architect", "Data Scientist"];
 
 interface LeftSidebarProps {
   activeTab: string;
@@ -14,11 +18,20 @@ interface LeftSidebarProps {
 }
 
 export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
+  const { language } = useLanguage();
+  const t = translations[language].sidebar;
   const [titleIndex, setTitleIndex] = useState(0);
   const [availability, setAvailability] = useState<any>({
-    status: "Available",
-    availableFrom: "Now"
+    status: language === 'en' ? "Available" : "Verfügbar",
+    availableFrom: language === 'en' ? "Now" : "Jetzt"
   });
+  
+  const titles = [
+    language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
+    language === 'en' ? "AI Ethics Researcher" : "KI-Ethik-Forscher",
+    language === 'en' ? "Pipeline Developer" : "Pipeline-Entwickler",
+    language === 'en' ? "Platform Builder" : "Plattform-Entwickler"
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => setTitleIndex((prev) => (prev + 1) % titles.length), 3000);
@@ -34,7 +47,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       clearInterval(interval);
       window.removeEventListener("admin-updated", handleUpdate);
     };
-  }, []);
+  }, [titles.length]);
 
   const downloadResume = () => {
     trackEvent("cv_download");
@@ -47,9 +60,18 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
   };
 
   const getStatusColor = () => {
-    if (availability.status === "Available") return "var(--accent)";
-    if (availability.status === "Busy") return "#ff5f56";
+    const status = availability.status.toLowerCase();
+    if (status.includes("available") || status.includes("verfügbar")) return "#00e87a";
+    if (status.includes("busy") || status.includes("besetzt")) return "#ff5f56";
     return "#ffbd2e";
+  };
+
+  const getStatusLabel = () => {
+    const status = availability.status.toLowerCase();
+    if (status.includes("available") || status.includes("verfügbar")) return `${t.status_available} ${t.now}`;
+    if (status.includes("busy") || status.includes("besetzt")) return `${t.status_busy}`;
+    if (status.includes("away") || status.includes("abwesend")) return `${t.status_away}`;
+    return availability.status;
   };
 
   return (
@@ -62,7 +84,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <div className="relative h-full w-full rounded-2xl overflow-hidden border border-[var(--border)]">
           <Image
             src="/profile.png"
-            alt="Ijlal Ansari" fill className="object-cover object-top" priority
+            alt="Ijlal Ansari - Junior Data Engineer & AI Ethics Researcher" fill className="object-cover object-center" priority
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[var(--bg-card)] to-transparent z-20" />
@@ -74,7 +96,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             <motion.p
               key={titles[titleIndex]}
               initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }}
-              className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-[0.25em]"
+              className="text-[11px] font-bold text-[#00e87a] uppercase tracking-[0.25em]"
             >
               {titles[titleIndex]}
             </motion.p>
@@ -83,12 +105,12 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <h2 className="text-[30px] font-black text-[var(--text-primary)] tracking-[-0.02em] mb-4 leading-none">Ijlal Ansari</h2>
         <div className="flex items-center gap-3 px-4 py-1.5 bg-[var(--bg-primary)] border border-[var(--border)] rounded-full mb-6 shadow-inner">
           <div className="w-2.5 h-2.5 rounded-full relative" style={{ backgroundColor: getStatusColor() }}>
-            {availability.status === 'Available' && (
+            {(availability.status.toLowerCase().includes('available') || availability.status.toLowerCase().includes('verfügbar')) && (
               <div className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ backgroundColor: getStatusColor() }} />
             )}
           </div>
           <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)]">
-            {availability.status} Now
+            {getStatusLabel()}
           </span>
         </div>
         
@@ -96,12 +118,17 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
           {[
             { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
-            { Icon: Twitter, href: "https://twitter.com/ijlalansari" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
+<<<<<<< HEAD
             { Icon: MessageSquare, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }, i) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[var(--bg-primary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
               <Icon size={16} />
+=======
+          ].map(({ Icon, href }: any, i: number) => (
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[#00e87a] hover:scale-110 transition-all shadow-lg">
+              {typeof Icon === 'function' ? <Icon /> : <Icon size={16} />}
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
             </a>
           ))}
         </div>
@@ -110,9 +137,13 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       <div className="w-full flex border-t border-[var(--border)] h-[70px] bg-[var(--bg-secondary)] mt-auto">
         <button 
           onClick={downloadResume}
+<<<<<<< HEAD
           className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[var(--border)]"
+=======
+          className="flex-1 flex items-center justify-center text-[10px] font-black text-[#00e87a] hover:bg-[#00e87a]/10 tracking-[0.15em] uppercase transition-all border-r border-[#222]"
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
         >
-          Download CV
+          {t.download_cv}
         </button>
         <button 
           onClick={() => {
@@ -120,9 +151,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             const target = document.getElementById("contact");
             if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
           }}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
+          className="flex-1 flex items-center justify-center text-[10px] font-black text-[#00e87a] hover:bg-[#00e87a]/10 tracking-[0.15em] uppercase transition-all"
         >
-          Contact Me
+          {t.contact_me}
         </button>
       </div>
     </div>

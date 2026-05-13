@@ -1,93 +1,110 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 const testimonials = [
   {
-    quote: "Ijlal's work on the AETHER platform demonstrates exceptional depth. The governance layer and audit infrastructure reflect a rare combination of engineering rigour and ethical thinking that is hard to find at this level.",
-    name: "Dr. Sarah Lyons",
-    title: "Research Lead",
-    initials: "SL"
+    quote: "Ijlal approaches data engineering with a maturity beyond his experience level. The governance architecture in AETHER — particularly the append-only audit logs and RBAC system — reflects genuine engineering thinking, not just tutorial-following.",
+    avatar: "SL",
+    name: "[Supervisor Name]",
+    title: "Academic Supervisor"
   },
   {
-    quote: "The data pipeline architecture Ijlal designed was clean, well-documented, and production-ready. His command of dbt and Dagster is well above what you would expect from someone at this stage of their career.",
-    name: "Marcus Edwards",
-    title: "Senior Data Engineer",
-    initials: "ME"
+    quote: "What stood out about Ijlal's pipeline work was the documentation. Every dbt model tested, every transformation explained. That discipline is rare in junior engineers and it makes a real difference in production.",
+    avatar: "ME",
+    name: "[Mentor Name]",
+    title: "Senior Data Engineer"
   },
   {
-    quote: "Ijlal doesn't just build pipelines — he thinks about what the data means and who it affects. That perspective on responsible analytics is exactly what the industry needs more of.",
-    name: "Chen Rui",
-    title: "AI Ethics Researcher",
-    initials: "CR"
+    quote: "Most junior engineers build things that work. Ijlal builds things that work and that you can audit, explain, and trust. The ethics focus in AETHER is not a gimmick — it's structurally embedded in every pipeline stage.",
+    avatar: "CR",
+    name: "[Collaborator Name]",
+    title: "AI Ethics Researcher"
   }
 ];
 
 export default function Testimonials() {
-  const [index, setIndex] = useState(0);
+  const { language } = useLanguage();
+  const [current, setCurrent] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(timer);
+  const next = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % testimonials.length);
   }, []);
 
-  const next = () => setIndex((prev) => (prev + 1) % testimonials.length);
-  const prev = () => setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  const prev = useCallback(() => {
+    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(next, 5000);
+    return () => clearInterval(timer);
+  }, [next]);
 
   return (
     <div className="w-full">
+<<<<<<< HEAD
       <div className="flex justify-center"><div className="section-pill"><Quote size={14} /> Testimonials</div></div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12 text-center">Here&apos;s What My Collaborators Say</h2>
+=======
+      <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">
+        {language === 'en' ? "TESTIMONIALS" : "TESTIMONIALS"}
+      </p>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12">
+        {language === 'en' ? "Here's What My Collaborators Say" : "Was meine Partner sagen"}
+      </h2>
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
-      <div className="relative max-w-[800px] mx-auto px-12">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.5 }}
-            className="p-10 bg-[#141414] border border-[#222222] rounded-xl text-center space-y-8"
-          >
-            <Quote className="quote-mark mx-auto text-[var(--accent)] opacity-40" size={48} />
-            
-            <p className="text-[15px] text-white leading-[1.8] italic font-medium">
-              &quot;{testimonials[index].quote}&quot;
-            </p>
+      <div className="relative max-w-4xl mx-auto px-12">
+        <div className="overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center text-center"
+            >
+              <Quote size={40} className="text-[var(--accent)] opacity-20 mb-8" />
+              <p className="text-[18px] md:text-[22px] font-medium text-[var(--text-primary)] leading-[1.6] mb-10 italic">
+                &quot;{testimonials[current].quote}&quot;
+              </p>
+              
+              <div className="flex flex-col items-center">
+                <div className="w-14 h-14 bg-[var(--accent)] text-black rounded-full flex items-center justify-center font-black text-[18px] mb-4 shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]">
+                  {testimonials[current].avatar}
+                </div>
+                <h4 className="text-[16px] font-black text-white mb-1">{testimonials[current].name}</h4>
+                <p className="text-[11px] font-bold text-[var(--accent)] uppercase tracking-widest">{testimonials[current].title}</p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-            <div className="w-16 h-px bg-white/10 mx-auto" />
-
-            <div className="flex flex-col items-center gap-4">
-               <div className="w-12 h-12 bg-[#1a1a1a] rounded-full flex items-center justify-center text-[var(--accent)] text-[14px] font-black border border-white/5">
-                  {testimonials[index].initials}
-               </div>
-               <div>
-                  <h4 className="text-[14px] font-black text-white">{testimonials[index].name}</h4>
-                  <p className="text-[12px] font-bold text-white/30 uppercase tracking-widest">{testimonials[index].title}</p>
-               </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation */}
-        <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#1a1a1a] border border-[#222] flex items-center justify-center text-white hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all">
+        {/* Controls */}
+        <button 
+          onClick={prev}
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
+        >
           <ChevronLeft size={20} />
         </button>
-        <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#1a1a1a] border border-[#222] flex items-center justify-center text-white hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all">
+        <button 
+          onClick={next}
+          className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
+        >
           <ChevronRight size={20} />
         </button>
 
-        {/* Dots */}
-        <div className="flex justify-center gap-3 mt-8">
+        {/* Indicators */}
+        <div className="flex justify-center gap-2 mt-12">
           {testimonials.map((_, i) => (
-            <button 
-              key={i} 
-              onClick={() => setIndex(i)}
-              className={`w-2 h-2 rounded-full transition-all ${index === i ? 'bg-[var(--accent)] scale-125 shadow-[0_0_8px_rgba(var(--accent-rgb),0.5)]' : 'bg-[#333]'}`}
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-[var(--accent)] w-6" : "bg-white/10"}`}
             />
           ))}
         </div>

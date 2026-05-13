@@ -3,39 +3,8 @@
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap } from "lucide-react";
 
-const experience = [
-  {
-    period: "July 2025 – August 2025",
-    title: "Data Engineering Intern",
-    company: "LivingPath",
-    description: "Designed and implemented automated data pipelines for real-time analytics. Optimized cloud infrastructure on AWS, reducing costs by 30% while improving data processing speed. Worked with Apache Airflow, Python, and PostgreSQL to build scalable ETL solutions.",
-    technologies: ["Python", "AWS", "PostgreSQL", "Airflow"],
-  },
-  {
-    period: "2024 – 2025",
-    title: "Research Lead",
-    company: "Ethical Attention Modeling",
-    description: "Led interdisciplinary research on ethical AI systems and attention-aware analytics frameworks. Published research on fairness metrics in machine learning models. Developed open-source tools for bias detection and model interpretability.",
-    technologies: ["Python", "PyTorch", "Research", "Open Source"],
-  },
-];
-
-const education = [
-  {
-    period: "2021 – 2025",
-    title: "BS Software Engineering",
-    institution: "Karakorum International University",
-    description: "Specialized in data engineering, machine learning, and ethical AI systems. Coursework: Database Systems, Machine Learning, Cloud Computing, Software Engineering.",
-    achievements: ["Dean's List", "Research Publications", "Open Source Contributions"],
-  },
-  {
-    period: "2024 – 2025",
-    title: "Thesis: Ethical Churn Prediction using SLAM Dataset",
-    institution: "Research Project",
-    description: "Developed ethical ML models for customer churn prediction with transparency and fairness metrics. Achieved 85% accuracy while maintaining demographic parity.",
-    achievements: ["Published Research", "Open Source Tool", "Conference Presentation"],
-  },
-];
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 function TimelineItem({ period, title, subtitle, description, tags, index }: {
   period: string;
@@ -57,10 +26,10 @@ function TimelineItem({ period, title, subtitle, description, tags, index }: {
       <div className="absolute left-[5px] top-4 bottom-0 w-[1px] bg-[var(--border-color)] last:hidden" />
       
       {/* Timeline node */}
-      <div className="absolute left-0 top-1.5 w-[11px] h-[11px] rounded-full bg-[var(--bg-card)] border-2 border-neon-mint z-10" />
+      <div className="absolute left-0 top-1.5 w-[11px] h-[11px] rounded-full bg-[var(--bg-card)] border-2 border-[var(--accent)] z-10" />
 
       {/* Period badge */}
-      <div className="inline-flex px-3 py-1 rounded-full bg-neon-mint/10 border border-neon-mint/20 text-[10px] text-neon-mint font-black uppercase tracking-widest mb-4">
+      <div className="inline-flex px-3 py-1 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[10px] text-[var(--accent)] font-black uppercase tracking-widest mb-4">
         {period}
       </div>
 
@@ -74,7 +43,7 @@ function TimelineItem({ period, title, subtitle, description, tags, index }: {
       {tags && (
         <div className="flex flex-wrap gap-2">
           {tags.map((t) => (
-            <span key={t} className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-[var(--border-color)] text-[var(--text-primary)] transition-colors hover:bg-neon-mint hover:text-black">
+            <span key={t} className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-[var(--border-color)] text-[var(--text-primary)] transition-colors hover:bg-[var(--accent)] hover:text-black">
               {t}
             </span>
           ))}
@@ -85,22 +54,59 @@ function TimelineItem({ period, title, subtitle, description, tags, index }: {
 }
 
 export default function Experience() {
+  const { language } = useLanguage();
+  const t = translations[language].experience;
+
+  const experience = [
+    {
+      period: language === 'en' ? "July 2025 – August 2025" : "Juli 2025 – August 2025",
+      title: language === 'en' ? "Data Engineering Intern" : "Praktikant Data Engineering",
+      company: "LivingPath",
+      description: language === 'en' ? "Designed and implemented automated data pipelines for real-time analytics. Optimized cloud infrastructure on AWS, reducing costs by 30% while improving data processing speed. Worked with Apache Airflow, Python, and PostgreSQL to build scalable ETL solutions." : "Entwurf und Implementierung automatisierter Datenpipelines für Echtzeitanalysen. Optimierung der Cloud-Infrastruktur auf AWS, Reduzierung der Kosten um 30% bei gleichzeitiger Verbesserung der Datenverarbeitungsgeschwindigkeit. Arbeit mit Apache Airflow, Python und PostgreSQL zum Aufbau skalierbarer ETL-Lösungen.",
+      technologies: ["Python", "AWS", "PostgreSQL", "Airflow"],
+    },
+    {
+      period: "2024 – 2025",
+      title: language === 'en' ? "Research Lead" : "Forschungsleiter",
+      company: "Ethical Attention Modeling",
+      description: language === 'en' ? "Led interdisciplinary research on ethical AI systems and attention-aware analytics frameworks. Published research on fairness metrics in machine learning models. Developed open-source tools for bias detection and model interpretability." : "Leitung interdisziplinärer Forschung zu ethischen KI-Systemen und Frameworks für aufmerksamkeitsbewusste Analysen. Veröffentlichung von Forschungsergebnissen zu Fairness-Metriken in Modellen des maschinellen Lernens. Entwicklung von Open-Source-Tools zur Erkennung von Bias und Modellinterpretierbarkeit.",
+      technologies: ["Python", "PyTorch", language === 'en' ? "Research" : "Forschung", "Open Source"],
+    },
+  ];
+
+  const education = [
+    {
+      period: "2021 – 2025",
+      title: language === 'en' ? "BS Software Engineering" : "Bachelor Software Engineering",
+      institution: "Karakorum International University",
+      description: language === 'en' ? "Specialized in data engineering, machine learning, and ethical AI systems. Coursework: Database Systems, Machine Learning, Cloud Computing, Software Engineering." : "Spezialisierung auf Data Engineering, maschinelles Lernen und ethische KI-Systeme. Schwerpunkte: Datenbanksysteme, maschinelles Lernen, Cloud Computing, Software Engineering.",
+      achievements: language === 'en' ? ["Dean's List", "Research Publications", "Open Source Contributions"] : ["Bestenliste", "Forschungspublikationen", "Open-Source-Beiträge"],
+    },
+    {
+      period: "2024 – 2025",
+      title: language === 'en' ? "Thesis: Ethical Churn Prediction using SLAM Dataset" : "Bachelorarbeit: Ethische Churn-Vorhersage mit SLAM-Datensatz",
+      institution: language === 'en' ? "Research Project" : "Forschungsprojekt",
+      description: language === 'en' ? "Developed ethical ML models for customer churn prediction with transparency and fairness metrics. Achieved 85% accuracy while maintaining demographic parity." : "Entwicklung ethischer ML-Modelle für die Kundenabwanderungsprognose mit Fokus auf Transparenz und Fairness. Erreichung einer Genauigkeit von 85% bei gleichzeitiger Wahrung der demografischen Parität.",
+      achievements: language === 'en' ? ["Published Research", "Open Source Tool", "Conference Presentation"] : ["Veröffentlichte Forschung", "Open-Source-Tool", "Konferenzvortrag"],
+    },
+  ];
+
   return (
     <section id="resume" className="w-full">
       <div className="mb-12">
-        <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">My Journey</p>
-        <h2 className="text-4xl font-bold text-[var(--text-primary)]">Resume <span>& Experience</span></h2>
-        <div className="w-16 h-1 mt-4 bg-neon-mint rounded-full" />
+        <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">{t.label}</p>
+        <h2 className="text-4xl font-bold text-[var(--text-primary)]">{t.title}</h2>
+        <div className="w-16 h-1 mt-4 bg-[var(--accent)] rounded-full" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Work Experience */}
         <div>
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-12 h-12 rounded-xl bg-neon-mint/10 flex items-center justify-center">
-              <Briefcase size={22} className="text-neon-mint" />
+            <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
+              <Briefcase size={22} className="text-[var(--accent)]" />
             </div>
-            <h3 className="text-[var(--text-primary)] font-bold text-xl">Experience</h3>
+            <h3 className="text-[var(--text-primary)] font-bold text-xl">{t.exp_title}</h3>
           </div>
 
           <div className="relative">
@@ -121,10 +127,10 @@ export default function Experience() {
         {/* Education */}
         <div>
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-12 h-12 rounded-xl bg-neon-mint/10 flex items-center justify-center">
-              <GraduationCap size={22} className="text-neon-mint" />
+            <div className="w-12 h-12 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
+              <GraduationCap size={22} className="text-[var(--accent)]" />
             </div>
-            <h3 className="text-[var(--text-primary)] font-bold text-xl">Education</h3>
+            <h3 className="text-[var(--text-primary)] font-bold text-xl">{t.edu_title}</h3>
           </div>
 
           <div className="relative">

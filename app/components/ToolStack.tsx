@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Wrench, Terminal, Database, ShieldCheck, Zap, Globe, Package, Cpu } from "lucide-react";
 
 const defaultTools = [
-  { name: "dbt Core", progress: 95, level: "Production", desc: "SQL transformations & lineage", icon: null, badge: "dbt", color: "text-[#CFFF1C]" },
-  { name: "Dagster", progress: 85, level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-  { name: "Apache Airflow", progress: 88, level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apacheairflow/apacheairflow-original.svg" },
-  { name: "DuckDB", progress: 92, level: "Expert", desc: "Fast analytical SQL processing", icon: null, badge: "🦆" },
-  { name: "FastAPI", progress: 87, level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
-  { name: "Next.js", progress: 88, level: "Advanced", desc: "Full-stack React intelligence", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
-  { name: "Docker", progress: 75, level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
-  { name: "GitHub Actions", progress: 85, level: "Advanced", desc: "CI/CD & automation pipelines", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+  { name: "dbt Core", progress: 80, level: "Production", desc: "SQL transformations & lineage", icon: null, badge: "dbt", color: "text-[#CFFF1C]" },
+  { name: "Dagster", progress: 78, level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "Apache Airflow", progress: 72, level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apacheairflow/apacheairflow-original.svg" },
+  { name: "DuckDB", progress: 82, level: "Expert", desc: "Fast analytical SQL processing", icon: null, badge: "🦆" },
+  { name: "FastAPI", progress: 80, level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+  { name: "Next.js", progress: 70, level: "Advanced", desc: "Full-stack React intelligence", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+  { name: "Docker", progress: 68, level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
+  { name: "GitHub Actions", progress: 72, level: "Advanced", desc: "CI/CD & automation pipelines", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
 ];
 
 export default function ToolStack() {
@@ -57,7 +58,7 @@ export default function ToolStack() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {tools.map((tool, i) => (
+        {tools.map((tool: any, i: number) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}

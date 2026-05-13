@@ -3,42 +3,54 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Activity, ShieldCheck, Layers, BarChart3, Wrench } from "lucide-react";
 
-const services = [
-  {
-    badge: "End-to-End",
-    icon: <Activity size={24} />,
-    title: "Data Pipeline Engineering",
-    body: "Design and build scalable ETL/ELT pipelines using Python, dbt, Dagster, and Airflow. From raw ingestion to clean, tested, documented data models ready for analytics.",
-    link: "Get Started →"
-  },
-  {
-    badge: "Governance",
-    icon: <ShieldCheck size={24} />,
-    title: "Ethical AI Auditing",
-    body: "Bias detection, fairness evaluation, and SHAP-based explainability audits for ML models and analytical systems using Fairlearn and custom audit metrics.",
-    link: "Get Started →"
-  },
-  {
-    badge: "Full Stack",
-    icon: <Layers size={24} />,
-    title: "Platform Architecture",
-    body: "Full-stack data platform design: Next.js frontends, FastAPI backends, PostgreSQL + DuckDB storage, JWT auth, RBAC systems, and AES-256 encryption.",
-    link: "Get Started →"
-  },
-  {
-    badge: "Analytics",
-    icon: <BarChart3 size={24} />,
-    title: "Data Storytelling & Reporting",
-    body: "Transform raw data into honest, interpretable narratives. Dashboard design, data validation, and analytical workflows documented for non-technical stakeholders.",
-    link: "Get Started →"
-  },
-];
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 export default function Services() {
+  const { language } = useLanguage();
+  const t = translations[language].services;
+
+  const services = [
+    {
+      badge: t.pipelines.badge,
+      icon: <Activity size={24} />,
+      title: t.pipelines.title,
+      body: t.pipelines.body,
+      link: t.cta
+    },
+    {
+      badge: t.ai.badge,
+      icon: <ShieldCheck size={24} />,
+      title: t.ai.title,
+      body: t.ai.body,
+      link: t.cta
+    },
+    {
+      badge: t.platform.badge,
+      icon: <Layers size={24} />,
+      title: t.platform.title,
+      body: t.platform.body,
+      link: t.cta
+    },
+    {
+      badge: t.storytelling.badge,
+      icon: <BarChart3 size={24} />,
+      title: t.storytelling.title,
+      body: t.storytelling.body,
+      link: t.cta
+    },
+  ];
+
   return (
     <div className="w-full">
+<<<<<<< HEAD
       <div className="section-pill"><Wrench size={14} /> Services</div>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">What Services I Provide?</h2>
+=======
+      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">{t.title}</p>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.subtitle}</h2>
+      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.subheading}</p>
+>>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {services.map((s, i) => (

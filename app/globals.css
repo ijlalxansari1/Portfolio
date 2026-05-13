@@ -257,13 +257,22 @@ html.cmd .github-card {
 }
 
 /* ── BASE STYLES ── */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: 'Poppins', sans-serif;
-  scroll-behavior: smooth;
   overflow-x: hidden;
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 h1, h2, h3, h4, h5, h6, .hero-name, .section-heading, .font-jakarta {
@@ -403,6 +412,43 @@ html.light .top-glow::before {
   border-radius: 8px !important;
   color: var(--accent) !important;
   transition: all 0.3s ease !important;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 60px !important;
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    border-right: none !important;
+    border-top: 1px solid #222 !important;
+    z-index: 999 !important;
+    padding: 0 8px !important;
+    display: flex !important;
+  }
+
+  .sidebar .theme-switcher,
+  .sidebar .theme-buddy-container {
+    display: none !important;
+  }
+
+  .main-content,
+  .md\:pl-\[100px\] {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    padding-bottom: 70px !important;
+  }
+
+  .nav-tooltip,
+  .sidebar span {
+    display: none !important;
+  }
 }
 
 /* ── PREFERS REDUCED MOTION ── */

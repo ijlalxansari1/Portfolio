@@ -11,6 +11,7 @@
     "migrate:data": "tsx scripts/migrate-data.ts"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@vercel/postgres": "^0.10.0",
     "dotenv": "^17.2.3",
     "framer-motion": "^11.3.6",
