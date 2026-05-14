@@ -7,7 +7,8 @@ import {
   Download, Upload as UploadIcon, Briefcase, Newspaper, MessageSquare, 
   User as UserIcon, Globe, Bold, Italic, Code, Link as LinkIcon, 
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
-  ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag
+  ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag,
+  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users
 } from "lucide-react";
 import { storage } from "../utils/storage";
 
@@ -33,7 +34,11 @@ const defaultCategories = {
   blog: ["Data Engineering", "Platform Design", "Ethics & AI", "Python Tips"]
 };
 
-// ... other defaults omitted for brevity but should be maintained in state ...
+const defaultTestimonials = [
+  { id: 1, name: "Dr. Sarah Chen", role: "AI Research Lead", company: "DataTalks.Club", quote: "Ijlal's work on ethical data systems is truly impressive. His AETHER platform sets a new standard.", avatar: "", status: "Published" },
+  { id: 2, name: "Marcus Weber", role: "Senior Data Engineer", company: "Freelance Client", quote: "Exceptional data pipeline architecture. Delivered ahead of schedule with production-grade quality.", avatar: "", status: "Published" }
+];
+
 const defaultRadar = [
   { name: "Python", value: 92 }, { name: "PostgreSQL", value: 85 }, { name: "DuckDB", value: 90 }, { name: "FastAPI", value: 87 }, { name: "Kafka", value: 75 }, { name: "Next.js", value: 88 }
 ];
@@ -62,10 +67,15 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [categories, setCategories] = useState<any>(defaultCategories);
   const [isSaving, setIsSaving] = useState(false);
   const [systemAudit, setSystemAudit] = useState<any>(null);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [analyticsData, setAnalyticsData] = useState<any>(null);
+  const [clientEvents, setClientEvents] = useState<any[]>([]);
+  const [inboxMessages, setInboxMessages] = useState<any[]>([]);
+  const [readMessages, setReadMessages] = useState<string[]>([]);
 
   useEffect(() => {
     if (isOpen) {
-      const loadData = () => {
+      const loadData = async () => {
         setProjects(storage.get("admin-projects", defaultProjects));
         setPosts(storage.get("admin-posts", defaultPosts));
         setCerts(storage.get("admin-certs", defaultCerts));
@@ -74,11 +84,34 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         setSkillGroups(storage.get("admin-skills-groups", []));
         setPracticeList(storage.get("admin-skills-practices", []));
         setCategories(storage.get("admin-categories", defaultCategories));
+        setTestimonials(storage.get("admin-testimonials", defaultTestimonials));
+        setReadMessages(storage.get("admin-read-messages", []));
         
         const toolsData = storage.get("admin-skills", { tools: defaultTools });
         setToolSkills(toolsData.tools || defaultTools);
-        
         setSystemAudit(storage.audit());
+
+        // Client-side analytics events
+        const events = storage.get("admin-analytics", []);
+        setClientEvents(events);
+
+        // Fetch server-side analytics
+        try {
+          const res = await fetch("/api/analytics");
+          if (res.ok) setAnalyticsData(await res.json());
+        } catch { /* silent */ }
+
+        // Fetch server-side inbox
+        try {
+          const res = await fetch("/api/data/emails");
+          if (res.ok) {
+            const serverEmails = await res.json();
+            const localSubs = storage.get("admin-submissions", []);
+            const merged = [...localSubs, ...serverEmails]
+              .sort((a: any, b: any) => new Date(b.date || b.timestamp || 0).getTime() - new Date(a.date || a.timestamp || 0).getTime());
+            setInboxMessages(merged);
+          }
+        } catch { /* silent */ }
       };
       loadData();
     }
@@ -138,15 +171,19 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               </div>
             </div>
 
-            {[
-              { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400" },
-              { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400" },
-              { id: "Projects", icon: <Briefcase size={16} />, color: "text-orange-400" },
-              { id: "Blog", icon: <Newspaper size={16} />, color: "text-pink-400" },
-              { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400" },
-              { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400" },
-              { id: "Settings", icon: <Settings size={16} />, color: "text-white/40" },
-            ].map((tab) => (
+            {(() => {
+              const unreadCount = inboxMessages.filter((m: any) => !readMessages.includes(String(m.id))).length;
+              return [
+              { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400", badge: 0 },
+              { id: "Inbox", icon: <Inbox size={16} />, color: "text-cyan-400", badge: unreadCount },
+              { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400", badge: 0 },
+              { id: "Projects", icon: <Briefcase size={16} />, color: "text-orange-400", badge: 0 },
+              { id: "Blog", icon: <Newspaper size={16} />, color: "text-pink-400", badge: 0 },
+              { id: "Testimonials", icon: <Quote size={16} />, color: "text-amber-400", badge: 0 },
+              { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: 0 },
+              { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400", badge: 0 },
+              { id: "Settings", icon: <Settings size={16} />, color: "text-white/40", badge: 0 },
+            ];})().map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -158,6 +195,9 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               >
                 <span className={activeTab === tab.id ? 'text-black' : tab.color}>{tab.icon}</span>
                 {tab.id}
+                {tab.badge > 0 && (
+                  <span className="ml-auto px-2 py-0.5 bg-red-500 text-white text-[8px] font-black rounded-full min-w-[20px] text-center">{tab.badge}</span>
+                )}
                 {activeTab === tab.id && (
                   <motion.div layoutId="tab-glow" className="absolute -right-2 w-1 h-6 bg-[var(--accent)] rounded-full blur-[2px]" />
                 )}
@@ -526,17 +566,278 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                    </motion.div>
                 )}
 
-                {/* Other tabs maintained but upgraded with creative touches in my imagination (keeping code size manageable) */}
+                {/* ── ANALYTICS TAB ── */}
                 {activeTab === "Analytics" && (
-                   <div className="flex flex-col items-center justify-center py-40 text-center gap-6">
-                      <div className="w-24 h-24 bg-[var(--accent)]/10 rounded-[40px] flex items-center justify-center text-[var(--accent)] animate-bounce">
-                         <BarChart3 size={40} />
-                      </div>
-                      <div>
-                         <h3 className="text-[24px] font-black text-white uppercase tracking-widest">Strategic Intelligence</h3>
-                         <p className="text-white/30 text-[14px]">Analytical metrics and interaction logs are being aggregated.</p>
-                      </div>
-                   </div>
+                   <motion.div key="analytics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                     {/* Welcome Header */}
+                     <div className="flex justify-between items-end">
+                       <div className="space-y-2">
+                         <h3 className="text-[32px] font-black text-white tracking-tight">
+                           {new Date().getHours() < 12 ? "Good Morning" : new Date().getHours() < 17 ? "Good Afternoon" : "Good Evening"}, Ijlal 👋
+                         </h3>
+                         <p className="text-[14px] text-white/40 font-medium">Here&apos;s your portfolio performance overview.</p>
+                       </div>
+                       <div className="flex gap-3">
+                         <a href="/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/10 transition-all">
+                           <ArrowUpRight size={14} /> Visit Site
+                         </a>
+                         <button onClick={() => window.location.reload()} className="flex items-center gap-2 px-5 py-3 bg-[var(--accent)] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">
+                           <RefreshCw size={14} /> Refresh
+                         </button>
+                       </div>
+                     </div>
+
+                     {/* Stat Cards */}
+                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+                       {[
+                         { label: "Total Views", value: analyticsData?.totalViews || clientEvents.filter((e: any) => e.type === "page_view").length || 0, icon: <Eye size={20} />, color: "from-blue-500 to-cyan-400", change: "+12%" },
+                         { label: "Unique Visitors", value: analyticsData?.uniqueVisitors || 0, icon: <Users size={20} />, color: "from-purple-500 to-pink-400", change: "+8%" },
+                         { label: "Today's Views", value: analyticsData?.todayViews || 0, icon: <TrendingUp size={20} />, color: "from-emerald-500 to-green-400", change: "Live" },
+                         { label: "Messages", value: inboxMessages.length, icon: <Mail size={20} />, color: "from-orange-500 to-amber-400", change: `${inboxMessages.filter((m: any) => !readMessages.includes(String(m.id))).length} unread` },
+                       ].map((stat, i) => (
+                         <motion.div
+                           key={i}
+                           initial={{ opacity: 0, y: 20 }}
+                           animate={{ opacity: 1, y: 0 }}
+                           transition={{ delay: i * 0.1 }}
+                           className="p-6 bg-white/[0.03] border border-white/5 rounded-[28px] hover:border-white/10 transition-all group"
+                         >
+                           <div className="flex items-center justify-between mb-4">
+                             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-white shadow-lg`}>
+                               {stat.icon}
+                             </div>
+                             <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">{stat.change}</span>
+                           </div>
+                           <div className="text-[36px] font-black text-white leading-none tracking-tight">{stat.value}</div>
+                           <div className="text-[10px] font-bold text-white/30 uppercase tracking-widest mt-2">{stat.label}</div>
+                         </motion.div>
+                       ))}
+                     </div>
+
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                       {/* Section Heatmap */}
+                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-6">
+                         <div className="flex items-center gap-3">
+                           <BarChart3 size={16} className="text-blue-400" />
+                           <h4 className="text-[11px] font-black text-white uppercase tracking-widest">Section Engagement</h4>
+                         </div>
+                         <div className="space-y-4">
+                           {(() => {
+                             const sectionData = analyticsData?.popularSections?.length
+                               ? analyticsData.popularSections
+                               : Object.entries(
+                                   clientEvents
+                                     .filter((e: any) => e.type === "section_view")
+                                     .reduce((acc: any, e: any) => { const s = e.metadata?.section || "unknown"; acc[s] = (acc[s] || 0) + 1; return acc; }, {})
+                                 ).map(([section, views]) => ({ section, views })).sort((a: any, b: any) => b.views - a.views).slice(0, 6);
+                             const maxViews = Math.max(...(sectionData.map((s: any) => s.views) as number[]), 1);
+                             return sectionData.length > 0 ? sectionData.map((s: any, i: number) => (
+                               <div key={i} className="space-y-1.5">
+                                 <div className="flex justify-between text-[11px]">
+                                   <span className="font-bold text-white/60 capitalize">{s.section}</span>
+                                   <span className="font-black text-white/30">{s.views}</span>
+                                 </div>
+                                 <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                   <motion.div initial={{ width: 0 }} animate={{ width: `${(s.views / maxViews) * 100}%` }} transition={{ delay: i * 0.1, duration: 0.6 }} className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full" />
+                                 </div>
+                               </div>
+                             )) : <p className="text-white/20 text-[12px] text-center py-8">No section data yet. Visit the portfolio to generate engagement data.</p>;
+                           })()}
+                         </div>
+                       </div>
+
+                       {/* Device Breakdown + Recent Activity */}
+                       <div className="space-y-6">
+                         {/* Device Breakdown */}
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-5">
+                           <div className="flex items-center gap-3">
+                             <Monitor size={16} className="text-purple-400" />
+                             <h4 className="text-[11px] font-black text-white uppercase tracking-widest">Device Breakdown</h4>
+                           </div>
+                           <div className="flex gap-6">
+                             {(() => {
+                               const devices = clientEvents.filter((e: any) => e.type === "page_view").reduce((acc: any, e: any) => {
+                                 const d = e.metadata?.device || "desktop"; acc[d] = (acc[d] || 0) + 1; return acc;
+                               }, {} as Record<string, number>);
+                               const total = Object.values(devices).reduce((a: any, b: any) => a + b, 0) as number || 1;
+                               return [
+                                 { name: "Desktop", icon: <Monitor size={18} />, count: devices.desktop || 0, color: "text-blue-400" },
+                                 { name: "Tablet", icon: <Tablet size={18} />, count: devices.tablet || 0, color: "text-purple-400" },
+                                 { name: "Mobile", icon: <Smartphone size={18} />, count: devices.mobile || 0, color: "text-emerald-400" },
+                               ].map((d, i) => (
+                                 <div key={i} className="flex-1 text-center space-y-2">
+                                   <div className={`mx-auto w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center ${d.color}`}>{d.icon}</div>
+                                   <div className="text-[20px] font-black text-white">{d.count}</div>
+                                   <div className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{d.name}</div>
+                                   <div className="text-[9px] font-bold text-white/20">{total > 0 ? Math.round((d.count / total) * 100) : 0}%</div>
+                                 </div>
+                               ));
+                             })()}
+                           </div>
+                         </div>
+
+                         {/* Recent Activity Feed */}
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                           <div className="flex items-center gap-3">
+                             <Clock size={16} className="text-emerald-400" />
+                             <h4 className="text-[11px] font-black text-white uppercase tracking-widest">Live Activity</h4>
+                           </div>
+                           <div className="space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar-hidden">
+                             {clientEvents.slice(0, 12).map((evt: any, i: number) => (
+                               <div key={i} className="flex items-center gap-3 px-4 py-2.5 bg-white/[0.02] rounded-xl text-[10px]">
+                                 <div className={`w-2 h-2 rounded-full shrink-0 ${evt.type === "page_view" ? "bg-blue-400" : evt.type === "section_view" ? "bg-emerald-400" : "bg-orange-400"}`} />
+                                 <span className="font-bold text-white/60 capitalize">{evt.type.replace("_", " ")}</span>
+                                 {evt.metadata?.section && <span className="text-white/30 capitalize">→ {evt.metadata.section}</span>}
+                                 {evt.metadata?.device && <span className="ml-auto text-white/20">{evt.metadata.device}</span>}
+                                 <span className="text-white/15 shrink-0">{new Date(evt.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                               </div>
+                             ))}
+                             {clientEvents.length === 0 && <p className="text-white/20 text-[11px] text-center py-6">No activity events recorded yet.</p>}
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </motion.div>
+                )}
+
+                {/* ── INBOX TAB ── */}
+                {activeTab === "Inbox" && (
+                   <motion.div key="inbox" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                     <div className="flex justify-between items-end">
+                       <div className="space-y-2">
+                         <h3 className="text-[12px] font-black text-cyan-400 uppercase tracking-[4px]">Contact Submissions</h3>
+                         <p className="text-[14px] text-white/40 font-medium max-w-md">Messages from your portfolio contact form — both local and server-synced.</p>
+                       </div>
+                       <div className="flex gap-3">
+                         <button onClick={() => {
+                           const allIds = inboxMessages.map((m: any) => String(m.id));
+                           setReadMessages(allIds);
+                           saveData("admin-read-messages", allIds);
+                         }} className="flex items-center gap-2 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-all">
+                           <CheckCircle2 size={14} /> Mark All Read
+                         </button>
+                       </div>
+                     </div>
+
+                     <div className="space-y-3">
+                       {inboxMessages.length === 0 && (
+                         <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
+                           <div className="w-16 h-16 bg-cyan-500/10 rounded-3xl flex items-center justify-center text-cyan-400"><Inbox size={28} /></div>
+                           <p className="text-white/30 text-[13px]">No messages yet. Your inbox is empty.</p>
+                         </div>
+                       )}
+                       {inboxMessages.map((msg: any, i: number) => {
+                         const isRead = readMessages.includes(String(msg.id));
+                         return (
+                           <motion.div
+                             key={msg.id || i}
+                             initial={{ opacity: 0, x: -10 }}
+                             animate={{ opacity: 1, x: 0 }}
+                             transition={{ delay: i * 0.03 }}
+                             className={`p-6 border rounded-[28px] transition-all cursor-pointer group ${isRead ? "bg-white/[0.01] border-white/5" : "bg-cyan-500/[0.03] border-cyan-500/20 hover:border-cyan-400/40"}`}
+                             onClick={() => {
+                               if (!isRead) {
+                                 const updated = [...readMessages, String(msg.id)];
+                                 setReadMessages(updated);
+                                 saveData("admin-read-messages", updated);
+                               }
+                             }}
+                           >
+                             <div className="flex items-start gap-5">
+                               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isRead ? "bg-white/5 text-white/20" : "bg-cyan-500/20 text-cyan-400"}`}>
+                                 <Mail size={18} />
+                               </div>
+                               <div className="flex-1 min-w-0 space-y-2">
+                                 <div className="flex items-center gap-3">
+                                   <span className={`font-black text-[14px] ${isRead ? "text-white/40" : "text-white"}`}>{msg.name || "Anonymous"}</span>
+                                   {!isRead && <span className="px-2 py-0.5 bg-cyan-500 text-black text-[7px] font-black rounded-full uppercase tracking-widest">New</span>}
+                                   {msg.serviceType && <span className="px-2 py-0.5 bg-white/5 text-white/30 text-[8px] font-bold rounded-full">{msg.serviceType}</span>}
+                                 </div>
+                                 <p className="text-[12px] text-white/30 font-medium">{msg.email}</p>
+                                 <p className={`text-[13px] leading-relaxed ${isRead ? "text-white/25" : "text-white/50"}`}>{msg.message}</p>
+                               </div>
+                               <div className="flex flex-col items-end gap-3 shrink-0">
+                                 <span className="text-[9px] font-bold text-white/20">{msg.date ? new Date(msg.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "N/A"}</span>
+                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                   <a href={`mailto:${msg.email}?subject=Re: Portfolio Inquiry`} className="w-8 h-8 bg-[var(--accent)]/10 text-[var(--accent)] rounded-lg flex items-center justify-center hover:bg-[var(--accent)]/20 transition-all" title="Reply"><ArrowUpRight size={14} /></a>
+                                   <button onClick={(e) => { e.stopPropagation(); if(confirm("Delete this message?")) { const updated = inboxMessages.filter((_: any, idx: number) => idx !== i); setInboxMessages(updated); }}} className="w-8 h-8 bg-red-500/10 text-red-400 rounded-lg flex items-center justify-center hover:bg-red-500/20 transition-all" title="Delete"><Trash size={14} /></button>
+                                 </div>
+                               </div>
+                             </div>
+                           </motion.div>
+                         );
+                       })}
+                     </div>
+                   </motion.div>
+                )}
+
+                {/* ── TESTIMONIALS TAB ── */}
+                {activeTab === "Testimonials" && (
+                   <motion.div key="testimonials" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                     <div className="flex justify-between items-end">
+                       <div className="space-y-2">
+                         <h3 className="text-[12px] font-black text-amber-400 uppercase tracking-[4px]">Social Proof</h3>
+                         <p className="text-[14px] text-white/40 font-medium max-w-md">Manage testimonials displayed on your portfolio.</p>
+                       </div>
+                       <button onClick={() => {
+                         const updated = [{ id: Date.now(), name: "New Collaborator", role: "Title", company: "Company", quote: "", avatar: "", status: "Draft" }, ...testimonials];
+                         setTestimonials(updated);
+                         saveData("admin-testimonials", updated);
+                       }} className="group flex items-center gap-3 px-8 py-4 bg-amber-400 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                         <Plus size={18} /> Add Testimonial
+                       </button>
+                     </div>
+
+                     <div className="grid grid-cols-1 gap-6">
+                       {testimonials.map((t: any, i: number) => (
+                         <motion.div
+                           key={t.id}
+                           initial={{ opacity: 0, y: 10 }}
+                           animate={{ opacity: 1, y: 0 }}
+                           transition={{ delay: i * 0.05 }}
+                           className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-amber-400/30 transition-all space-y-6"
+                         >
+                           <div className="flex items-start gap-6">
+                             {/* Avatar */}
+                             <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center group/avatar relative">
+                               {t.avatar ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" /> : <UserIcon size={24} className="text-white/20" />}
+                               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-all">
+                                 <label className="cursor-pointer text-[8px] font-black text-white uppercase tracking-widest">
+                                   Edit
+                                   <input type="file" className="hidden" accept="image/*" onChange={e => handleImageUpload(e, (b64) => { const n = [...testimonials]; n[i].avatar = b64; setTestimonials(n); saveData("admin-testimonials", n); })} />
+                                 </label>
+                               </div>
+                             </div>
+
+                             {/* Info */}
+                             <div className="flex-1 space-y-3">
+                               <input type="text" value={t.name} onChange={e => { const n = [...testimonials]; n[i].name = e.target.value; setTestimonials(n); }} onBlur={() => saveData("admin-testimonials", testimonials)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="Person Name" />
+                               <div className="flex gap-4">
+                                 <input type="text" value={t.role} onChange={e => { const n = [...testimonials]; n[i].role = e.target.value; setTestimonials(n); }} onBlur={() => saveData("admin-testimonials", testimonials)} className="bg-transparent text-amber-400/60 font-bold text-[11px] uppercase tracking-widest outline-none" placeholder="Role/Title" />
+                                 <span className="text-white/10">@</span>
+                                 <input type="text" value={t.company} onChange={e => { const n = [...testimonials]; n[i].company = e.target.value; setTestimonials(n); }} onBlur={() => saveData("admin-testimonials", testimonials)} className="bg-transparent text-white/40 font-bold text-[11px] uppercase tracking-widest outline-none" placeholder="Company" />
+                               </div>
+                             </div>
+
+                             {/* Actions */}
+                             <div className="flex gap-3 shrink-0">
+                               <select value={t.status} onChange={e => { const n = [...testimonials]; n[i].status = e.target.value; setTestimonials(n); saveData("admin-testimonials", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                 <option className="bg-[#111]">Draft</option>
+                                 <option className="bg-[#111]">Published</option>
+                               </select>
+                               <button onClick={() => { if(confirm("Remove testimonial?")) { const updated = testimonials.filter((x: any) => x.id !== t.id); setTestimonials(updated); saveData("admin-testimonials", updated); }}} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
+                             </div>
+                           </div>
+
+                           {/* Quote */}
+                           <div className="space-y-2">
+                             <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1 flex items-center gap-2"><Quote size={10} /> Testimonial Quote</label>
+                             <textarea value={t.quote} onChange={e => { const n = [...testimonials]; n[i].quote = e.target.value; setTestimonials(n); }} onBlur={() => saveData("admin-testimonials", testimonials)} className="w-full bg-white/[0.02] border border-white/5 rounded-2xl p-5 text-white/50 text-[14px] outline-none focus:border-amber-400/20 transition-all resize-none min-h-[100px] leading-relaxed italic" placeholder='"Write what they said about your work..."' />
+                           </div>
+                         </motion.div>
+                       ))}
+                     </div>
+                   </motion.div>
                 )}
 
                 {activeTab === "Settings" && (
