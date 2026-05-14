@@ -20,24 +20,6 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-<<<<<<< HEAD
-    if (!formData.name || !formData.email || !formData.message) {
-      setStatus("error");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
-
-=======
     
     // Simple Validation
     if (!formData.name || !formData.email || !formData.message) {
@@ -60,18 +42,14 @@ export default function Contact() {
       }
 
       // Admin Panel Sync (Local)
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
       const submission = {
         ...formData,
         id: Date.now(),
         date: new Date().toLocaleString(),
         read: false
       };
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
+
       const existing = JSON.parse(localStorage.getItem("admin-submissions") || "[]");
       localStorage.setItem("admin-submissions", JSON.stringify([submission, ...existing]));
       window.dispatchEvent(new Event('admin-updated'));
@@ -80,34 +58,20 @@ export default function Contact() {
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setStatus("idle"), 5000);
-<<<<<<< HEAD
-    } catch (error) {
-      console.error("Submission error:", error);
-      setStatus("error");
-=======
     } catch (err) {
       console.error("EmailJS Error:", err);
       setStatus("error");
       setErrorMessage(language === 'en' ? "Failed to send message. Please try again." : "Nachricht konnte nicht gesendet werden.");
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
     }
   };
 
   return (
     <div className="w-full">
       <div className="max-w-4xl mx-auto">
-<<<<<<< HEAD
-        <div className="flex justify-center"><div className="section-pill"><Send size={14} /> Contact</div></div>
-        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-6 text-center">Let&apos;s Get in Touch!</h2>
-        <p className="text-[16px] text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto leading-relaxed">
-          I&apos;m currently available for freelance work and technical consultations. 
-          Fill out the form below and I&apos;ll get back to you within 24 hours.
-=======
         <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-center text-[var(--accent)]">{t.label}</p>
         <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-4 text-center">{t.title}</h2>
         <p className="text-[16px] text-[var(--text-secondary)] text-center mb-12 max-w-2xl mx-auto leading-relaxed opacity-60">
           {t.subheading}
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
         </p>
 
         {/* Form */}

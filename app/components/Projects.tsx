@@ -2,12 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-<<<<<<< HEAD
-import { ArrowRight, Briefcase } from "lucide-react";
-=======
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 import ProjectModal from "./ProjectModal";
 
 import { useLanguage } from "../context/LanguageContext";
@@ -94,14 +90,9 @@ export default function Projects() {
 
   return (
     <div className="w-full">
-<<<<<<< HEAD
-      <div className="section-pill"><Briefcase size={14} /> Projects</div>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-8">Explore Portfolio By Technology</h2>
-=======
       <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">{t.title}</p>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.subtitle}</h2>
       <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.subheading}</p>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-3 mb-8">

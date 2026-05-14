@@ -178,15 +178,9 @@ export default function Home() {
 
       <AnalyticsTracker />
       
-<<<<<<< HEAD
       {/* ── Responsive Navigation ── */}
       <nav className="fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
         <div className="hidden lg:block mb-3 pb-3 border-b border-[var(--border-subtle)]">
-=======
-      {/* ── Sidebar Navigation ── */}
-      <nav className="sidebar absolute left-5 top-[24px] hidden md:flex flex-col w-[64px] bg-[var(--bg-card)] border border-[var(--border)] py-6 rounded-[32px] items-center gap-2 shadow-2xl z-50">
-        <div className="mb-4 pb-4 border-b border-white/5">
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
           <ThemeBuddy />
         </div>
         <div className="flex flex-row lg:flex-col items-center gap-4 lg:gap-3 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">

@@ -34,6 +34,17 @@ html.light {
   --border-subtle: rgba(0,0,0,0.06);
 }
 
+/* ── LIGHT MODE: Override hardcoded dark-theme colours ── */
+html.light .text-white { color: var(--text-primary) !important; }
+html.light .text-white\/20, html.light .text-white\/30, html.light .text-white\/40, html.light .text-white\/50, html.light .text-white\/60 { color: var(--text-secondary) !important; }
+html.light .text-white\/5, html.light .text-white\/10 { color: var(--text-muted) !important; }
+html.light .bg-\[\#141414\], html.light .bg-\[\#0d0d0d\], html.light .bg-\[\#080808\], html.light .bg-\[\#111\] { background-color: var(--bg-secondary) !important; }
+html.light .border-\[\#222\], html.light .border-\[\#222222\] { border-color: var(--border) !important; }
+html.light .border-white\/5, html.light .border-white\/10, html.light .border-white\/20 { border-color: var(--border) !important; }
+html.light .bg-white\/\[0\.03\], html.light .bg-white\/\[0\.02\], html.light .bg-white\/\[0\.05\], html.light .bg-white\/5, html.light .bg-white\/10 { background-color: rgba(0,0,0,0.03) !important; }
+html.light .bg-black\/80 { background-color: rgba(255,255,255,0.85) !important; }
+html.light .bg-\[\#080808\]\/50 { background-color: transparent !important; }
+
 /* ── CMD TERMINAL MODE ── */
 html.cmd {
   --bg-primary: #000000;

@@ -45,17 +45,12 @@ export default function Testimonials() {
 
   return (
     <div className="w-full">
-<<<<<<< HEAD
-      <div className="flex justify-center"><div className="section-pill"><Quote size={14} /> Testimonials</div></div>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12 text-center">Here&apos;s What My Collaborators Say</h2>
-=======
       <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">
         {language === 'en' ? "TESTIMONIALS" : "TESTIMONIALS"}
       </p>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12">
         {language === 'en' ? "Here's What My Collaborators Say" : "Was meine Partner sagen"}
       </h2>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
       <div className="relative max-w-4xl mx-auto px-12">
         <div className="overflow-hidden">

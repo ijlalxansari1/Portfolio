@@ -99,13 +99,8 @@ export default function Resume() {
 
   return (
     <div className="w-full">
-<<<<<<< HEAD
-      <div className="section-pill"><ExternalLink size={14} /> Resume</div>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12">Work Experience &amp; Education</h2>
-=======
       <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">{t.label}</p>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12">{t.title}</h2>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-16">
         <div>

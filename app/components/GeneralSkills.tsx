@@ -89,17 +89,12 @@ export default function GeneralSkills() {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-<<<<<<< HEAD
-          <div className="section-pill"><Cpu size={14} /> Capabilities</div>
-          <h2 className="text-[32px] font-black text-white">General Expertise</h2>
-=======
           <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
             {language === 'en' ? "TOOL SKILLS" : "Fähigkeiten"}
           </p>
           <h2 className="text-[32px] font-black text-white">
             {language === 'en' ? "General Skills & Domain Mastery" : "Allgemeine Expertise"}
           </h2>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
         </div>
       </div>
 

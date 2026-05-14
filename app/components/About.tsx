@@ -2,11 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-<<<<<<< HEAD
-import { Download, ArrowRight } from "lucide-react";
-=======
-import { Download, Send, Zap, Clock, Award } from "lucide-react";
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
+import { Download, ArrowRight, Send, Zap, Clock, Award } from "lucide-react";
 import Magnetic from "./Magnetic";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -66,28 +62,9 @@ export default function About() {
       </div>
 
       <div className="relative z-10 space-y-6 mb-12">
-        <motion.p 
+        <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-<<<<<<< HEAD
-          className="text-[var(--text-secondary)] opacity-50 text-[18px] lg:text-[22px] font-bold"
-        >
-          Hello, I&apos;m <span className="text-[var(--accent)] opacity-100">Ijlal Ansari</span>
-        </motion.p>
-
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="hero-name text-[42px] md:text-[64px] lg:text-[92px] font-black text-[var(--text-primary)] leading-[0.95] tracking-tight"
-        >
-          Ijlal <span className="text-[var(--accent)]">Ansari.</span>
-        </motion.h1>
-
-        <div className="flex items-center gap-4 flex-wrap text-[18px] md:text-[24px] lg:text-[32px] font-black">
-          <span className="text-[var(--text-secondary)] opacity-30">Expert in</span>
-          <span className="text-[var(--accent)] relative">
-=======
           className="section-label inline-flex items-center gap-3 px-4 py-1.5 bg-[#00e87a]/10 border border-[#00e87a]/30 text-[#00e87a] text-[10px] font-black uppercase tracking-[0.25em] rounded-full"
         >
           {t.greeting}
@@ -116,7 +93,6 @@ export default function About() {
         <div className="flex items-center gap-4 flex-wrap text-[24px] lg:text-[32px] font-black">
           <span className="text-[var(--text-secondary)] opacity-30">{t.expertIn}</span>
           <span className="text-[#00e87a] relative">
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
             <span className="typewriter-text">{displayText}</span>
             <span className="cursor">|</span>
           </span>
@@ -184,31 +160,6 @@ export default function About() {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-<<<<<<< HEAD
-        transition={{ delay: 0.6 }}
-        className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 pt-12 border-t border-[var(--border)]"
-      >
-        {[
-          { num: "15+", label: "Scalable", sub: "Projects" },
-          { num: "3+", label: "Years", sub: "of Experience" },
-          { num: "5+", label: "Core", sub: "Certifications" },
-        ].map((stat, i) => (
-          <motion.div 
-            key={i} 
-            whileHover={{ y: -4 }}
-            className="flex items-baseline gap-4"
-          >
-            <span className="text-[42px] md:text-[56px] font-black leading-none tracking-tighter text-[var(--text-primary)]">
-              {stat.num}
-            </span>
-            <div className="space-y-0">
-              <span className="block text-[13px] font-bold text-[var(--text-secondary)]">
-                {stat.label}
-              </span>
-              <span className="block text-[13px] font-bold text-[var(--text-secondary)]">
-                {stat.sub}
-              </span>
-=======
         transition={{ delay: 0.7 }}
         className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 pt-12 border-t border-white/5"
       >
@@ -234,7 +185,6 @@ export default function About() {
               <span className="block text-[11px] font-black text-white uppercase tracking-[0.1em]">
                 {stat.label}
               </span>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
             </div>
           </motion.div>
         ))}

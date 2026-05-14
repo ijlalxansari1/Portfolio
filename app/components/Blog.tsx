@@ -2,12 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-<<<<<<< HEAD
-import { ArrowRight, Newspaper } from "lucide-react";
-=======
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
 const articles = [
   {
@@ -66,14 +62,9 @@ export default function Blog() {
 
   return (
     <div className="w-full">
-<<<<<<< HEAD
-      <div className="section-pill"><Newspaper size={14} /> Blog</div>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-10">Exploring My Articles</h2>
-=======
       <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">ARTICLES</p>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">Blog & Research</h2>
       <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">A collection of research notes, technical walkthroughs, and thoughts on ethical data systems.</p>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {posts.map((article, i) => (

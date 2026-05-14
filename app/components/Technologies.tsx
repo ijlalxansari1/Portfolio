@@ -132,17 +132,12 @@ export default function Technologies() {
 
   return (
     <div className="w-full">
-<<<<<<< HEAD
-      <div className="section-pill"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> Technologies</div>
-      <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">Technical Proficiency Radar</h2>
-=======
       <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
         {language === 'en' ? "TECHNICAL SKILLS" : "Technologien"}
       </p>
       <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">
         {language === 'en' ? "Technologies" : "Technisches Kompetenz-Radar"}
       </h2>
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
       
       <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
         {/* Radar Chart */}

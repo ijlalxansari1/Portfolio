@@ -3,13 +3,9 @@
 import { useState, useEffect } from "react";
 import { Linkedin, Github, Twitter, Mail, MessageSquare } from "lucide-react";
 import Image from "next/image";
-<<<<<<< HEAD
-import { motion, AnimatePresence } from "framer-motion";
-=======
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
 import { trackEvent } from "./AnalyticsTracker";
 
 interface LeftSidebarProps {
@@ -119,16 +115,10 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
-<<<<<<< HEAD
             { Icon: MessageSquare, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }, i) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[var(--bg-primary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
               <Icon size={16} />
-=======
-          ].map(({ Icon, href }: any, i: number) => (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center text-[#666] hover:text-[#00e87a] hover:scale-110 transition-all shadow-lg">
-              {typeof Icon === 'function' ? <Icon /> : <Icon size={16} />}
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
             </a>
           ))}
         </div>
@@ -137,11 +127,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       <div className="w-full flex border-t border-[var(--border)] h-[70px] bg-[var(--bg-secondary)] mt-auto">
         <button 
           onClick={downloadResume}
-<<<<<<< HEAD
           className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[var(--border)]"
-=======
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[#00e87a] hover:bg-[#00e87a]/10 tracking-[0.15em] uppercase transition-all border-r border-[#222]"
->>>>>>> be68d009683ef17e78a0ca9b4668278cb581c24b
         >
           {t.download_cv}
         </button>
