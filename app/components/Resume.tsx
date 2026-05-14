@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ExternalLink, Award, X } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 
@@ -81,6 +81,7 @@ export default function Resume() {
   const { language } = useLanguage();
   const t = translations[language].experience;
   const [courses, setCourses] = useState(defaultCourses);
+  const [selectedCert, setSelectedCert] = useState<any>(null);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -126,16 +127,77 @@ export default function Resume() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="p-6 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl hover:border-[var(--accent)]/30 transition-all group"
+            onClick={() => setSelectedCert(c)}
+            className="p-6 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl hover:border-[var(--accent)]/30 transition-all group cursor-pointer"
           >
             <h4 className="text-[15px] font-black text-[var(--text-primary)] mb-2 group-hover:text-[var(--accent)] transition-all">{c.title}</h4>
             <p className="text-[11px] text-[var(--text-secondary)] opacity-40 font-bold uppercase tracking-widest mb-5">{c.provider}</p>
-            <a href={c.link || "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-all">
-              Certificate <ExternalLink size={11} />
-            </a>
+            <div className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[var(--accent)] hover:underline transition-all">
+              {c.link && c.link !== "#" ? "View Details" : "Learn More"} <ExternalLink size={11} />
+            </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Certification Modal */}
+      <AnimatePresence>
+        {selectedCert && (
+          <div className="fixed inset-0 z-[4000] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedCert(null)} className="fixed inset-0 bg-black/92 backdrop-blur-md" />
+            
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-[480px] bg-[#111111] border border-white/10 rounded-[32px] p-8 shadow-2xl z-10 overflow-hidden"
+            >
+               <button onClick={() => setSelectedCert(null)} className="absolute top-6 right-6 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-red-500/20 hover:text-red-400 transition-all">
+                 <X size={20} />
+               </button>
+
+               <div className="flex flex-col items-center text-center space-y-6 pt-4">
+                  <div className="w-20 h-20 bg-[var(--accent)]/10 rounded-3xl flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/20 shadow-[0_0_30px_rgba(var(--accent-rgb),0.1)]">
+                     <Award size={40} />
+                  </div>
+                  
+                  <div className="space-y-2">
+                     <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px]">{selectedCert.provider}</p>
+                     <h2 className="text-[24px] font-black text-white leading-tight">{selectedCert.title}</h2>
+                  </div>
+
+                  {selectedCert.link && selectedCert.link !== "#" ? (
+                    <div className="w-full space-y-4">
+                       <div className="p-5 bg-white/5 border border-white/10 rounded-2xl text-left">
+                          <p className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-1">Status</p>
+                          <p className="text-[13px] text-emerald-400 font-bold flex items-center gap-2">
+                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Verified Credential
+                          </p>
+                       </div>
+
+                       <a 
+                         href={selectedCert.link} 
+                         target="_blank" 
+                         rel="noopener noreferrer"
+                         className="w-full py-4 bg-[var(--accent)] text-black rounded-2xl text-[12px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl"
+                       >
+                          Verify Certificate <ExternalLink size={16} />
+                       </a>
+                    </div>
+                  ) : (
+                    <div className="w-full p-8 bg-white/5 border border-white/10 rounded-3xl text-center">
+                       <p className="text-[13px] text-white/40 font-medium leading-relaxed italic">
+                         &quot;This credential is currently in the verification pipeline. Documentation will be available shortly.&quot;
+                       </p>
+                    </div>
+                  )}
+               </div>
+
+               {/* Background Decorative */}
+               <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-[var(--accent)]/5 rounded-full blur-[80px] pointer-events-none" />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

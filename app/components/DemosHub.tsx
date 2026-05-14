@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
@@ -23,8 +23,35 @@ const demoList = [
 
 export default function DemosHub() {
   const [activeDemo, setActiveDemo] = useState<number | null>(null);
+  const [demos, setDemos] = useState(demoList);
 
-  const currentDemo = demoList.find(d => d.id === activeDemo);
+  useEffect(() => {
+    const handleUpdate = () => {
+      const adminData = localStorage.getItem("admin-demos");
+      if (adminData) {
+        const parsed = JSON.parse(adminData);
+        if (parsed.length > 0) {
+          // Merge with static components since components can't be stored in localStorage
+          const merged = parsed.filter((d: any) => d.status !== 'Draft').map((d: any) => {
+            const staticMatch = demoList.find(s => s.title === d.title || s.id === d.id);
+            return {
+              ...d,
+              icon: staticMatch?.icon || <FlaskConical size={24} />,
+              component: staticMatch?.component || <div className="p-20 text-center text-white/20">Simulation Engine Pending...</div>
+            };
+          });
+          setDemos(merged);
+        } else {
+          setDemos(demoList);
+        }
+      }
+    };
+    handleUpdate();
+    window.addEventListener("admin-updated", handleUpdate);
+    return () => window.removeEventListener("admin-updated", handleUpdate);
+  }, []);
+
+  const currentDemo = demos.find(d => d.id === activeDemo);
 
   return (
     <div className="w-full">
@@ -39,7 +66,7 @@ export default function DemosHub() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {demoList.map((demo) => (
+        {demos.map((demo) => (
           <div 
             key={demo.id} 
             className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 hover:border-[var(--accent)]/30 transition-all cursor-pointer relative overflow-hidden"

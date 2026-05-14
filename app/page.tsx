@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote
+  Quote, Mail, MessageSquare
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
@@ -360,8 +360,8 @@ export default function Home() {
                     {[
                       { icon: <Github size={18} />, href: "https://github.com/ijlalxansari1", color: "text-white hover:bg-white/10" },
                       { icon: <Linkedin size={18} />, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0", color: "text-[#0077B5] hover:bg-[#0077B5]/10" },
-                      { icon: <Send size={18} />, href: "https://wa.me/923371880807", color: "text-[#25D366] hover:bg-[#25D366]/10" },
-                      { icon: <Newspaper size={18} />, href: "mailto:ansariijlal90@gmail.com", color: "text-[#EA4335] hover:bg-[#EA4335]/10" }
+                      { icon: <MessageSquare size={18} />, href: "https://wa.me/923371880807", color: "text-[#25D366] hover:bg-[#25D366]/10" },
+                      { icon: <Mail size={18} />, href: "mailto:ansariijlal90@gmail.com", color: "text-[#EA4335] hover:bg-[#EA4335]/10" }
                     ].map((social, i) => (
                       <a 
                         key={i} 

@@ -8,7 +8,7 @@ import {
   User as UserIcon, Globe, Bold, Italic, Code, Link as LinkIcon, 
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
   ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag,
-  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users
+  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical
 } from "lucide-react";
 import { storage } from "../utils/storage";
 
@@ -62,6 +62,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [radarSkills, setRadarSkills] = useState<any[]>([]);
   const [toolSkills, setToolSkills] = useState<any[]>([]);
+  const [demos, setDemos] = useState<any[]>([]);
   const [skillGroups, setSkillGroups] = useState<any[]>([]);
   const [practiceList, setPracticeList] = useState<any[]>([]);
   const [categories, setCategories] = useState<any>(defaultCategories);
@@ -89,6 +90,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         
         const toolsData = storage.get("admin-skills", { tools: defaultTools });
         setToolSkills(toolsData.tools || defaultTools);
+        setDemos(storage.get("admin-demos", []));
         setSystemAudit(storage.audit());
 
         // Client-side analytics events
@@ -179,6 +181,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400", badge: 0 },
               { id: "Projects", icon: <Briefcase size={16} />, color: "text-orange-400", badge: 0 },
               { id: "Blog", icon: <Newspaper size={16} />, color: "text-pink-400", badge: 0 },
+              { id: "Demos", icon: <FlaskConical size={16} />, color: "text-indigo-400", badge: 0 },
               { id: "Testimonials", icon: <Quote size={16} />, color: "text-amber-400", badge: 0 },
               { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: 0 },
               { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400", badge: 0 },
@@ -499,6 +502,54 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                       </div>
                    </motion.div>
                 )}
+
+                 {/* ── DEMOS TAB ── */}
+                 {activeTab === "Demos" && (
+                   <motion.div key="demos" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                      <div className="flex justify-between items-end">
+                        <div className="space-y-2">
+                           <h3 className="text-[12px] font-black text-indigo-400 uppercase tracking-[4px]">Interactive Showcases</h3>
+                           <p className="text-[14px] text-white/40 font-medium max-w-md">Manage the live sandboxes and interactive project demos.</p>
+                        </div>
+                        <button onClick={() => {
+                          const updated = [{ id: Date.now(), title: "New Simulation", tag: "Python", description: "Interactive sandbox for new technology.", status: "Active" }, ...demos];
+                          setDemos(updated);
+                          saveData("admin-demos", updated);
+                        }} className="group flex items-center gap-3 px-8 py-4 bg-indigo-500 text-white rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                          <Plus size={18} /> Add Sandbox
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {demos.map((d, i) => (
+                          <motion.div 
+                             key={d.id} 
+                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-indigo-500/30 transition-all space-y-6"
+                          >
+                             <div className="flex justify-between gap-4">
+                                <div className="flex-1 space-y-4">
+                                   <input type="text" value={d.title} onChange={e => { const n = [...demos]; n[i].title = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="Demo Title" />
+                                   <div className="flex items-center gap-3">
+                                      <Tag size={12} className="text-indigo-400" />
+                                      <input type="text" value={d.tag} onChange={e => { const n = [...demos]; n[i].tag = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="bg-transparent text-white/40 font-bold text-[10px] uppercase tracking-widest outline-none" placeholder="Tag (e.g. Python)" />
+                                   </div>
+                                </div>
+                                <button onClick={() => { if(confirm("Discard demo configuration?")) { const updated = demos.filter(x => x.id !== d.id); setDemos(updated); saveData("admin-demos", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
+                             </div>
+                             
+                             <textarea value={d.description} onChange={e => { const n = [...demos]; n[i].description = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Explain the sandbox context..." />
+                             
+                             <div className="flex items-center justify-between">
+                                <select value={d.status} onChange={e => { const n = [...demos]; n[i].status = e.target.value; setDemos(n); saveData("admin-demos", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                   <option className="bg-[#111]">Draft</option>
+                                   <option className="bg-[#111]">Active</option>
+                                </select>
+                             </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                   </motion.div>
+                 )}
 
                 {/* ── RADAR & TOOLS TAB ── */}
                 {activeTab === "Radar & Tools" && (
