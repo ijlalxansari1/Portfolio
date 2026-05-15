@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
@@ -48,7 +48,7 @@ export default function Home() {
   const { language } = useLanguage();
   const t = translations[language].sidebar;
   
-  const navItems = [
+  const navItems = useMemo(() => [
     { id: "about",    icon: <User size={18} />,       label: "About"    },
     { id: "skills",   icon: <Dumbbell size={18} />,   label: "Skills"   },
     { id: "services", icon: <Wrench size={18} />,     label: "Services" },
@@ -59,7 +59,7 @@ export default function Home() {
     { id: "testimonials", icon: <Quote size={18} />,  label: "Reviews"  },
     { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
     { id: "contact",  icon: <Send size={18} />,       label: "Contact"  },
-  ];
+  ], [language]);
 
   const scrollToSection = (id: string) => {
     const target = document.getElementById(id);
@@ -148,7 +148,7 @@ export default function Home() {
     sections.forEach((section) => observer.observe(section));
     
     return () => observer.disconnect();
-  }, [isMounted, navItems, isMobile]);
+  }, [isMounted, navItems]);
 
   // Show Scroll Top Button logic
   useEffect(() => {
