@@ -7,6 +7,7 @@ import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 import { trackEvent } from "./AnalyticsTracker";
+import { storage } from "../utils/storage";
 
 interface LeftSidebarProps {
   activeTab: string;
@@ -26,17 +27,17 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
     language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
     language === 'en' ? "AI Ethics Researcher" : "KI-Ethik-Forscher",
     language === 'en' ? "Pipeline Developer" : "Pipeline-Entwickler",
-    language === 'en' ? "Platform Builder" : "Plattform-Entwickler"
+    language === 'en' ? "Data Ops Engineer" : "Data Ops Ingenieur"
   ];
 
   useEffect(() => {
     const interval = setInterval(() => setTitleIndex((prev) => (prev + 1) % titles.length), 3000);
-    const saved = localStorage.getItem("admin-availability");
-    if (saved) setAvailability(JSON.parse(saved));
+    const saved = storage.get("admin-availability", availability);
+    setAvailability(saved);
 
     const handleUpdate = () => {
-      const updated = localStorage.getItem("admin-availability");
-      if (updated) setAvailability(JSON.parse(updated));
+      const updated = storage.get("admin-availability", availability);
+      setAvailability(updated);
     };
     window.addEventListener("admin-updated", handleUpdate);
     return () => {
@@ -49,7 +50,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
     trackEvent("cv_download");
     const link = document.createElement("a");
     link.href = "/ijlalansari.pdf";
-    link.download = "Ijlal_Ansari_Resume.pdf";
+    link.download = "ijlalansari.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -71,53 +72,56 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
   };
 
   return (
-    <div className="sidebar w-full h-auto lg:h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border)] transition-all duration-400 pb-8 lg:pb-0">
+    <div className="sidebar w-full h-auto lg:h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border-subtle)] transition-all duration-400 pb-4 lg:pb-0 relative">
+      {/* Premium Glass Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
       
       <div 
-        className="relative w-full overflow-hidden px-5 pt-5" 
-        style={{ height: 'auto', aspectRatio: '1/1.1' }}
+        className="relative w-full overflow-hidden px-4 pt-4 lg:px-5 lg:pt-5" 
+        style={{ height: 'auto' }}
       >
-        <div className="relative h-full w-full rounded-2xl overflow-hidden border border-[var(--border)]">
+        <div className="relative aspect-[1/1.1] lg:aspect-[1/1.1] w-full rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-inner">
           <Image
             src="/profile.png"
-            alt="Ijlal Ansari - Junior Data Engineer & AI Ethics Researcher" fill className="object-cover object-center" priority
+            alt="Ijlal Ansari - Data Engineer & AI Ethics Researcher" fill className="object-cover object-center scale-105" priority
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)]/40 to-transparent" />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[var(--bg-card)] to-transparent z-20" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-8 text-center -mt-4 relative z-30">
-        <div className="h-6 mb-3 overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 lg:px-8 text-center mt-8 lg:mt-6 relative z-30">
+        <div className="h-6 mb-4 lg:mb-5 overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.p
               key={titles[titleIndex]}
               initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }}
-              className="text-[11px] font-bold text-[#00e87a] uppercase tracking-[0.25em]"
+              className="text-[10px] lg:text-[11px] font-black text-[var(--accent)] uppercase tracking-[0.25em]"
             >
               {titles[titleIndex]}
             </motion.p>
           </AnimatePresence>
         </div>
-        <h2 className="text-[30px] font-black text-[var(--text-primary)] tracking-[-0.02em] mb-4 leading-none">Ijlal Ansari</h2>
-        <div className="flex items-center gap-3 px-4 py-1.5 bg-[var(--bg-primary)] border border-[var(--border)] rounded-full mb-6 shadow-inner">
-          <div className="w-2.5 h-2.5 rounded-full relative" style={{ backgroundColor: getStatusColor() }}>
+        <h2 className="text-[24px] lg:text-[30px] font-black text-[var(--text-primary)] tracking-tight mb-3 lg:mb-4 leading-none">Ijlal Ansari</h2>
+        
+        <div className="flex items-center gap-2.5 px-3.5 py-1 bg-[var(--bg-primary)]/50 backdrop-blur-md border border-[var(--border-subtle)] rounded-full mb-5 lg:mb-6 shadow-sm">
+          <div className="w-2 h-2 rounded-full relative" style={{ backgroundColor: getStatusColor() }}>
             {(availability.status.toLowerCase().includes('available') || availability.status.toLowerCase().includes('verfügbar')) && (
               <div className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ backgroundColor: getStatusColor() }} />
             )}
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)]">
+          <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)]">
             {getStatusLabel()}
           </span>
         </div>
         
-        <div className="flex gap-3 mb-6">
+        <div className="flex gap-2.5 lg:gap-3 mb-6">
           {[
             { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
             { Icon: MessageSquare, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }, i) => (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[var(--bg-primary)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:scale-110 transition-all shadow-lg">
+            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 hover:scale-110 transition-all shadow-md">
               <Icon size={16} />
             </a>
           ))}
@@ -137,7 +141,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             const target = document.getElementById("contact");
             if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
           }}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[#00e87a] hover:bg-[#00e87a]/10 tracking-[0.15em] uppercase transition-all"
+          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
         >
           {t.contact_me}
         </button>

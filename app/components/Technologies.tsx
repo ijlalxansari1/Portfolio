@@ -50,14 +50,16 @@ export default function Technologies() {
       const d3 = window.d3;
       if (!d3 || !svgRef.current) return;
 
-      const width = 340;
-      const height = 340;
-      const margin = 50;
+      const isMobile = window.innerWidth < 768;
+      const width = isMobile ? 280 : 340;
+      const height = isMobile ? 280 : 340;
+      const margin = isMobile ? 40 : 50;
       const radius = Math.min(width, height) / 2 - margin;
       const levels = 5;
       const angleSlice = (Math.PI * 2) / skillData.length;
 
       const svg = d3.select(svgRef.current);
+      svg.attr("width", width).attr("height", height);
       svg.selectAll("*").remove();
 
       const g = svg
@@ -139,10 +141,10 @@ export default function Technologies() {
         {language === 'en' ? "Technologies" : "Technisches Kompetenz-Radar"}
       </h2>
       
-      <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+      <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-6 md:p-12 shadow-2xl relative overflow-hidden">
         {/* Radar Chart */}
         <div className="w-full md:w-[60%] flex justify-center">
-          <svg ref={svgRef} width="340" height="340" className="overflow-visible" />
+          <svg ref={svgRef} className="overflow-visible" />
         </div>
 
         {/* Legend */}

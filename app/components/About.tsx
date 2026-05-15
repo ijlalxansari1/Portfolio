@@ -57,7 +57,7 @@ export default function About() {
   return (
     <div className="w-full relative min-h-[80vh] flex flex-col justify-center">
       {/* Cinematic Background Watermark */}
-      <div className="absolute -top-20 -left-20 text-[200px] font-black text-white/[0.02] pointer-events-none select-none z-0 uppercase tracking-tighter font-jakarta">
+      <div className="absolute -top-20 -left-20 text-[200px] font-black text-white/[0.02] pointer-events-none select-none z-0 uppercase tracking-tighter font-jakarta hidden lg:block">
         DataOps
       </div>
 
@@ -65,7 +65,7 @@ export default function About() {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="section-label inline-flex items-center gap-3 px-4 py-1.5 bg-[#00e87a]/10 border border-[#00e87a]/30 text-[#00e87a] text-[10px] font-black uppercase tracking-[0.25em] rounded-full"
+          className="section-label inline-flex items-center gap-3 px-4 py-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.25em] rounded-full"
         >
           {t.greeting}
         </motion.div>
@@ -75,18 +75,18 @@ export default function About() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="hero-name text-[64px] lg:text-[92px] font-black text-white leading-[0.95] tracking-tight"
+            className="hero-name text-[36px] md:text-[64px] lg:text-[92px] font-black text-white leading-[0.95] tracking-tighter"
           >
-            Ijlal <span className="text-[#00e87a]">Ansari.</span>
+            Ijlal <span className="text-[var(--accent)]">Ansari.</span>
           </motion.h1>
           
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="inline-flex px-4 py-1.5 bg-[#00e87a]/10 border border-[#00e87a]/20 rounded-full"
+            className="inline-flex px-4 py-1.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-full"
           >
-            <span className="text-[#00e87a] text-[10px] font-black uppercase tracking-widest">{t.label}</span>
+            <span className="text-[var(--accent)] text-[10px] font-black uppercase tracking-widest">{t.label}</span>
           </motion.div>
         </div>
 
@@ -123,7 +123,7 @@ export default function About() {
                 const target = document.getElementById("contact");
                 if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
               }}
-              className="px-8 py-5 bg-[#00e87a] text-black text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:scale-[1.05] active:scale-[0.95] transition-all shadow-[0_15px_35px_rgba(0,232,122,0.25)]"
+              className="px-8 py-5 bg-[var(--accent)] text-[var(--bg-primary)] text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:scale-[1.05] active:scale-[0.95] transition-all shadow-[0_15px_35px_rgba(var(--accent-rgb),0.25)]"
             >
               {t.cta_talk} <Send size={18} />
             </button>
@@ -136,7 +136,7 @@ export default function About() {
                 const target = document.getElementById("projects");
                 if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
               }}
-              className="px-8 py-5 bg-transparent border border-white/20 text-white text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:bg-white/5 transition-all"
+              className="px-8 py-5 bg-transparent border border-[var(--border-subtle)] text-[var(--text-primary)] text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl flex items-center gap-4 hover:bg-[var(--text-primary)]/5 transition-all"
             >
               {t.cta_work}
             </button>

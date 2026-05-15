@@ -39,6 +39,25 @@ const defaultTestimonials = [
   { id: 2, name: "Marcus Weber", role: "Senior Data Engineer", company: "Freelance Client", quote: "Exceptional data pipeline architecture. Delivered ahead of schedule with production-grade quality.", avatar: "", status: "Published" }
 ];
 
+const defaultLanguages = [
+  { name: "English", level: 90, flag: "gb" },
+  { name: "Spanish", level: 60, flag: "es" },
+  { name: "Italian", level: 30, flag: "it" },
+  { name: "French", level: 70, flag: "fr" },
+  { name: "Deutsch", level: 20, flag: "de" },
+];
+
+const defaultPractices = [
+  "DWH & DB Concepts",
+  "Data Analytics Engineering",
+  "Data Preparation",
+  "Oracle SQL",
+  "Data Integration",
+  "Data Provisioning",
+  "Data Solution Architecture",
+  "ETL/ELT Solutions"
+];
+
 const defaultRadar = [
   { name: "Python", value: 92 }, { name: "PostgreSQL", value: 85 }, { name: "DuckDB", value: 90 }, { name: "FastAPI", value: 87 }, { name: "Kafka", value: 75 }, { name: "Next.js", value: 88 }
 ];
@@ -64,7 +83,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [toolSkills, setToolSkills] = useState<any[]>([]);
   const [demos, setDemos] = useState<any[]>([]);
   const [skillGroups, setSkillGroups] = useState<any[]>([]);
-  const [practiceList, setPracticeList] = useState<any[]>([]);
+  const [practices, setPractices] = useState<any[]>([]);
+  const [langSkills, setLangSkills] = useState<any[]>([]);
   const [categories, setCategories] = useState<any>(defaultCategories);
   const [isSaving, setIsSaving] = useState(false);
   const [systemAudit, setSystemAudit] = useState<any>(null);
@@ -83,7 +103,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         setSubmissions(storage.get("admin-submissions", []));
         setRadarSkills(storage.get("admin-skills-radar", defaultRadar));
         setSkillGroups(storage.get("admin-skills-groups", []));
-        setPracticeList(storage.get("admin-skills-practices", []));
+        setPractices(storage.get("admin-practices", defaultPractices));
+        setLangSkills(storage.get("admin-languages", defaultLanguages));
         setCategories(storage.get("admin-categories", defaultCategories));
         setTestimonials(storage.get("admin-testimonials", defaultTestimonials));
         setReadMessages(storage.get("admin-read-messages", []));
@@ -181,7 +202,9 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400", badge: 0 },
               { id: "Projects", icon: <Briefcase size={16} />, color: "text-orange-400", badge: 0 },
               { id: "Blog", icon: <Newspaper size={16} />, color: "text-pink-400", badge: 0 },
+              { id: "GitHub", icon: <Github size={16} />, color: "text-white", badge: 0 },
               { id: "Demos", icon: <FlaskConical size={16} />, color: "text-indigo-400", badge: 0 },
+              { id: "Language Skills", icon: <Globe size={16} />, color: "text-emerald-400", badge: 0 },
               { id: "Testimonials", icon: <Quote size={16} />, color: "text-amber-400", badge: 0 },
               { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: 0 },
               { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400", badge: 0 },
@@ -455,6 +478,90 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                       </div>
                    </motion.div>
                 )}
+
+                  {/* ── GITHUB TAB ── */}
+                  {activeTab === "GitHub" && (
+                    <motion.div key="github" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                       <div className="flex justify-between items-end">
+                         <div className="space-y-2">
+                            <h3 className="text-[12px] font-black text-white uppercase tracking-[4px]">Open Source Pulse</h3>
+                            <p className="text-[14px] text-white/40 font-medium max-w-md">Synchronize your portfolio with your live GitHub ecosystem.</p>
+                         </div>
+                       </div>
+
+                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                          <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-8">
+                             <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white">
+                                   <Github size={24} />
+                                </div>
+                                <div>
+                                   <h4 className="text-[15px] font-black text-white">GitHub Account</h4>
+                                   <p className="text-[11px] text-white/40 uppercase tracking-widest font-bold">API Connectivity</p>
+                                </div>
+                             </div>
+
+                             <div className="space-y-4">
+                                <div className="space-y-2">
+                                   <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-1">GitHub Username</label>
+                                   <div className="flex gap-3">
+                                      <input 
+                                         type="text" 
+                                         defaultValue={storage.get("admin-github-username", "ijlalansari")}
+                                         onBlur={(e) => saveData("admin-github-username", e.target.value)}
+                                         className="flex-1 bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-[14px] outline-none focus:border-[var(--accent)] transition-all"
+                                         placeholder="e.g. ijlalansari"
+                                      />
+                                   </div>
+                                </div>
+
+                                <div className="p-6 bg-[var(--accent)]/5 border border-dashed border-[var(--accent)]/20 rounded-2xl">
+                                   <div className="flex items-start gap-4">
+                                      <Zap size={18} className="text-[var(--accent)] shrink-0 mt-1" />
+                                      <p className="text-[12px] text-[var(--accent)]/60 leading-relaxed">
+                                         Changes to the username will trigger a re-fetch of your public events, repository counts, and follower statistics across the entire portfolio.
+                                      </p>
+                                   </div>
+                                </div>
+                             </div>
+                          </div>
+
+                          <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-8">
+                             <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-yellow-400">
+                                   <Star size={24} />
+                                </div>
+                                <div>
+                                   <h4 className="text-[15px] font-black text-white">Manual Overrides</h4>
+                                   <p className="text-[11px] text-white/40 uppercase tracking-widest font-bold">Display Fallbacks</p>
+                                </div>
+                             </div>
+
+                             <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                   <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-1">Repos Offset</label>
+                                   <input 
+                                      type="number" 
+                                      defaultValue={storage.get("admin-github-repos-offset", 0)}
+                                      onBlur={(e) => saveData("admin-github-repos-offset", parseInt(e.target.value))}
+                                      className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-[14px] outline-none"
+                                   />
+                                </div>
+                                <div className="space-y-2">
+                                   <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-1">Stars Offset</label>
+                                   <input 
+                                      type="number" 
+                                      defaultValue={storage.get("admin-github-stars-offset", 0)}
+                                      onBlur={(e) => saveData("admin-github-stars-offset", parseInt(e.target.value))}
+                                      className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white text-[14px] outline-none"
+                                   />
+                                </div>
+                             </div>
+                             <p className="text-[10px] text-white/20 italic">Use offsets to manually adjust counts if you have private repos/stars you want to showcase.</p>
+                          </div>
+                       </div>
+                    </motion.div>
+                  )}
 
                 {/* ── CERTIFICATIONS TAB ── */}
                 {activeTab === "Certifications" && (
@@ -818,6 +925,74 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                            </motion.div>
                          );
                        })}
+                     </div>
+                   </motion.div>
+                )}
+
+                {/* ── LANGUAGE SKILLS TAB ── */}
+                {activeTab === "Language Skills" && (
+                   <motion.div key="lang-skills" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                       {/* Languages Column */}
+                       <div className="space-y-8">
+                         <div className="flex justify-between items-center">
+                           <h3 className="text-[12px] font-black text-emerald-400 uppercase tracking-[4px]">Proficiency</h3>
+                           <button onClick={() => {
+                             const updated = [...langSkills, { name: "New", level: 50, flag: "us" }];
+                             setLangSkills(updated);
+                             saveData("admin-languages", updated);
+                           }} className="w-10 h-10 bg-emerald-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
+                         </div>
+                         <div className="space-y-4">
+                           {langSkills.map((s, i) => (
+                             <div key={i} className="p-6 bg-white/[0.02] border border-white/5 rounded-[28px] group space-y-4">
+                               <div className="flex justify-between items-start">
+                                 <div className="flex items-center gap-3">
+                                   <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10">
+                                     <img src={`https://flagcdn.com/w80/${s.flag}.png`} alt="flag" className="w-full h-full object-cover" />
+                                   </div>
+                                   <input type="text" value={s.name} onChange={e => { const n = [...langSkills]; n[i].name = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="bg-transparent text-white font-bold text-[15px] outline-none" />
+                                 </div>
+                                 <button onClick={() => {
+                                   const updated = langSkills.filter((_, idx) => idx !== i);
+                                   setLangSkills(updated);
+                                   saveData("admin-languages", updated);
+                                 }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={16} /></button>
+                               </div>
+                               <div className="flex gap-4 items-center">
+                                 <input type="text" value={s.flag} onChange={e => { const n = [...langSkills]; n[i].flag = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="w-16 bg-white/5 border border-white/10 rounded-lg p-2 text-[11px] text-white/40 text-center outline-none" placeholder="flag code" />
+                                 <input type="range" min="0" max="100" step="10" value={s.level} onChange={e => { const n = [...langSkills]; n[i].level = parseInt(e.target.value); setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="flex-1 accent-[var(--accent)]" />
+                                 <span className="text-[11px] font-black text-white/40 w-8">{s.level}%</span>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+
+                       {/* Engineering Practices Column */}
+                       <div className="space-y-8">
+                         <div className="flex justify-between items-center">
+                           <h3 className="text-[12px] font-black text-blue-400 uppercase tracking-[4px]">Practices</h3>
+                           <button onClick={() => {
+                             const updated = [...practices, "New Practice"];
+                             setPractices(updated);
+                             saveData("admin-practices", updated);
+                           }} className="w-10 h-10 bg-blue-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
+                         </div>
+                         <div className="space-y-4">
+                           {practices.map((p, i) => (
+                             <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl group">
+                               <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                               <input type="text" value={p} onChange={e => { const n = [...practices]; n[i] = e.target.value; setPractices(n); }} onBlur={() => saveData("admin-practices", practices)} className="bg-transparent text-white font-medium text-[13px] outline-none flex-1" />
+                               <button onClick={() => {
+                                 const updated = practices.filter((_, idx) => idx !== i);
+                                 setPractices(updated);
+                                 saveData("admin-practices", updated);
+                               }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all shrink-0"><Trash size={14} /></button>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
                      </div>
                    </motion.div>
                 )}

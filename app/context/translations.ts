@@ -111,6 +111,10 @@ export const translations = {
       languages: "Languages",
       learning: "Learning Journey",
       streak: "Day Streak"
+    },
+    languageSkills: {
+      title: "LANGUAGES",
+      practices: "ENGINEERING PRACTICES"
     }
   },
   de: {
@@ -225,6 +229,10 @@ export const translations = {
       languages: "Sprachen",
       learning: "Lernreise",
       streak: "Tage Streak"
+    },
+    languageSkills: {
+      title: "SPRACHEN",
+      practices: "ENGINEERING PRAKTIKEN"
     }
   }
 };

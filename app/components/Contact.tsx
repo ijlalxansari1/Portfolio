@@ -9,6 +9,8 @@ import emailjs from '@emailjs/browser';
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 
+import { storage } from "../utils/storage";
+
 export default function Contact() {
   const { language } = useLanguage();
   const t = translations[language].contact;
@@ -50,8 +52,8 @@ export default function Contact() {
       };
 
 
-      const existing = JSON.parse(localStorage.getItem("admin-submissions") || "[]");
-      localStorage.setItem("admin-submissions", JSON.stringify([submission, ...existing]));
+      const existing = storage.get("admin-submissions", []);
+      storage.set("admin-submissions", [submission, ...existing]);
       window.dispatchEvent(new Event('admin-updated'));
       trackEvent("form_submit", { name: formData.name });
 
@@ -134,7 +136,7 @@ export default function Contact() {
             <button 
               type="submit" 
               disabled={status === "sending"}
-              className="w-full py-5 bg-[#00e87a] text-black font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(0,232,122,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-5 bg-[var(--accent)] text-[var(--bg-primary)] font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === "sending" ? <><Loader2 size={20} className="animate-spin" /> {language === 'en' ? "Sending..." : "Senden..."}</> : 
                status === "success" ? <><CheckCircle2 size={20} /> {t.submit_success}</> : 

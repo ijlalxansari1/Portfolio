@@ -4,10 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote, Mail, MessageSquare
+  Quote, Mail, MessageSquare, Menu, X
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "./context/LanguageContext";
+import { translations } from "./context/translations";
 
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
@@ -41,8 +43,33 @@ export default function Home() {
   const [showLogin, setShowLogin] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme } = useTheme();
+  const { language } = useLanguage();
+  const t = translations[language].sidebar;
   
+  const navItems = [
+    { id: "about",    icon: <User size={18} />,       label: "About"    },
+    { id: "skills",   icon: <Dumbbell size={18} />,   label: "Skills"   },
+    { id: "services", icon: <Wrench size={18} />,     label: "Services" },
+    { id: "demo",     icon: <FlaskConical size={18} />, label: "Demo"     },
+    { id: "projects", icon: <Briefcase size={18} />,  label: "Projects" },
+    { id: "resume",   icon: <Landmark size={18} />,   label: "Resume"   },
+    { id: "github",   icon: <Github size={18} />,     label: "GitHub"   },
+    { id: "testimonials", icon: <Quote size={18} />,  label: "Reviews"  },
+    { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
+    { id: "contact",  icon: <Send size={18} />,       label: "Contact"  },
+  ];
+
+  const scrollToSection = (id: string) => {
+    const target = document.getElementById(id);
+    if (scrollPanelRef.current && target) {
+      scrollPanelRef.current.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+      setActiveSection(id);
+      activeSectionRef.current = id;
+    }
+  };
+
   const activeSectionRef = useRef("about");
   const scrollPanelRef = useRef<HTMLDivElement>(null);
 
@@ -87,11 +114,32 @@ export default function Home() {
 
   // ── FEATURE: Rock-Solid Scroll Spy (IntersectionObserver) ──
   useEffect(() => {
-    const options = { threshold: 0.2 };
+    if (!isMounted) return;
+
+    const isMobile = window.innerWidth < 1024;
+    const scrollPanel = scrollPanelRef.current;
+    
+    const options = {
+      root: isMobile ? null : scrollPanel,
+      rootMargin: isMobile ? "-20% 0px -60% 0px" : "-20% 0px -70% 0px",
+      threshold: [0, 0.05, 0.1, 0.2]
+    };
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+        // We only care about entries that are intersecting
+        if (entry.isIntersecting && entry.intersectionRatio > 0) {
+          const id = entry.target.id;
+          
+          // Map sub-sections to their parent nav items if necessary
+          let activeId = id;
+          if (id === "pledge" || id === "bio") activeId = "about";
+          
+          // Only update if it's a valid nav item
+          if (navItems.some(item => item.id === activeId)) {
+            setActiveSection(activeId);
+            activeSectionRef.current = activeId;
+          }
         }
       });
     }, options);
@@ -100,7 +148,7 @@ export default function Home() {
     sections.forEach((section) => observer.observe(section));
     
     return () => observer.disconnect();
-  }, []);
+  }, [isMounted]);
 
   // Show Scroll Top Button logic
   useEffect(() => {
@@ -113,33 +161,12 @@ export default function Home() {
     return () => panel.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
-    { id: "about",    icon: <User size={18} />,       label: "About"    },
-    { id: "skills",   icon: <Dumbbell size={18} />,   label: "Skills"   },
-    { id: "services", icon: <Wrench size={18} />,     label: "Services" },
-    { id: "demo",     icon: <FlaskConical size={18} />, label: "Demo"     },
-    { id: "projects", icon: <Briefcase size={18} />,  label: "Projects" },
-    { id: "resume",   icon: <Landmark size={18} />,   label: "Resume"   },
-    { id: "github",   icon: <Github size={18} />,     label: "GitHub"   },
-    { id: "testimonials", icon: <Quote size={18} />,  label: "Reviews"  },
-    { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
-    { id: "contact",  icon: <Send size={18} />,       label: "Contact"  },
-  ];
-
-  const scrollToSection = (id: string) => {
-    const target = document.getElementById(id);
-    if (scrollPanelRef.current && target) {
-      scrollPanelRef.current.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
-      setActiveSection(id);
-      activeSectionRef.current = id;
-    }
-  };
 
   if (!isMounted) return null;
 
   return (
     <div
-      className="relative lg:fixed lg:inset-0 lg:overflow-hidden bg-[var(--bg-primary)] transition-all duration-400 min-h-screen lg:min-h-0"
+      className="relative lg:fixed lg:inset-0 bg-[var(--bg-primary)] transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full"
     >
       {/* Cinematic Background Video (dark themes only) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -178,8 +205,71 @@ export default function Home() {
 
       <AnalyticsTracker />
       
-      {/* ── Responsive Navigation ── */}
-      <nav className="fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
+      {/* ── Mobile Header (Ryan CV Style) ── */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-[70px] bg-[var(--bg-card)]/80 backdrop-blur-xl border-b border-[var(--border-subtle)] z-[10000] flex items-center justify-between px-6 shadow-lg">
+        <div className="flex flex-col">
+          <span className="text-[15px] font-black text-[var(--text-primary)] tracking-tight">Ijlal Ansari</span>
+          <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">DataOps Expert</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <ThemeBuddy />
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] shadow-sm"
+          >
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </header>
+
+      {/* ── Mobile Side Menu ── */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10001] lg:hidden"
+            />
+            <motion.div 
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-[280px] bg-[var(--bg-card)] border-l border-[var(--border-subtle)] z-[10002] lg:hidden p-8 flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-10">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]">Navigation</span>
+                <button onClick={() => setIsMenuOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--accent)]">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="flex flex-col gap-6">
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      scrollToSection(item.id);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-4 text-[14px] font-black uppercase tracking-widest transition-all ${
+                      activeSection === item.id ? "text-[var(--accent)] translate-x-2" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full bg-[var(--accent)] transition-all ${activeSection === item.id ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="mt-auto pt-8 border-t border-[var(--border-subtle)]">
+                 <ThemeBuddy />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ── Desktop/Tablet Navigation (Hidden on small mobile) ── */}
+      <nav className="hidden md:flex fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
         <div className="hidden lg:block mb-3 pb-3 border-b border-[var(--border-subtle)]">
           <ThemeBuddy />
         </div>
@@ -202,15 +292,15 @@ export default function Home() {
       </nav>
 
       {/* ── Main Layout ── */}
-      <div className="relative lg:absolute lg:inset-0 flex items-center justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0">
-        <div className="w-full h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] lg:overflow-hidden">
-          <div className="w-full lg:w-[340px] shrink-0 lg:h-full">
+      <div className="relative lg:absolute lg:inset-0 flex items-center justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full overflow-x-hidden">
+        <div className="w-full h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] lg:overflow-hidden overflow-x-hidden">
+          <div className="w-full lg:w-[340px] shrink-0 lg:h-full max-w-full overflow-hidden">
             <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
           </div>
 
           <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400 relative top-glow">
             <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
-              <div id="sections-container" className="p-10 lg:p-14 space-y-16 relative">
+              <div id="sections-container" className="p-4 md:p-10 lg:p-14 space-y-4 lg:space-y-16 relative">
                 <motion.section 
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -228,11 +318,15 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true, margin: "-100px" }}
                   id="skills" 
-                  className="space-y-16"
+                  className="space-y-20 lg:space-y-32"
                 >
-                  <Technologies />
-                  <ToolStack />
-                  <GeneralSkills />
+                  <div className="space-y-20">
+                    <Technologies />
+                    <div className="h-px w-full bg-[var(--border-subtle)] opacity-50" />
+                    <ToolStack />
+                    <div className="h-px w-full bg-[var(--border-subtle)] opacity-50" />
+                    <GeneralSkills />
+                  </div>
                 </motion.section>
                 <div className="h-px w-full bg-white/[0.05]" />
 

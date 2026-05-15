@@ -75,10 +75,21 @@ export default function ThemeBuddy() {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Main Trigger Icon */}
+      {/* Mobile-only simple toggle (Ryan CV style) */}
+      <div className="lg:hidden flex items-center gap-4">
+        <button
+          onClick={() => handleThemeChange(theme === 'light' ? 'dark' : 'light')}
+          className="w-10 h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)]"
+          title="Toggle Theme"
+        >
+          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
+      </div>
+
+      {/* Desktop Main Trigger Icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 border
+        className={`hidden lg:flex w-10 h-10 rounded-xl items-center justify-center transition-all duration-300 border
           ${isOpen 
             ? "bg-[var(--accent)] text-black border-[var(--accent)] shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]" 
             : "bg-transparent border-[#222] text-[#666] hover:border-white/20 hover:text-white"

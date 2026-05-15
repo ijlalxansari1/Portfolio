@@ -14,11 +14,11 @@ import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  projectId: number | null;
+  project: any;
   onNext: () => void;
 }
 
-const caseStudies: Record<number, any> = {
+const caseStudies: Record<number | string, any> = {
   1: {
     title: "AETHER Platform",
     tag: "Python",
@@ -155,13 +155,14 @@ const caseStudies: Record<number, any> = {
   }
 };
 
-export default function ProjectModal({ isOpen, onClose, projectId, onNext }: ProjectModalProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "case" | "demo">("case");
+export default function ProjectModal({ isOpen, onClose, project: selectedProject, onNext }: ProjectModalProps) {
+  const [activeTab, setActiveTab] = useState<"overview" | "case" | "demo" | "overview">("case");
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && selectedProject) {
       document.body.classList.add("modal-open");
-      setActiveTab("case"); // Default to case study
+      const currentProject = caseStudies[selectedProject.id] || {};
+      setActiveTab(currentProject.demo ? "demo" : "case");
     } else {
       document.body.classList.remove("modal-open");
     }
@@ -173,16 +174,39 @@ export default function ProjectModal({ isOpen, onClose, projectId, onNext }: Pro
       window.removeEventListener("keydown", handleEsc);
       document.body.classList.remove("modal-open");
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, selectedProject]);
 
-  if (!projectId || !caseStudies[projectId]) return null;
-  const project = caseStudies[projectId];
+  if (!selectedProject) return null;
+
+  // Merge hardcoded case study data with dynamic project data
+  const project = caseStudies[selectedProject.id] || {
+    title: selectedProject.title,
+    tag: selectedProject.tag,
+    year: "2025",
+    status: "Production",
+    image: selectedProject.image,
+    problem: selectedProject.description,
+    approach: `This project was architected as a robust ${selectedProject.tag} implementation. It demonstrates modern engineering practices including modular design, automated verification, and scalable data flow.`,
+    architecture: [selectedProject.tag, "GitFlow", "CI/CD", "Mainline"],
+    tech: [
+       { name: selectedProject.tag, why: "Primary technology for core business logic." },
+       { name: "GitHub Actions", why: "Ensuring code quality through automated pipelines." }
+    ],
+    results: [
+       { metric: selectedProject.stars || "0", label: "GitHub Stars" },
+       { metric: "Active", label: "Dev Lifecycle" },
+       { metric: "Verified", label: "Build Status" }
+    ],
+    lessons: ["Incremental delivery reduces risk", "Modular design enables parallel work", "Automated tests are essential for stability"],
+    github: selectedProject.link || `https://github.com/ijlalxansari1/${selectedProject.title.toLowerCase().replace(/ /g, '-')}`,
+    isDynamic: true
+  };
 
   const tabs = [
     { id: "case", label: "Case Study", icon: <BookOpen size={14} /> },
-    { id: "demo", label: "Try It Live", icon: <Play size={14} /> },
+    { id: "demo", label: "Try It Live", icon: <Play size={14} />, hidden: !project.demo },
     { id: "overview", label: "Architecture", icon: <Info size={14} /> },
-  ];
+  ].filter(t => !t.hidden);
 
   return (
     <AnimatePresence>
@@ -201,7 +225,7 @@ export default function ProjectModal({ isOpen, onClose, projectId, onNext }: Pro
             <div className="pt-8 px-8 pb-4 border-b border-white/5">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">Project #{projectId}</span>
+                  <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">Project #{selectedProject.id}</span>
                   <h2 className="text-xl font-black text-white">{project.title}</h2>
                 </div>
                 <button onClick={onClose} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-[var(--accent)] hover:text-black transition-all">
@@ -267,7 +291,7 @@ export default function ProjectModal({ isOpen, onClose, projectId, onNext }: Pro
                     <section>
                       <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">Pipeline Logic</p>
                       <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-8 overflow-x-auto">
-                        <div className="flex flex-wrap items-center justify-center gap-y-12 gap-x-4 min-w-[400px]">
+                        <div className="flex flex-wrap items-center justify-center gap-y-12 gap-x-4 w-full max-w-full">
                           {project.architecture.map((box: string, i: number) => (
                             <div key={i} className="flex items-center gap-4">
                               <div className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-[11px] font-mono text-white whitespace-nowrap shadow-xl">
@@ -302,10 +326,17 @@ export default function ProjectModal({ isOpen, onClose, projectId, onNext }: Pro
                 )}
 
                 {activeTab === "demo" && (
-                  <motion.div key="demo" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} className="px-4 py-6">
-                    <div className="bg-black/50 rounded-[32px] overflow-hidden border border-white/5">
+                  <motion.div key="demo" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="px-6 py-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse shadow-[0_0_8px_var(--accent)]" />
+                      <span className="text-[10px] font-black text-white uppercase tracking-[3px]">Live Interactive Simulation</span>
+                    </div>
+                    <div className="bg-black/40 rounded-[32px] overflow-hidden border border-white/5 shadow-inner">
                       {project.demo}
                     </div>
+                    <p className="mt-6 text-center text-[11px] text-[var(--text-secondary)] opacity-30 italic">
+                      "This simulation demonstrates core architectural logic and data flow."
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>

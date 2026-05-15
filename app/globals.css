@@ -25,9 +25,9 @@ html.light {
   --bg-secondary: #f8f8fc;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
-  --text-primary: #1a1a1a;
-  --text-secondary: #666666;
-  --text-muted: #999999;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #444444;
   --accent: #00b85e;
   --accent-rgb: 0, 184, 94;
   --border: #e2e2ea;
@@ -38,12 +38,17 @@ html.light {
 html.light .text-white { color: var(--text-primary) !important; }
 html.light .text-white\/20, html.light .text-white\/30, html.light .text-white\/40, html.light .text-white\/50, html.light .text-white\/60 { color: var(--text-secondary) !important; }
 html.light .text-white\/5, html.light .text-white\/10 { color: var(--text-muted) !important; }
-html.light .bg-\[\#141414\], html.light .bg-\[\#0d0d0d\], html.light .bg-\[\#080808\], html.light .bg-\[\#111\] { background-color: var(--bg-secondary) !important; }
-html.light .border-\[\#222\], html.light .border-\[\#222222\] { border-color: var(--border) !important; }
-html.light .border-white\/5, html.light .border-white\/10, html.light .border-white\/20 { border-color: var(--border) !important; }
+html.light .text-emerald-400, html.light .text-blue-400, html.light .text-cyan-400, html.light .text-purple-400, html.light .text-orange-400, html.light .text-pink-400, html.light .text-yellow-400, html.light .text-\[var\(--accent\)\] { color: #000000 !important; }
+html.light h1, html.light h2, html.light h3, html.light .hero-name, html.light .section-heading, html.light .section-label, html.light .typewriter-text { color: #000000 !important; }
+html.light [class*="bg-gradient-"] { background-image: none !important; color: #000 !important; -webkit-text-fill-color: #000 !important; }
+html.light svg:not(button svg):not(.btn svg) { stroke: #000 !important; }
+html.light .nav-active { color: #000 !important; background: rgba(0,0,0,0.05) !important; border-color: #000 !important; }
+html.light .bg-\[\#141414\], html.light .bg-\[\#0d0d0d\], html.light .bg-\[\#080808\], html.light .bg-\[\#111\], html.light .bg-white\/\[0\.02\], html.light .bg-white\/\[0\.03\] { background-color: var(--bg-secondary) !important; }
+html.light .border-\[\#222\], html.light .border-\[\#222222\], html.light .border-white\/5, html.light .border-white\/10, html.light .border-white\/20 { border-color: var(--border) !important; }
 html.light .bg-white\/\[0\.03\], html.light .bg-white\/\[0\.02\], html.light .bg-white\/\[0\.05\], html.light .bg-white\/5, html.light .bg-white\/10 { background-color: rgba(0,0,0,0.03) !important; }
 html.light .bg-black\/80 { background-color: rgba(255,255,255,0.85) !important; }
 html.light .bg-\[\#080808\]\/50 { background-color: transparent !important; }
+html.light .shadow-2xl, html.light .shadow-xl { box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; }
 
 /* ── CMD TERMINAL MODE ── */
 html.cmd {
@@ -102,6 +107,9 @@ html[data-accent="orange"] { --accent: #f97316; --accent-rgb: 249, 115, 22; }
 html[data-accent="pink"] { --accent: #ec4899; --accent-rgb: 236, 72, 153; }
 html[data-accent="cyan"] { --accent: #06b6d4; --accent-rgb: 6, 182, 212; }
 html[data-accent="yellow"] { --accent: #f59e0b; --accent-rgb: 245, 158, 11; }
+
+/* ── LIGHT MODE ACCENT OVERRIDE ── */
+/* Removed global black accent to keep buttons colored */
 
 /* ── CMD TRANSFORMATION ── */
 html.cmd body::before {
@@ -270,13 +278,20 @@ html.cmd .github-card {
 /* ── BASE STYLES ── */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden !important;
+  width: 100vw !important;
+  position: relative;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Poppins', sans-serif;
-  overflow-x: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden !important;
+  width: 100vw !important;
+  position: relative;
+  margin: 0;
+  padding: 0;
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
@@ -290,8 +305,12 @@ h1, h2, h3, h4, h5, h6, .hero-name, .section-heading, .font-jakarta {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-p, span, li, button, input, textarea, div {
-  font-family: 'Poppins', sans-serif;
+p {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+span, li, button, input, textarea, div {
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .font-jakarta {
@@ -303,19 +322,25 @@ p, span, li, button, input, textarea, div {
 }
 
 section {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
-/* Glassmorphism utility */
+@media (min-width: 1024px) {
+  section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
 .glass {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Global Transitions */
-*, *::before, *::after {
+* {
+  box-sizing: border-box;
   transition-property: background-color, border-color, color, box-shadow;
   transition-duration: 0.4s;
   transition-timing-function: ease;
@@ -323,13 +348,11 @@ section {
 
 button, a { transition: all 0.3s ease; }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* Hide scrollbar utility */
 .custom-scrollbar-hidden::-webkit-scrollbar { display: none; }
 .custom-scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -339,9 +362,9 @@ button, a { transition: all 0.3s ease; }
   font-size: 11px;
   color: var(--accent);
   font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-/* RyanCV-style Section Pill Badge */
 .section-pill {
   display: inline-flex;
   align-items: center;
@@ -356,8 +379,8 @@ button, a { transition: all 0.3s ease; }
   letter-spacing: 3px;
   color: var(--text-secondary);
   margin-bottom: 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
-
 .section-pill svg {
   color: var(--accent);
   opacity: 0.7;
@@ -425,40 +448,10 @@ html.light .top-glow::before {
   transition: all 0.3s ease !important;
 }
 
+/* ── MOBILE UTILITIES ── */
 @media (max-width: 768px) {
-  .sidebar {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    width: 100% !important;
-    height: 60px !important;
-    flex-direction: row !important;
-    justify-content: space-around !important;
-    align-items: center !important;
-    border-right: none !important;
-    border-top: 1px solid #222 !important;
-    z-index: 999 !important;
-    padding: 0 8px !important;
-    display: flex !important;
-  }
-
-  .sidebar .theme-switcher,
-  .sidebar .theme-buddy-container {
-    display: none !important;
-  }
-
-  .main-content,
-  .md\:pl-\[100px\] {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    padding-bottom: 70px !important;
-  }
-
-  .nav-tooltip,
-  .sidebar span {
-    display: none !important;
+  .main-content {
+    padding-bottom: 80px;
   }
 }
 

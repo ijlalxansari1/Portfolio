@@ -67,7 +67,7 @@ function TimelineItem({ period, title, place, body, link, tag }: { period: strin
       </div>
       <h4 className="text-[17px] font-black text-[var(--text-primary)] mb-1">{title}</h4>
       <p className="text-[var(--accent)] text-[11px] font-bold uppercase tracking-widest mb-3">{place}</p>
-      <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-[1.8]">{body}</p>
+      <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-[1.8] break-words">{body}</p>
       {link && (
         <a href="#" className="inline-flex items-center gap-2 mt-3 text-[11px] font-black uppercase tracking-widest text-[var(--accent)] hover:underline">
           {link} <ExternalLink size={11} />
@@ -76,6 +76,8 @@ function TimelineItem({ period, title, place, body, link, tag }: { period: strin
     </motion.div>
   );
 }
+
+import LanguageSkills from "./LanguageSkills";
 
 export default function Resume() {
   const { language } = useLanguage();
@@ -99,7 +101,7 @@ export default function Resume() {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-full overflow-hidden">
       <p className="section-label uppercase tracking-[3px] text-[11px] font-bold mb-2 text-[var(--accent)]">{t.label}</p>
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-12">{t.title}</h2>
 
@@ -119,7 +121,7 @@ export default function Resume() {
       </div>
 
       <h3 className="text-[13px] font-black text-[var(--text-primary)] uppercase tracking-[0.25em] mb-8">{t.certs_title}</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-16">
         {courses.map((c: any, i) => (
           <motion.div
             key={i}
@@ -138,6 +140,10 @@ export default function Resume() {
           </motion.div>
         ))}
       </div>
+
+      <div className="h-px w-full bg-[var(--border-subtle)] opacity-50" />
+      
+      <LanguageSkills />
 
       {/* Certification Modal */}
       <AnimatePresence>

@@ -22,12 +22,11 @@ const skillGroups = (language: string) => [
     ]
   },
   {
-    title: language === 'en' ? "LANGUAGES" : "SPRACHEN",
-    icon: <Globe size={18} className="text-[var(--accent)]" />,
+    title: "CLOUD & INFRA",
+    icon: <Server size={18} className="text-purple-400" />,
     skills: [
-      { name: "English", level: "80%", desc: language === 'en' ? "Technical documentation & collaboration" : "Technische Dokumentation & Zusammenarbeit", icon: <MessageSquare size={14} className="text-emerald-400" /> },
-      { name: "Urdu", level: "100%", desc: language === 'en' ? "Primary language proficiency" : "Muttersprachliche Kompetenz", icon: <Globe size={14} className="text-[var(--accent)]" /> },
-      { name: "Arabic", level: "35%", desc: language === 'en' ? "Basic communication & reading" : "Grundkenntnisse", icon: <Layout size={14} className="text-amber-400" /> },
+      { name: "AWS", level: "60%", desc: language === 'en' ? "S3, Lambda, IAM & basic networking" : "S3, Lambda, IAM & Cloud-Grundlagen", icon: <Server size={14} className="text-orange-400" /> },
+      { name: "Docker", level: "68%", desc: language === 'en' ? "Containerization & dev environments" : "Containerisierung & Umgebungen", icon: <Package size={14} className="text-blue-400" /> },
     ]
   }
 ];
@@ -90,83 +89,108 @@ export default function GeneralSkills() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
-            {language === 'en' ? "TOOL SKILLS" : "Fähigkeiten"}
+            {language === 'en' ? "DOMAIN MASTERY" : "Fachwissen"}
           </p>
           <h2 className="text-[32px] font-black text-white">
-            {language === 'en' ? "General Skills & Domain Mastery" : "Allgemeine Expertise"}
+            {language === 'en' ? "Methodology & Architecture" : "Methodik & Architektur"}
           </h2>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-        {/* Proficiency Deck */}
-        <div className="space-y-12">
-          {groups.map((group: any, idx: number) => (
-            <div key={idx} className="space-y-6">
-              <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
-                {group.icon} {group.title}
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                {group.skills.map((skill: any, i: number) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="group p-5 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all">
-                            {skill.icon || <Code size={14} className="text-white/20" />}
-                         </div>
-                         <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all">{skill.name}</h4>
-                      </div>
-                      <span className="px-2 py-0.5 bg-white/5 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-md border border-[var(--accent)]/20">
-                        {skill.level === 'Expert' ? (language === 'en' ? 'Expert' : 'Experte') : 
-                         skill.level === 'Advanced' ? (language === 'en' ? 'Advanced' : 'Fortgeschritten') :
-                         skill.level === 'Intermediate' ? (language === 'en' ? 'Intermediate' : 'Mittelstufe') :
-                         skill.level === 'Professional' ? (language === 'en' ? 'Professional' : 'Professionell') :
-                         skill.level === 'Native' ? (language === 'en' ? 'Native' : 'Muttersprache') :
-                         skill.level === 'Learning' ? (language === 'en' ? 'Learning' : 'Lernend') : skill.level}
-                      </span>
-                    </div>
-                    <p className="text-[12px] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] transition-all ml-11">{skill.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          ))}
+      <div className="space-y-20">
+        {/* DATABASE Section */}
+        <div className="space-y-8">
+          <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
+            <Database size={18} className="text-blue-400" /> DATABASE
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {groups.find(g => g.title === "DATABASE")?.skills.map((skill: any, i: number) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all border border-white/5 shadow-xl">
+                    {skill.icon || <Code size={18} className="text-white/20" />}
+                  </div>
+                  <span className="px-2 py-1 bg-[var(--accent)]/10 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-lg border border-[var(--accent)]/20 shadow-sm">
+                    {skill.level}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-2">{skill.name}</h4>
+                  <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{skill.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* Practices Grid */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)] mb-6">
+        {/* CLOUD & INFRA Section */}
+        <div className="space-y-8">
+          <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
+            <Server size={18} className="text-purple-400" /> CLOUD & INFRA
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {groups.find(g => g.title === "CLOUD & INFRA")?.skills.map((skill: any, i: number) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all border border-white/5 shadow-xl">
+                    {skill.icon || <Code size={18} className="text-white/20" />}
+                  </div>
+                  <span className="px-2 py-1 bg-[var(--accent)]/10 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-lg border border-[var(--accent)]/20 shadow-sm">
+                    {skill.level}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-2">{skill.name}</h4>
+                  <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{skill.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* PRACTICES Section */}
+        <div className="space-y-8">
+          <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
             <CheckCircle2 size={18} className="text-[var(--accent)]" /> {language === 'en' ? "Professional Practices" : "Professionelle Praktiken"}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {practiceList.map((practice: any, i: number) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="p-6 bg-white/[0.02] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/20 transition-all group"
+                className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
               >
-                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[var(--accent)]/10 transition-all border border-white/5">
+                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-[var(--accent)]/10 transition-all border border-white/5 shadow-xl">
                   {practice.icon}
                 </div>
-                <h4 className="text-[14px] font-black text-white mb-1 group-hover:text-[var(--accent)] transition-all">{practice.title}</h4>
-                <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">{practice.desc}</p>
+                <div>
+                  <h4 className="text-[15px] font-black text-white mb-2 group-hover:text-[var(--accent)] transition-all">{practice.title}</h4>
+                  <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{practice.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
           
-          {/* Decorative Info Box */}
-          <div className="mt-8 p-6 bg-[var(--accent)]/[0.03] border border-dashed border-[var(--accent)]/20 rounded-[24px]">
-             <p className="text-[11px] text-[var(--accent)] font-bold uppercase tracking-widest leading-relaxed opacity-60">
+          {/* Decorative Info Box - Now full width to anchor the section */}
+          <div className="mt-12 p-8 bg-[var(--accent)]/[0.03] border border-dashed border-[var(--accent)]/20 rounded-[32px] text-center">
+             <p className="text-[12px] text-[var(--accent)] font-bold uppercase tracking-[0.3em] leading-relaxed opacity-60 max-w-3xl mx-auto">
                {language === 'en' 
                  ? "Focused on building systems that are not just technically efficient, but ethically governed and fully documented."
                  : "Fokus auf den Bau von Systemen, die nicht nur technisch effizient, sondern auch ethisch gesteuert und vollständig dokumentiert sind."}

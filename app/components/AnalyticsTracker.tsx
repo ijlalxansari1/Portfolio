@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { storage } from "../utils/storage";
+
 export type AnalyticsEvent = {
   type: string;
   metadata?: any;
@@ -17,9 +19,9 @@ export const trackEvent = (type: string, metadata?: any) => {
     timestamp: new Date().toISOString()
   };
 
-  const existing = JSON.parse(localStorage.getItem("admin-analytics") || "[]");
+  const existing = storage.get("admin-analytics", []);
   const updated = [event, ...existing].slice(0, 500); // Keep last 500
-  localStorage.setItem("admin-analytics", JSON.stringify(updated));
+  storage.set("admin-analytics", updated);
   
   // Trigger update for admin panel if open
   window.dispatchEvent(new CustomEvent("analytics-updated"));

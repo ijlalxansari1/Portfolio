@@ -46,15 +46,45 @@ export default function Projects() {
     },
   ], [language]);
 
-  const filters = [t.filter_all, "Python", "SQL", "FastAPI", "Next.js"];
+  const filters = [t.filter_all, "Python", "SQL", "FastAPI", "Next.js", "TypeScript"];
 
   const [activeFilter, setActiveFilter] = useState(t.filter_all);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [projects, setProjects] = useState(defaultProjects);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [projects, setProjects] = useState<any[]>(defaultProjects);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setProjects(defaultProjects);
-  }, [language, defaultProjects]);
+  const fetchGithubRepos = async () => {
+    try {
+      setLoading(true);
+      const username = localStorage.getItem("admin-github-username") || "ijlalxansari1";
+      const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=12`);
+      if (!res.ok) throw new Error("GitHub API Error");
+      
+      const repos = await res.json();
+      const realProjects = repos
+        .filter((repo: any) => !repo.fork)
+        .map((repo: any) => ({
+          id: repo.id,
+          title: repo.name.split('-').map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(' '),
+          tag: repo.language || "Project",
+          image: `https://opengraph.githubassets.com/1/${repo.full_name}`,
+          description: repo.description || "Experimental data architecture and engineering implementation.",
+          link: repo.html_url,
+          stars: repo.stargazers_count,
+          alt: `${repo.name} - ${repo.language} project by Ijlal Ansari`
+        }))
+        .sort((a: any, b: any) => b.stars - a.stars);
+
+      if (realProjects.length > 0) {
+        setProjects(realProjects);
+      }
+    } catch (err) {
+      console.error("Failed to fetch real projects:", err);
+      // Fallback to defaults already handled by state init
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const adminData = localStorage.getItem("admin-projects");
@@ -62,30 +92,33 @@ export default function Projects() {
       const parsed = JSON.parse(adminData);
       if (parsed.length > 0) {
         setProjects(parsed.filter((p: any) => p.status !== 'Draft'));
+        return;
       }
     }
     
-    const handleStorage = () => {
+    // If no manual projects, fetch from GitHub
+    fetchGithubRepos();
+
+    const handleUpdate = () => {
       const updated = localStorage.getItem("admin-projects");
-      if (updated) {
+      if (updated && JSON.parse(updated).length > 0) {
         setProjects(JSON.parse(updated).filter((p: any) => p.status !== 'Draft'));
+      } else {
+        fetchGithubRepos();
       }
     };
-    window.addEventListener("storage", handleStorage);
-    window.addEventListener("admin-updated", handleStorage);
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("admin-updated", handleStorage);
-    };
+    
+    window.addEventListener("admin-updated", handleUpdate);
+    return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);
 
   const filtered = activeFilter === t.filter_all ? projects : projects.filter(p => p.tag === activeFilter);
 
   const handleNext = () => {
-    if (!selectedId) return;
-    const currentIndex = projects.findIndex(p => p.id === selectedId);
+    if (!selectedProject) return;
+    const currentIndex = projects.findIndex(p => p.id === selectedProject.id);
     const nextIndex = (currentIndex + 1) % projects.length;
-    setSelectedId(projects[nextIndex].id);
+    setSelectedProject(projects[nextIndex]);
   };
 
   return (
@@ -120,7 +153,7 @@ export default function Projects() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25 }}
-              onClick={() => setSelectedId(project.id)}
+              onClick={() => setSelectedProject(project)}
               className="group relative rounded-2xl overflow-hidden cursor-pointer bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--accent)]/30 transition-all"
             >
               <div className="relative w-full aspect-[4/3] overflow-hidden">
@@ -155,9 +188,9 @@ export default function Projects() {
 
       {/* Case Study Modal */}
       <ProjectModal 
-        isOpen={selectedId !== null} 
-        onClose={() => setSelectedId(null)} 
-        projectId={selectedId} 
+        isOpen={selectedProject !== null} 
+        onClose={() => setSelectedProject(null)} 
+        project={selectedProject} 
         onNext={handleNext}
       />
     </div>
