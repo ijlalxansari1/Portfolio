@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
+import { verifyAuth } from "@/app/utils/auth";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // SECURITY: Only admins can view emails
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
+
   try {
     const { rows } = await sql`SELECT * FROM emails ORDER BY date DESC`;
 
@@ -49,6 +56,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  // SECURITY: Only admins can delete emails
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get("id") || "0");

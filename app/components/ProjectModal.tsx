@@ -335,7 +335,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                       {project.demo}
                     </div>
                     <p className="mt-6 text-center text-[11px] text-[var(--text-secondary)] opacity-30 italic">
-                      "This simulation demonstrates core architectural logic and data flow."
+                      &quot;This simulation demonstrates core architectural logic and data flow.&quot;
                     </p>
                   </motion.div>
                 )}

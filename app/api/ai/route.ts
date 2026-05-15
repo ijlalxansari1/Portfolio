@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth } from "@/app/utils/auth";
 
 export async function POST(request: NextRequest) {
+  // SECURITY: Only admins can use AI features
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
+
   try {
     const { type, prompt, image } = await request.json();
     const apiKey = process.env.GOOGLE_AI_API_KEY;

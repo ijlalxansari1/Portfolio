@@ -44,7 +44,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       clearInterval(interval);
       window.removeEventListener("admin-updated", handleUpdate);
     };
-  }, [titles.length]);
+  }, [titles.length, availability]);
 
   const downloadResume = () => {
     trackEvent("cv_download");

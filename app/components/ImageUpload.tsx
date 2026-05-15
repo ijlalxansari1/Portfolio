@@ -37,8 +37,10 @@ export default function ImageUpload({
     formData.append("type", type);
 
     try {
+      const token = sessionStorage.getItem("aether-admin-session");
       const response = await fetch("/api/upload", {
         method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
         body: formData,
       });
 

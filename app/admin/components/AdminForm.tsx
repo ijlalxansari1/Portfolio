@@ -58,7 +58,10 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
     // Load categories
     const categoryType = type === "project" ? "projects" : type === "skill" ? "skills" : "blogs";
     if (type !== "certification") {
-      fetch(`/api/data/categories?type=${categoryType}`)
+      const token = sessionStorage.getItem("aether-admin-session");
+      fetch(`/api/data/categories?type=${categoryType}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
         .then((res) => res.json())
         .then((data) => setCategories(Array.isArray(data) ? data : []))
         .catch((err) => {
@@ -141,9 +144,13 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
   const handleAIGenerate = useCallback(async (field: string, prompt: string) => {
     setAiGenerating(true);
     try {
+      const token = sessionStorage.getItem("aether-admin-session");
       const response = await fetch("/api/ai", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ type: "text", prompt }),
       });
       const data = await response.json();
@@ -164,9 +171,13 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
   const handleImageAIAnalysis = async (imageBase64: string) => {
     setAiGenerating(true);
     try {
+      const token = sessionStorage.getItem("aether-admin-session");
       const response = await fetch("/api/ai", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           type: "image",
           image: imageBase64,
@@ -257,9 +268,13 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
               onUpload={(url) => setFormData((prev: any) => ({ ...prev, image: url }))}
               currentImage={formData.image}
               onAIGenerate={async (prompt) => {
+                const token = sessionStorage.getItem("aether-admin-session");
                 const response = await fetch("/api/ai", {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                  },
                   body: JSON.stringify({ type: "text", prompt }),
                 });
                 const data = await response.json();
@@ -367,9 +382,13 @@ export default function AdminForm({ type, onClose, onSave, initialData }: AdminF
                       if (newCategory.trim()) {
                         try {
                           const categoryType = type === "project" ? "projects" : type === "skill" ? "skills" : "blogs";
+                          const token = sessionStorage.getItem("aether-admin-session");
                           const response = await fetch("/api/data/categories", {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
+                            headers: { 
+                              "Content-Type": "application/json",
+                              "Authorization": `Bearer ${token}`
+                            },
                             body: JSON.stringify({ type: categoryType, category: newCategory.trim() }),
                           });
                           if (response.ok) {

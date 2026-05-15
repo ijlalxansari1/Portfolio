@@ -5,8 +5,9 @@ export async function POST(request: Request) {
 
   // In a real production app, use process.env.ADMIN_USER and process.env.ADMIN_PASS
   // For this portfolio, we'll use a slightly safer server-side check than client-side hardcoding
-  const ADMIN_USER = "admin";
-  const ADMIN_PASS = "ijlal2025";
+  // Using environment variables for production security
+  const ADMIN_USER = process.env.ADMIN_USER || "admin";
+  const ADMIN_PASS = process.env.ADMIN_PASS || "ijlal2025";
 
   if (username === ADMIN_USER && password === ADMIN_PASS) {
     // Generate a simple token (in production, use JWT with a secret)

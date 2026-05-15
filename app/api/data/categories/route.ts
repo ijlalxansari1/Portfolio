@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
+import { verifyAuth } from "@/app/utils/auth";
 
 // Common Data domain categories (fallback)
 const defaultCategories = {
@@ -36,6 +37,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // SECURITY: Only admins can add categories
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
     const { type, category } = await request.json();
 
@@ -62,4 +68,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to add category" }, { status: 500 });
   }
 }
-

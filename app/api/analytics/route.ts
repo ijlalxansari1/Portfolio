@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { verifyAuth } from "@/app/utils/auth";
 
 const dataDir = path.join(process.cwd(), "app", "api", "data");
 const analyticsFile = path.join(dataDir, "analytics.json");
@@ -25,7 +26,12 @@ async function initAnalytics() {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // SECURITY: Only admins can view analytics
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
     let data;
     try {

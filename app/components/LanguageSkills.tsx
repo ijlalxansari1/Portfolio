@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Globe, ListChecks } from "lucide-react";
+import Image from "next/image";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 import { useState, useEffect } from "react";
@@ -66,9 +67,11 @@ export default function LanguageSkills() {
               className="group flex items-center gap-5 p-4 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/30 transition-all"
             >
               <div className="w-12 h-12 shrink-0 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center overflow-hidden shadow-sm group-hover:border-[var(--accent)]/50 transition-colors">
-                <img 
+                <Image 
                   src={`https://flagcdn.com/w80/${lang.flag}.png`} 
                   alt={lang.name}
+                  width={48}
+                  height={48}
                   className="w-full h-full object-cover scale-110"
                 />
               </div>

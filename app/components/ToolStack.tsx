@@ -70,7 +70,12 @@ export default function ToolStack() {
             {/* Glassmorphism Icon */}
             <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mb-8 border border-white/5 group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500 shadow-2xl">
               {tool.icon ? (
-                <img src={tool.icon} alt={tool.name} width={32} height={32}
+                <Image 
+                  src={tool.icon} 
+                  alt={tool.name} 
+                  width={32} 
+                  height={32}
+                  unoptimized
                   className="shrink-0 opacity-80 group-hover:opacity-100 transition-all filter grayscale group-hover:grayscale-0"
                 />
               ) : (

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
+import { verifyAuth } from "@/app/utils/auth";
 
 export async function GET() {
   try {
@@ -12,6 +13,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // SECURITY: Only admins can create projects
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
     const newProject = await request.json();
 
@@ -39,6 +45,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  // SECURITY: Only admins can update projects
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
     const updatedProject = await request.json();
 
@@ -74,6 +85,11 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  // SECURITY: Only admins can delete projects
+  const isAuth = await verifyAuth(request);
+  if (!isAuth) {
+    return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+  }
   try {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get("id") || "0");

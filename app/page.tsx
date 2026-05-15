@@ -148,7 +148,7 @@ export default function Home() {
     sections.forEach((section) => observer.observe(section));
     
     return () => observer.disconnect();
-  }, [isMounted]);
+  }, [isMounted, navItems, isMobile]);
 
   // Show Scroll Top Button logic
   useEffect(() => {

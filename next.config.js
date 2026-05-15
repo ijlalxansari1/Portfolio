@@ -15,6 +15,26 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'opengraph.githubassets.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'ghchart.rshah.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dataden.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'flagcdn.com',
+      },
     ],
   },
 }

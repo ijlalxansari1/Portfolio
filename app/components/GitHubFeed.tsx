@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Github, Star, GitBranch, Terminal as TerminalIcon, Users, Package } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface GitHubEvent {
   id: string;
@@ -143,11 +144,16 @@ export default function GitHubFeed() {
         <div className="w-full overflow-x-auto custom-scrollbar-hidden">
            <div className="min-w-[800px] h-[120px] flex items-center justify-center bg-white/[0.01] rounded-2xl border border-white/5 relative group/chart">
               {!loading && (
-                 <img 
-                    src={`https://ghchart.rshah.org/${username}`} 
-                    alt={`${username}'s contributions`}
-                    className="max-w-full h-auto grayscale group-hover/chart:grayscale-0 transition-all duration-700 opacity-70 group-hover/chart:opacity-100"
-                 />
+                 <div className="relative w-full h-full flex items-center justify-center">
+                   <Image 
+                      src={`https://ghchart.rshah.org/${username}`} 
+                      alt={`${username}'s contributions`}
+                      width={800}
+                      height={120}
+                      unoptimized
+                      className="max-w-full h-auto grayscale group-hover/chart:grayscale-0 transition-all duration-700 opacity-70 group-hover/chart:opacity-100"
+                   />
+                 </div>
               )}
               {loading && <div className="absolute inset-0 skeleton-shimmer" />}
            </div>

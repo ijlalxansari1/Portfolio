@@ -8,8 +8,9 @@ import {
   User as UserIcon, Globe, Bold, Italic, Code, Link as LinkIcon, 
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
   ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag,
-  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical
+  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github
 } from "lucide-react";
+import Image from "next/image";
 import { storage } from "../utils/storage";
 
 // ── DEFAULT DATA CONSTANTS ──
@@ -120,13 +121,19 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
 
         // Fetch server-side analytics
         try {
-          const res = await fetch("/api/analytics");
+          const token = sessionStorage.getItem("aether-admin-session");
+          const res = await fetch("/api/analytics", {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
           if (res.ok) setAnalyticsData(await res.json());
         } catch { /* silent */ }
 
         // Fetch server-side inbox
         try {
-          const res = await fetch("/api/data/emails");
+          const token = sessionStorage.getItem("aether-admin-session");
+          const res = await fetch("/api/data/emails", {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
           if (res.ok) {
             const serverEmails = await res.json();
             const localSubs = storage.get("admin-submissions", []);
@@ -326,7 +333,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           >
                             <div className="flex flex-col lg:flex-row gap-12 relative z-10">
                                <div className="w-full lg:w-64 aspect-video lg:aspect-square bg-white/5 rounded-[32px] border border-white/5 relative overflow-hidden group/img flex items-center justify-center shrink-0 shadow-2xl">
-                                  {p.image ? <img src={p.image} alt={p.title} className="w-full h-full object-cover grayscale-[0.5] group-hover/img:grayscale-0 transition-all duration-700 scale-105 group-hover/img:scale-100" /> : <ImageIcon size={40} className="text-white/10" />}
+                                  {p.image ? <Image src={p.image} alt={p.title} fill className="object-cover grayscale-[0.5] group-hover/img:grayscale-0 transition-all duration-700 scale-105 group-hover/img:scale-100" unoptimized /> : <ImageIcon size={40} className="text-white/10" />}
                                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all">
                                      <label className="cursor-pointer px-5 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:scale-105 transition-all">
                                         Swap Assets
@@ -466,7 +473,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                    </div>
                                 </div>
                                 <div className="flex gap-3 shrink-0">
-                                   <select value={post.status} onChange={e => { const n = [...posts]; n[i].status = e.target.value; setPosts(n); saveData("admin-posts", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                   <select value={post.status} onChange={e => { const n = [...posts]; n[i].status = e.target.value; setPosts(n); saveData("admin-posts", posts); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
                                       <option className="bg-[#111]">Draft</option>
                                       <option className="bg-[#111]">Published</option>
                                    </select>
@@ -948,8 +955,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              <div key={i} className="p-6 bg-white/[0.02] border border-white/5 rounded-[28px] group space-y-4">
                                <div className="flex justify-between items-start">
                                  <div className="flex items-center gap-3">
-                                   <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10">
-                                     <img src={`https://flagcdn.com/w80/${s.flag}.png`} alt="flag" className="w-full h-full object-cover" />
+                                   <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 relative">
+                                     <Image src={`https://flagcdn.com/w80/${s.flag}.png`} alt="flag" fill className="object-cover" unoptimized />
                                    </div>
                                    <input type="text" value={s.name} onChange={e => { const n = [...langSkills]; n[i].name = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="bg-transparent text-white font-bold text-[15px] outline-none" />
                                  </div>
@@ -1026,7 +1033,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                            <div className="flex items-start gap-6">
                              {/* Avatar */}
                              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center group/avatar relative">
-                               {t.avatar ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" /> : <UserIcon size={24} className="text-white/20" />}
+                               {t.avatar ? <Image src={t.avatar} alt={t.name} fill className="object-cover" unoptimized /> : <UserIcon size={24} className="text-white/20" />}
                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-all">
                                  <label className="cursor-pointer text-[8px] font-black text-white uppercase tracking-widest">
                                    Edit
