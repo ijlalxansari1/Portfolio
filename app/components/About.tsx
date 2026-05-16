@@ -6,10 +6,22 @@ import { Download, ArrowRight, Send, Zap, Clock, Award } from "lucide-react";
 import Magnetic from "./Magnetic";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
+import { storage } from "../utils/storage";
 
 export default function About() {
   const { language } = useLanguage();
   const t = translations[language].hero;
+  
+  const [manifesto, setManifesto] = useState<any>(null);
+
+  useEffect(() => {
+    const loadData = () => {
+      setManifesto(storage.get("admin-manifesto", { title: null, paragraphs: [] }));
+    };
+    loadData();
+    window.addEventListener("admin-updated", loadData);
+    return () => window.removeEventListener("admin-updated", loadData);
+  }, []);
   
   const [displayText, setDisplayText] = useState("");
   const titleIndexRef = useRef(0);
@@ -77,7 +89,7 @@ export default function About() {
             transition={{ delay: 0.2 }}
             className="hero-name text-[36px] md:text-[64px] lg:text-[92px] font-black text-white leading-[0.95] tracking-tighter"
           >
-            Ijlal <span className="text-[var(--accent)]">Ansari.</span>
+            {manifesto?.title?.split('.')[0] || "Ijlal"} <span className="text-[var(--accent)]">{manifesto?.title?.split('.')[1] || "Ansari."}</span>
           </motion.h1>
           
           <motion.div 
@@ -105,7 +117,7 @@ export default function About() {
         transition={{ delay: 0.4 }}
         className="text-[14px] md:text-[17px] lg:text-[20px] text-[var(--text-secondary)] opacity-60 leading-[1.8] max-w-[700px] mb-12 font-medium"
       >
-        {t.bio}
+        {manifesto?.paragraphs?.[0] || t.bio}
       </motion.p>
 
       {/* Hero Buttons */}

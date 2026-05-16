@@ -21,6 +21,10 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
+export const viewport = {
+  themeColor: "#0d0d0d",
+};
+
 export const metadata: Metadata = {
   title: {
     default: 'Ijlal Ansari — Data Engineer & AI Ethics Researcher',
@@ -57,7 +61,6 @@ export const metadata: Metadata = {
     description: "Building AETHER — ethical data platform with bias detection, SHAP explainability & data governance. Python, dbt, FastAPI, DuckDB.",
     images: ["https://dataden.vercel.app/og-image.jpg"],
   },
-  themeColor: "#0d0d0d",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

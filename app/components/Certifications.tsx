@@ -36,17 +36,32 @@ export default function Certifications() {
         }
       }
       
+      const fallbackCerts = [
+        { id: 1, title: "Python for Data Science, AI & Development", issuer: "IBM", date: "2024-05-01", credentialId: "87.5%", image: "" },
+        { id: 2, title: "Introduction to Data Engineering", issuer: "IBM", date: "2024-06-01", credentialId: "92.6%", image: "" },
+        { id: 3, title: "Business Intelligence (BI) Essentials", issuer: "IBM", date: "2024-07-01", credentialId: "88.33%", image: "" },
+        { id: 4, title: "Foundations: Data, Data, Everywhere", issuer: "Google", date: "2024-04-01", credentialId: "91.75%", image: "" },
+        { id: 5, title: "SQL for Data Science", issuer: "Coursera", date: "2024-08-01", credentialId: "In Progress", image: "" },
+      ];
+      
       // Fallback to API if no localStorage data
       fetch("/api/data/certifications")
         .then(res => res.ok ? res.json() : [])
         .then(data => {
-          setCertifications(data.map((c: Certification) => ({
-            ...c,
-            verificationUrl: c.verificationUrl || c.verification_url,
-          })));
+          if (data.length > 0) {
+            setCertifications(data.map((c: Certification) => ({
+              ...c,
+              verificationUrl: c.verificationUrl || c.verification_url,
+            })));
+          } else {
+            setCertifications(fallbackCerts);
+          }
           setLoading(false);
         })
-        .catch(() => setLoading(false));
+        .catch(() => {
+          setCertifications(fallbackCerts);
+          setLoading(false);
+        });
     };
 
     handleUpdate();
@@ -60,7 +75,7 @@ export default function Certifications() {
     <section id="certifications" className="w-full">
       <div className="mb-12">
         <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">My Credentials</p>
-        <h2 className="text-4xl font-bold text-[var(--text-primary)]">Certifications <span>& Awards</span></h2>
+        <h2 className="text-4xl font-bold text-[var(--text-primary)]">Certifications <span>& Courses</span></h2>
         <div className="w-16 h-1 mt-4 bg-neon-mint rounded-full" />
       </div>
 

@@ -8,7 +8,7 @@ import {
   User as UserIcon, Globe, Bold, Italic, Code, Link as LinkIcon, 
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
   ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag,
-  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github
+  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github, Landmark
 } from "lucide-react";
 import Image from "next/image";
 import { storage } from "../utils/storage";
@@ -94,6 +94,9 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [clientEvents, setClientEvents] = useState<any[]>([]);
   const [inboxMessages, setInboxMessages] = useState<any[]>([]);
   const [readMessages, setReadMessages] = useState<string[]>([]);
+  const [manifesto, setManifesto] = useState<any>(null);
+  const [experience, setExperience] = useState<any[]>([]);
+  const [education, setEducation] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -142,6 +145,21 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
             setInboxMessages(merged);
           }
         } catch { /* silent */ }
+
+        // Load Manifesto and Resume data
+        setManifesto(storage.get("admin-manifesto", {
+          title: "Built in silence. Engineered with intent.",
+          paragraphs: [
+            "My path isn't defined by the noise of the industry, but by the structural integrity of the systems I build.",
+            "I specialize in architecting ethical data platforms that balance high-performance engineering with absolute governance."
+          ]
+        }));
+        setExperience(storage.get("admin-experience", [
+          { company: "Infoline", role: "Junior Data Engineer Intern", period: "Feb 2024 — Present", desc: "Developing end-to-end data processing pipelines." }
+        ]));
+        setEducation(storage.get("admin-education", [
+          { school: "Karakoram International University", degree: "BS Software Engineering", period: "2021 — 2025" }
+        ]));
       };
       loadData();
     }
@@ -213,6 +231,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               { id: "Demos", icon: <FlaskConical size={16} />, color: "text-indigo-400", badge: 0 },
               { id: "Language Skills", icon: <Globe size={16} />, color: "text-emerald-400", badge: 0 },
               { id: "Testimonials", icon: <Quote size={16} />, color: "text-amber-400", badge: 0 },
+              { id: "Manifesto", icon: <Bold size={16} />, color: "text-[var(--accent)]", badge: 0 },
+              { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
               { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: 0 },
               { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400", badge: 0 },
               { id: "Settings", icon: <Settings size={16} />, color: "text-white/40", badge: 0 },
@@ -471,6 +491,11 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                       </select>
                                       <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{post.date}</div>
                                    </div>
+                                   <textarea value={post.excerpt} onChange={e => { const n = [...posts]; n[i].excerpt = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[12px] text-white/40 outline-none h-20 resize-none" placeholder="Short excerpt for the card..." />
+                                   <div className="space-y-2">
+                                      <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Key Takeaways (one per line)</label>
+                                      <textarea value={(post.keyPoints || []).join('\n')} onChange={e => { const n = [...posts]; n[i].keyPoints = e.target.value.split('\n'); setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[12px] text-white/40 outline-none h-24 resize-none" placeholder="Enter key points..." />
+                                   </div>
                                 </div>
                                 <div className="flex gap-3 shrink-0">
                                    <select value={post.status} onChange={e => { const n = [...posts]; n[i].status = e.target.value; setPosts(n); saveData("admin-posts", posts); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
@@ -482,6 +507,121 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              </div>
                           </motion.div>
                         ))}
+                      </div>
+                   </motion.div>
+                )}
+
+                {/* ── MANIFESTO TAB ── */}
+                {activeTab === "Manifesto" && (
+                   <motion.div key="manifesto" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-12">
+                      <div className="space-y-2">
+                         <h3 className="text-[12px] font-black text-[var(--accent)] uppercase tracking-[4px]">Brand Identity</h3>
+                         <p className="text-[14px] text-white/40 font-medium max-w-md">Edit your professional manifesto and primary biography.</p>
+                      </div>
+
+                      <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-8">
+                         <div className="space-y-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Hero Heading</label>
+                            <input 
+                              type="text" 
+                              value={manifesto?.title} 
+                              onChange={e => setManifesto({ ...manifesto, title: e.target.value })} 
+                              onBlur={() => saveData("admin-manifesto", manifesto)}
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-black text-[24px] outline-none focus:border-[var(--accent)] transition-all"
+                            />
+                         </div>
+
+                         <div className="space-y-4">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Story Paragraphs</label>
+                            {(manifesto?.paragraphs || []).map((p: string, idx: number) => (
+                               <div key={idx} className="flex gap-4">
+                                  <textarea 
+                                    value={p} 
+                                    onChange={e => {
+                                      const newParas = [...manifesto.paragraphs];
+                                      newParas[idx] = e.target.value;
+                                      setManifesto({ ...manifesto, paragraphs: newParas });
+                                    }} 
+                                    onBlur={() => saveData("admin-manifesto", manifesto)}
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-6 text-white/60 text-[15px] outline-none min-h-[120px] resize-none"
+                                  />
+                                  <button onClick={() => {
+                                    const newParas = manifesto.paragraphs.filter((_: any, i: number) => i !== idx);
+                                    setManifesto({ ...manifesto, paragraphs: newParas });
+                                    saveData("admin-manifesto", { ...manifesto, paragraphs: newParas });
+                                  }} className="w-12 h-12 flex items-center justify-center bg-red-500/10 text-red-400 rounded-2xl shrink-0 self-start"><Trash2 size={18} /></button>
+                               </div>
+                            ))}
+                            <button onClick={() => {
+                               const newParas = [...(manifesto?.paragraphs || []), ""];
+                               setManifesto({ ...manifesto, paragraphs: newParas });
+                               saveData("admin-manifesto", { ...manifesto, paragraphs: newParas });
+                            }} className="w-full py-4 border border-dashed border-white/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white/20 hover:text-white hover:border-white/40 transition-all">
+                               Add Paragraph
+                            </button>
+                         </div>
+                      </div>
+                   </motion.div>
+                )}
+
+                {/* ── RESUME TAB ── */}
+                {activeTab === "Resume" && (
+                   <motion.div key="resume" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                         {/* Experience */}
+                         <div className="space-y-8">
+                            <div className="flex justify-between items-center">
+                               <h3 className="text-[12px] font-black text-orange-400 uppercase tracking-[4px]">Professional Experience</h3>
+                               <button onClick={() => {
+                                  const updated = [{ company: "New Corp", role: "Engineer", period: "2024 — Present", desc: "" }, ...experience];
+                                  setExperience(updated);
+                                  saveData("admin-experience", updated);
+                               }} className="w-10 h-10 bg-orange-500 text-black rounded-xl flex items-center justify-center"><Plus size={20} /></button>
+                            </div>
+                            <div className="space-y-6">
+                               {experience.map((exp, i) => (
+                                  <div key={i} className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4 group relative">
+                                     <button onClick={() => {
+                                        const updated = experience.filter((_, idx) => idx !== i);
+                                        setExperience(updated);
+                                        saveData("admin-experience", updated);
+                                     }} className="absolute top-4 right-4 text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={16} /></button>
+                                     <input type="text" value={exp.company} onChange={e => { const n = [...experience]; n[i].company = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="Company Name" />
+                                     <div className="flex gap-4">
+                                        <input type="text" value={exp.role} onChange={e => { const n = [...experience]; n[i].role = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-orange-400 font-bold text-[11px] uppercase tracking-widest outline-none flex-1" placeholder="Role" />
+                                        <input type="text" value={exp.period} onChange={e => { const n = [...experience]; n[i].period = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-white/20 font-bold text-[10px] uppercase tracking-widest outline-none w-32 text-right" placeholder="Period" />
+                                     </div>
+                                     <textarea value={exp.desc} onChange={e => { const n = [...experience]; n[i].desc = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="w-full bg-transparent text-white/40 text-[13px] outline-none border-t border-white/5 pt-4 resize-none h-24" placeholder="Description of responsibilities..." />
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
+
+                         {/* Education */}
+                         <div className="space-y-8">
+                            <div className="flex justify-between items-center">
+                               <h3 className="text-[12px] font-black text-blue-400 uppercase tracking-[4px]">Academic credentials</h3>
+                               <button onClick={() => {
+                                  const updated = [{ school: "University", degree: "Degree", period: "2020 — 2024" }, ...education];
+                                  setEducation(updated);
+                                  saveData("admin-education", updated);
+                               }} className="w-10 h-10 bg-blue-500 text-black rounded-xl flex items-center justify-center"><Plus size={20} /></button>
+                            </div>
+                            <div className="space-y-6">
+                               {education.map((edu, i) => (
+                                  <div key={i} className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4 group relative">
+                                     <button onClick={() => {
+                                        const updated = education.filter((_, idx) => idx !== i);
+                                        setEducation(updated);
+                                        saveData("admin-education", updated);
+                                     }} className="absolute top-4 right-4 text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={16} /></button>
+                                     <input type="text" value={edu.school} onChange={e => { const n = [...education]; n[i].school = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="School Name" />
+                                     <input type="text" value={edu.degree} onChange={e => { const n = [...education]; n[i].degree = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-blue-400 font-bold text-[11px] uppercase tracking-widest outline-none w-full" placeholder="Degree" />
+                                     <input type="text" value={edu.period} onChange={e => { const n = [...education]; n[i].period = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-white/20 font-bold text-[10px] uppercase tracking-widest outline-none w-full" placeholder="Period" />
+                                  </div>
+                               ))}
+                            </div>
+                         </div>
                       </div>
                    </motion.div>
                 )}
@@ -747,10 +887,59 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                            <ArrowUpRight size={14} /> Visit Site
                          </a>
                          <button onClick={() => window.location.reload()} className="flex items-center gap-2 px-5 py-3 bg-[var(--accent)] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">
-                           <RefreshCw size={14} /> Refresh
+                                   <RefreshCw size={14} /> Refresh
                          </button>
                        </div>
                      </div>
+
+                      {/* System Health & Topology */}
+                      <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] relative overflow-hidden group">
+                         <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+                            <div className="flex-1 space-y-6">
+                               <div className="flex items-center gap-4">
+                                  <div className="w-10 h-10 bg-[var(--accent)]/10 rounded-xl flex items-center justify-center text-[var(--accent)]">
+                                     <Cpu size={20} className="animate-pulse" />
+                                  </div>
+                                  <div>
+                                     <h4 className="text-[14px] font-black text-white uppercase tracking-widest">AETHER CORE STATUS</h4>
+                                     <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">Engine Operational • 99.9% Integrity</p>
+                                  </div>
+                               </div>
+                               <div className="grid grid-cols-2 gap-8">
+                                  <div className="space-y-1">
+                                     <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Active Threads</p>
+                                     <p className="text-[24px] font-black text-white">24 Parallel</p>
+                                  </div>
+                                  <div className="space-y-1">
+                                     <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Schema Drift</p>
+                                     <p className="text-[24px] font-black text-emerald-400">Zero Detected</p>
+                                  </div>
+                               </div>
+                            </div>
+                            
+                            <div className="w-full lg:w-[400px] h-[120px] bg-black/40 rounded-3xl border border-white/5 overflow-hidden relative">
+                               {/* Mock Data Stream Visual */}
+                               <div className="absolute inset-0 flex items-center justify-around px-8">
+                                  {[1,2,3,4,5,6,7,8].map(i => (
+                                     <motion.div 
+                                        key={i}
+                                        initial={{ height: "20%" }}
+                                        animate={{ height: ["20%", "80%", "30%", "90%", "20%"] }}
+                                        transition={{ duration: 1.5 + Math.random(), repeat: Infinity, ease: "easeInOut" }}
+                                        className="w-2 bg-[var(--accent)] rounded-full opacity-30 blur-[1px]"
+                                     />
+                                  ))}
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+                                <div className="absolute top-4 right-6 flex items-center gap-2">
+                                   <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                                   <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Live Stream</span>
+                                </div>
+                            </div>
+                         </div>
+                         {/* Background Grid */}
+                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--accent) 0.5px, transparent 0px)', backgroundSize: '24px 24px' }} />
+                      </div>
 
                      {/* Stat Cards */}
                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">

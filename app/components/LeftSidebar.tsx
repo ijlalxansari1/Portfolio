@@ -22,7 +22,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
     status: language === 'en' ? "Available" : "Verfügbar",
     availableFrom: language === 'en' ? "Now" : "Jetzt"
   });
-  
+
   const titles = [
     language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
     language === 'en' ? "AI Ethics Researcher" : "KI-Ethik-Forscher",
@@ -75,9 +75,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
     <div className="sidebar w-full h-auto lg:h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border-subtle)] transition-all duration-400 pb-4 lg:pb-0 relative">
       {/* Premium Glass Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-      
-      <div 
-        className="relative w-full overflow-hidden px-4 pt-4 lg:px-5 lg:pt-5" 
+
+      <div
+        className="relative w-full overflow-hidden px-4 pt-4 lg:px-5 lg:pt-5"
         style={{ height: 'auto' }}
       >
         <div className="relative aspect-[1/1.1] lg:aspect-[1/1.1] w-full rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-inner">
@@ -102,7 +102,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
           </AnimatePresence>
         </div>
         <h2 className="text-[24px] lg:text-[30px] font-black text-[var(--text-primary)] tracking-tight mb-3 lg:mb-4 leading-none">Ijlal Ansari</h2>
-        
+
         <div className="flex items-center gap-2.5 px-3.5 py-1 bg-[var(--bg-primary)]/50 backdrop-blur-md border border-[var(--border-subtle)] rounded-full mb-5 lg:mb-6 shadow-sm">
           <div className="w-2 h-2 rounded-full relative" style={{ backgroundColor: getStatusColor() }}>
             {(availability.status.toLowerCase().includes('available') || availability.status.toLowerCase().includes('verfügbar')) && (
@@ -113,7 +113,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             {getStatusLabel()}
           </span>
         </div>
-        
+
         <div className="flex gap-2.5 lg:gap-3 mb-6">
           {[
             { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
@@ -129,13 +129,13 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       </div>
 
       <div className="w-full flex border-t border-[var(--border)] h-[70px] bg-[var(--bg-secondary)] mt-auto">
-        <button 
+        <button
           onClick={downloadResume}
           className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[var(--border)]"
         >
           {t.download_cv}
         </button>
-        <button 
+        <button
           onClick={() => {
             const panel = document.getElementById("content-scroll-panel");
             const target = document.getElementById("contact");

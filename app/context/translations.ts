@@ -5,7 +5,7 @@ export const translations = {
       greeting: "HELLO, I'M",
       expertIn: "Expert in",
       titles: ["Data Engineer", "Pipeline Developer", "AI Ethics Researcher", "Platform Builder"],
-      bio: "Built from a foundation of curiosity and precision, far from the typical tech hubs. I build data pipelines and ethical AI systems — self-taught, self-driven, and convinced that trustworthy data is not a luxury feature. Currently building AETHER — an open-source platform where bias detection, audit logging, and explainability are pipeline requirements, not afterthoughts. Data taught me patience; architecture taught me precision. Stack: Python · dbt · Dagster · FastAPI · DuckDB · PostgreSQL · Kafka · Fairlearn · SHAP",
+      bio: "I build data systems focused on accountability, transparency, and correctness by design. My work sits at the intersection of data engineering and responsible AI — where pipelines must be traceable, explainable, and auditable. I design systems with one constraint: if data drives decisions, its lineage should be inspectable end to end. I focus on embedding governance, bias awareness, and explainability directly into data infrastructure, not as afterthoughts. I’ve built multiple end-to-end data projects and continue working across data engineering and system design with this principle at the core.",
       cta_work: "See My Work",
       cta_talk: "Let's Talk",
       stats: {
@@ -21,9 +21,18 @@ export const translations = {
     },
     story: {
       label: "THE STORY SO FAR",
-      para1: "I didn't come from a big tech city or a Computer Science degree programme with industry placements. I taught myself data engineering from the ground up, one pipeline at a time. That background shapes how I work: I don't assume resources are unlimited, I document everything, and I don't ship things I don't understand.",
-      para2: "Most data systems are built to be fast. I'm building AETHER to be honest. Bias detection, SHAP explainability, append-only audit logs, and a 24-permission RBAC matrix aren't features I added — they're the reason the platform exists. Data governance isn't a compliance checkbox. It's the foundation.",
-      para3: "I'm early in my career and I know it. What I also know: I've built 6 end-to-end projects, completed structured data engineering training, and I write about what I build. I'm looking for teams who care about doing data work properly — not just quickly."
+      heading: "Built in silence.",
+      headingAccent: "Engineered with intent.",
+      paragraphs: [
+        "Data shapes decisions, behaviour, economies, and increasingly, the direction of society itself. Behind every AI system and large-scale platform are people designing the pipelines, defining the rules, and deciding what data is trusted. Without morally grounded data engineers, even the most advanced systems can drift in the wrong direction.",
+        "I didn’t come from a major tech hub or a university ecosystem filled with industry pipelines and easy opportunities. While studying Software Engineering, I taught myself practical data engineering by building real systems from scratch — one pipeline at a time.",
+        "That background shaped how I work: I document everything carefully, I respect constraints, and I don’t ship systems I don’t fully understand.",
+        "Most data platforms are built to move fast. I’m building AETHER to be accountable.",
+        "Bias detection, SHAP explainability, append-only audit logs, and a 24-permission RBAC matrix aren’t extra features — they’re the reason the platform exists. To me, data governance isn’t a compliance checkbox. It’s the foundation of trustworthy systems.",
+        "I believe the future of AI will not be defined only by models, but by the integrity of the data systems behind them — and by the engineers willing to build those systems responsibly.",
+        "I’m early in my career, and I know that. What I also know is that I’ve built 6 end-to-end projects, completed structured data engineering training, and consistently write about what I learn and build.",
+        "I’m looking for teams that care about building data systems responsibly — not just shipping them quickly."
+      ]
     },
     sidebar: {
       status_available: "Open to Opportunities",
@@ -123,7 +132,7 @@ export const translations = {
       greeting: "HALLO, ICH BIN",
       expertIn: "Experte für",
       titles: ["Daten-Ingenieur", "Pipeline-Entwickler", "KI-Ethik-Forscher", "Plattform-Entwickler"],
-      bio: "Entwickelt aus einer Grundlage von Neugier und Präzision, fernab der typischen Tech-Zentren. Ich baue Datenpipelines und ethische KI-Systeme — autodidaktisch, eigenmotiviert und davon überzeugt, dass vertrauenswürdige Daten kein Luxusgut sind. Derzeit entwickle ich AETHER — eine Open-Source-Plattform, bei der Bias-Erkennung, Audit-Logging und Erklärbarkeit Pipeline-Anforderungen sind, keine Nebensache. Daten lehrten mich Geduld; Architektur lehrte mich Präzision. Stack: Python · dbt · Dagster · FastAPI · DuckDB · PostgreSQL · Kafka · Fairlearn · SHAP",
+      bio: "Ich entwickle Datensysteme mit Fokus auf Rechenschaftspflicht, Transparenz und Korrektheit durch Design. Meine Arbeit liegt an der Schnittstelle von Data Engineering und verantwortungsbewusster KI – wo Pipelines rückverfolgbar, erklärbar und prüfbar sein müssen. Ich entwerfe Systeme mit einer Einschränkung: Wenn Daten Entscheidungen steuern, sollte ihre Herkunft durchgehend überprüfbar sein. Ich konzentriere mich darauf, Governance, Bias-Bewusstsein und Erklärbarkeit direkt in die Dateninfrastruktur einzubetten, nicht als nachträgliche Überlegung. Ich habe mehrere End-to-End-Datenprojekte aufgebaut und arbeite weiterhin in den Bereichen Data Engineering und Systemdesign mit diesem Prinzip im Kern.",
       cta_work: "Meine Arbeit",
       cta_talk: "Kontakt",
       stats: {
@@ -139,9 +148,18 @@ export const translations = {
     },
     story: {
       label: "DIE BISHERIGE GESCHICHTE",
-      para1: "Ich komme nicht aus einer großen Tech-Stadt oder einem Informatik-Studium mit Praktika in der Industrie. Ich habe mir das Data Engineering von Grund auf selbst beigebracht, eine Pipeline nach der anderen. Dieser Hintergrund prägt meine Arbeitsweise: Ich gehe nicht davon aus, dass Ressourcen unbegrenzt sind, ich dokumentiere alles und ich liefere nichts aus, was ich nicht verstehe.",
-      para2: "Die meisten Datensysteme sind auf Schnelligkeit ausgelegt. Ich baue AETHER, um ehrlich zu sein. Bias-Erkennung, SHAP-Erklärbarkeit, Append-Only-Audit-Logs und eine RBAC-Matrix mit 24 Berechtigungen sind keine Features, die ich hinzugefügt habe — sie sind der Grund, warum die Plattform existiert.",
-      para3: "Ich stehe am Anfang meiner Karriere und das weiß ich. Was ich auch weiß: Ich habe 6 End-to-End-Projekte aufgebaut, eine strukturierte Data-Engineering-Ausbildung absolviert und ich schreibe über das, was ich baue. Ich suche Teams, denen es wichtig ist, Datenarbeit ordentlich zu machen — nicht nur schnell."
+      heading: "In der Stille gebaut.",
+      headingAccent: "Mit Absicht konstruiert.",
+      paragraphs: [
+        "Daten prägen Entscheidungen, Verhalten, Volkswirtschaften und zunehmend die Richtung der Gesellschaft selbst. Hinter jedem KI-System und jeder großen Plattform stehen Menschen, die die Pipelines entwerfen, die Regeln festlegen und entscheiden, welchen Daten vertraut wird. Ohne moralisch gefestigte Dateningenieure können selbst die fortschrittlichsten Systeme in die falsche Richtung abdriften.",
+        "Ich komme nicht aus einem großen Tech-Hub oder einem universitären Ökosystem voller Branchen-Pipelines und einfacher Möglichkeiten. Während meines Software-Engineering-Studiums habe ich mir praktisches Data Engineering selbst beigebracht, indem ich echte Systeme von Grund auf neu aufgebaut habe – eine Pipeline nach der anderen.",
+        "Dieser Hintergrund hat meine Arbeitsweise geprägt: Ich dokumentiere alles sorgfältig, ich respektiere Einschränkungen und ich liefere keine Systeme aus, die ich nicht vollständig verstehe.",
+        "Die meisten Datenplattformen sind auf Schnelligkeit ausgelegt. Ich baue AETHER, um rechenschaftspflichtig zu sein.",
+        "Bias-Erkennung, SHAP-Erklärbarkeit, Append-only-Audit-Logs und eine RBAC-Matrix mit 24 Berechtigungen sind keine Zusatzfunktionen – sie sind der Grund, warum die Plattform existiert. Für mich ist Data Governance kein Kontrollkästchen für die Einhaltung von Vorschriften. Es ist die Grundlage für vertrauenswürdige Systeme.",
+        "Ich glaube, dass die Zukunft der KI nicht nur durch Modelle definiert wird, sondern durch die Integrität der dahinter stehenden Datensysteme – und durch die Ingenieure, die bereit sind, diese Systeme verantwortungsbewusst zu bauen.",
+        "Ich stehe am Anfang meiner Karriere und das weiß ich. Was ich auch weiß, ist, dass ich 6 End-to-End-Projekte aufgebaut, ein strukturiertes Data-Engineering-Training absolviert habe und regelmäßig über das schreibe, was ich lerne und baue.",
+        "Ich suche Teams, denen es wichtig ist, Datensysteme verantwortungsbewusst aufzubauen – und nicht nur schnell auszuliefern."
+      ]
     },
     sidebar: {
       status_available: "Offen für Gelegenheiten",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
-  User, Dumbbell, Wrench, Briefcase, Landmark,
+  User, Dumbbell, Wrench, Briefcase, Landmark, Award,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
   Quote, Mail, MessageSquare, Menu, X
 } from "lucide-react";
@@ -25,6 +25,8 @@ import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import AdminPanel from "./components/AdminPanel";
 import LoginModal from "./components/LoginModal";
+import Certifications from "./components/Certifications";
+
 
 import ThemeBuddy from "./components/ThemeBuddy";
 
@@ -55,6 +57,7 @@ export default function Home() {
     { id: "demo",     icon: <FlaskConical size={18} />, label: "Demo"     },
     { id: "projects", icon: <Briefcase size={18} />,  label: "Projects" },
     { id: "resume",   icon: <Landmark size={18} />,   label: "Resume"   },
+    { id: "certifications", icon: <Award size={18} />, label: "Credentials" },
     { id: "github",   icon: <Github size={18} />,     label: "GitHub"   },
     { id: "testimonials", icon: <Quote size={18} />,  label: "Reviews"  },
     { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
@@ -377,6 +380,16 @@ export default function Home() {
                   id="resume"
                 >
                   <Resume />
+                </motion.section>
+
+                <div className="h-px w-full bg-white/[0.05]" />
+                <motion.section 
+                  initial={{ opacity: 0, y: 30 }} 
+                  whileInView={{ opacity: 1, y: 0 }} 
+                  viewport={{ once: true, margin: "-100px" }}
+                  id="certifications"
+                >
+                  <Certifications />
                 </motion.section>
 
                 <div className="h-px w-full bg-white/[0.05]" />
