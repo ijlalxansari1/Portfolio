@@ -6,6 +6,7 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import CustomCursor from "./components/CustomCursor";
 import { LanguageProvider } from "./context/LanguageContext";
 import Script from "next/script";
+import DataLoader from "./components/DataLoader";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -25,56 +26,76 @@ export const viewport = {
   themeColor: "#0d0d0d",
 };
 
-export const metadata: Metadata = {
-  title: {
-    default: 'Ijlal Ansari — Data Engineer & AI Ethics Researcher',
-    template: '%s | Ijlal Ansari',
-  },
-  description: "Data Engineer and AI Ethics Researcher building AETHER — an open-source ethical data platform with bias detection, SHAP explainability, and data governance. Skilled in Python, dbt, Dagster, FastAPI, DuckDB, PostgreSQL, and Kafka.",
-  keywords: "data engineer, data engineering portfolio, Python data engineer, dbt developer, AI ethics researcher, AETHER platform, Fairlearn SHAP bias detection, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Dagster orchestration, open source data platform",
-  authors: [{ name: "Ijlal Ansari" }],
-  creator: 'Ijlal Ansari',
-  metadataBase: new URL('https://dataden.vercel.app'),
-  robots: "index, follow",
-  alternates: {
-    canonical: "https://dataden.vercel.app/",
-  },
-  openGraph: {
-    type: "website",
-    url: "https://dataden.vercel.app/",
-    title: "Ijlal Ansari — Data Engineer & AI Ethics Researcher",
-    description: "Building AETHER — an open-source ethical data platform with bias detection and explainability. Skilled in Python, dbt, Dagster, FastAPI, and DuckDB.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Ijlal Ansari Portfolio",
-      },
-    ],
-    siteName: "Ijlal Ansari — Data Den",
-    locale: "en_GB",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Ijlal Ansari — Data Engineer & AI Ethics Researcher",
-    description: "Building AETHER — ethical data platform with bias detection, SHAP explainability & data governance. Python, dbt, FastAPI, DuckDB.",
-    images: ["https://dataden.vercel.app/og-image.jpg"],
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
-  verification: {
-    google: 'REPLACE_WITH_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN',
-  },
-};
+import fs from 'fs';
+import path from 'path';
+
+export async function generateMetadata(): Promise<Metadata> {
+  let config: any = {};
+  try {
+    const storePath = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
+    if (fs.existsSync(storePath)) {
+      const data = JSON.parse(fs.readFileSync(storePath, 'utf8'));
+      config = data['admin-config'] || {};
+    }
+  } catch (e) {
+    console.error("Failed to read SEO config", e);
+  }
+
+  const title = config.title || 'Ijlal Ansari — Data Engineer & AI Ethics Researcher';
+  const description = config.description || "Data Engineer and AI Ethics Researcher building AETHER — an open-source ethical data platform with bias detection, SHAP explainability, and data governance. Skilled in Python, dbt, Dagster, FastAPI, DuckDB, PostgreSQL, and Kafka.";
+  const keywords = config.keywords || "data engineer, data engineering portfolio, Python data engineer, dbt developer, AI ethics researcher, AETHER platform, Fairlearn SHAP bias detection, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Dagster orchestration, open source data platform";
+
+  return {
+    title: {
+      default: title,
+      template: '%s | Ijlal Ansari',
+    },
+    description: description,
+    keywords: keywords,
+    authors: [{ name: "Ijlal Ansari" }],
+    creator: 'Ijlal Ansari',
+    metadataBase: new URL('https://dataden.vercel.app'),
+    robots: "index, follow",
+    alternates: {
+      canonical: "https://dataden.vercel.app/",
+    },
+    openGraph: {
+      type: "website",
+      url: "https://dataden.vercel.app/",
+      title: title,
+      description: description,
+      images: [
+        {
+          url: "/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Ijlal Ansari Portfolio",
+        },
+      ],
+      siteName: "Ijlal Ansari — Data Den",
+      locale: "en_GB",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+      images: ["https://dataden.vercel.app/og-image.jpg"],
+    },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+        { url: '/icon.svg', type: 'image/svg+xml' },
+      ],
+      apple: [
+        { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+      ],
+    },
+    verification: {
+      google: 'REPLACE_WITH_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN',
+    },
+  };
+}
 
 const personSchema = {
   "@context": "https://schema.org",
@@ -152,9 +173,10 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'light', 'cmd', 'midnight', 'forest', 'slate', 'bordeaux']}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'light', 'cmd', 'midnight', 'forest', 'slate', 'bordeaux', 'ghost']}>
           <LanguageProvider>
             <CustomCursor />
+            <DataLoader />
             <ToastProvider>{children}</ToastProvider>
           </LanguageProvider>
         </ThemeProvider>

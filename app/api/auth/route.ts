@@ -1,17 +1,14 @@
 import { NextResponse } from 'next/server';
+import { signToken } from '../../utils/auth';
 
 export async function POST(request: Request) {
   const { username, password } = await request.json();
 
-  // In a real production app, use process.env.ADMIN_USER and process.env.ADMIN_PASS
-  // For this portfolio, we'll use a slightly safer server-side check than client-side hardcoding
-  // Using environment variables for production security
   const ADMIN_USER = process.env.ADMIN_USER || "admin";
   const ADMIN_PASS = process.env.ADMIN_PASS || "ijlal2025";
 
   if (username === ADMIN_USER && password === ADMIN_PASS) {
-    // Generate a simple token (in production, use JWT with a secret)
-    const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
+    const token = signToken(username);
     return NextResponse.json({ success: true, token });
   }
 

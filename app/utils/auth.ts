@@ -1,10 +1,15 @@
 import { NextRequest } from "next/server";
+import crypto from "crypto";
 
-/**
- * Verifies if the request is authorized by checking the Authorization header.
- * For this implementation, we check if the token starts with the expected base64 format.
- * In a production environment with multiple users, use JWT (jsonwebtoken library).
- */
+const SECRET = process.env.ADMIN_SECRET || "aether_super_secret_key_2025";
+
+export function signToken(username: string): string {
+  const timestamp = Date.now();
+  const payload = `${username}:${timestamp}`;
+  const signature = crypto.createHmac('sha256', SECRET).update(payload).digest('hex');
+  return Buffer.from(`${payload}:${signature}`).toString('base64');
+}
+
 export async function verifyAuth(request: NextRequest): Promise<boolean> {
   const authHeader = request.headers.get("Authorization");
   
@@ -16,26 +21,26 @@ export async function verifyAuth(request: NextRequest): Promise<boolean> {
   if (!token) return false;
 
   try {
-    // Decrypt the simple base64 token (username:timestamp)
     const decoded = Buffer.from(token, 'base64').toString('utf8');
-    const [username, timestamp] = decoded.split(':');
+    const [username, timestamp, signature] = decoded.split(':');
+    
+    if (!username || !timestamp || !signature) return false;
     
     const ADMIN_USER = process.env.ADMIN_USER || "admin";
+    if (username !== ADMIN_USER) return false;
     
-    // Check if username matches and timestamp is within a reasonable range (e.g., 24 hours)
-    // For a portfolio, we just check the username for simplicity, but in production, 
-    // you'd verify a signature or check against a session DB.
-    if (username === ADMIN_USER) {
-      // Basic expiration check (24 hours)
-      const tokenTime = parseInt(timestamp);
-      const now = Date.now();
-      if (now - tokenTime < 24 * 60 * 60 * 1000) {
-        return true;
-      }
-    }
+    // Verify expiration (24 hours)
+    const tokenTime = parseInt(timestamp);
+    if (Date.now() - tokenTime > 24 * 60 * 60 * 1000) return false;
+    
+    // Cryptographically verify signature
+    const expectedPayload = `${username}:${timestamp}`;
+    const expectedSignature = crypto.createHmac('sha256', SECRET).update(expectedPayload).digest('hex');
+    
+    // Prevent timing attacks using crypto.timingSafeEqual
+    if (signature.length !== expectedSignature.length) return false;
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
   } catch (err) {
     return false;
   }
-
-  return false;
 }

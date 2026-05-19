@@ -43,18 +43,22 @@ export default function Contact() {
         );
       }
 
-      // Admin Panel Sync (Local)
-      const submission = {
-        ...formData,
-        id: Date.now(),
-        date: new Date().toLocaleString(),
-        read: false
-      };
+      // Sync to Postgres Backend
+      try {
+        await fetch("/api/data/emails", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            serviceType: formData.subject,
+            message: formData.message,
+          })
+        });
+      } catch (err) {
+        console.error("Failed to sync to database", err);
+      }
 
-
-      const existing = storage.get("admin-submissions", []);
-      storage.set("admin-submissions", [submission, ...existing]);
-      window.dispatchEvent(new Event('admin-updated'));
       trackEvent("form_submit", { name: formData.name });
 
       setStatus("success");

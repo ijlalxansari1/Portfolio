@@ -9,12 +9,25 @@ export default function AdminPage() {
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    const session = sessionStorage.getItem("aether-admin-session");
-    if (session) {
-      setIsLoggedIn(true);
-    } else {
+    const checkAuth = async () => {
+      const session = sessionStorage.getItem("aether-admin-session");
+      if (session) {
+        try {
+          const res = await fetch("/api/auth/verify", {
+            headers: { Authorization: `Bearer ${session}` }
+          });
+          if (res.ok) {
+            setIsLoggedIn(true);
+            return;
+          }
+        } catch (e) {
+          console.error("Auth verification failed", e);
+        }
+      }
+      sessionStorage.removeItem("aether-admin-session");
       setShowLogin(true);
-    }
+    };
+    checkAuth();
   }, []);
 
   if (!isLoggedIn) {

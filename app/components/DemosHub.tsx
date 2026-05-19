@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
@@ -27,7 +27,7 @@ export default function DemosHub() {
   const { language } = useLanguage();
   const t = translations[language].demosHub;
   const [activeDemo, setActiveDemo] = useState<number | null>(null);
-  const [demos, setDemos] = useState(demoList);
+  const [demos, setDemos] = useState<any[]>(demoList);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -128,7 +128,7 @@ export default function DemosHub() {
 
               <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden">
                 <div className="p-2">
-                  {currentDemo.component}
+                  {currentDemo.component && React.cloneElement(currentDemo.component as any, { config: currentDemo.config })}
                 </div>
               </div>
 

@@ -141,6 +141,10 @@ export default function ThemeBuddy() {
                     <div className="w-3 h-3 rounded-full bg-[#1a0a0a]" />
                     <span className="text-[9px] font-bold uppercase">Bordeaux</span>
                   </button>
+                  <button onClick={() => handleThemeChange('ghost')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'ghost' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#050c24]" />
+                    <span className="text-[9px] font-bold uppercase">Ghost</span>
+                  </button>
                 </div>
               </div>
 

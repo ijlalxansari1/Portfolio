@@ -37,6 +37,7 @@ import EthicsPledge from "./components/EthicsPledge";
 import DemosHub from "./components/DemosHub";
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
+import AmbientBackground from "./components/AmbientBackground";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("about");
@@ -170,9 +171,8 @@ export default function Home() {
 
   return (
     <div
-      className="relative lg:fixed lg:inset-0 bg-[var(--bg-primary)] transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full"
+      className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full"
     >
-      {/* Cinematic Background Video (dark themes only) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {theme === 'light' ? (
           /* RyanCV-style lavender gradient for light mode */
@@ -180,30 +180,7 @@ export default function Home() {
             background: 'linear-gradient(135deg, #e8e4f0 0%, #d6daf0 25%, #e0d8ee 50%, #dce4f5 75%, #e8e4f0 100%)'
           }} />
         ) : (
-          <>
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover opacity-50 scale-105"
-            >
-              <source src="/bg.mp4" type="video/mp4" />
-              <source src="https://ryancv.bslthemes.com/dataops/wp-content/uploads/sites/20/2024/06/r-video-01-1.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-[#080808]/50 backdrop-blur-[1px]" />
-            
-            {/* Animated Cyber Grid */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-                 style={{ 
-                   backgroundImage: 'linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)',
-                   backgroundSize: '50px 50px',
-                   maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
-                 }} 
-            />
-            
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#080808]" />
-          </>
+          <AmbientBackground />
         )}
       </div>
 

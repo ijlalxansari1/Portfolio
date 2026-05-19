@@ -97,79 +97,106 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [manifesto, setManifesto] = useState<any>(null);
   const [experience, setExperience] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [siteConfig, setSiteConfig] = useState<any>({});
+  const [systemLogs, setSystemLogs] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen) {
       const loadData = async () => {
-        setProjects(storage.get("admin-projects", defaultProjects));
-        setPosts(storage.get("admin-posts", defaultPosts));
-        setCerts(storage.get("admin-certs", defaultCerts));
-        setSubmissions(storage.get("admin-submissions", []));
-        setRadarSkills(storage.get("admin-skills-radar", defaultRadar));
-        setSkillGroups(storage.get("admin-skills-groups", []));
-        setPractices(storage.get("admin-practices", defaultPractices));
-        setLangSkills(storage.get("admin-languages", defaultLanguages));
-        setCategories(storage.get("admin-categories", defaultCategories));
-        setTestimonials(storage.get("admin-testimonials", defaultTestimonials));
-        setReadMessages(storage.get("admin-read-messages", []));
-        
-        const toolsData = storage.get("admin-skills", { tools: defaultTools });
-        setToolSkills(toolsData.tools || defaultTools);
-        setDemos(storage.get("admin-demos", []));
-        setSystemAudit(storage.audit());
-
-        // Client-side analytics events
-        const events = storage.get("admin-analytics", []);
-        setClientEvents(events);
-
-        // Fetch server-side analytics
         try {
-          const token = sessionStorage.getItem("aether-admin-session");
-          const res = await fetch("/api/analytics", {
-            headers: { "Authorization": `Bearer ${token}` }
-          });
-          if (res.ok) setAnalyticsData(await res.json());
-        } catch { /* silent */ }
+          const res = await fetch("/api/data/admin");
+          const { data } = await res.json();
+          const get = (key: string, fallback: any) => (data && data[key] !== undefined) ? data[key] : fallback;
 
-        // Fetch server-side inbox
-        try {
-          const token = sessionStorage.getItem("aether-admin-session");
-          const res = await fetch("/api/data/emails", {
-            headers: { "Authorization": `Bearer ${token}` }
-          });
-          if (res.ok) {
-            const serverEmails = await res.json();
-            const localSubs = storage.get("admin-submissions", []);
-            const merged = [...localSubs, ...serverEmails]
-              .sort((a: any, b: any) => new Date(b.date || b.timestamp || 0).getTime() - new Date(a.date || a.timestamp || 0).getTime());
-            setInboxMessages(merged);
-          }
-        } catch { /* silent */ }
+          setProjects(get("admin-projects", defaultProjects));
+          setPosts(get("admin-posts", defaultPosts));
+          setCerts(get("admin-certs", defaultCerts));
+          setSubmissions(get("admin-submissions", []));
+          setRadarSkills(get("admin-skills-radar", defaultRadar));
+          setSkillGroups(get("admin-skills-groups", []));
+          setPractices(get("admin-practices", defaultPractices));
+          setLangSkills(get("admin-languages", defaultLanguages));
+          setCategories(get("admin-categories", defaultCategories));
+          setTestimonials(get("admin-testimonials", defaultTestimonials));
+          setReadMessages(get("admin-read-messages", []));
+          
+          const toolsData = get("admin-skills", { tools: defaultTools });
+          setToolSkills(toolsData.tools || defaultTools);
+          setDemos(get("admin-demos", []));
+          setSiteConfig(get("admin-config", { title: "Portfolio", description: "Data Engineer Portfolio", maintenanceMode: false }));
+          setSystemAudit({ totalSize: "Remote Server", items: Object.keys(data || {}).length });
 
-        // Load Manifesto and Resume data
-        setManifesto(storage.get("admin-manifesto", {
-          title: "Built in silence. Engineered with intent.",
-          paragraphs: [
-            "My path isn't defined by the noise of the industry, but by the structural integrity of the systems I build.",
-            "I specialize in architecting ethical data platforms that balance high-performance engineering with absolute governance."
-          ]
-        }));
-        setExperience(storage.get("admin-experience", [
-          { company: "Infoline", role: "Junior Data Engineer Intern", period: "Feb 2024 — Present", desc: "Developing end-to-end data processing pipelines." }
-        ]));
-        setEducation(storage.get("admin-education", [
-          { school: "Karakoram International University", degree: "BS Software Engineering", period: "2021 — 2025" }
-        ]));
+          // Fetch system logs
+          try {
+            const token = sessionStorage.getItem("aether-admin-session");
+            const resLogs = await fetch("/api/data/logs", { headers: { "Authorization": `Bearer ${token}` } });
+            if (resLogs.ok) {
+              const logsData = await resLogs.json();
+              setSystemLogs(logsData.logs || []);
+            }
+          } catch { /* silent */ }
+
+          // Client-side analytics events
+          const events = get("admin-analytics", []);
+          setClientEvents(events);
+
+          // Fetch server-side analytics
+          const token = sessionStorage.getItem("aether-admin-session");
+          try {
+            const resAnal = await fetch("/api/analytics", { headers: { "Authorization": `Bearer ${token}` } });
+            if (resAnal.ok) setAnalyticsData(await resAnal.json());
+          } catch { /* silent */ }
+
+          // Fetch server-side inbox
+          try {
+            const resEmails = await fetch("/api/data/emails", { headers: { "Authorization": `Bearer ${token}` } });
+            if (resEmails.ok) {
+              const serverEmails = await resEmails.json();
+              const localSubs = get("admin-submissions", []);
+              const merged = [...localSubs, ...serverEmails].sort((a: any, b: any) => new Date(b.date || b.timestamp || 0).getTime() - new Date(a.date || a.timestamp || 0).getTime());
+              setInboxMessages(merged);
+            }
+          } catch { /* silent */ }
+
+          // Load Manifesto and Resume data
+          setManifesto(get("admin-manifesto", {
+            title: "Built in silence. Engineered with intent.",
+            paragraphs: [
+              "My path isn't defined by the noise of the industry, but by the structural integrity of the systems I build.",
+              "I specialize in architecting ethical data platforms that balance high-performance engineering with absolute governance."
+            ]
+          }));
+          setExperience(get("admin-experience", [
+            { company: "Infoline", role: "Junior Data Engineer Intern", period: "Feb 2024 — Present", desc: "Developing end-to-end data processing pipelines." }
+          ]));
+          setEducation(get("admin-education", [
+            { school: "Karakoram International University", degree: "BS Software Engineering", period: "2021 — 2025" }
+          ]));
+        } catch (e) {
+          console.error("Failed to load admin data from API", e);
+        }
       };
       loadData();
     }
   }, [isOpen]);
 
-  const saveData = (key: string, data: any) => {
+  const saveData = async (key: string, data: any) => {
     setIsSaving(true);
-    storage.set(key, data);
-    window.dispatchEvent(new CustomEvent("admin-updated"));
-    setSystemAudit(storage.audit());
+    try {
+      const token = sessionStorage.getItem("aether-admin-session");
+      await fetch("/api/data/admin", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` 
+        },
+        body: JSON.stringify({ key, data })
+      });
+      window.dispatchEvent(new CustomEvent("admin-updated"));
+      setSystemAudit({ totalSize: "Remote Server", items: (systemAudit?.items || 0) + 1 });
+    } catch (e) {
+      console.error(e);
+    }
     setTimeout(() => setIsSaving(false), 800);
   };
 
@@ -234,6 +261,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               { id: "Manifesto", icon: <Bold size={16} />, color: "text-[var(--accent)]", badge: 0 },
               { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
               { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: 0 },
+              { id: "Site Config", icon: <Globe size={16} />, color: "text-cyan-400", badge: 0 },
               { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400", badge: 0 },
               { id: "Settings", icon: <Settings size={16} />, color: "text-white/40", badge: 0 },
             ];})().map((tab) => (
@@ -793,7 +821,49 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              
                              <textarea value={d.description} onChange={e => { const n = [...demos]; n[i].description = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Explain the sandbox context..." />
                              
-                             <div className="flex items-center justify-between">
+                             <div className="space-y-3">
+                                <div className="flex justify-between items-center">
+                                   <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-1">Sandbox Environment Variables</label>
+                                   <button onClick={() => { 
+                                     const n = [...demos]; 
+                                     n[i].config = { ...(n[i].config || {}), [`KEY_${Date.now()}`]: "value" }; 
+                                     setDemos(n); 
+                                   }} className="text-[9px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                                     <Plus size={10} /> Add Variable
+                                   </button>
+                                </div>
+                                <div className="space-y-2">
+                                  {Object.entries(d.config || {}).map(([key, val], cIdx) => (
+                                    <div key={cIdx} className="flex gap-2">
+                                      <input type="text" value={key} onChange={e => { 
+                                        const newKey = e.target.value; 
+                                        const n = [...demos]; 
+                                        const oldConfig = { ...n[i].config };
+                                        delete oldConfig[key];
+                                        oldConfig[newKey] = val;
+                                        n[i].config = oldConfig;
+                                        setDemos(n);
+                                      }} onBlur={() => saveData("admin-demos", demos)} className="w-1/3 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[10px] text-indigo-400 font-mono outline-none" placeholder="KEY" />
+                                      <input type="text" value={val as string} onChange={e => { 
+                                        const n = [...demos]; 
+                                        n[i].config[key] = e.target.value; 
+                                        setDemos(n);
+                                      }} onBlur={() => saveData("admin-demos", demos)} className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[10px] text-white/60 font-mono outline-none" placeholder="Value" />
+                                      <button onClick={() => {
+                                        const n = [...demos];
+                                        delete n[i].config[key];
+                                        setDemos(n);
+                                        saveData("admin-demos", n);
+                                      }} className="text-red-400/50 hover:text-red-400 transition-all"><X size={14} /></button>
+                                    </div>
+                                  ))}
+                                  {Object.keys(d.config || {}).length === 0 && (
+                                    <div className="text-[10px] text-white/20 italic px-2">No dynamic variables configured.</div>
+                                  )}
+                                </div>
+                             </div>
+                             
+                             <div className="flex items-center justify-between pt-4 border-t border-white/5">
                                 <select value={d.status} onChange={e => { const n = [...demos]; n[i].status = e.target.value; setDemos(n); saveData("admin-demos", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
                                    <option className="bg-[#111]">Draft</option>
                                    <option className="bg-[#111]">Active</option>
@@ -1262,6 +1332,48 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                    </motion.div>
                 )}
 
+                {/* ── SITE CONFIG TAB ── */}
+                {activeTab === "Site Config" && (
+                   <motion.div key="site-config" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                     <div className="flex justify-between items-end">
+                       <div className="space-y-2">
+                         <h3 className="text-[12px] font-black text-cyan-400 uppercase tracking-[4px]">Global Configuration</h3>
+                         <p className="text-[14px] text-white/40 font-medium max-w-md">Manage site-wide settings like SEO metadata and maintenance mode.</p>
+                       </div>
+                       <button onClick={() => saveData("admin-config", siteConfig)} className="flex items-center gap-2 px-6 py-3 bg-[var(--accent)] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">
+                         <Save size={14} /> Save Config
+                       </button>
+                     </div>
+
+                     <div className="space-y-6 max-w-3xl">
+                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-6">
+                         <div className="space-y-2">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">Site Title</label>
+                           <input type="text" value={siteConfig?.title || ""} onChange={(e) => setSiteConfig({ ...siteConfig, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold outline-none focus:border-[var(--accent)]" placeholder="e.g. John Doe - Data Engineer" />
+                         </div>
+                         <div className="space-y-2">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">SEO Description</label>
+                           <textarea value={siteConfig?.description || ""} onChange={(e) => setSiteConfig({ ...siteConfig, description: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-[13px] outline-none focus:border-[var(--accent)] min-h-[100px] resize-none" placeholder="Meta description for search engines..." />
+                         </div>
+                         <div className="space-y-2">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">Keywords (comma separated)</label>
+                           <input type="text" value={siteConfig?.keywords || ""} onChange={(e) => setSiteConfig({ ...siteConfig, keywords: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-[13px] outline-none focus:border-[var(--accent)]" placeholder="data engineer, analytics, python..." />
+                         </div>
+                         <div className="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/10 rounded-2xl">
+                           <div>
+                             <h4 className="text-[13px] font-black text-red-400">Maintenance Mode</h4>
+                             <p className="text-[11px] text-white/40">Disable public access to the portfolio.</p>
+                           </div>
+                           <button onClick={() => setSiteConfig({ ...siteConfig, maintenanceMode: !siteConfig?.maintenanceMode })} className={`w-14 h-8 rounded-full transition-all relative ${siteConfig?.maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}>
+                             <div className={`w-6 h-6 rounded-full bg-white absolute top-1 transition-all ${siteConfig?.maintenanceMode ? 'left-7' : 'left-1'}`} />
+                           </button>
+                         </div>
+                       </div>
+                     </div>
+                   </motion.div>
+                )}
+
+                {/* ── SETTINGS TAB ── */}
                 {activeTab === "Settings" && (
                    <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-xl mx-auto space-y-12">
                       <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-8">
@@ -1294,27 +1406,48 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                        <p className="text-[14px] text-white/40 font-medium max-w-md">System-wide check for data integrity and security measures.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
-                          <div className="flex items-center gap-3 text-white/60 mb-2">
-                             <Layers size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Storage Footprint</span>
-                          </div>
-                          <div className="text-3xl font-black text-white">{systemAudit?.totalSize || "0 KB"}</div>
-                          <p className="text-[11px] text-white/30 leading-relaxed font-medium">Current local database usage on this machine.</p>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                       <div className="lg:col-span-1 space-y-6">
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                            <div className="flex items-center gap-3 text-emerald-400/60 mb-2">
+                               <ShieldCheck size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Auth Status</span>
+                            </div>
+                            <div className="text-3xl font-black text-white">Active Token</div>
+                            <p className="text-[11px] text-white/30 leading-relaxed font-medium">Session cryptographically verified via server-side gateway.</p>
+                         </div>
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                            <div className="flex items-center gap-3 text-blue-400/60 mb-2">
+                               <BarChart3 size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Data Objects</span>
+                            </div>
+                            <div className="text-3xl font-black text-white">{systemAudit?.items || 0}</div>
+                            <p className="text-[11px] text-white/30 leading-relaxed font-medium">Total registered entities in remote cluster.</p>
+                         </div>
                        </div>
-                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
-                          <div className="flex items-center gap-3 text-emerald-400/60 mb-2">
-                             <ShieldCheck size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Auth Status</span>
-                          </div>
-                          <div className="text-3xl font-black text-white">Active Token</div>
-                          <p className="text-[11px] text-white/30 leading-relaxed font-medium">Session token verified via server-side gateway.</p>
-                       </div>
-                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
-                          <div className="flex items-center gap-3 text-blue-400/60 mb-2">
-                             <BarChart3 size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Data Objects</span>
-                          </div>
-                          <div className="text-3xl font-black text-white">{systemAudit?.items || 0}</div>
-                          <p className="text-[11px] text-white/30 leading-relaxed font-medium">Total registered entities in local cluster.</p>
+
+                       <div className="lg:col-span-2 p-8 bg-black border border-white/10 rounded-[32px] space-y-6 font-mono relative overflow-hidden group">
+                         <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                           <div className="flex items-center gap-3 text-emerald-400">
+                             <Cpu size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">System Audit Trail</span>
+                           </div>
+                           <div className="flex gap-1.5">
+                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
+                           </div>
+                         </div>
+                         <div className="h-[250px] overflow-y-auto space-y-2 text-[11px] custom-scrollbar-hidden">
+                           {systemLogs.length === 0 ? (
+                             <div className="text-white/20">No system events recorded yet...</div>
+                           ) : (
+                             systemLogs.map((log, i) => (
+                               <div key={i} className="flex gap-4 items-start">
+                                 <span className="text-emerald-500/50 shrink-0">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                                 <span className={log.type === 'error' ? 'text-red-400' : 'text-white/60'}>{log.action}</span>
+                               </div>
+                             ))
+                           )}
+                         </div>
+                         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-50" />
                        </div>
                     </div>
 
@@ -1324,19 +1457,22 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           <h4 className="text-[14px] font-black uppercase tracking-widest">Destructive Actions</h4>
                        </div>
                        <p className="text-[12px] text-white/40 leading-relaxed max-w-2xl">
-                          Wipe all local administrative data and restore original defaults. This will resolve most &quot;database leaks&quot; or synchronization issues but cannot be undone.
+                          Purging data will remove all configurations from the server. This action cannot be undone.
                        </p>
                        <div className="flex gap-4">
                           <button 
-                            onClick={() => {
-                               if (confirm("Initiate total system reset? This wipes ALL local data.")) {
-                                  storage.clearAll();
-                                  window.location.reload();
+                            onClick={async () => {
+                               if (confirm("Initiate total system reset? This wipes ALL data.")) {
+                                  try {
+                                    const token = sessionStorage.getItem("aether-admin-session");
+                                    await fetch("/api/data/admin", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify({ key: "admin-projects", data: [] }) });
+                                    window.location.reload();
+                                  } catch (e) { console.error(e); }
                                }
                             }}
                             className="px-8 py-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
                           >
-                             Factory Reset Database
+                             Purge Database
                           </button>
                        </div>
                     </div>
