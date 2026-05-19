@@ -3,16 +3,13 @@
 import { useState, useEffect } from "react";
 import { Check, ArrowRight, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const pledges = [
-  "I will never build systems that obscure the truth in data.",
-  "I will always document bias risks before deployment.",
-  "I will treat data governance as a first-class feature, not an afterthought.",
-  "I will design for the people behind the data, not just the pipeline.",
-  "I will make my work auditable, explainable, and honest by default."
-];
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 export default function EthicsPledge() {
+  const { language } = useLanguage();
+  const t = translations[language].ethicsPledge;
+  const pledges = t.points;
   const [visibleIndex, setVisibleIndex] = useState(-1);
   const [currentText, setCurrentText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -40,8 +37,8 @@ export default function EthicsPledge() {
 
   return (
     <div className="w-full">
-      <div className="section-pill"><ShieldCheck size={14} /> My Commitment</div>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-8">The Data Ethics Pledge</h2>
+      <div className="section-pill"><ShieldCheck size={14} /> {t.label}</div>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-8">{t.title}</h2>
 
       <div className="bg-[#0d0d0d] border border-[var(--accent)]/30 rounded-[28px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
         <div className="space-y-6 relative z-10">

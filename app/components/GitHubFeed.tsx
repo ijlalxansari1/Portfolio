@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Github, Star, GitBranch, Terminal as TerminalIcon, Users, Package, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 interface GitHubEvent {
   id: string;
@@ -25,6 +27,8 @@ const fallbackEvents = [
 ];
 
 export default function GitHubFeed() {
+  const { language } = useLanguage();
+  const t = translations[language].githubFeed;
   const [events, setEvents] = useState<any[]>([]);
   const [repos, setRepos] = useState<any[]>([]);
   const [stats, setStats] = useState({ repos: 12, stars: 8, followers: 24, contributions: 0 });
@@ -92,10 +96,10 @@ export default function GitHubFeed() {
         <div className="space-y-2">
             <div className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2 flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-              LIVE GITHUB STREAM
+              {t.label}
             </div>
-           <h2 className="section-heading text-[32px] font-black text-[var(--text-primary)]">What I&apos;m Building</h2>
-           <p className="text-[14px] text-[var(--text-secondary)] opacity-50 max-w-lg">A real-time synchronization with my open-source commits, experiments, and architectural evolutions.</p>
+           <h2 className="section-heading text-[32px] font-black text-[var(--text-primary)]">{t.title}</h2>
+           <p className="text-[14px] text-[var(--text-secondary)] opacity-50 max-w-lg">{t.desc}</p>
         </div>
         
         <div className="flex flex-wrap gap-3">
@@ -134,7 +138,7 @@ export default function GitHubFeed() {
               <TerminalIcon size={16} className="text-[var(--accent)]" />
               <h3 className="text-[12px] font-black uppercase tracking-[2px] text-[var(--text-primary)]">Contribution Pulse</h3>
            </div>
-           <a href={`https://github.com/${username}`} target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] hover:underline">View Profile</a>
+           <a href={`https://github.com/${username}`} target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] hover:underline">{t.view_github}</a>
         </div>
         
         <div className="w-full overflow-x-auto custom-scrollbar-hidden">
@@ -163,7 +167,7 @@ export default function GitHubFeed() {
       <div className="mb-16">
         <div className="flex items-center gap-3 mb-8">
            <Package size={16} className="text-[var(--accent)]" />
-           <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[var(--text-primary)]">Active Repositories</h3>
+           <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[var(--text-primary)]">{t.label}</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (

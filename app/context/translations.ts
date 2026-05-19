@@ -124,6 +124,94 @@ export const translations = {
     languageSkills: {
       title: "LANGUAGES",
       practices: "ENGINEERING PRACTICES"
+    },
+    nav: {
+      about: "About",
+      skills: "Skills",
+      services: "Services",
+      demo: "Demo",
+      projects: "Projects",
+      resume: "Resume",
+      certifications: "Credentials",
+      github: "GitHub",
+      testimonials: "Reviews",
+      blog: "Blog",
+      contact: "Contact"
+    },
+    footer: {
+      cta_title: "Ready to build something ethical?",
+      cta_desc: "Let's discuss your next data architecture or research project.",
+      cta_button: "Hire Me Today",
+      copy: "© 2026 Ijlal Ansari. Designed for Impact.",
+      launch: "Launch ijlal.sh"
+    },
+    mobileHeader: {
+      role: "DataOps Expert",
+      nav: "Navigation"
+    },
+    certifications: {
+      label: "My Credentials",
+      title: "Certifications & Courses",
+      loading: "Loading certifications…",
+      empty: "No certifications discovered yet.",
+      cred_id: "Credential ID",
+      issued: "Issued",
+      verify: "Verify Credential",
+      details: "View Details"
+    },
+    blog: {
+      label: "ARTICLES",
+      title: "Blog & Research",
+      desc: "A collection of research notes, technical walkthroughs, and thoughts on ethical data systems.",
+      read: "Read Article",
+      back: "Back to Blog",
+      share: "Share Article",
+      discussion: "Discussion",
+      add_thought: "Add your thoughts on this research...",
+      posting_as: "Posting as",
+      post_comment: "Post Comment",
+      likes: "Likes",
+      comments: "Comments",
+      published: "Published",
+      key_takeaways: "Key Takeaways"
+    },
+    githubFeed: {
+      label: "REPOSITORIES",
+      title: "Open Source Activity",
+      desc: "Latest commits, tools, and research repositories.",
+      view_github: "View on GitHub",
+      language: "Language",
+      last_update: "Last update",
+      deploy: "Deployment"
+    },
+    demosHub: {
+      label: "INTERACTIVE",
+      title: "Technical Demos",
+      desc: "Live examples of my architectural patterns and ethical data tools.",
+      launch: "Launch Demo",
+      source: "View Source",
+      architecture: "Architecture",
+      loading: "Starting container...",
+      initializing: "Initializing...",
+      connecting: "Connecting...",
+      wait: "Please wait..."
+    },
+    ethicsPledge: {
+      label: "MY COMMITMENT",
+      title: "The AETHER Ethics Pledge",
+      desc: "A personal framework for responsible engineering.",
+      points: [
+        "I will not build systems that obscure their decision-making logic.",
+        "I will ensure that data lineages are inspectable and traceable.",
+        "I will actively audit models for bias and demographic parity.",
+        "I will prioritize user privacy over convenience or speed."
+      ]
+    },
+    generalSkills: {
+      label: "DOMAIN MASTERY",
+      title: "Methodology & Architecture",
+      practices_title: "Professional Practices",
+      banner: "Focused on building systems that are not just technically efficient, but ethically governed and fully documented."
     }
   },
   de: {
@@ -251,6 +339,94 @@ export const translations = {
     languageSkills: {
       title: "SPRACHEN",
       practices: "ENGINEERING PRAKTIKEN"
+    },
+    nav: {
+      about: "Über mich",
+      skills: "Fähigkeiten",
+      services: "Dienste",
+      demo: "Demo",
+      projects: "Projekte",
+      resume: "Lebenslauf",
+      certifications: "Zertifikate",
+      github: "GitHub",
+      testimonials: "Bewertungen",
+      blog: "Blog",
+      contact: "Kontakt"
+    },
+    footer: {
+      cta_title: "Bereit, etwas Ethisches zu bauen?",
+      cta_desc: "Lassen Sie uns über Ihr nächstes Datenarchitektur- oder Forschungsprojekt sprechen.",
+      cta_button: "Heute einstellen",
+      copy: "© 2026 Ijlal Ansari. Entworfen für Wirkung.",
+      launch: "ijlal.sh starten"
+    },
+    mobileHeader: {
+      role: "DataOps Experte",
+      nav: "Navigation"
+    },
+    certifications: {
+      label: "Meine Zeugnisse",
+      title: "Zertifikate & Kurse",
+      loading: "Zertifikate werden geladen…",
+      empty: "Noch keine Zertifikate entdeckt.",
+      cred_id: "Zeugnis-ID",
+      issued: "Ausgestellt",
+      verify: "Zeugnis überprüfen",
+      details: "Details ansehen"
+    },
+    blog: {
+      label: "ARTIKEL",
+      title: "Blog & Forschung",
+      desc: "Eine Sammlung von Forschungsnotizen, technischen Walkthroughs und Gedanken zu ethischen Datensystemen.",
+      read: "Artikel lesen",
+      back: "Zurück zum Blog",
+      share: "Artikel teilen",
+      discussion: "Diskussion",
+      add_thought: "Fügen Sie Ihre Gedanken zu dieser Forschung hinzu...",
+      posting_as: "Posten als",
+      post_comment: "Kommentar posten",
+      likes: "Gefällt mir",
+      comments: "Kommentare",
+      published: "Veröffentlicht",
+      key_takeaways: "Wichtige Erkenntnisse"
+    },
+    githubFeed: {
+      label: "REPOSITORIES",
+      title: "Open-Source-Aktivität",
+      desc: "Neueste Commits, Tools und Forschungs-Repositories.",
+      view_github: "Auf GitHub ansehen",
+      language: "Sprache",
+      last_update: "Letztes Update",
+      deploy: "Bereitstellung"
+    },
+    demosHub: {
+      label: "INTERAKTIV",
+      title: "Technische Demos",
+      desc: "Live-Beispiele meiner Architekturmuster und ethischen Daten-Tools.",
+      launch: "Demo starten",
+      source: "Quellcode ansehen",
+      architecture: "Architektur",
+      loading: "Container wird gestartet...",
+      initializing: "Initialisierung...",
+      connecting: "Verbinde...",
+      wait: "Bitte warten..."
+    },
+    ethicsPledge: {
+      label: "MEIN ENGAGEMENT",
+      title: "Das AETHER-Ethik-Versprechen",
+      desc: "Ein persönlicher Rahmen für verantwortungsbewusstes Engineering.",
+      points: [
+        "Ich werde keine Systeme bauen, die ihre Entscheidungslogik verschleiern.",
+        "Ich werde sicherstellen, dass Datenherkünfte überprüfbar und nachvollziehbar sind.",
+        "Ich werde Modelle aktiv auf Bias und demografische Parität prüfen.",
+        "Ich werde der Privatsphäre der Nutzer Vorrang vor Bequemlichkeit oder Geschwindigkeit geben."
+      ]
+    },
+    generalSkills: {
+      label: "FACHWISSEN",
+      title: "Methodik & Architektur",
+      practices_title: "Professionelle Praktiken",
+      banner: "Fokus auf den Bau von Systemen, die nicht nur technisch effizient, sondern auch ethisch gesteuert und vollständig dokumentiert sind."
     }
   }
 };

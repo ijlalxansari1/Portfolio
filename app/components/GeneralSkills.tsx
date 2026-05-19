@@ -32,19 +32,22 @@ const skillGroups = (language: string) => [
 ];
 
 const practices = (language: string) => [
-  { title: "Data Pipeline Architecture", icon: <Zap size={16} className="text-yellow-400" />, desc: "Modular ETL/ELT architecture" },
-  { title: "ETL/ELT Design & Implementation", icon: <Layers size={16} className="text-blue-400" />, desc: "End-to-end data processing" },
-  { title: "Bias Detection & Fairness Auditing", icon: <ShieldCheck size={16} className="text-emerald-400" />, desc: "Fairlearn-based governance" },
-  { title: "Data Governance & RBAC Design", icon: <Lock size={16} className="text-red-400" />, desc: "Secure access control systems" },
-  { title: "Append-Only Audit Log Systems", icon: <Activity size={16} className="text-cyan-400" />, desc: "Immutable system tracking" },
-  { title: "SHAP / Explainable AI (XAI)", icon: <Search size={16} className="text-purple-400" />, desc: "Model-agnostic explainability" },
-  { title: "REST API Design with FastAPI", icon: <Server size={16} className="text-orange-400" />, desc: "High-performance interfaces" },
-  { title: "CI/CD for Data Pipelines", icon: <Package size={16} className="text-pink-400" />, desc: "Automated deployment workflows" },
-  { title: "Data Quality Testing with dbt", icon: <CheckCircle2 size={16} className="text-[var(--accent)]" />, desc: "dbt testing & validation" },
+  { title: language === 'en' ? "Data Pipeline Architecture" : "Datenpipeline-Architektur", icon: <Zap size={16} className="text-yellow-400" />, desc: language === 'en' ? "Modular ETL/ELT architecture" : "Modulare ETL/ELT-Architektur" },
+  { title: language === 'en' ? "ETL/ELT Design & Implementation" : "ETL/ELT Design & Implementierung", icon: <Layers size={16} className="text-blue-400" />, desc: language === 'en' ? "End-to-end data processing" : "End-to-End Datenverarbeitung" },
+  { title: language === 'en' ? "Bias Detection & Fairness Auditing" : "Bias-Erkennung & Fairness-Prüfung", icon: <ShieldCheck size={16} className="text-emerald-400" />, desc: language === 'en' ? "Fairlearn-based governance" : "Fairlearn-basierte Governance" },
+  { title: language === 'en' ? "Data Governance & RBAC Design" : "Data Governance & RBAC Design", icon: <Lock size={16} className="text-red-400" />, desc: language === 'en' ? "Secure access control systems" : "Sichere Zugriffskontrollsysteme" },
+  { title: language === 'en' ? "Append-Only Audit Log Systems" : "Append-Only Audit-Log-Systeme", icon: <Activity size={16} className="text-cyan-400" />, desc: language === 'en' ? "Immutable system tracking" : "Unveränderliches System-Tracking" },
+  { title: language === 'en' ? "SHAP / Explainable AI (XAI)" : "SHAP / Explainable AI (XAI)", icon: <Search size={16} className="text-purple-400" />, desc: language === 'en' ? "Model-agnostic explainability" : "Modellunabhängige Erklärbarkeit" },
+  { title: language === 'en' ? "REST API Design with FastAPI" : "REST API Design mit FastAPI", icon: <Server size={16} className="text-orange-400" />, desc: language === 'en' ? "High-performance interfaces" : "Hochleistungsschnittstellen" },
+  { title: language === 'en' ? "CI/CD for Data Pipelines" : "CI/CD für Datenpipelines", icon: <Package size={16} className="text-pink-400" />, desc: language === 'en' ? "Automated deployment workflows" : "Automatisierte Bereitstellung" },
+  { title: language === 'en' ? "Data Quality Testing with dbt" : "Datenqualitätstests mit dbt", icon: <CheckCircle2 size={16} className="text-[var(--accent)]" />, desc: language === 'en' ? "dbt testing & validation" : "dbt Tests & Validierung" },
 ];
+
+import { translations } from "../context/translations";
 
 export default function GeneralSkills() {
   const { language } = useLanguage();
+  const t = translations[language].generalSkills;
   const [groups, setGroups] = useState(skillGroups(language));
   const [practiceList, setPracticeList] = useState(practices(language));
 
@@ -89,10 +92,10 @@ export default function GeneralSkills() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
-            {language === 'en' ? "DOMAIN MASTERY" : "Fachwissen"}
+            {t.label}
           </p>
           <h2 className="text-[32px] font-black text-white">
-            {language === 'en' ? "Methodology & Architecture" : "Methodik & Architektur"}
+            {t.title}
           </h2>
         </div>
       </div>
@@ -165,7 +168,7 @@ export default function GeneralSkills() {
         {/* PRACTICES Section */}
         <div className="space-y-8">
           <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
-            <CheckCircle2 size={18} className="text-[var(--accent)]" /> {language === 'en' ? "Professional Practices" : "Professionelle Praktiken"}
+            <CheckCircle2 size={18} className="text-[var(--accent)]" /> {t.practices_title}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {practiceList.map((practice: any, i: number) => (
@@ -191,9 +194,7 @@ export default function GeneralSkills() {
           {/* Decorative Info Box - Now full width to anchor the section */}
           <div className="mt-12 p-8 bg-[var(--accent)]/[0.03] border border-dashed border-[var(--accent)]/20 rounded-[32px] text-center">
              <p className="text-[12px] text-[var(--accent)] font-bold uppercase tracking-[0.3em] leading-relaxed opacity-60 max-w-3xl mx-auto">
-               {language === 'en' 
-                 ? "Focused on building systems that are not just technically efficient, but ethically governed and fully documented."
-                 : "Fokus auf den Bau von Systemen, die nicht nur technisch effizient, sondern auch ethisch gesteuert und vollständig dokumentiert sind."}
+               {t.banner}
              </p>
           </div>
         </div>

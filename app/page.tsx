@@ -50,19 +50,20 @@ export default function Home() {
   const { language } = useLanguage();
   const t = translations[language].sidebar;
   
+  const nav = translations[language].nav;
   const navItems = useMemo(() => [
-    { id: "about",    icon: <User size={18} />,       label: "About"    },
-    { id: "skills",   icon: <Dumbbell size={18} />,   label: "Skills"   },
-    { id: "services", icon: <Wrench size={18} />,     label: "Services" },
-    { id: "demo",     icon: <FlaskConical size={18} />, label: "Demo"     },
-    { id: "projects", icon: <Briefcase size={18} />,  label: "Projects" },
-    { id: "resume",   icon: <Landmark size={18} />,   label: "Resume"   },
-    { id: "certifications", icon: <Award size={18} />, label: "Credentials" },
-    { id: "github",   icon: <Github size={18} />,     label: "GitHub"   },
-    { id: "testimonials", icon: <Quote size={18} />,  label: "Reviews"  },
-    { id: "blog",     icon: <Newspaper size={18} />,  label: "Blog"     },
-    { id: "contact",  icon: <Send size={18} />,       label: "Contact"  },
-  ], [language]);
+    { id: "about",    icon: <User size={18} />,       label: nav.about    },
+    { id: "skills",   icon: <Dumbbell size={18} />,   label: nav.skills   },
+    { id: "services", icon: <Wrench size={18} />,     label: nav.services },
+    { id: "demo",     icon: <FlaskConical size={18} />, label: nav.demo     },
+    { id: "projects", icon: <Briefcase size={18} />,  label: nav.projects },
+    { id: "resume",   icon: <Landmark size={18} />,   label: nav.resume   },
+    { id: "certifications", icon: <Award size={18} />, label: nav.certifications },
+    { id: "github",   icon: <Github size={18} />,     label: nav.github   },
+    { id: "testimonials", icon: <Quote size={18} />,  label: nav.testimonials  },
+    { id: "blog",     icon: <Newspaper size={18} />,  label: nav.blog     },
+    { id: "contact",  icon: <Send size={18} />,       label: nav.contact  },
+  ], [language, nav]);
 
   const scrollToSection = (id: string) => {
     const target = document.getElementById(id);
@@ -212,7 +213,7 @@ export default function Home() {
       <header className="lg:hidden fixed top-0 left-0 right-0 h-[70px] bg-[var(--bg-card)]/80 backdrop-blur-xl border-b border-[var(--border-subtle)] z-[10000] flex items-center justify-between px-6 shadow-lg">
         <div className="flex flex-col">
           <span className="text-[15px] font-black text-[var(--text-primary)] tracking-tight">Ijlal Ansari</span>
-          <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">DataOps Expert</span>
+          <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">{translations[language].mobileHeader.role}</span>
         </div>
         <div className="flex items-center gap-3">
           <ThemeBuddy />
@@ -240,7 +241,7 @@ export default function Home() {
               className="fixed top-0 right-0 bottom-0 w-[280px] bg-[var(--bg-card)] border-l border-[var(--border-subtle)] z-[10002] lg:hidden p-8 flex flex-col"
             >
               <div className="flex justify-between items-center mb-10">
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]">Navigation</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]">{translations[language].mobileHeader.nav}</span>
                 <button onClick={() => setIsMenuOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--accent)]">
                   <X size={20} />
                 </button>
@@ -439,27 +440,27 @@ export default function Home() {
                   className="p-12 bg-gradient-to-r from-[#00e87a]/10 to-transparent border border-[#00e87a]/20 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8"
                 >
                   <div>
-                    <h3 className="text-[24px] font-black text-white mb-2">Ready to build something ethical?</h3>
-                    <p className="text-[14px] text-white/50">Let&apos;s discuss your next data architecture or research project.</p>
+                    <h3 className="text-[24px] font-black text-white mb-2">{translations[language].footer.cta_title}</h3>
+                    <p className="text-[14px] text-white/50">{translations[language].footer.cta_desc}</p>
                   </div>
                   <button 
                     onClick={() => scrollToSection('contact')}
                     className="px-8 py-4 bg-[#00e87a] text-black font-black uppercase tracking-widest text-[12px] rounded-xl hover:scale-105 transition-all"
                   >
-                    Hire Me Today
+                    {translations[language].footer.cta_button}
                   </button>
                 </motion.div>
 
                 {/* Footer Zone */}
                 <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row gap-8 justify-between items-center">
                   <div className="flex flex-col md:flex-row items-center gap-6">
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/20">© 2026 Ijlal Ansari. Designed for Impact.</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/20">{translations[language].footer.copy}</span>
                     <button 
                       onClick={() => setShowTerminal(true)}
                       className="group flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all"
                     >
                       <TerminalIcon size={14} className="text-[#00e87a]" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white transition-all">Launch ijlal.sh</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white transition-all">{translations[language].footer.launch}</span>
                     </button>
                   </div>
                   

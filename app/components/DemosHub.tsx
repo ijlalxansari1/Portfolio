@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 import AetherDemo from "./demos/AetherDemo";
 import ETLPipelineDemo from "./demos/ETLPipelineDemo";
@@ -22,6 +24,8 @@ const demoList = [
 ];
 
 export default function DemosHub() {
+  const { language } = useLanguage();
+  const t = translations[language].demosHub;
   const [activeDemo, setActiveDemo] = useState<number | null>(null);
   const [demos, setDemos] = useState(demoList);
 
@@ -57,11 +61,11 @@ export default function DemosHub() {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-          <div className="section-pill"><FlaskConical size={14} /> Live Experiences</div>
-          <h2 className="section-heading text-[32px] font-black text-white">Project Demos Hub</h2>
+          <div className="section-pill"><FlaskConical size={14} /> {t.label}</div>
+          <h2 className="section-heading text-[32px] font-black text-white">{t.title}</h2>
         </div>
         <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed">
-          Interactive sandboxes for my core engineering projects. Launch a demo to see the internal logic in action.
+          {t.desc}
         </p>
       </div>
 
@@ -87,7 +91,7 @@ export default function DemosHub() {
               </p>
               
               <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[2px] text-[var(--accent)] group-hover:gap-4 transition-all">
-                Launch Demo <Play size={14} fill="currentColor" />
+                {t.launch} <Play size={14} fill="currentColor" />
               </button>
             </div>
 

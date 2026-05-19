@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, Award, Calendar, ExternalLink } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 interface Certification {
   id: number;
@@ -17,6 +19,8 @@ interface Certification {
 }
 
 export default function Certifications() {
+  const { language } = useLanguage();
+  const t = translations[language].certifications;
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
@@ -69,18 +73,18 @@ export default function Certifications() {
     return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);
 
-  if (loading) return <div className="text-center py-20 text-gray-400 text-sm">Loading certifications…</div>;
+  if (loading) return <div className="text-center py-20 text-gray-400 text-sm">{t.loading}</div>;
 
   return (
     <section id="certifications" className="w-full">
       <div className="mb-12">
-        <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">My Credentials</p>
-        <h2 className="text-4xl font-bold text-[var(--text-primary)]">Certifications <span>& Courses</span></h2>
+        <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">{t.label}</p>
+        <h2 className="text-4xl font-bold text-[var(--text-primary)]">{t.title}</h2>
         <div className="w-16 h-1 mt-4 bg-neon-mint rounded-full" />
       </div>
 
       {certifications.length === 0 ? (
-        <div className="text-center py-20 text-[var(--text-muted)] text-sm font-medium">No certifications discovered yet.</div>
+        <div className="text-center py-20 text-[var(--text-muted)] text-sm font-medium">{t.empty}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certifications.map((cert, i) => (
@@ -151,14 +155,14 @@ export default function Certifications() {
 
                 {selectedCert.credentialId && (
                   <div className="bg-[var(--border-color)]/30 rounded-xl p-5 mb-6 border border-[var(--border-color)]">
-                    <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1">Credential ID</p>
+                    <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest mb-1">{t.cred_id}</p>
                     <p className="text-[var(--text-primary)] text-sm font-mono break-all">{selectedCert.credentialId}</p>
                   </div>
                 )}
 
                 <div className="flex items-center gap-2 text-[var(--text-muted)] text-xs font-bold uppercase tracking-wider mb-8">
                   <Calendar size={14} className="text-neon-mint" />
-                  <span>Issued: {selectedCert.date ? new Date(selectedCert.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "N/A"}</span>
+                  <span>{t.issued} {selectedCert.date ? new Date(selectedCert.date).toLocaleDateString(language === 'en' ? "en-US" : "de-DE", { year: "numeric", month: "long", day: "numeric" }) : "N/A"}</span>
                 </div>
 
                 <a
@@ -168,7 +172,7 @@ export default function Certifications() {
                   className="w-full flex items-center justify-center gap-3 py-4 bg-neon-mint text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-neon-mint/80 shadow-lg shadow-neon-mint/20 transition-all"
                 >
                   <ExternalLink size={16} />
-                  {selectedCert.verificationUrl ? "Verify Credential" : "View Details"}
+                  {selectedCert.verificationUrl ? t.verify : t.details}
                 </a>
               </div>
             </motion.div>

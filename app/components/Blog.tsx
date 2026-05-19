@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, X, Clock, BookOpen, ArrowLeft, Heart, Share2, MessageSquare } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 const articles = [
   {
@@ -74,6 +76,8 @@ const articles = [
 ];
 
 export default function Blog() {
+  const { language } = useLanguage();
+  const t = translations[language].blog;
   const [posts, setPosts] = useState(articles);
   const [selectedArticle, setSelectedArticle] = useState<number | null>(null);
 
@@ -154,9 +158,9 @@ export default function Blog() {
 
   return (
     <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">ARTICLES</p>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">Blog & Research</h2>
-      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">A collection of research notes, technical walkthroughs, and thoughts on ethical data systems.</p>
+      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">{t.label}</p>
+      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.title}</h2>
+      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.desc}</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {posts.map((article, i) => (
@@ -198,7 +202,7 @@ export default function Blog() {
                </p>
                <div className="pt-2">
                   <span className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[var(--accent)]">
-                    Read Article <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                    {t.read} <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
                   </span>
                </div>
             </div>
@@ -223,7 +227,7 @@ export default function Blog() {
                     onClick={() => setSelectedArticle(null)}
                     className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[3px] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-all"
                   >
-                    <ArrowLeft size={16} /> Back to Blog
+                    <ArrowLeft size={16} /> {t.back}
                   </button>
                   <div className="flex items-center gap-4">
                     <button 
@@ -257,7 +261,7 @@ export default function Blog() {
                     {activeArticle.title}
                   </h1>
                   <p className="text-[11px] font-black text-[var(--accent)] uppercase tracking-[0.3em] opacity-60">
-                    Published {activeArticle.date}
+                    {t.published} {activeArticle.date}
                   </p>
                 </header>
 
@@ -283,7 +287,7 @@ export default function Blog() {
                 {activeArticle.keyPoints && (
                   <div className="p-8 md:p-12 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-[32px] mb-20 relative overflow-hidden group">
                     <div className="flex items-center gap-3 text-[12px] font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-8">
-                      <BookOpen size={16} /> Key Takeaways
+                      <BookOpen size={16} /> {t.key_takeaways}
                     </div>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {activeArticle.keyPoints.map((point: string, i: number) => (
@@ -310,11 +314,11 @@ export default function Blog() {
                         }`}
                       >
                         <Heart size={20} fill={hasLiked[activeArticle.id] ? "currentColor" : "none"} />
-                        <span className="text-[14px] font-black">{likes[activeArticle.id]} Likes</span>
+                        <span className="text-[14px] font-black">{likes[activeArticle.id]} {t.likes}</span>
                       </button>
                       <div className="flex items-center gap-3 text-[var(--text-secondary)]">
                         <MessageSquare size={20} />
-                        <span className="text-[14px] font-bold">{(articleComments[activeArticle.id] || []).length} Comments</span>
+                        <span className="text-[14px] font-bold">{(articleComments[activeArticle.id] || []).length} {t.comments}</span>
                       </div>
                     </div>
                     <button 
@@ -322,32 +326,32 @@ export default function Blog() {
                       className="flex items-center gap-3 px-6 py-3 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-full text-[var(--text-primary)] hover:border-[var(--accent)]/50 transition-all"
                     >
                       <Share2 size={20} />
-                      <span className="text-[14px] font-bold">Share Article</span>
+                      <span className="text-[14px] font-bold">{t.share}</span>
                     </button>
                   </div>
 
                   {/* Comments Area */}
                   <div className="space-y-12">
-                    <h3 className="text-[18px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em]">Discussion</h3>
+                    <h3 className="text-[18px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em]">{t.discussion}</h3>
                     
                     {/* Comment Input */}
                     <div className="p-6 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl space-y-4">
                       <textarea 
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
-                        placeholder="Add your thoughts on this research..."
+                        placeholder={t.add_thought}
                         className="w-full bg-transparent border-none text-[var(--text-primary)] focus:ring-0 placeholder:text-[var(--text-secondary)]/30 resize-none min-h-[100px] text-[15px]"
                       />
                       <div className="flex items-center justify-between">
                         <div className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] opacity-40">
-                          Posting as <span className="text-[var(--accent)]">{currentUserName}</span>
+                          {t.posting_as} <span className="text-[var(--accent)]">{currentUserName}</span>
                         </div>
                         <button 
                           onClick={() => addComment(activeArticle.id)}
                           disabled={!commentText.trim()}
                           className="px-6 py-2 bg-[var(--accent)] text-black rounded-xl text-[12px] font-black uppercase tracking-widest disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
                         >
-                          Post Comment
+                          {t.post_comment}
                         </button>
                       </div>
                     </div>
