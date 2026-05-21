@@ -174,14 +174,7 @@ export default function Home() {
       className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full"
     >
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {theme === 'light' ? (
-          /* RyanCV-style lavender gradient for light mode */
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(135deg, #e8e4f0 0%, #d6daf0 25%, #e0d8ee 50%, #dce4f5 75%, #e8e4f0 100%)'
-          }} />
-        ) : (
-          <AmbientBackground />
-        )}
+        <AmbientBackground />
       </div>
 
       <AnalyticsTracker />

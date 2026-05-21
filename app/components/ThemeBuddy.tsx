@@ -75,21 +75,12 @@ export default function ThemeBuddy() {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Mobile-only simple toggle (Ryan CV style) */}
-      <div className="lg:hidden flex items-center gap-4">
-        <button
-          onClick={() => handleThemeChange(theme === 'light' ? 'dark' : 'light')}
-          className="w-10 h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)]"
-          title="Toggle Theme"
-        >
-          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-        </button>
-      </div>
 
-      {/* Desktop Main Trigger Icon */}
+
+      {/* Main Trigger Icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`hidden lg:flex w-10 h-10 rounded-xl items-center justify-center transition-all duration-300 border
+        className={`flex w-10 h-10 rounded-xl items-center justify-center transition-all duration-300 border
           ${isOpen 
             ? "bg-[var(--accent)] text-black border-[var(--accent)] shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]" 
             : "bg-transparent border-[#222] text-[#666] hover:border-white/20 hover:text-white"
@@ -103,10 +94,10 @@ export default function ThemeBuddy() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: -10, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -10, scale: 0.95 }}
-            className="absolute left-[54px] top-[-100px] bg-[#0d0d0d] border border-[#222] rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            className="absolute right-0 lg:right-auto lg:left-[54px] top-[50px] lg:top-[-100px] bg-[#0d0d0d] border border-[#222] rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
           >
             <div className="space-y-6">
               {/* Modes Section */}
@@ -116,10 +107,6 @@ export default function ThemeBuddy() {
                   <button onClick={() => handleThemeChange('dark')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'dark' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                     <Moon size={14} />
                     <span className="text-[9px] font-bold uppercase">Dark</span>
-                  </button>
-                  <button onClick={() => handleThemeChange('light')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'light' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
-                    <Sun size={14} />
-                    <span className="text-[9px] font-bold uppercase">Light</span>
                   </button>
                   <button onClick={() => handleThemeChange('cmd')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'cmd' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                     <TerminalIcon size={14} />
@@ -188,7 +175,7 @@ export default function ThemeBuddy() {
             </div>
             
             {/* Popover Arrow */}
-            <div className="absolute top-[114px] -left-1.5 w-3 h-3 bg-[#0d0d0d] border-l border-b border-[#222] rotate-45" />
+            <div className="absolute top-[-6px] right-3.5 lg:right-auto lg:top-[114px] lg:-left-1.5 w-3 h-3 bg-[#0d0d0d] border-t border-l lg:border-t-0 lg:border-l lg:border-b border-[#222] rotate-45" />
           </motion.div>
         )}
       </AnimatePresence>

@@ -173,7 +173,7 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'light', 'cmd', 'midnight', 'forest', 'slate', 'bordeaux', 'ghost']}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'cmd', 'midnight', 'forest', 'slate', 'bordeaux', 'ghost']}>
           <LanguageProvider>
             <CustomCursor />
             <DataLoader />
