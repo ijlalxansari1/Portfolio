@@ -13,10 +13,12 @@ export default function About() {
   const t = translations[language].hero;
   
   const [manifesto, setManifesto] = useState<any>(null);
+  const [stats, setStats] = useState({ projects: 6, hours: 1000, taught: 100 });
 
   useEffect(() => {
     const loadData = () => {
       setManifesto(storage.get("admin-manifesto", { title: null, paragraphs: [] }));
+      setStats(storage.get("admin-keystats", { projects: 6, hours: 1000, taught: 100 }));
     };
     loadData();
     window.addEventListener("admin-updated", loadData);
@@ -67,7 +69,7 @@ export default function About() {
   }, [language, titles]);
 
   return (
-    <div className="w-full relative min-h-[80vh] flex flex-col justify-center">
+    <div className="w-full relative min-h-[80vh] flex flex-col justify-start pt-4 lg:pt-3">
       {/* Cinematic Background Watermark */}
       <div className="absolute -top-20 -left-20 text-[200px] font-black text-white/[0.02] pointer-events-none select-none z-0 uppercase tracking-tighter font-jakarta hidden lg:block">
         DataOps
@@ -176,9 +178,9 @@ export default function About() {
         className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 pt-12 border-t border-white/5"
       >
         {[
-          { num: t.stats.projects, label: t.stats.projects_sub, icon: <Zap className="text-yellow-400" size={24} />, color: "from-yellow-400 to-orange-500" },
-          { num: t.stats.hours, label: t.stats.hours_sub, icon: <Clock className="text-blue-400" size={24} />, color: "from-blue-400 to-cyan-500" },
-          { num: t.stats.taught, label: t.stats.taught_sub, icon: <Award className="text-[#00e87a]" size={24} />, color: "from-[#00e87a] to-emerald-500" },
+          { num: `${stats.projects}+`, label: t.stats.projects_sub, icon: <Zap className="text-yellow-400" size={24} />, color: "from-yellow-400 to-orange-500" },
+          { num: `${stats.hours >= 1000 ? (stats.hours / 1000).toFixed(stats.hours % 1000 === 0 ? 0 : 1) + 'K' : stats.hours}+`, label: t.stats.hours_sub, icon: <Clock className="text-blue-400" size={24} />, color: "from-blue-400 to-cyan-500" },
+          { num: `${stats.taught}%`, label: t.stats.taught_sub, icon: <Award className="text-[#00e87a]" size={24} />, color: "from-[#00e87a] to-emerald-500" },
         ].map((stat, i) => (
           <motion.div 
             key={i} 

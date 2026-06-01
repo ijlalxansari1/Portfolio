@@ -48,24 +48,9 @@ export default function Certifications() {
         { id: 5, title: "SQL for Data Science", issuer: "Coursera", date: "2024-08-01", credentialId: "In Progress", image: "" },
       ];
       
-      // Fallback to API if no localStorage data
-      fetch("/api/data/certifications")
-        .then(res => res.ok ? res.json() : [])
-        .then(data => {
-          if (data.length > 0) {
-            setCertifications(data.map((c: Certification) => ({
-              ...c,
-              verificationUrl: c.verificationUrl || c.verification_url,
-            })));
-          } else {
-            setCertifications(fallbackCerts);
-          }
-          setLoading(false);
-        })
-        .catch(() => {
-          setCertifications(fallbackCerts);
-          setLoading(false);
-        });
+      // Fallback to static data if no localStorage data
+      setCertifications(fallbackCerts);
+      setLoading(false);
     };
 
     handleUpdate();

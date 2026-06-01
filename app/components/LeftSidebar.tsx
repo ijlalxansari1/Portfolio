@@ -83,7 +83,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <div className="relative aspect-[1/1.1] lg:aspect-[1/1.1] w-full rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-inner">
           <Image
             src="/profile.png"
-            alt="Ijlal Ansari - Data Engineer & AI Ethics Researcher" fill className="object-cover object-center scale-105" priority
+            alt="Ijlal Ansari - Data Engineer & AI Ethics Researcher" fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover object-center scale-105" priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)]/40 to-transparent" />
         </div>

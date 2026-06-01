@@ -40,8 +40,8 @@ export default function DemosHub() {
             const staticMatch = demoList.find(s => s.title === d.title || s.id === d.id);
             return {
               ...d,
-              icon: staticMatch?.icon || <FlaskConical size={24} />,
-              component: staticMatch?.component || <div className="p-20 text-center text-white/20">Simulation Engine Pending...</div>
+              icon: d.iconUrl ? <img src={d.iconUrl} alt="icon" className="w-full h-full object-cover rounded-2xl" /> : (staticMatch?.icon || <FlaskConical size={24} />),
+              component: staticMatch?.component || null
             };
           });
           setDemos(merged);
@@ -73,24 +73,24 @@ export default function DemosHub() {
         {demos.map((demo) => (
           <div 
             key={demo.id} 
-            className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 hover:border-[var(--accent)]/30 transition-all cursor-pointer relative overflow-hidden"
+            className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 hover:border-[var(--accent)]/30 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full"
             onClick={() => setActiveDemo(demo.id)}
           >
-            <div className="relative z-10">
-              <div className="w-14 h-14 bg-[var(--bg-card)] rounded-2xl flex items-center justify-center text-[var(--accent)] border border-[var(--border)] mb-6 group-hover:scale-110 transition-all duration-500">
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="w-14 h-14 bg-[var(--bg-card)] rounded-2xl flex items-center justify-center text-[var(--accent)] border border-[var(--border)] mb-6 group-hover:scale-110 transition-all duration-500 shrink-0">
                 {demo.icon}
               </div>
               
-              <div className="space-y-1 mb-4">
+              <div className="space-y-1 mb-4 shrink-0">
                 <span className="px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] text-[9px] font-black uppercase tracking-widest rounded">{demo.tag}</span>
                 <h3 className="text-[18px] font-black text-white">{demo.title}</h3>
               </div>
               
-              <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-relaxed mb-8">
+              <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-relaxed mb-8 flex-1">
                 {demo.description}
               </p>
               
-              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[2px] text-[var(--accent)] group-hover:gap-4 transition-all">
+              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[2px] text-[var(--accent)] group-hover:gap-4 transition-all shrink-0 mt-auto">
                 {t.launch} <Play size={14} fill="currentColor" />
               </button>
             </div>
@@ -126,10 +126,18 @@ export default function DemosHub() {
                 <X size={32} />
               </button>
 
-              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden">
-                <div className="p-2">
-                  {currentDemo.component && React.cloneElement(currentDemo.component as any, { config: currentDemo.config })}
-                </div>
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden relative">
+                {currentDemo.iframeUrl ? (
+                  <div className="w-full h-[65vh] bg-black">
+                    <iframe src={currentDemo.iframeUrl} className="w-full h-full border-0" title={currentDemo.title} />
+                  </div>
+                ) : (
+                  <div className="p-2">
+                    {currentDemo.component ? React.cloneElement(currentDemo.component as any, { config: currentDemo.config }) : (
+                      <div className="p-20 text-center text-white/20 font-mono">Simulation Engine Pending...<br/><span className="text-[10px] opacity-50">Please assign an Iframe URL or link a local component.</span></div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-[3px] text-[var(--text-secondary)] opacity-40">

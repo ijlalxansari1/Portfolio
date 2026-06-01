@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap } from "lucide-react";
 
@@ -36,9 +37,11 @@ function TimelineItem({ period, title, subtitle, description, tags, index }: {
       <h4 className="text-[var(--text-primary)] font-bold text-lg mb-1">{title}</h4>
       <p className="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest mb-4">{subtitle}</p>
       
-      <p className="text-[var(--text-secondary)] text-[14px] leading-relaxed mb-6">
-        {description}
-      </p>
+      <div className="text-[var(--text-secondary)] text-[14px] leading-relaxed mb-6 space-y-4">
+        {(description || "").split('\n').filter(p => p.trim() !== "").map((para, i) => (
+          <p key={i}>{para}</p>
+        ))}
+      </div>
 
       {tags && (
         <div className="flex flex-wrap gap-2">
@@ -57,7 +60,11 @@ export default function Experience() {
   const { language } = useLanguage();
   const t = translations[language].experience;
 
-  const experience = [
+  const [experience, setExperience] = useState<any[]>([]);
+  const [education, setEducation] = useState<any[]>([]);
+
+  useEffect(() => {
+    const defaultExp = [
     {
       period: language === 'en' ? "July 2025 – August 2025" : "Juli 2025 – August 2025",
       title: language === 'en' ? "Data Engineering Intern" : "Praktikant Data Engineering",
@@ -74,7 +81,7 @@ export default function Experience() {
     },
   ];
 
-  const education = [
+  const defaultEdu = [
     {
       period: "2021 – 2025",
       title: language === 'en' ? "BS Software Engineering" : "Bachelor Software Engineering",
@@ -90,6 +97,21 @@ export default function Experience() {
       achievements: language === 'en' ? ["Published Research", "Open Source Tool", "Conference Presentation"] : ["Veröffentlichte Forschung", "Open-Source-Tool", "Konferenzvortrag"],
     },
   ];
+
+    const loadData = () => {
+      const storedExp = localStorage.getItem("admin-experience");
+      if (storedExp) setExperience(JSON.parse(storedExp));
+      else setExperience(defaultExp);
+
+      const storedEdu = localStorage.getItem("admin-education");
+      if (storedEdu) setEducation(JSON.parse(storedEdu));
+      else setEducation(defaultEdu);
+    };
+
+    loadData();
+    window.addEventListener("admin-updated", loadData);
+    return () => window.removeEventListener("admin-updated", loadData);
+  }, [language]);
 
   return (
     <section id="resume" className="w-full">
@@ -115,9 +137,9 @@ export default function Experience() {
                 key={i}
                 index={i}
                 period={exp.period}
-                title={exp.title}
+                title={exp.role || exp.title}
                 subtitle={exp.company}
-                description={exp.description}
+                description={exp.description || exp.desc}
                 tags={exp.technologies}
               />
             ))}
@@ -139,9 +161,9 @@ export default function Experience() {
                 key={i}
                 index={i}
                 period={edu.period}
-                title={edu.title}
-                subtitle={edu.institution}
-                description={edu.description}
+                title={edu.degree || edu.title}
+                subtitle={edu.school || edu.institution}
+                description={edu.description || edu.desc}
                 tags={edu.achievements}
               />
             ))}

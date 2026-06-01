@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Github, ArrowRight, Check, Play, Info, BookOpen } from "lucide-react";
+import { X, Github, ArrowRight, Check, Play, Info, BookOpen, ExternalLink } from "lucide-react";
 
 import AetherDemo from "./demos/AetherDemo";
 import ETLPipelineDemo from "./demos/ETLPipelineDemo";
@@ -344,11 +344,18 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
 
             {/* Footer */}
             <div className="p-8 border-t border-white/5 bg-[#0d0d0d] flex items-center justify-between">
-              {project.github && (
-                <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
-                  <Github size={18} /> Source Code
-                </a>
-              )}
+              <div className="flex items-center gap-6">
+                {project.github && (
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
+                    <Github size={18} /> Source Code
+                  </a>
+                )}
+                {project.liveUrl && (
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
+                    <ExternalLink size={18} /> Live Demo
+                  </a>
+                )}
+              </div>
               <button onClick={onNext} className="flex items-center gap-3 px-8 py-3.5 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[2px] rounded-full hover:scale-105 transition-all shadow-xl font-black">
                 Next Case Study <ArrowRight size={18} />
               </button>

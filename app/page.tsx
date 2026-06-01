@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark, Award,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX
+  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,7 +22,6 @@ import Services from "./components/Services";
 import Projects from "./components/Projects";
 import Resume from "./components/Resume";
 import Blog from "./components/Blog";
-import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import AdminPanel from "./components/AdminPanel";
 import LoginModal from "./components/LoginModal";
@@ -39,11 +38,13 @@ import DemosHub from "./components/DemosHub";
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import AmbientBackground from "./components/AmbientBackground";
+import LoadingScreen from "./components/LoadingScreen";
 
 export default function Home() {
   const { isPlaying, togglePlay } = useAudio();
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
+  const [bootDone, setBootDone] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
@@ -63,15 +64,19 @@ export default function Home() {
     { id: "resume",   icon: <Landmark size={18} />,   label: nav.resume   },
     { id: "certifications", icon: <Award size={18} />, label: nav.certifications },
     { id: "github",   icon: <Github size={18} />,     label: nav.github   },
-    { id: "testimonials", icon: <Quote size={18} />,  label: nav.testimonials  },
     { id: "blog",     icon: <Newspaper size={18} />,  label: nav.blog     },
     { id: "contact",  icon: <Send size={18} />,       label: nav.contact  },
   ], [language, nav]);
 
   const scrollToSection = (id: string) => {
     const target = document.getElementById(id);
-    if (scrollPanelRef.current && target) {
-      scrollPanelRef.current.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+    if (target) {
+      if (window.innerWidth >= 1024 && scrollPanelRef.current) {
+        scrollPanelRef.current.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+      } else {
+        const y = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
       setActiveSection(id);
       activeSectionRef.current = id;
     }
@@ -172,12 +177,16 @@ export default function Home() {
   if (!isMounted) return null;
 
   return (
-    <div
-      className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full"
-    >
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <AmbientBackground />
-      </div>
+    <>
+      <LoadingScreen onComplete={() => setBootDone(true)} />
+      
+      <div 
+        className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full transition-opacity duration-1000"
+        style={{ opacity: bootDone ? 1 : 0, visibility: bootDone ? "visible" : "hidden" }}
+      >
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <AmbientBackground />
+        </div>
 
       <AnalyticsTracker />
       
@@ -258,8 +267,8 @@ export default function Home() {
       </AnimatePresence>
 
       {/* ── Desktop/Tablet Navigation (Hidden on small mobile) ── */}
-      <nav className="hidden md:flex fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
-        <div className="flex flex-row lg:flex-col items-center gap-4 lg:gap-2 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
+      <nav className="hidden md:flex fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex-row lg:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
+        <div className="flex flex-row lg:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-2 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
           <div className="hidden lg:block mb-2">
             <ThemeBuddy />
           </div>
@@ -299,7 +308,7 @@ export default function Home() {
 
           <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400 relative top-glow">
             <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
-              <div id="sections-container" className="p-4 md:p-10 lg:p-14 space-y-4 lg:space-y-16 relative">
+              <div id="sections-container" className="p-4 pt-4 md:p-10 md:pt-4 lg:p-14 lg:pt-0 space-y-4 lg:space-y-16 relative">
                 <motion.section 
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -413,16 +422,6 @@ export default function Home() {
                   initial={{ opacity: 0, y: 30 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true, margin: "-100px" }}
-                  id="testimonials"
-                >
-                  <Testimonials />
-                </motion.section>
-
-                <div className="h-px w-full bg-white/[0.05]" />
-                <motion.section 
-                  initial={{ opacity: 0, y: 30 }} 
-                  whileInView={{ opacity: 1, y: 0 }} 
-                  viewport={{ once: true, margin: "-100px" }}
                   id="contact"
                 >
                   <Contact />
@@ -485,6 +484,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Overlays */}
       <Terminal isOpen={showTerminal} onClose={() => setShowTerminal(false)} />
@@ -502,6 +502,6 @@ export default function Home() {
           </motion.button>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }

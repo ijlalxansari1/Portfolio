@@ -9,17 +9,23 @@ interface ImageUploadProps {
   onUpload: (url: string) => void;
   type?: "projects" | "blog" | "certifications" | "skills";
   currentImage?: string;
+  defaultImage?: string;
   onAIGenerate?: (prompt: string) => Promise<string>;
+  className?: string;
+  iconOnly?: boolean;
 }
 
 export default function ImageUpload({ 
   onUpload, 
   type = "projects", 
   currentImage,
-  onAIGenerate 
+  defaultImage,
+  onAIGenerate,
+  className = "",
+  iconOnly = false
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState<string | null>(currentImage || null);
+  const [preview, setPreview] = useState<string | null>(currentImage || defaultImage || null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [aiPrompt, setAiPrompt] = useState("");
@@ -103,31 +109,34 @@ export default function ImageUpload({
   };
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${iconOnly ? 'h-full w-full' : ''}`}>
       {preview ? (
-        <div className="relative group">
-          <div className="relative w-full h-48 rounded-lg overflow-hidden border border-white/10">
+        <div className="relative group h-full w-full">
+          <div className={`relative w-full rounded-lg overflow-hidden border border-white/10 ${iconOnly ? 'h-full' : 'h-48'}`}>
             <Image
               src={preview}
               alt="Preview"
               fill
               className="object-cover"
+              unoptimized={preview.includes('http') || preview.includes('data:image')}
             />
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 glass rounded-lg text-white hover:bg-white/10"
+                className={`${iconOnly ? 'p-1' : 'px-4 py-2'} glass rounded-lg text-white hover:bg-white/10`}
+                title="Change"
               >
-                Change
+                {iconOnly ? <ImageIcon size={14} /> : "Change"}
               </button>
               <button
                 onClick={() => {
                   setPreview(null);
                   onUpload("");
                 }}
-                className="px-4 py-2 glass rounded-lg text-red-400 hover:bg-red-500/10"
+                className={`${iconOnly ? 'p-1' : 'px-4 py-2'} glass rounded-lg text-red-400 hover:bg-red-500/10`}
+                title="Remove"
               >
-                <X size={20} />
+                <X size={iconOnly ? 14 : 20} />
               </button>
             </div>
           </div>
@@ -139,7 +148,8 @@ export default function ImageUpload({
           onDragOver={handleDrag}
           onDrop={handleDrop}
           whileHover={{ scale: 1.02 }}
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+          onClick={() => fileInputRef.current?.click()}
+          className={`border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all ${iconOnly ? 'p-2 h-full' : 'p-8'} ${className} ${
             dragActive
               ? "border-neon-mint bg-neon-mint/10"
               : "border-white/20 hover:border-neon-mint/50"
@@ -152,17 +162,20 @@ export default function ImageUpload({
             onChange={handleChange}
             className="hidden"
           />
-          <ImageIcon className="mx-auto mb-4 text-gray-400" size={48} />
-          <p className="text-gray-400 mb-2">
-            Drag and drop an image or{" "}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="text-neon-mint hover:underline"
-            >
-              browse
-            </button>
-          </p>
-          <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+          <ImageIcon className={`${iconOnly ? 'mb-0 text-gray-500' : 'mx-auto mb-4 text-gray-400'}`} size={iconOnly ? 20 : 48} />
+          {!iconOnly && (
+            <>
+              <p className="text-gray-400 mb-2">
+                Drag and drop an image or{" "}
+                <span className="text-neon-mint hover:underline">
+                  browse
+                </span>
+              </p>
+              <p className="text-gray-500 text-sm">
+                PNG, JPG, WEBP up to 5MB
+              </p>
+            </>
+          )}
           {uploading && (
             <motion.div
               initial={{ opacity: 0 }}

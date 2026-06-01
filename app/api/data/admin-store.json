@@ -1,0 +1,154 @@
+{
+  "admin-demos": [
+    {
+      "id": 1780330128441,
+      "title": "Compound Verse",
+      "tag": "Python Next js",
+      "description": "Interactive sandbox for Compound Verse",
+      "status": "Active",
+      "iconUrl": "/projects/1780330235033-Compoundverse.png",
+      "iframeUrl": "https://compound-verse.vercel.app/"
+    },
+    {
+      "id": 1780328457981,
+      "title": "Aether",
+      "tag": "Next js , python , fast api",
+      "description": "Interactive sandbox for Aether",
+      "status": "Active",
+      "iframeUrl": "https://aether-five-alpha.vercel.app/",
+      "iconUrl": "/projects/1780330027009-166710.jpg"
+    }
+  ],
+  "admin-projects": [
+    {
+      "id": 1780330316169,
+      "title": "Compound Verse",
+      "description": "Welcome to CompoundVerse\nA calm space for consistent growth  inspired by the book \"THE COMPOUND EFFECT \" by Darren Hardy showing the power of compounded interest in habit building ",
+      "status": "Active",
+      "tag": "Python",
+      "image": "/projects/1780330321718-Compoundverse.png",
+      "githubUrl": "https://github.com/ijlalxansari1/compound_verse",
+      "liveUrl": "https://compound-verse.vercel.app/"
+    },
+    {
+      "id": 1,
+      "title": "AETHER Platform",
+      "tag": "Python",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+      "description": "Open-source ethical data analysis platform with a 10-stage analytical pipeline.",
+      "status": "Active",
+      "githubUrl": "https://github.com/ijlalxansari1/Aether",
+      "liveUrl": "https://aether-five-alpha.vercel.app/"
+    }
+  ],
+  "admin-github-username": "ijlalxansari1",
+  "admin-languages": [
+    {
+      "name": "English",
+      "level": 90,
+      "flag": "gb"
+    },
+    {
+      "name": "Deutsch",
+      "level": 20,
+      "flag": "de"
+    }
+  ],
+  "admin-practices": [
+    "DWH & DB Concepts",
+    "Data Analytics Engineering",
+    "Data Preparation",
+    "Oracle SQL",
+    "Data Integration",
+    "Data Provisioning",
+    "Data Solution Architecture",
+    "ETL/ELT Solutions"
+  ],
+  "admin-skills-radar": [
+    {
+      "name": "Python",
+      "value": 92
+    },
+    {
+      "name": "PostgreSQL",
+      "value": 85
+    },
+    {
+      "name": "DuckDB",
+      "value": 90
+    },
+    {
+      "name": "FastAPI",
+      "value": 87
+    },
+    {
+      "name": "Kafka",
+      "value": 75
+    },
+    {
+      "name": "Next.js",
+      "value": 88
+    },
+    {
+      "name": "New Skill",
+      "value": 50
+    }
+  ],
+  "admin-skills": {
+    "tools": [
+      {
+        "name": "dbt Core",
+        "progress": 95,
+        "level": "Expert",
+        "desc": "SQL transformations & lineage"
+      },
+      {
+        "name": "Dagster",
+        "progress": 85,
+        "level": "Professional",
+        "desc": "Asset-based orchestration"
+      },
+      {
+        "name": "Apache Airflow",
+        "progress": 88,
+        "level": "Advanced",
+        "desc": "Workflow automation"
+      }
+    ]
+  },
+  "admin-categories": {
+    "projects": [
+      "Python",
+      "Next.js",
+      "FastAPI",
+      "Pandas",
+      "PyTorch"
+    ],
+    "blog": [
+      "Data Engineering",
+      "Platform Design",
+      "Ethics & AI",
+      "Python Tips"
+    ]
+  },
+  "admin-services": [
+    {
+      "id": 1,
+      "title": "Data Pipeline Engineering",
+      "badge": "Pipelines",
+      "body": "End-to-end ETL/ELT pipelines built with Python, dbt Core, and Dagster.",
+      "link": "See My Work",
+      "icon": "Activity",
+      "status": "Published"
+    },
+    {
+      "id": 2,
+      "title": "Bias Detection & Explainability",
+      "badge": "Ethics & AI",
+      "body": "ML fairness audits using Fairlearn and SHAP.",
+      "link": "See My Work",
+      "icon": "ShieldCheck",
+      "status": "Published"
+    }
+  ]
+}

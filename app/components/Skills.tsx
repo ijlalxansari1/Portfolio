@@ -20,6 +20,7 @@ const knowledge = [
 
 export default function Skills() {
   const [coreSkills, setCoreSkills] = useState(skills);
+  const [knowledgeList, setKnowledgeList] = useState(knowledge);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -32,6 +33,11 @@ export default function Skills() {
             percentage: s.value
           })));
         }
+      }
+      
+      const knowledgeData = localStorage.getItem("admin-knowledge");
+      if (knowledgeData) {
+        setKnowledgeList(JSON.parse(knowledgeData));
       }
     };
     handleUpdate();
@@ -89,7 +95,7 @@ export default function Skills() {
             Knowledge Base
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-8">
-            {knowledge.map((k) => (
+            {knowledgeList.map((k) => (
               <div key={k} className="flex items-start gap-4 group">
                 <div className="mt-1 w-5 h-5 rounded-full border border-neon-mint/20 flex items-center justify-center group-hover:bg-neon-mint group-hover:border-neon-mint transition-all duration-300">
                   <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="text-neon-mint group-hover:text-black transition-colors"><path d="M1 4L4 7L9 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>

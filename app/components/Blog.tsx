@@ -261,7 +261,7 @@ export default function Blog() {
                     {activeArticle.title}
                   </h1>
                   <p className="text-[11px] font-black text-[var(--accent)] uppercase tracking-[0.3em] opacity-60">
-                    {t.published} {activeArticle.date}
+                    {activeArticle.author ? `BY ${activeArticle.author} • ` : ''} {t.published} {activeArticle.date}
                   </p>
                 </header>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Github, Star, GitBranch, Terminal as TerminalIcon, Users, Package, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 
@@ -19,11 +19,20 @@ interface GitHubEvent {
 }
 
 const fallbackEvents = [
-  { id: 'f1', repo: { name: 'ijlal/aether-platform' }, payload: { commits: [{ message: 'Add SHAP explainability module to pipeline' }], ref: 'main' }, created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
-  { id: 'f2', repo: { name: 'ijlal/data-engineering-tracker' }, payload: { commits: [{ message: 'Update progress tracking with localStorage sync' }], ref: 'main' }, created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
-  { id: 'f3', repo: { name: 'ijlal/bias-audit-system' }, payload: { commits: [{ message: 'Integrate Fairlearn demographic parity metrics' }], ref: 'dev' }, created_at: new Date(Date.now() - 7 * 86400000).toISOString() },
-  { id: 'f4', repo: { name: 'ijlal/fastapi-data-gateway' }, payload: { commits: [{ message: 'Add Redis rate limiting middleware' }], ref: 'main' }, created_at: new Date(Date.now() - 14 * 86400000).toISOString() },
-  { id: 'f5', repo: { name: 'ijlal/analytics-dashboard' }, payload: { commits: [{ message: 'DuckDB query optimisation for 1M row datasets' }], ref: 'feature/perf' }, created_at: new Date(Date.now() - 21 * 86400000).toISOString() },
+  { id: 'f1', repo: { name: 'ijlalxansari1/Aether' }, payload: { commits: [{ message: 'Add SHAP explainability module to pipeline' }], ref: 'main' }, created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+  { id: 'f2', repo: { name: 'ijlalxansari1/Data-Engineering-Foundry' }, payload: { commits: [{ message: 'Update progress tracking with localStorage sync' }], ref: 'main' }, created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  { id: 'f3', repo: { name: 'ijlalxansari1/Portfolio' }, payload: { commits: [{ message: 'Integrate Fairlearn demographic parity metrics' }], ref: 'dev' }, created_at: new Date(Date.now() - 7 * 86400000).toISOString() },
+  { id: 'f4', repo: { name: 'ijlalxansari1/compound_verse' }, payload: { commits: [{ message: 'Add Redis rate limiting middleware' }], ref: 'main' }, created_at: new Date(Date.now() - 14 * 86400000).toISOString() },
+  { id: 'f5', repo: { name: 'ijlalxansari1/Predicting-Churn-using-ML-and-DL' }, payload: { commits: [{ message: 'DuckDB query optimisation for 1M row datasets' }], ref: 'feature/perf' }, created_at: new Date(Date.now() - 21 * 86400000).toISOString() },
+];
+
+const fallbackRepos = [
+  { id: 'r1', name: 'Aether', description: 'Advanced AI and data platform.', language: 'TypeScript', stargazers_count: 5, html_url: 'https://github.com/ijlalxansari1/Aether' },
+  { id: 'r2', name: 'Data-Engineering-Foundry', description: 'Core data engineering concepts and implementations.', language: 'Python', stargazers_count: 8, html_url: 'https://github.com/ijlalxansari1/Data-Engineering-Foundry' },
+  { id: 'r3', name: 'Portfolio', description: 'Modern, dynamic developer portfolio.', language: 'TypeScript', stargazers_count: 3, html_url: 'https://github.com/ijlalxansari1/Portfolio' },
+  { id: 'r4', name: 'compound_verse', description: 'Experimental blockchain smart contracts.', language: 'Solidity', stargazers_count: 2, html_url: 'https://github.com/ijlalxansari1/compound_verse' },
+  { id: 'r5', name: 'Predicting-Churn-using-ML-and-DL', description: 'Customer churn prediction models.', language: 'Jupyter Notebook', stargazers_count: 6, html_url: 'https://github.com/ijlalxansari1/Predicting-Churn-using-ML-and-DL' },
+  { id: 'r6', name: 'n8n', description: 'Workflow automation node setup.', language: 'JavaScript', stargazers_count: 1, html_url: 'https://github.com/ijlalxansari1/n8n' }
 ];
 
 export default function GitHubFeed() {
@@ -46,17 +55,15 @@ export default function GitHubFeed() {
 
         // Fetch Events
         const eventsRes = await fetch(`https://api.github.com/users/${savedUsername}/events/public`);
-        if (eventsRes.ok) {
-          const eventsData = await eventsRes.json();
-          setEvents(eventsData.filter((e: any) => e.type === "PushEvent").slice(0, 4));
-        }
+        if (!eventsRes.ok) throw new Error("API limit");
+        const eventsData = await eventsRes.json();
+        setEvents(eventsData.filter((e: any) => e.type === "PushEvent").slice(0, 4));
 
         // Fetch Repositories
         const repoRes = await fetch(`https://api.github.com/users/${savedUsername}/repos?sort=updated&per_page=6`);
-        if (repoRes.ok) {
-          const repoData = await repoRes.json();
-          setRepos(repoData.filter((r: any) => !r.fork));
-        }
+        if (!repoRes.ok) throw new Error("API limit");
+        const repoData = await repoRes.json();
+        setRepos(repoData.filter((r: any) => !r.fork));
 
         // Fetch User Stats
         const userRes = await fetch(`https://api.github.com/users/${savedUsername}`);
@@ -71,6 +78,7 @@ export default function GitHubFeed() {
         }
       } catch (err) {
         setEvents(fallbackEvents);
+        setRepos(fallbackRepos);
       } finally {
         setTimeout(() => setLoading(false), 800);
       }
@@ -127,41 +135,52 @@ export default function GitHubFeed() {
         </div>
       </div>
 
-      {/* Live Heatmap Area */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-12 p-6 lg:p-8 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-[32px] relative overflow-hidden group"
-      >
-        <div className="flex items-center justify-between mb-6">
-           <div className="flex items-center gap-3">
-              <TerminalIcon size={16} className="text-[var(--accent)]" />
-              <h3 className="text-[12px] font-black uppercase tracking-[2px] text-[var(--text-primary)]">Contribution Pulse</h3>
-           </div>
-           <a href={`https://github.com/${username}`} target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] hover:underline">{t.view_github}</a>
-        </div>
-        
-        <div className="w-full overflow-x-auto custom-scrollbar-hidden">
-           <div className="min-w-[800px] h-[120px] flex items-center justify-center bg-white/[0.01] rounded-2xl border border-white/5 relative group/chart">
-              {!loading && (
-                 <div className="relative w-full h-full flex items-center justify-center">
-                    <Image 
-                       src={`https://ghchart.rshah.org/${username}`} 
-                       alt={`${username}'s contributions`}
-                       width={800}
-                       height={120}
-                       unoptimized
-                       className="max-w-full h-auto grayscale group-hover/chart:grayscale-0 transition-all duration-700 opacity-70 group-hover/chart:opacity-100"
-                    />
+      {/* Activity Feed Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mb-12">
+        {loading ? (
+          [...Array(4)].map((_, i) => (
+            <div key={i} className="h-[100px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl skeleton-shimmer" />
+          ))
+        ) : (
+          events.map((event, idx) => (
+            <motion.div 
+              key={event.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="p-6 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl group hover:border-[var(--accent)]/30 transition-all relative overflow-hidden"
+            >
+              <div className="flex items-start justify-between gap-4 relative z-10">
+                 <div className="space-y-3 flex-1">
+                    <div className="flex items-center gap-3">
+                       <div className={`w-2 h-2 rounded-full ${event.type === 'PushEvent' ? 'bg-[var(--accent)]' : 'bg-blue-400'} shadow-lg`} />
+                       <a href={`https://github.com/${event.repo.name}`} target="_blank" rel="noreferrer" className="text-[14px] font-black text-[var(--text-primary)] hover:text-[var(--accent)] transition-all leading-none">
+                          {event.repo.name.split('/').pop()}
+                       </a>
+                    </div>
+                    <p className="text-[13px] text-[var(--text-secondary)] font-medium line-clamp-2 italic opacity-60 leading-relaxed">
+                       {event.payload.commits?.[0]?.message || "Refining source code and architecture."}
+                    </p>
+                    <div className="flex items-center gap-4 pt-1">
+                       <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[var(--bg-primary)]/50 border border-[var(--border-subtle)] rounded-lg text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">
+                          <GitBranch size={10} /> {event.payload.ref?.replace('refs/heads/', '') || 'main'}
+                       </div>
+                       <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-30 uppercase tracking-[2px]">
+                          {formatTime(event.created_at)}
+                       </span>
+                    </div>
                  </div>
-              )}
-              {loading && <div className="absolute inset-0 skeleton-shimmer" />}
-           </div>
-        </div>
-        
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 blur-[60px] rounded-full pointer-events-none" />
-      </motion.div>
+                 <div className="w-10 h-10 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl flex items-center justify-center text-[var(--text-secondary)] opacity-20 group-hover:opacity-100 group-hover:text-[var(--accent)] transition-all">
+                    <TerminalIcon size={18} />
+                 </div>
+              </div>
+              
+              {/* Card Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+            </motion.div>
+          ))
+        )}
+      </div>
 
       {/* Repositories Section */}
       <div className="mb-16">

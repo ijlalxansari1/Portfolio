@@ -8,20 +8,21 @@ import {
   User as UserIcon, Globe, Bold, Italic, Code, Link as LinkIcon, 
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
   ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag,
-  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github, Landmark
+  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github, Landmark, Briefcase as BriefcaseIcon, Server
 } from "lucide-react";
 import Image from "next/image";
 import { storage } from "../utils/storage";
+import ImageUpload from "./ImageUpload";
 
 // ── DEFAULT DATA CONSTANTS ──
 const defaultProjects = [
-  { id: 1, title: "AETHER Platform", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800", description: "Open-source ethical data analysis platform with a 10-stage analytical pipeline.", status: "Active" },
+  { id: 1, title: "DataDen Platform", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800", description: "Open-source ethical data analysis platform with a 10-stage analytical pipeline.", status: "Active" },
   { id: 2, title: "Data Engineering Tracker", tag: "Next.js", image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800", description: "Interactive 20-hour data engineering curriculum tracker built on the 80/20 principle.", status: "Active" },
   { id: 3, title: "ETL Pipeline — dbt + Dagster", tag: "SQL", image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", description: "End-to-end ELT pipeline using dbt Core and Dagster for orchestration.", status: "Active" }
 ];
 
 const defaultPosts = [
-  { id: 1, date: "Jan 2025", category: "Platform Design", title: "Building AETHER: Designing an Ethical Data Platform", status: "Published" },
+  { id: 1, date: "Jan 2025", category: "Platform Design", title: "Building DataDen: Designing an Ethical Data Platform", status: "Published" },
   { id: 2, date: "Feb 2025", category: "Data Engineering", title: "Why Append-Only Audit Logs Matter", status: "Published" }
 ];
 
@@ -82,6 +83,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [radarSkills, setRadarSkills] = useState<any[]>([]);
   const [toolSkills, setToolSkills] = useState<any[]>([]);
+  const [knowledge, setKnowledge] = useState<string[]>([]);
   const [demos, setDemos] = useState<any[]>([]);
   const [skillGroups, setSkillGroups] = useState<any[]>([]);
   const [practices, setPractices] = useState<any[]>([]);
@@ -97,8 +99,10 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [manifesto, setManifesto] = useState<any>(null);
   const [experience, setExperience] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [servicesData, setServicesData] = useState<any[]>([]);
   const [siteConfig, setSiteConfig] = useState<any>({});
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
+  const [keystats, setKeystats] = useState<any>({ projects: 6, hours: 1000, taught: 100 });
 
   useEffect(() => {
     if (isOpen) {
@@ -113,6 +117,12 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setCerts(get("admin-certs", defaultCerts));
           setSubmissions(get("admin-submissions", []));
           setRadarSkills(get("admin-skills-radar", defaultRadar));
+          setToolSkills(get("admin-skills", { tools: defaultTools }).tools);
+          setKnowledge(get("admin-knowledge", [
+            "Distributed Systems", "Cloud Data Warehousing", "Machine Learning Ops",
+            "Real-time Data Streaming", "ETL/ELT Architecture", "Data Governance",
+            "API Design & Integration", "Infrastructure as Code"
+          ]));
           setSkillGroups(get("admin-skills-groups", []));
           setPractices(get("admin-practices", defaultPractices));
           setLangSkills(get("admin-languages", defaultLanguages));
@@ -123,6 +133,10 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           const toolsData = get("admin-skills", { tools: defaultTools });
           setToolSkills(toolsData.tools || defaultTools);
           setDemos(get("admin-demos", []));
+          setServicesData(get("admin-services", [
+            { id: 1, title: "Data Pipeline Engineering", badge: "Pipelines", body: "End-to-end ETL/ELT pipelines built with Python, dbt Core, and Dagster.", link: "See My Work", icon: "Activity", status: "Published" },
+            { id: 2, title: "Bias Detection & Explainability", badge: "Ethics & AI", body: "ML fairness audits using Fairlearn and SHAP.", link: "See My Work", icon: "ShieldCheck", status: "Published" }
+          ]));
           setSiteConfig(get("admin-config", { title: "Portfolio", description: "Data Engineer Portfolio", maintenanceMode: false }));
           setSystemAudit({ totalSize: "Remote Server", items: Object.keys(data || {}).length });
 
@@ -172,6 +186,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setEducation(get("admin-education", [
             { school: "Karakoram International University", degree: "BS Software Engineering", period: "2021 — 2025" }
           ]));
+          setKeystats(get("admin-keystats", { projects: 6, hours: 1000, taught: 100 }));
         } catch (e) {
           console.error("Failed to load admin data from API", e);
         }
@@ -240,50 +255,48 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                   <Cpu size={24} className="text-black" />
                 </div>
                 <div>
-                  <h1 className="text-[16px] font-black uppercase tracking-[3px] text-white leading-none">Aether</h1>
-                  <span className="text-[9px] font-black uppercase tracking-[2px] text-[var(--accent)]">Studio v2.0</span>
+                  <h1 className="text-[16px] font-black uppercase tracking-[3px] text-white leading-none">DataDen</h1>
+                  <span className="text-[9px] font-black uppercase tracking-[2px] text-[var(--accent)]">DataDen Core Status</span>
                 </div>
               </div>
             </div>
-
-            {(() => {
-              const unreadCount = inboxMessages.filter((m: any) => !readMessages.includes(String(m.id))).length;
-              return [
-              { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400", badge: 0 },
-              { id: "Inbox", icon: <Inbox size={16} />, color: "text-cyan-400", badge: unreadCount },
-              { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400", badge: 0 },
-              { id: "Projects", icon: <Briefcase size={16} />, color: "text-orange-400", badge: 0 },
-              { id: "Blog", icon: <Newspaper size={16} />, color: "text-pink-400", badge: 0 },
-              { id: "GitHub", icon: <Github size={16} />, color: "text-white", badge: 0 },
-              { id: "Demos", icon: <FlaskConical size={16} />, color: "text-indigo-400", badge: 0 },
-              { id: "Language Skills", icon: <Globe size={16} />, color: "text-emerald-400", badge: 0 },
-              { id: "Testimonials", icon: <Quote size={16} />, color: "text-amber-400", badge: 0 },
-              { id: "Manifesto", icon: <Bold size={16} />, color: "text-[var(--accent)]", badge: 0 },
-              { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
-              { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: 0 },
-              { id: "Site Config", icon: <Globe size={16} />, color: "text-cyan-400", badge: 0 },
-              { id: "Security", icon: <ShieldCheck size={16} />, color: "text-emerald-400", badge: 0 },
-              { id: "Settings", icon: <Settings size={16} />, color: "text-white/40", badge: 0 },
-            ];})().map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`group flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all relative ${
-                  activeTab === tab.id 
-                  ? 'bg-white text-black shadow-[0_10px_25px_rgba(255,255,255,0.15)] scale-[1.03]' 
-                  : 'text-white/40 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <span className={activeTab === tab.id ? 'text-black' : tab.color}>{tab.icon}</span>
-                {tab.id}
-                {tab.badge > 0 && (
-                  <span className="ml-auto px-2 py-0.5 bg-red-500 text-white text-[8px] font-black rounded-full min-w-[20px] text-center">{tab.badge}</span>
-                )}
-                {activeTab === tab.id && (
-                  <motion.div layoutId="tab-glow" className="absolute -right-2 w-1 h-6 bg-[var(--accent)] rounded-full blur-[2px]" />
-                )}
-              </button>
-            ))}
+            <div className="space-y-1">
+              <h4 className="text-[10px] font-black uppercase text-white/30 tracking-widest px-4 mb-3">Portfolio Modules</h4>
+              {[
+                { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400", badge: 0 },
+                { id: "Inbox", icon: <Inbox size={16} />, color: "text-cyan-400", badge: inboxMessages.filter((m: any) => !readMessages.includes(String(m.id))).length },
+                { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400", badge: 0 },
+                { id: "Projects", icon: <BriefcaseIcon size={16} />, color: "text-orange-400", badge: projects.length },
+                { id: "Blog", icon: <Newspaper size={16} />, color: "text-emerald-400", badge: posts.length },
+                { id: "Services", icon: <Server size={16} />, color: "text-amber-400", badge: servicesData.length },
+                { id: "Demos", icon: <FlaskConical size={16} />, color: "text-indigo-400", badge: 0 },
+                { id: "GitHub", icon: <Github size={16} />, color: "text-white", badge: 0 },
+                { id: "Manifesto", icon: <Bold size={16} />, color: "text-[var(--accent)]", badge: 0 },
+                { id: "Activity Log", icon: <Zap size={16} />, color: "text-yellow-400", badge: 0 },
+                { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
+                { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: certs.length },
+                { id: "Site Config", icon: <Globe size={16} />, color: "text-cyan-400", badge: 0 }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`group flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all relative ${
+                    activeTab === tab.id 
+                    ? 'bg-white text-black shadow-[0_10px_25px_rgba(255,255,255,0.15)] scale-[1.03]' 
+                    : 'text-white/40 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span className={activeTab === tab.id ? 'text-black' : tab.color}>{tab.icon}</span>
+                  {tab.id}
+                  {tab.badge > 0 && (
+                    <span className="ml-auto px-2 py-0.5 bg-red-500 text-white text-[8px] font-black rounded-full min-w-[20px] text-center">{tab.badge}</span>
+                  )}
+                  {activeTab === tab.id && (
+                    <motion.div layoutId="tab-glow" className="absolute -right-2 w-1 h-6 bg-[var(--accent)] rounded-full blur-[2px]" />
+                  )}
+                </button>
+              ))}
+            </div>
 
             <div className="mt-auto pt-8 border-t border-white/5">
               <button onClick={onClose} className="w-full flex items-center gap-4 px-5 py-4 text-red-400 hover:bg-red-500/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
@@ -380,15 +393,30 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              className="group relative p-10 bg-white/[0.03] border border-white/5 rounded-[40px] hover:border-[var(--accent)]/30 transition-all duration-500 overflow-hidden"
                           >
                             <div className="flex flex-col lg:flex-row gap-12 relative z-10">
-                               <div className="w-full lg:w-64 aspect-video lg:aspect-square bg-white/5 rounded-[32px] border border-white/5 relative overflow-hidden group/img flex items-center justify-center shrink-0 shadow-2xl">
-                                  {p.image ? <Image src={p.image} alt={p.title} fill className="object-cover grayscale-[0.5] group-hover/img:grayscale-0 transition-all duration-700 scale-105 group-hover/img:scale-100" unoptimized /> : <ImageIcon size={40} className="text-white/10" />}
-                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-all">
-                                     <label className="cursor-pointer px-5 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:scale-105 transition-all">
-                                        Swap Assets
-                                        <input type="file" className="hidden" onChange={e => handleImageUpload(e, (b64) => {
-                                           const n = [...projects]; n[i].image = b64; setProjects(n); saveData("admin-projects", n);
-                                        })} />
-                                     </label>
+                               <div className="w-full lg:w-64 flex-shrink-0 space-y-4">
+                                  <div className="aspect-video lg:aspect-square bg-white/5 rounded-[32px] border border-white/5 relative overflow-hidden group/img flex flex-col items-center justify-center">
+                                     <ImageUpload 
+                                       type="projects" 
+                                       currentImage={p.image} 
+                                       onUpload={(url) => { const n = [...projects]; n[i].image = url; setProjects(n); saveData("admin-projects", n); }} 
+                                     />
+                                  </div>
+                                  
+                                  <div className="space-y-3 pt-2">
+                                     <div className="space-y-1">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">GitHub Repository URL</label>
+                                        <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                           <Github size={12} className="text-white/40" />
+                                           <input type="text" value={p.githubUrl || ""} onChange={e => { const n = [...projects]; n[i].githubUrl = e.target.value; setProjects(n); }} onBlur={() => saveData("admin-projects", projects)} className="bg-transparent text-white text-[11px] font-bold outline-none flex-1" placeholder="https://github.com/..." />
+                                        </div>
+                                     </div>
+                                     <div className="space-y-1">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Live Demo URL</label>
+                                        <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                           <ExternalLink size={12} className="text-white/40" />
+                                           <input type="text" value={p.liveUrl || ""} onChange={e => { const n = [...projects]; n[i].liveUrl = e.target.value; setProjects(n); }} onBlur={() => saveData("admin-projects", projects)} className="bg-transparent text-white text-[11px] font-bold outline-none flex-1" placeholder="https://..." />
+                                        </div>
+                                     </div>
                                   </div>
                                </div>
 
@@ -504,33 +532,69 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                         {posts.map((post, i) => (
                           <motion.div 
                              key={post.id} 
-                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-pink-500/30 transition-all"
+                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-pink-500/30 transition-all flex flex-col gap-6"
                           >
-                             <div className="flex flex-col md:flex-row items-center gap-8">
-                                <div className="flex-1 space-y-4 w-full">
-                                   <input type="text" value={post.title} onChange={e => { const n = [...posts]; n[i].title = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="bg-transparent text-white font-black text-[20px] outline-none w-full" placeholder="Article Title" />
-                                   <div className="flex items-center gap-6">
-                                      <select 
-                                         value={post.category} 
-                                         onChange={e => { const n = [...posts]; n[i].category = e.target.value; setPosts(n); saveData("admin-posts", n); }} 
-                                         className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[11px] font-black uppercase tracking-[2px] text-pink-400 outline-none cursor-pointer"
-                                      >
-                                         {categories.blog.map((cat: string) => <option key={cat} className="bg-[#111]">{cat}</option>)}
-                                      </select>
-                                      <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{post.date}</div>
+                             <div className="flex flex-col md:flex-row gap-8">
+                                {/* Left side: Image & Meta */}
+                                <div className="w-full md:w-1/3 space-y-4">
+                                   <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/50">
+                                     <ImageUpload 
+                                       type="blog" 
+                                       currentImage={post.image} 
+                                       onUpload={(url) => { const n = [...posts]; n[i].image = url; setPosts(n); saveData("admin-posts", n); }} 
+                                     />
                                    </div>
-                                   <textarea value={post.excerpt} onChange={e => { const n = [...posts]; n[i].excerpt = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[12px] text-white/40 outline-none h-20 resize-none" placeholder="Short excerpt for the card..." />
-                                   <div className="space-y-2">
-                                      <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Key Takeaways (one per line)</label>
-                                      <textarea value={(post.keyPoints || []).join('\n')} onChange={e => { const n = [...posts]; n[i].keyPoints = e.target.value.split('\n'); setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[12px] text-white/40 outline-none h-24 resize-none" placeholder="Enter key points..." />
+                                   <div className="grid grid-cols-2 gap-4">
+                                      <div className="space-y-1">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20">Date</label>
+                                        <input type="text" value={post.date} onChange={e => { const n = [...posts]; n[i].date = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-black text-white/80 outline-none" placeholder="e.g. Jan 2025" />
+                                      </div>
+                                      <div className="space-y-1">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20">Author</label>
+                                        <input type="text" value={post.author || "Ijlal Ansari"} onChange={e => { const n = [...posts]; n[i].author = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-black text-white/80 outline-none" placeholder="Author" />
+                                      </div>
+                                   </div>
+                                   <div className="space-y-1">
+                                      <label className="text-[9px] font-black uppercase tracking-widest text-white/20">Read Time</label>
+                                      <input type="text" value={post.readTime || "5 min read"} onChange={e => { const n = [...posts]; n[i].readTime = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-black text-white/80 outline-none" placeholder="5 min read" />
                                    </div>
                                 </div>
-                                <div className="flex gap-3 shrink-0">
-                                   <select value={post.status} onChange={e => { const n = [...posts]; n[i].status = e.target.value; setPosts(n); saveData("admin-posts", posts); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
-                                      <option className="bg-[#111]">Draft</option>
-                                      <option className="bg-[#111]">Published</option>
+                                
+                                {/* Right side: Content */}
+                                <div className="flex-1 space-y-4">
+                                   <div className="flex items-center justify-between gap-4">
+                                     <input type="text" value={post.title} onChange={e => { const n = [...posts]; n[i].title = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="bg-transparent text-white font-black text-[24px] outline-none flex-1" placeholder="Article Title" />
+                                     <div className="flex gap-2">
+                                        <select value={post.status} onChange={e => { const n = [...posts]; n[i].status = e.target.value; setPosts(n); saveData("admin-posts", posts); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                           <option className="bg-[#111]">Draft</option>
+                                           <option className="bg-[#111]">Published</option>
+                                        </select>
+                                        <button onClick={() => { if(confirm("Discard article?")) { const updated = posts.filter(x => x.id !== post.id); setPosts(updated); saveData("admin-posts", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
+                                     </div>
+                                   </div>
+                                   
+                                   <select 
+                                      value={post.category} 
+                                      onChange={e => { const n = [...posts]; n[i].category = e.target.value; setPosts(n); saveData("admin-posts", n); }} 
+                                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[11px] font-black uppercase tracking-[2px] text-pink-400 outline-none cursor-pointer w-fit"
+                                   >
+                                      {categories.blog.map((cat: string) => <option key={cat} className="bg-[#111]">{cat}</option>)}
                                    </select>
-                                   <button onClick={() => { if(confirm("Discard article?")) { const updated = posts.filter(x => x.id !== post.id); setPosts(updated); saveData("admin-posts", updated); } }} className="w-12 h-12 flex items-center justify-center bg-red-500/10 text-red-400 rounded-2xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={18} /></button>
+                                   
+                                   <div className="space-y-2">
+                                      <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Excerpt (Preview text)</label>
+                                      <textarea value={post.excerpt} onChange={e => { const n = [...posts]; n[i].excerpt = e.target.value; setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[13px] text-white/60 outline-none h-20 resize-none focus:border-pink-500/50 transition-all" placeholder="Short excerpt for the card..." />
+                                   </div>
+                                   
+                                   <div className="space-y-2">
+                                      <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Full Content (Double-newline separated paragraphs)</label>
+                                      <textarea value={(post.content || []).join('\n\n')} onChange={e => { const n = [...posts]; n[i].content = e.target.value.split('\n\n'); setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-[14px] text-white/80 outline-none h-48 resize-y focus:border-pink-500/50 transition-all font-serif" placeholder="Write your full article here..." />
+                                   </div>
+
+                                   <div className="space-y-2">
+                                      <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Key Takeaways (one per line)</label>
+                                      <textarea value={(post.keyPoints || []).join('\n')} onChange={e => { const n = [...posts]; n[i].keyPoints = e.target.value.split('\n'); setPosts(n); }} onBlur={() => saveData("admin-posts", posts)} className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-[12px] text-white/40 outline-none h-24 resize-none focus:border-pink-500/50 transition-all" placeholder="Enter key points..." />
+                                   </div>
                                 </div>
                              </div>
                           </motion.div>
@@ -538,6 +602,68 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                       </div>
                    </motion.div>
                 )}
+
+                {/* ── SERVICES TAB ── */}
+                {activeTab === "Services" && (
+                   <motion.div key="services" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                      <div className="flex justify-between items-end">
+                        <div className="space-y-2">
+                           <h3 className="text-[12px] font-black text-amber-400 uppercase tracking-[4px]">Service Offerings</h3>
+                           <p className="text-[14px] text-white/40 font-medium max-w-md">Manage the professional services you offer to clients.</p>
+                        </div>
+                        <button onClick={() => {
+                          const updated = [{ id: Date.now(), title: "New Service", badge: "Category", body: "Description of the service...", link: "See My Work", icon: "Activity", status: "Published" }, ...servicesData];
+                          setServicesData(updated);
+                          saveData("admin-services", updated);
+                        }} className="group flex items-center gap-3 px-8 py-4 bg-amber-500 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                          <Plus size={18} /> Add Service
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {servicesData.map((s, i) => (
+                          <motion.div 
+                             key={s.id} 
+                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-amber-500/30 transition-all space-y-6"
+                          >
+                             <div className="flex justify-between gap-4">
+                                <div className="flex-1 space-y-4">
+                                   <input type="text" value={s.title} onChange={e => { const n = [...servicesData]; n[i].title = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-white font-black text-[22px] outline-none w-full" placeholder="Service Title" />
+                                   <div className="flex items-center gap-3">
+                                      <Tag size={12} className="text-amber-400" />
+                                      <input type="text" value={s.badge} onChange={e => { const n = [...servicesData]; n[i].badge = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-white/40 font-bold text-[10px] uppercase tracking-widest outline-none" placeholder="Badge/Category" />
+                                   </div>
+                                </div>
+                                <button onClick={() => { if(confirm("Delete this service?")) { const updated = servicesData.filter(x => x.id !== s.id); setServicesData(updated); saveData("admin-services", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
+                             </div>
+
+                             <div className="flex items-start gap-4">
+                               <div className="w-20 h-20 shrink-0">
+                                 <ImageUpload 
+                                    onUpload={(url) => { const n = [...servicesData]; n[i].iconUrl = url; setServicesData(n); saveData("admin-services", n); }} 
+                                    defaultImage={s.iconUrl}
+                                    className="h-full w-full"
+                                    iconOnly={true}
+                                 />
+                               </div>
+                               <textarea value={s.body} onChange={e => { const n = [...servicesData]; n[i].body = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Describe what you provide..." />
+                             </div>
+
+                             <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
+                                  <LinkIcon size={14} className="text-white/30" />
+                                  <input type="text" value={s.link} onChange={e => { const n = [...servicesData]; n[i].link = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none w-32" placeholder="Button Text" />
+                                </div>
+                                <select value={s.status} onChange={e => { const n = [...servicesData]; n[i].status = e.target.value; setServicesData(n); saveData("admin-services", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                  <option value="Published">Published</option>
+                                  <option value="Draft">Draft</option>
+                                </select>
+                             </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                   </motion.div>
+                 )}
 
                 {/* ── MANIFESTO TAB ── */}
                 {activeTab === "Manifesto" && (
@@ -590,6 +716,67 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                          </div>
                       </div>
                    </motion.div>
+                 )}
+
+                {/* ── ACTIVITY LOG TAB ── */}
+                {activeTab === "Activity Log" && (
+                   <motion.div key="activity" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-12">
+                      <div className="space-y-2">
+                         <h3 className="text-[12px] font-black text-yellow-400 uppercase tracking-[4px]">Activity & Key Stats</h3>
+                         <p className="text-[14px] text-white/40 font-medium max-w-md">Update your live hero statistics and log recent activities.</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         {/* Projects Stat */}
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] flex flex-col items-center text-center space-y-4 relative">
+                            <Zap size={24} className="text-yellow-400" />
+                            <div className="space-y-1">
+                               <input type="number" value={keystats.projects} onChange={e => setKeystats({...keystats, projects: Number(e.target.value)})} onBlur={() => saveData("admin-keystats", keystats)} className="bg-transparent text-white font-black text-[32px] text-center outline-none w-24" />
+                               <span className="block text-[10px] font-black text-white/40 uppercase tracking-widest">Projects Built</span>
+                            </div>
+                            <div className="flex gap-2">
+                               <button onClick={() => { const n = {...keystats, projects: keystats.projects - 1}; setKeystats(n); saveData("admin-keystats", n); }} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">-</button>
+                               <button onClick={() => { const n = {...keystats, projects: keystats.projects + 1}; setKeystats(n); saveData("admin-keystats", n); }} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">+</button>
+                            </div>
+                         </div>
+
+                         {/* Hours Stat */}
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] flex flex-col items-center text-center space-y-4 relative">
+                            <Clock size={24} className="text-blue-400" />
+                            <div className="space-y-1">
+                               <input type="number" value={keystats.hours} onChange={e => setKeystats({...keystats, hours: Number(e.target.value)})} onBlur={() => saveData("admin-keystats", keystats)} className="bg-transparent text-white font-black text-[32px] text-center outline-none w-24" />
+                               <span className="block text-[10px] font-black text-white/40 uppercase tracking-widest">Hours Coded</span>
+                            </div>
+                            <div className="flex gap-2">
+                               <button onClick={() => { const n = {...keystats, hours: keystats.hours - 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">-10</button>
+                               <button onClick={() => { const n = {...keystats, hours: keystats.hours + 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">+10</button>
+                            </div>
+                         </div>
+
+                         {/* Taught Stat */}
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] flex flex-col items-center text-center space-y-4 relative">
+                            <Award size={24} className="text-emerald-400" />
+                            <div className="space-y-1">
+                               <input type="number" value={keystats.taught} onChange={e => setKeystats({...keystats, taught: Number(e.target.value)})} onBlur={() => saveData("admin-keystats", keystats)} className="bg-transparent text-white font-black text-[32px] text-center outline-none w-24" />
+                               <span className="block text-[10px] font-black text-white/40 uppercase tracking-widest">% Self Taught</span>
+                            </div>
+                            <div className="flex gap-2">
+                               <button onClick={() => { const n = {...keystats, taught: keystats.taught - 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">-10</button>
+                               <button onClick={() => { const n = {...keystats, taught: keystats.taught + 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">+10</button>
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-6">
+                         <h4 className="text-[12px] font-black text-white uppercase tracking-widest">Quick Log Activity</h4>
+                         <p className="text-[12px] text-white/40">Did you just complete a lesson? Log it below to increment your Hours Coded!</p>
+                         <div className="flex items-center gap-4">
+                            <button onClick={() => { const n = {...keystats, hours: keystats.hours + 0.5}; setKeystats(n); saveData("admin-keystats", n); }} className="flex-1 py-4 bg-blue-500/10 text-blue-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-blue-500/20 border border-blue-500/20 transition-all">+30 Min Lesson</button>
+                            <button onClick={() => { const n = {...keystats, hours: keystats.hours + 1}; setKeystats(n); saveData("admin-keystats", n); }} className="flex-1 py-4 bg-emerald-500/10 text-emerald-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-emerald-500/20 border border-emerald-500/20 transition-all">+1 Hr Coding Session</button>
+                            <button onClick={() => { const n = {...keystats, hours: keystats.hours + 3}; setKeystats(n); saveData("admin-keystats", n); }} className="flex-1 py-4 bg-purple-500/10 text-purple-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-purple-500/20 border border-purple-500/20 transition-all">+3 Hr Deep Work</button>
+                         </div>
+                      </div>
+                   </motion.div>
                 )}
 
                 {/* ── RESUME TAB ── */}
@@ -617,9 +804,16 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                      <input type="text" value={exp.company} onChange={e => { const n = [...experience]; n[i].company = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="Company Name" />
                                      <div className="flex gap-4">
                                         <input type="text" value={exp.role} onChange={e => { const n = [...experience]; n[i].role = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-orange-400 font-bold text-[11px] uppercase tracking-widest outline-none flex-1" placeholder="Role" />
-                                        <input type="text" value={exp.period} onChange={e => { const n = [...experience]; n[i].period = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-white/20 font-bold text-[10px] uppercase tracking-widest outline-none w-32 text-right" placeholder="Period" />
+                                        <input type="text" value={exp.period} onChange={e => { const n = [...experience]; n[i].period = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-transparent text-white/20 font-bold text-[10px] uppercase tracking-widest outline-none w-32 text-right" placeholder="Period (e.g. 2024 — Present)" />
                                      </div>
-                                     <textarea value={exp.desc} onChange={e => { const n = [...experience]; n[i].desc = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="w-full bg-transparent text-white/40 text-[13px] outline-none border-t border-white/5 pt-4 resize-none h-24" placeholder="Description of responsibilities..." />
+                                     <div className="space-y-2 pt-2">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Technologies/Tags (comma separated)</label>
+                                        <input type="text" value={(exp.technologies || []).join(', ')} onChange={e => { const n = [...experience]; n[i].technologies = e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t); setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-bold text-white/80 outline-none w-full" placeholder="Python, AWS, PostgreSQL..." />
+                                     </div>
+                                     <div className="space-y-2 pt-2 border-t border-white/5">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description (Paragraphs separated by double newline)</label>
+                                        <textarea value={(exp.description || exp.desc || "").split('\n').join('\n')} onChange={e => { const n = [...experience]; n[i].description = e.target.value; n[i].desc = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="w-full bg-transparent text-white/60 text-[13px] outline-none resize-y min-h-[120px]" placeholder="Detailed description of responsibilities and achievements..." />
+                                     </div>
                                   </div>
                                ))}
                             </div>
@@ -643,9 +837,17 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                         setEducation(updated);
                                         saveData("admin-education", updated);
                                      }} className="absolute top-4 right-4 text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={16} /></button>
-                                     <input type="text" value={edu.school} onChange={e => { const n = [...education]; n[i].school = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="School Name" />
-                                     <input type="text" value={edu.degree} onChange={e => { const n = [...education]; n[i].degree = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-blue-400 font-bold text-[11px] uppercase tracking-widest outline-none w-full" placeholder="Degree" />
+                                     <input type="text" value={edu.school || edu.institution} onChange={e => { const n = [...education]; n[i].school = e.target.value; n[i].institution = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="School Name" />
+                                     <input type="text" value={edu.degree || edu.title} onChange={e => { const n = [...education]; n[i].degree = e.target.value; n[i].title = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-blue-400 font-bold text-[11px] uppercase tracking-widest outline-none w-full" placeholder="Degree / Title" />
                                      <input type="text" value={edu.period} onChange={e => { const n = [...education]; n[i].period = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-white/20 font-bold text-[10px] uppercase tracking-widest outline-none w-full" placeholder="Period" />
+                                     <div className="space-y-2 pt-2 border-t border-white/5">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Achievements (comma separated)</label>
+                                        <input type="text" value={(edu.achievements || []).join(', ')} onChange={e => { const n = [...education]; n[i].achievements = e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t); setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-bold text-white/80 outline-none w-full" placeholder="Dean's List, Research, etc..." />
+                                     </div>
+                                     <div className="space-y-2 pt-2 border-t border-white/5">
+                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description</label>
+                                        <textarea value={edu.description || edu.desc || ""} onChange={e => { const n = [...education]; n[i].description = e.target.value; n[i].desc = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="w-full bg-transparent text-white/60 text-[13px] outline-none resize-y min-h-[80px]" placeholder="Detailed description of studies..." />
+                                     </div>
                                   </div>
                                ))}
                             </div>
@@ -806,7 +1008,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                         {demos.map((d, i) => (
                           <motion.div 
                              key={d.id} 
-                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-indigo-500/30 transition-all space-y-6"
+                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-indigo-500/30 transition-all space-y-6 flex flex-col"
                           >
                              <div className="flex justify-between gap-4">
                                 <div className="flex-1 space-y-4">
@@ -818,10 +1020,26 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                 </div>
                                 <button onClick={() => { if(confirm("Discard demo configuration?")) { const updated = demos.filter(x => x.id !== d.id); setDemos(updated); saveData("admin-demos", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
                              </div>
+                             <div className="flex gap-4">
+                               <div className="w-20 h-20 shrink-0">
+                                 <ImageUpload 
+                                    onUpload={(url) => { const n = [...demos]; n[i].iconUrl = url; setDemos(n); saveData("admin-demos", n); }} 
+                                    defaultImage={d.iconUrl}
+                                    className="h-full w-full"
+                                    iconOnly={true}
+                                 />
+                               </div>
+                               <div className="flex-1 space-y-3">
+                                 <textarea value={d.description} onChange={e => { const n = [...demos]; n[i].description = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-20 resize-none" placeholder="Explain the sandbox context..." />
+                               </div>
+                             </div>
+
+                             <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
+                                <LinkIcon size={14} className="text-white/30" />
+                                <input type="text" value={d.iframeUrl || ''} onChange={e => { const n = [...demos]; n[i].iframeUrl = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="flex-1 bg-transparent text-[12px] text-white outline-none" placeholder="External Iframe URL (Optional: embeds remote sandbox)" />
+                             </div>
                              
-                             <textarea value={d.description} onChange={e => { const n = [...demos]; n[i].description = e.target.value; setDemos(n); }} onBlur={() => saveData("admin-demos", demos)} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Explain the sandbox context..." />
-                             
-                             <div className="space-y-3">
+                             <div className="space-y-3 flex-1">
                                 <div className="flex justify-between items-center">
                                    <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-1">Sandbox Environment Variables</label>
                                    <button onClick={() => { 
@@ -863,10 +1081,11 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                 </div>
                              </div>
                              
-                             <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                             <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
                                 <select value={d.status} onChange={e => { const n = [...demos]; n[i].status = e.target.value; setDemos(n); saveData("admin-demos", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
-                                   <option className="bg-[#111]">Draft</option>
-                                   <option className="bg-[#111]">Active</option>
+                                  <option value="Active">Active Sandbox</option>
+                                  <option value="Maintenance">Maintenance</option>
+                                  <option value="Draft">Draft Mode</option>
                                 </select>
                              </div>
                           </motion.div>
@@ -938,8 +1157,33 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                             </div>
                          </div>
                       </div>
+                      
+                      {/* KNOWLEDGE BASE SECTION */}
+                      <div className="mt-12 space-y-8">
+                         <div className="flex justify-between items-center">
+                            <h3 className="text-[12px] font-black text-neon-mint uppercase tracking-[4px]">Knowledge Base</h3>
+                            <button onClick={() => {
+                               const updated = [...knowledge, "New Knowledge Area"];
+                               setKnowledge(updated);
+                               saveData("admin-knowledge", updated);
+                            }} className="w-10 h-10 bg-neon-mint/20 text-neon-mint rounded-xl flex items-center justify-center hover:scale-110 transition-all border border-neon-mint/50"><Plus size={20} /></button>
+                         </div>
+                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {knowledge.map((k, i) => (
+                               <div key={i} className="flex items-center gap-2 p-3 bg-white/[0.02] border border-white/5 rounded-xl group">
+                                  <input type="text" value={k} onChange={e => { const n = [...knowledge]; n[i] = e.target.value; setKnowledge(n); }} onBlur={() => saveData("admin-knowledge", knowledge)} className="bg-transparent text-white/80 font-bold text-[12px] outline-none flex-1" />
+                                  <button onClick={() => {
+                                     const updated = knowledge.filter((_, idx) => idx !== i);
+                                     setKnowledge(updated);
+                                     saveData("admin-knowledge", updated);
+                                  }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={14} /></button>
+                               </div>
+                            ))}
+                         </div>
+                      </div>
                    </motion.div>
                 )}
+
 
                 {/* ── ANALYTICS TAB ── */}
                 {activeTab === "Analytics" && (
@@ -1214,10 +1458,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              <div key={i} className="p-6 bg-white/[0.02] border border-white/5 rounded-[28px] group space-y-4">
                                <div className="flex justify-between items-start">
                                  <div className="flex items-center gap-3">
-                                   <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 relative">
-                                     <Image src={`https://flagcdn.com/w80/${s.flag}.png`} alt="flag" fill className="object-cover" unoptimized />
+                                   <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 relative">
+                                     {s.flag.includes('http') || s.flag.includes('data:image') ? (
+                                       <Image src={s.flag} alt="logo" fill className="object-cover" unoptimized />
+                                     ) : (
+                                       <Image src={`https://flagcdn.com/w80/${s.flag}.png`} alt="flag" fill className="object-cover" unoptimized />
+                                     )}
                                    </div>
-                                   <input type="text" value={s.name} onChange={e => { const n = [...langSkills]; n[i].name = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="bg-transparent text-white font-bold text-[15px] outline-none" />
+                                   <input type="text" value={s.name} onChange={e => { const n = [...langSkills]; n[i].name = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="bg-transparent text-white font-bold text-[15px] outline-none" placeholder="Language / Duo ID" />
                                  </div>
                                  <button onClick={() => {
                                    const updated = langSkills.filter((_, idx) => idx !== i);
@@ -1226,7 +1474,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                  }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={16} /></button>
                                </div>
                                <div className="flex gap-4 items-center">
-                                 <input type="text" value={s.flag} onChange={e => { const n = [...langSkills]; n[i].flag = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="w-16 bg-white/5 border border-white/10 rounded-lg p-2 text-[11px] text-white/40 text-center outline-none" placeholder="flag code" />
+                                 <div className="w-16 h-8">
+                                   <ImageUpload 
+                                      onUpload={(url) => { const n = [...langSkills]; n[i].flag = url; setLangSkills(n); saveData("admin-languages", n); }} 
+                                      className="h-full w-full !min-h-0 !p-1 !text-[9px]"
+                                      iconOnly={true}
+                                   />
+                                 </div>
+                                 <input type="text" value={s.flag} onChange={e => { const n = [...langSkills]; n[i].flag = e.target.value; setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="w-16 bg-white/5 border border-white/10 rounded-lg p-2 text-[11px] text-white/40 text-center outline-none" placeholder="ISO Code" />
                                  <input type="range" min="0" max="100" step="10" value={s.level} onChange={e => { const n = [...langSkills]; n[i].level = parseInt(e.target.value); setLangSkills(n); }} onBlur={() => saveData("admin-languages", langSkills)} className="flex-1 accent-[var(--accent)]" />
                                  <span className="text-[11px] font-black text-white/40 w-8">{s.level}%</span>
                                </div>
