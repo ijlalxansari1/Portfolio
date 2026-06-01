@@ -123,7 +123,10 @@ export const translations = {
     },
     languageSkills: {
       title: "LANGUAGES",
-      practices: "ENGINEERING PRACTICES"
+      practices: "ENGINEERING PRACTICES",
+      duolingoStreak: "Active Streak",
+      learningJourney: "Learning Journey",
+      nextMilestone: "Next Milestone: 700 Days"
     },
     nav: {
       about: "About",
@@ -338,7 +341,10 @@ export const translations = {
     },
     languageSkills: {
       title: "SPRACHEN",
-      practices: "ENGINEERING PRAKTIKEN"
+      practices: "ENGINEERING PRAKTIKEN",
+      duolingoStreak: "Aktiver Streak",
+      learningJourney: "Lernreise",
+      nextMilestone: "Nächster Meilenstein: 700 Tage"
     },
     nav: {
       about: "Über mich",

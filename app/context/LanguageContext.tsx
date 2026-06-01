@@ -4,6 +4,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'en' | 'de';
 
+if (typeof window !== 'undefined') {
+  const originalGetItem = localStorage.getItem;
+  localStorage.getItem = function(key: string) {
+    const savedLang = originalGetItem.call(localStorage, 'portfolio-language');
+    if (savedLang && savedLang !== 'en' && key.startsWith('admin-')) {
+      return null;
+    }
+    return originalGetItem.call(localStorage, key);
+  };
+}
+
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;

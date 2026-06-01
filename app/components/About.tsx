@@ -117,7 +117,7 @@ export default function About() {
         transition={{ delay: 0.4 }}
         className="text-[14px] md:text-[17px] lg:text-[20px] text-[var(--text-secondary)] opacity-60 leading-[1.8] max-w-[700px] mb-12 font-medium"
       >
-        {manifesto?.paragraphs?.[0] || t.bio}
+        {language === 'en' ? (manifesto?.paragraphs?.[0] || t.bio) : t.bio}
       </motion.p>
 
       {/* Hero Buttons */}

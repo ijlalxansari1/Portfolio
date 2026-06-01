@@ -12,6 +12,7 @@ export default function DataLoader() {
           if (data) {
             let hasUpdates = false;
             Object.keys(data).forEach(key => {
+              if (key.startsWith('portfolio-')) return;
               const strData = JSON.stringify(data[key]);
               if (localStorage.getItem(key) !== strData) {
                 localStorage.setItem(key, strData);

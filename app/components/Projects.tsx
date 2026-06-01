@@ -54,6 +54,9 @@ export default function Projects() {
   const [loading, setLoading] = useState(false);
 
   const fetchGithubRepos = async () => {
+    if (typeof window !== "undefined" && !navigator.onLine) {
+      return;
+    }
     try {
       setLoading(true);
       const username = localStorage.getItem("admin-github-username") || "ijlalxansari1";

@@ -4,12 +4,13 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark, Award,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote, Mail, MessageSquare, Menu, X
+  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "./context/LanguageContext";
 import { translations } from "./context/translations";
+import { useAudio } from "./context/AudioContext";
 
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
@@ -40,6 +41,7 @@ import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import AmbientBackground from "./components/AmbientBackground";
 
 export default function Home() {
+  const { isPlaying, togglePlay } = useAudio();
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -186,7 +188,20 @@ export default function Home() {
           <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">{translations[language].mobileHeader.role}</span>
         </div>
         <div className="flex items-center gap-3">
-          <ThemeBuddy />
+          <button
+            onClick={togglePlay}
+            className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all shadow-sm"
+            aria-label="Toggle background music"
+          >
+            {isPlaying ? (
+              <Volume2 size={20} className="text-[var(--accent)] animate-pulse" />
+            ) : (
+              <VolumeX size={20} className="opacity-55" />
+            )}
+          </button>
+          <div className="ml-1.5">
+            <ThemeBuddy />
+          </div>
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] shadow-sm"
@@ -244,10 +259,20 @@ export default function Home() {
 
       {/* ── Desktop/Tablet Navigation (Hidden on small mobile) ── */}
       <nav className="hidden md:flex fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex-row lg:flex-col items-center justify-between lg:justify-center gap-3 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
-        <div className="hidden lg:block mb-3 pb-3 border-b border-[var(--border-subtle)]">
-          <ThemeBuddy />
-        </div>
-        <div className="flex flex-row lg:flex-col items-center gap-4 lg:gap-3 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
+        <div className="flex flex-row lg:flex-col items-center gap-4 lg:gap-2 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
+          <div className="hidden lg:block mb-2">
+            <ThemeBuddy />
+          </div>
+          <button
+            onClick={togglePlay}
+            className={`w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${
+              isPlaying ? "bg-[var(--accent)]/15 text-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.15)]" : "text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)]"
+            }`}
+            aria-label="Toggle background music"
+          >
+            {isPlaying ? <Volume2 size={18} className="animate-pulse" /> : <VolumeX size={18} />}
+          </button>
+
           {navItems.map((item) => (
             <button
               key={item.id}

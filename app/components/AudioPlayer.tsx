@@ -9,13 +9,69 @@ export default function AudioPlayer() {
   const [showTooltip, setShowTooltip] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Cinematic Orchestral Track (Hans Zimmer / Avengers style ambient)
-  const cinematicTrack = "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a7343e.mp3?filename=cinematic-epic-6414.mp3";
+  // Local Cinematic Track (Hans Zimmer Interstellar Theme)
+  const cinematicTrack = "/bgmusic/Hans_Zimmer_-_Interstellar_Main_Theme_OST_INTERSTELLER_(mp3.pm).mp3";
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = 0.25; 
     }
+
+    // Attempt autoplay
+    const attemptPlay = async () => {
+      try {
+        if (audioRef.current) {
+          const playPromise = audioRef.current.play();
+          if (playPromise !== undefined) {
+            await playPromise;
+            setIsPlaying(true);
+          }
+        }
+      } catch (e) {
+        // If autoplay fails, try muted autoplay
+        try {
+          if (audioRef.current) {
+            audioRef.current.muted = true;
+            await audioRef.current.play();
+            setIsPlaying(true);
+          }
+        } catch (err) {
+          console.log("Autoplay blocked by browser");
+        }
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      attemptPlay();
+    }, 1000);
+
+    // First user interaction to unmute and trigger audio
+    const handleFirstInteraction = () => {
+      if (audioRef.current) {
+        if (audioRef.current.muted) {
+          audioRef.current.muted = false;
+        }
+        if (audioRef.current.paused) {
+          audioRef.current.play()
+            .then(() => setIsPlaying(true))
+            .catch(e => console.log("Play failed on interaction:", e));
+        }
+      }
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
+    };
+
+    window.addEventListener("pointerdown", handleFirstInteraction, { once: true });
+    window.addEventListener("keydown", handleFirstInteraction, { once: true });
+    window.addEventListener("scroll", handleFirstInteraction, { once: true });
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
+    };
   }, []);
 
   const togglePlay = () => {
@@ -23,6 +79,7 @@ export default function AudioPlayer() {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        audioRef.current.muted = false;
         audioRef.current.play().catch(e => console.log("Audio blocked", e));
       }
       setIsPlaying(!isPlaying);
@@ -72,7 +129,7 @@ export default function AudioPlayer() {
               animate={{ opacity: 1, scale: 1, rotate: 0 }} 
               exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
             >
-              <Volume2 size={28} />
+              <Volume2 className="w-6 h-6" />
             </motion.div>
           ) : (
             <motion.div 
@@ -81,7 +138,7 @@ export default function AudioPlayer() {
               animate={{ opacity: 1, scale: 1, rotate: 0 }} 
               exit={{ opacity: 0, scale: 0.5, rotate: -90 }}
             >
-              <VolumeX size={28} />
+              <VolumeX className="w-6 h-6" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -102,7 +159,7 @@ export default function AudioPlayer() {
                </span>
             </div>
             <span className="text-[12px] font-black text-white/60 uppercase tracking-tighter">
-               {isPlaying ? "Hans Zimmer Style Ambience" : "Audio Infrastructure Idle"}
+               {isPlaying ? "Interstellar Theme OST" : "Audio Infrastructure Idle"}
             </span>
           </motion.div>
         )}

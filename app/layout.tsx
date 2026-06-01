@@ -7,6 +7,7 @@ import CustomCursor from "./components/CustomCursor";
 import { LanguageProvider } from "./context/LanguageContext";
 import Script from "next/script";
 import DataLoader from "./components/DataLoader";
+import { AudioProvider } from "./context/AudioContext";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -173,11 +174,15 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'cmd', 'midnight', 'forest', 'slate', 'bordeaux', 'ghost']}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'cmd', 'midnight', 'forest', 'slate', 'bordeaux', 'ghost', 'sunset', 'sunrise']}>
           <LanguageProvider>
-            <CustomCursor />
-            <DataLoader />
-            <ToastProvider>{children}</ToastProvider>
+            <AudioProvider>
+              <CustomCursor />
+              <DataLoader />
+              <ToastProvider>
+                {children}
+              </ToastProvider>
+            </AudioProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

@@ -12,7 +12,17 @@ import { useLanguage } from "../context/LanguageContext";
 
 const skillGroups = (language: string) => [
   {
-    title: "DATABASE",
+    title: "ORCHESTRATION & PIPELINES",
+    icon: <Zap size={18} className="text-yellow-400" />,
+    skills: [
+      { name: "dbt Core", level: "82%", desc: language === 'en' ? "Analytical transformation & validation" : "Analytische Transformation & Validierung", icon: <Layers size={14} className="text-emerald-400" /> },
+      { name: "Dagster", level: "75%", desc: language === 'en' ? "Asset-based data orchestrator" : "Asset-basierter Datenorchestrator", icon: <Activity size={14} className="text-purple-400" /> },
+      { name: "Apache Airflow", level: "78%", desc: language === 'en' ? "DAG workflows scheduling" : "DAG-Workflow-Planung & -Ausführung", icon: <Terminal size={14} className="text-cyan-400" /> },
+      { name: "Apache Kafka", level: "65%", desc: language === 'en' ? "Real-time event streams ingestion" : "Echtzeit-Event-Streams Ingestion", icon: <Cpu size={14} className="text-orange-400" /> },
+    ]
+  },
+  {
+    title: "DATABASE & STORAGE",
     icon: <Database size={18} className="text-blue-400" />,
     skills: [
       { name: "DuckDB", level: "82%", desc: language === 'en' ? "In-process OLAP & analytical logic" : "In-Process-OLAP & Analyse-Logik", icon: <Layers size={14} className="text-cyan-400" /> },
@@ -101,69 +111,38 @@ export default function GeneralSkills() {
       </div>
 
       <div className="space-y-20">
-        {/* DATABASE Section */}
-        <div className="space-y-8">
-          <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
-            <Database size={18} className="text-blue-400" /> DATABASE
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {groups.find(g => g.title === "DATABASE")?.skills.map((skill: any, i: number) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
-              >
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all border border-white/5 shadow-xl">
-                    {skill.icon || <Code size={18} className="text-white/20" />}
+        {groups.map((group) => (
+          <div key={group.title} className="space-y-8">
+            <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
+              {group.icon} {group.title}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {group.skills.map((skill: any, i: number) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
+                >
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all border border-white/5 shadow-xl">
+                      {skill.icon || <Code size={18} className="text-white/20" />}
+                    </div>
+                    <span className="px-2 py-1 bg-[var(--accent)]/10 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-lg border border-[var(--accent)]/20 shadow-sm">
+                      {skill.level}
+                    </span>
                   </div>
-                  <span className="px-2 py-1 bg-[var(--accent)]/10 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-lg border border-[var(--accent)]/20 shadow-sm">
-                    {skill.level}
-                  </span>
-                </div>
-                <div>
-                  <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-2">{skill.name}</h4>
-                  <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{skill.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* CLOUD & INFRA Section */}
-        <div className="space-y-8">
-          <div className="flex items-center gap-3 text-[11px] font-black text-white uppercase tracking-[0.25em] text-[var(--text-muted)]">
-            <Server size={18} className="text-purple-400" /> CLOUD & INFRA
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {groups.find(g => g.title === "CLOUD & INFRA")?.skills.map((skill: any, i: number) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
-              >
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all border border-white/5 shadow-xl">
-                    {skill.icon || <Code size={18} className="text-white/20" />}
+                  <div>
+                    <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-2">{skill.name}</h4>
+                    <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{skill.desc}</p>
                   </div>
-                  <span className="px-2 py-1 bg-[var(--accent)]/10 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-lg border border-[var(--accent)]/20 shadow-sm">
-                    {skill.level}
-                  </span>
-                </div>
-                <div>
-                  <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-2">{skill.name}</h4>
-                  <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{skill.desc}</p>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
 
         {/* PRACTICES Section */}
         <div className="space-y-8">

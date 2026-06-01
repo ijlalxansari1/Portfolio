@@ -48,6 +48,13 @@ export default function AmbientBackground() {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("resize", handleResize);
 
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let prefersReducedMotion = motionQuery.matches;
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      prefersReducedMotion = e.matches;
+    };
+    motionQuery.addEventListener("change", handleMotionChange);
+
     // Grass Blade Structure
     class GrassBlade {
       x: number;
@@ -291,6 +298,50 @@ export default function AmbientBackground() {
       }
     }
 
+    // Falling Snow Particle Structure
+    class Snowflake {
+      x: number;
+      y: number;
+      radius: number;
+      density: number;
+      vy: number;
+      vx: number;
+
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.radius = Math.random() * 2.2 + 0.8;
+        this.density = Math.random() * 30;
+        this.vy = Math.random() * 0.8 + 0.5; // slow drift downward
+        this.vx = (Math.random() - 0.5) * 0.3; // subtle left/right sway
+      }
+
+      update(time: number) {
+        // Falling speed + sway
+        this.y += this.vy;
+        this.x += this.vx + Math.sin(time * 0.005 + this.density) * 0.15;
+
+        // Reset if it goes off screen
+        if (this.y > height + 10) {
+          this.y = -10;
+          this.x = Math.random() * width;
+        }
+        if (this.x < -10) this.x = width + 10;
+        if (this.x > width + 10) this.x = -10;
+      }
+
+      draw(ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = "rgba(255, 255, 255, 0.4)";
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
     let backgroundGrass: GrassBlade[] = [];
     let midgroundGrass: GrassBlade[] = [];
     let foregroundGrass: GrassBlade[] = [];
@@ -339,22 +390,31 @@ export default function AmbientBackground() {
     
     // SETUP TSUSHIMA LEAVES (18 floating nodes)
     const leaves: FallingLeaf[] = Array.from({ length: 18 }, () => new FallingLeaf());
+    const snowflakes: Snowflake[] = Array.from({ length: 75 }, () => new Snowflake());
     
     const particles: Particle[] = Array.from({ length: 55 }, () => new Particle());
     let time = 0;
 
     const render = () => {
-      time += 1.2;
+      if (!prefersReducedMotion) {
+        time += 1.2;
+      }
       const isGhost = themeRef.current === "ghost";
 
-      mouse.x += (mouse.targetX - mouse.x) * 0.06;
-      mouse.y += (mouse.targetY - mouse.y) * 0.06;
+      if (!prefersReducedMotion) {
+        mouse.x += (mouse.targetX - mouse.x) * 0.06;
+        mouse.y += (mouse.targetY - mouse.y) * 0.06;
+      } else {
+        mouse.x = mouse.targetX;
+        mouse.y = mouse.targetY;
+      }
 
       const rawAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
       const accentColor = rawAccent || "#00e87a";
 
       // 1. Clear Frame
-      ctx.fillStyle = isGhost ? "#040612" : "#0c172d";
+      const rawBg = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
+      ctx.fillStyle = rawBg || (isGhost ? "#040612" : "#0c172d");
       ctx.fillRect(0, 0, width, height);
 
       // 2. Horizon sunset glow OR Interstellar nebula cloud
@@ -385,7 +445,7 @@ export default function AmbientBackground() {
 
       // 3. Draw background grass
       backgroundGrass.forEach((blade) => {
-        blade.update(time);
+        if (!prefersReducedMotion) blade.update(time);
         blade.draw(ctx, isGhost);
       });
 
@@ -399,7 +459,7 @@ export default function AmbientBackground() {
 
       // 5. Draw midground grass
       midgroundGrass.forEach((blade) => {
-        blade.update(time);
+        if (!prefersReducedMotion) blade.update(time);
         blade.draw(ctx, isGhost);
       });
 
@@ -422,7 +482,7 @@ export default function AmbientBackground() {
 
       // 7. Draw foreground grass
       foregroundGrass.forEach((blade) => {
-        blade.update(time);
+        if (!prefersReducedMotion) blade.update(time);
         blade.draw(ctx, isGhost);
       });
 
@@ -436,15 +496,21 @@ export default function AmbientBackground() {
       // 9. Draw falling Leaves in Ghost Mode
       if (isGhost) {
         leaves.forEach((l) => {
-          l.update(time);
+          if (!prefersReducedMotion) l.update(time);
           l.draw(ctx);
         });
       }
 
       // 10. Draw cosmic twinkling stars / space sparkles
       particles.forEach((p) => {
-        p.update();
+        if (!prefersReducedMotion) p.update();
         p.draw(ctx, accentColor, isGhost);
+      });
+
+      // 11. Draw falling snow across all themes
+      snowflakes.forEach((s) => {
+        if (!prefersReducedMotion) s.update(time);
+        s.draw(ctx);
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -455,6 +521,7 @@ export default function AmbientBackground() {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
+      motionQuery.removeEventListener("change", handleMotionChange);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

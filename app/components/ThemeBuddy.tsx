@@ -80,14 +80,14 @@ export default function ThemeBuddy() {
       {/* Main Trigger Icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex w-10 h-10 rounded-xl items-center justify-center transition-all duration-300 border
+        className={`flex w-[38px] h-[38px] rounded-xl items-center justify-center transition-all duration-300 border
           ${isOpen 
             ? "bg-[var(--accent)] text-black border-[var(--accent)] shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]" 
             : "bg-transparent border-[#222] text-[#666] hover:border-white/20 hover:text-white"
           }`}
       title="Theme & Colors"
       >
-        <Palette size={20} className={isOpen ? "animate-spin-slow" : ""} />
+        <Palette size={18} className={isOpen ? "animate-spin-slow" : ""} />
       </button>
 
       {/* Glassmorphic Dropdown */}
@@ -131,6 +131,14 @@ export default function ThemeBuddy() {
                   <button onClick={() => handleThemeChange('ghost')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'ghost' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                     <div className="w-3 h-3 rounded-full bg-[#050c24]" />
                     <span className="text-[9px] font-bold uppercase">Ghost</span>
+                  </button>
+                   <button onClick={() => handleThemeChange('sunset')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'sunset' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#581c24]" />
+                    <span className="text-[9px] font-bold uppercase">Sunset</span>
+                  </button>
+                  <button onClick={() => handleThemeChange('sunrise')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'sunrise' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-gradient-to-tr from-[#ff6f43] to-[#ffb38a] border border-[#fadcce]" />
+                    <span className="text-[9px] font-bold uppercase text-orange-400">Sunrise</span>
                   </button>
                 </div>
               </div>
