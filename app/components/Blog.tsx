@@ -10,6 +10,7 @@ import { translations } from "../context/translations";
 const articles = [
   {
     id: 1,
+    author: "Ijlal ansari",
     image: "https://picsum.photos/400/240?random=10",
     date: "January 2025",
     category: "Platform Design",
@@ -27,6 +28,7 @@ const articles = [
   },
   {
     id: 2,
+    author: "Ijlal ansari",
     image: "https://picsum.photos/400/240?random=11",
     date: "February 2025",
     category: "Data Engineering",
@@ -43,6 +45,8 @@ const articles = [
   },
   {
     id: 3,
+    
+    author: "Ijlal ansari",
     image: "https://picsum.photos/400/240?random=12",
     date: "March 2025",
     category: "Ethics & AI",
@@ -59,6 +63,8 @@ const articles = [
   },
   {
     id: 4,
+    
+    author: "Ijlal ansari",
     image: "https://picsum.photos/400/240?random=13",
     date: "April 2025",
     category: "Data Engineering",
