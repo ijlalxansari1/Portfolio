@@ -402,6 +402,35 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                      />
                                   </div>
                                   
+                                  <div className="space-y-2 pt-2">
+                                     <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Gallery Collage (Optional)</label>
+                                     <div className="flex flex-wrap gap-2">
+                                       {(p.gallery || []).map((imgUrl: string, gIdx: number) => (
+                                          <div key={gIdx} className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 relative group/gallery shrink-0">
+                                             <Image src={imgUrl} alt="Gallery item" fill className="object-cover" unoptimized />
+                                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/gallery:opacity-100 transition-all flex items-center justify-center">
+                                                <button onClick={() => { const n = [...projects]; n[i].gallery = n[i].gallery.filter((_: any, idx: number) => idx !== gIdx); setProjects(n); saveData("admin-projects", n); }} className="text-red-400 hover:text-red-300"><X size={14}/></button>
+                                             </div>
+                                          </div>
+                                       ))}
+                                       <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 border-dashed relative shrink-0">
+                                          <ImageUpload
+                                             type="projects"
+                                             iconOnly
+                                             onUpload={(url) => { 
+                                                if (url) {
+                                                   const n = [...projects]; 
+                                                   if (!n[i].gallery) n[i].gallery = [];
+                                                   n[i].gallery.push(url); 
+                                                   setProjects(n); 
+                                                   saveData("admin-projects", n);
+                                                }
+                                             }}
+                                          />
+                                       </div>
+                                     </div>
+                                  </div>
+                                  
                                   <div className="space-y-3 pt-2">
                                      <div className="space-y-1">
                                         <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">GitHub Repository URL</label>

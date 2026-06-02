@@ -16,7 +16,7 @@
       "description": "Interactive sandbox for Aether",
       "status": "Active",
       "iframeUrl": "https://aether-five-alpha.vercel.app/",
-      "iconUrl": "/projects/1780330027009-166710.jpg"
+      "iconUrl": "/projects/1780422806933-Aether.png"
     }
   ],
   "admin-projects": [
@@ -28,7 +28,10 @@
       "tag": "Python",
       "image": "/projects/1780330321718-Compoundverse.png",
       "githubUrl": "https://github.com/ijlalxansari1/compound_verse",
-      "liveUrl": "https://compound-verse.vercel.app/"
+      "liveUrl": "https://compound-verse.vercel.app/",
+      "gallery": [
+        "/projects/1780423331168-Compoundverse.png"
+      ]
     },
     {
       "id": 1,
@@ -38,7 +41,10 @@
       "description": "Open-source ethical data analysis platform with a 10-stage analytical pipeline.",
       "status": "Active",
       "githubUrl": "https://github.com/ijlalxansari1/Aether",
-      "liveUrl": "https://aether-five-alpha.vercel.app/"
+      "liveUrl": "https://aether-five-alpha.vercel.app/",
+      "gallery": [
+        "/projects/1780423324191-Aether.png"
+      ]
     }
   ],
   "admin-github-username": "ijlalxansari1",
