@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Github, ArrowRight, Check, Play, Info, BookOpen, ExternalLink } from "lucide-react";
 
