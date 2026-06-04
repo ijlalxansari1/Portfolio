@@ -7,7 +7,7 @@ import {
   Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code, SkipForward
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { useLanguage } from "./context/LanguageContext";
 import { translations } from "./context/translations";
 import { useAudio } from "./context/AudioContext";
@@ -38,7 +38,9 @@ import DemosHub from "./components/DemosHub";
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import AmbientBackground from "./components/AmbientBackground";
+import ParticleBackground from "./components/ParticleBackground";
 import LokiMultiverseBackground from "./components/LokiMultiverseBackground";
+import TvaBackground from "./components/TvaBackground";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function Home() {
@@ -69,7 +71,13 @@ export default function Home() {
     { id: "contact",  icon: <Send size={18} />,       label: nav.contact  },
   ], [language, nav]);
 
+  const [isTimeSlipping, setIsTimeSlipping] = useState(false);
+
   const scrollToSection = (id: string) => {
+    // Trigger Time-Slip Animation
+    setIsTimeSlipping(true);
+    setTimeout(() => setIsTimeSlipping(false), 600); // match animation duration
+
     const target = document.getElementById(id);
     if (target) {
       if (window.innerWidth >= 1024 && scrollPanelRef.current) {
@@ -175,6 +183,26 @@ export default function Home() {
   }, []);
 
 
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (window.innerWidth < 1024) return;
+      // Calculate normalized mouse position (-1 to 1)
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  // Transform values for a subtle 3D tilt
+  const rotateX = useTransform(mouseY, [-1, 1], [3, -3]);
+  const rotateY = useTransform(mouseX, [-1, 1], [-3, 3]);
+
   if (!isMounted) return null;
 
   return (
@@ -183,11 +211,12 @@ export default function Home() {
       
       <div 
         className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full transition-opacity duration-1000"
-        style={{ opacity: bootDone ? 1 : 0, visibility: bootDone ? "visible" : "hidden" }}
+        style={{ opacity: bootDone ? 1 : 0, visibility: bootDone ? "visible" : "hidden", perspective: "1500px" }}
       >
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <AmbientBackground />
-          <LokiMultiverseBackground />
+          {theme === "loki" && <LokiMultiverseBackground />}
+          {theme === "tva" && <TvaBackground />}
         </div>
 
       <AnalyticsTracker />
@@ -326,15 +355,30 @@ export default function Home() {
       </nav>
 
       {/* ── Main Layout ── */}
-      <div className="relative lg:absolute lg:inset-0 flex items-center justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full overflow-x-hidden">
-        <div className="w-full h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] lg:overflow-hidden overflow-x-hidden">
-          <div className="w-full lg:w-[340px] shrink-0 lg:h-full max-w-full overflow-hidden">
+      <div className="relative lg:absolute lg:inset-0 flex items-center justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full overflow-x-hidden pointer-events-none">
+        <motion.div 
+          className="w-full h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" }}
+        >
+          <div className="w-full lg:w-[340px] shrink-0 lg:h-full max-w-full overflow-hidden" style={{ transform: "translateZ(30px)" }}>
             <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
           </div>
 
-          <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400 relative top-glow">
+          <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400 relative top-glow" style={{ transform: "translateZ(20px)" }}>
             <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
-              <div id="sections-container" className="p-4 pt-4 md:p-10 md:pt-4 lg:p-14 lg:pt-0 space-y-4 lg:space-y-16 relative">
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes time-slip {
+                  0% { transform: scaleX(1) skewX(0); filter: hue-rotate(0deg) contrast(1); }
+                  15% { transform: scaleX(1.1) skewX(10deg) translateX(-10px); filter: hue-rotate(90deg) contrast(1.5) saturate(2); }
+                  30% { transform: scaleX(0.8) skewX(-10deg) translateX(10px); filter: hue-rotate(-90deg) contrast(2) saturate(3); opacity: 0.8; }
+                  45% { transform: scaleX(1.1) skewX(5deg) translateX(-5px); filter: hue-rotate(180deg) contrast(1.2); }
+                  100% { transform: scaleX(1) skewX(0) translateX(0); filter: hue-rotate(0deg) contrast(1) saturate(1); opacity: 1; }
+                }
+                .time-slip-anim {
+                  animation: time-slip 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                }
+              `}} />
+              <div id="sections-container" className={`p-4 pt-4 md:p-10 md:pt-4 lg:p-14 lg:pt-0 space-y-4 lg:space-y-16 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
                 <motion.section 
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -508,7 +552,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
       </div>
 

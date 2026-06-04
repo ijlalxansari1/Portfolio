@@ -86,9 +86,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     audio.addEventListener("ended", handleEnded);
 
     // Initial autoplay attempt (only on first load)
-    if (!isPlaying && currentTrackIndex === 0 && !audio.src.includes('blob:')) {
+    if (!isPlaying && !audio.src.includes('blob:')) {
        const attemptAutoplay = async () => {
          try {
+           audio.muted = false;
            const playPromise = audio.play();
            if (playPromise !== undefined) {
              await playPromise;
@@ -102,8 +103,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
            }
          }
        };
-       const timeout = setTimeout(attemptAutoplay, 1000);
-       return () => clearTimeout(timeout);
+       attemptAutoplay();
     }
 
     return () => {

@@ -29,11 +29,7 @@ export default function ThemeBuddy() {
     const savedAccent = localStorage.getItem("portfolio-accent") || "green";
     setAccent(savedAccent);
     document.documentElement.setAttribute("data-accent", savedAccent);
-
-    const savedTheme = localStorage.getItem("portfolio-theme") || "dark";
-    setTheme(savedTheme);
-    document.documentElement.className = savedTheme;
-  }, [setTheme]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -47,8 +43,6 @@ export default function ThemeBuddy() {
 
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
-    document.documentElement.className = newTheme;
-    localStorage.setItem("portfolio-theme", newTheme);
   };
 
   const changeAccent = (newAccent: string) => {
@@ -102,9 +96,9 @@ export default function ThemeBuddy() {
                     <div className="w-3 h-3 rounded-full bg-[#0a0b1e]" />
                     <span className="text-[9px] font-bold uppercase">Midnight</span>
                   </button>
-                  <button onClick={() => handleThemeChange('forest')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'forest' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
-                    <div className="w-3 h-3 rounded-full bg-[#0a1a0f]" />
-                    <span className="text-[9px] font-bold uppercase">Forest</span>
+                  <button onClick={() => handleThemeChange('tva')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'tva' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <div className="w-3 h-3 rounded-full bg-[#1c140d] border border-[#ff8c00]/50" />
+                    <span className="text-[9px] font-bold uppercase text-orange-400">TVA</span>
                   </button>
                   <button onClick={() => handleThemeChange('slate')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'slate' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                     <div className="w-3 h-3 rounded-full bg-[#1a1d23]" />
@@ -114,17 +108,9 @@ export default function ThemeBuddy() {
                     <div className="w-3 h-3 rounded-full bg-[#1a0a0a]" />
                     <span className="text-[9px] font-bold uppercase">Bordeaux</span>
                   </button>
-                  <button onClick={() => handleThemeChange('ghost')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'ghost' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
-                    <div className="w-3 h-3 rounded-full bg-[#050c24]" />
-                    <span className="text-[9px] font-bold uppercase">Ghost</span>
-                  </button>
                    <button onClick={() => handleThemeChange('sunset')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'sunset' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                     <div className="w-3 h-3 rounded-full bg-[#581c24]" />
                     <span className="text-[9px] font-bold uppercase">Sunset</span>
-                  </button>
-                  <button onClick={() => handleThemeChange('sunrise')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'sunrise' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
-                    <div className="w-3 h-3 rounded-full bg-gradient-to-tr from-[#ff6f43] to-[#ffb38a] border border-[#fadcce]" />
-                    <span className="text-[9px] font-bold uppercase text-orange-400">Sunrise</span>
                   </button>
                 </div>
               </div>

@@ -7,6 +7,8 @@ import CustomCursor from "./components/CustomCursor";
 import { LanguageProvider } from "./context/LanguageContext";
 import Script from "next/script";
 import DataLoader from "./components/DataLoader";
+import TemporalRadiation from "./components/TemporalRadiation";
+import MissMinutes from "./components/MissMinutes";
 import { AudioProvider } from "./context/AudioContext";
 
 const poppins = Poppins({ 
@@ -173,12 +175,14 @@ export default function RootLayout({
         />
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
-      <body className="antialiased font-sans transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={['dark', 'loki', 'midnight', 'forest', 'slate', 'bordeaux', 'ghost', 'sunset', 'sunrise']}>
+      <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="loki" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'loki', 'midnight', 'tva', 'slate', 'bordeaux', 'sunset']}>
           <LanguageProvider>
             <AudioProvider>
               <CustomCursor />
+              <TemporalRadiation />
               <DataLoader />
+              <MissMinutes />
               <ToastProvider>
                 {children}
               </ToastProvider>

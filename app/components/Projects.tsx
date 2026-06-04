@@ -160,11 +160,22 @@ export default function Projects() {
               className="group relative rounded-2xl overflow-hidden cursor-pointer bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--accent)]/30 transition-all"
             >
               <div className="relative w-full aspect-[4/3] overflow-hidden">
+                <style dangerouslySetInnerHTML={{__html: `
+                  @keyframes time-reverse {
+                    0% { transform: scale(1.1) skewX(10deg); filter: grayscale(1) invert(1) sepia(1) hue-rotate(180deg); }
+                    10% { transform: scale(0.9) skewX(-10deg); filter: grayscale(1) invert(0); }
+                    30% { transform: scale(1.15) skewX(5deg); filter: grayscale(0) hue-rotate(-90deg) contrast(2); opacity: 0.8; }
+                    100% { transform: scale(1.1) skewX(0deg); filter: grayscale(0) hue-rotate(0deg) contrast(1); opacity: 1; }
+                  }
+                  .group:hover .glitch-img {
+                    animation: time-reverse 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                  }
+                `}} />
                 <Image 
                   src={project.image} 
                   alt={project.alt || project.title} 
                   fill 
-                  className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.3] group-hover:grayscale-0" 
+                  className="object-cover transition-transform duration-700 grayscale-[0.3] glitch-img" 
                 />
                 <span className="absolute bottom-3 left-3 px-3 py-1 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-full z-20">
                   {project.tag}

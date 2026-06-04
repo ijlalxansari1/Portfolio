@@ -11,11 +11,15 @@ export default function LokiMultiverseBackground() {
   const lastSlideRef = useRef(0);
   
   const slides = [
+    '/tva/tva2.png', // TVA Elevator
+    '/tva/tva6.png', // The Vault
+    '/tva/tva7.png', // Spaghettification
+    '/tva/tva9.png', // Loom Explosion
     '/loki/slide1.png', // The Void
-    '/loki/slide2.png', // Looking up
-    '/loki/slide3.png', // Asteroid
+    '/tva/tva13.png', // Citadel Void Green Skies
     '/loki/slide4.png', // Citadel Window
-    '/loki/slide5.png', // Yggdrasil
+    '/tva/tva8.png', // Loki God of Stories
+    '/loki/slide6.png', // Yggdrasil Tree
   ];
 
   // Scroll tracking to change slides
@@ -102,7 +106,7 @@ export default function LokiMultiverseBackground() {
         this.vx = (Math.random() - 0.5) * 0.3;
         this.vy = -(Math.random() * 0.8 + 0.2); 
         this.life = Math.random() * Math.PI * 2;
-        this.color = Math.random() > 0.8 ? "245, 158, 11" : "16, 185, 129"; 
+        this.color = Math.random() > 0.5 ? "16, 163, 74" : "248, 250, 252"; // Deep Green / White
       }
 
       update() {
@@ -130,8 +134,293 @@ export default function LokiMultiverseBackground() {
       }
     }
 
+    // Elegant Golden Timelines flowing up the void
+    class TimelineThread {
+      x: number;
+      y: number;
+      length: number;
+      speed: number;
+      amplitude: number;
+      frequency: number;
+      phase: number;
+      opacity: number;
+      width: number;
+      lifeEnergy: number;
+      subBranches: { offset: number, side: number, length: number, phaseOffset: number }[];
+      
+      constructor() {
+        this.reset();
+        this.y = Math.random() * height; // Distribute initially
+      }
+      
+      reset() {
+        this.x = Math.random() * width;
+        this.y = height + 200;
+        this.length = Math.random() * 500 + 300; 
+        this.speed = Math.random() * 2.5 + 1.0; 
+        this.amplitude = Math.random() * 1.5; // Almost perfectly straight branches
+        this.frequency = Math.random() * 0.005 + 0.002; 
+        this.phase = Math.random() * Math.PI * 2;
+        this.opacity = Math.random() * 0.4 + 0.1; 
+        this.width = Math.random() * 1.5 + 0.5; // Thinner branches
+        this.lifeEnergy = 0; // Starts as decaying ash
+        this.subBranches = [];
+        const numBranches = Math.floor(Math.random() * 3); 
+        for (let i = 0; i < numBranches; i++) {
+          this.subBranches.push({
+            offset: Math.random() * 0.6 + 0.2, // 20% to 80% along the length
+            side: Math.random() > 0.5 ? 1 : -1,
+            length: Math.random() * 100 + 50,
+            phaseOffset: Math.random() * Math.PI
+          });
+        }
+      }
+      
+      update() {
+        this.y -= this.speed;
+        this.phase += this.frequency;
+        if (this.y < -this.length) this.reset();
+      }
+      
+      draw(ctx: CanvasRenderingContext2D, isSlipping: boolean) {
+        let minDistanceToCursor = Infinity;
+        const pathPoints: {px: number, py: number}[] = [];
+        
+        // Calculate main branch path with subtle magnetic pull
+        for (let i = 0; i < this.length; i += 10) {
+          const pastPhase = this.phase - (i * this.frequency * 0.8);
+          
+          let px = this.x + Math.sin(pastPhase) * this.amplitude;
+          let py = this.y + i;
+
+          const dx = mouse.x - px;
+          const dy = mouse.y - py;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < minDistanceToCursor) minDistanceToCursor = dist;
+
+          // Gentle magnetic pull (much lower to avoid tangling)
+          const pullRadius = mouse.isDragging ? 600 : 300;
+          const maxForce = mouse.isDragging ? 100 : 25;
+          if (dist < pullRadius) {
+             const force = (1 - dist / pullRadius) * maxForce;
+             px += (dx / dist) * force;
+             py += (dy / dist) * force;
+          }
+          
+          pathPoints.push({px, py});
+        }
+
+        // Restore life energy if touched
+        const touchRadius = mouse.isDragging ? 800 : 400;
+        if (minDistanceToCursor < touchRadius) {
+           this.lifeEnergy = Math.min(1, this.lifeEnergy + 0.05); // Rapidly come back to life
+           
+           // Massive spark generation when alive
+           if (Math.random() < 0.4 && embers.length < 400) {
+              const numSparks = Math.floor(Math.random() * 4) + 1;
+              for (let k = 0; k < numSparks; k++) {
+                const p = pathPoints[Math.floor(Math.random() * pathPoints.length)];
+                const ember = new MagicEmber();
+                ember.x = p.px + (Math.random() - 0.5) * 40; // Spread out sparks
+                ember.y = p.py + (Math.random() - 0.5) * 40;
+                embers.push(ember);
+              }
+           }
+        } else {
+           this.lifeEnergy = Math.max(0, this.lifeEnergy - 0.002); // Slowly decay back to ash
+        }
+        
+        ctx.beginPath();
+        if (pathPoints.length > 0) {
+          ctx.moveTo(pathPoints[0].px, pathPoints[0].py);
+          for (let i = 1; i < pathPoints.length; i++) {
+            ctx.lineTo(pathPoints[i].px, pathPoints[i].py);
+          }
+        }
+        
+        // Draw sub-branches
+        for (const sub of this.subBranches) {
+          const startIdx = Math.floor(sub.offset * pathPoints.length);
+          if (startIdx < pathPoints.length) {
+            const startP = pathPoints[startIdx];
+            ctx.moveTo(startP.px, startP.py);
+            for (let j = 0; j < sub.length; j += 10) {
+               // Curve outwards from the main branch
+               const subPhase = this.phase + sub.phaseOffset - (j * this.frequency * 1.5);
+               const outX = startP.px + Math.sin(subPhase) * this.amplitude * 0.5 + (j * sub.side * 0.5);
+               const outY = startP.py - j * 0.8;
+               ctx.lineTo(outX, outY);
+            }
+          }
+        }
+        
+        const grad = ctx.createLinearGradient(0, this.y, 0, this.y + this.length);
+        const alpha = isSlipping ? Math.min(1, this.opacity * 5) : this.opacity;
+        
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        
+        if (this.lifeEnergy > 0.1) {
+           // Glowing vibrant darker green magic
+           const e = this.lifeEnergy;
+           grad.addColorStop(0, `rgba(16, 163, 74, 0)`);
+           grad.addColorStop(0.2, `rgba(20, 180, 120, ${alpha * e})`); // Darker Cyan-green
+           grad.addColorStop(0.5, `rgba(16, 163, 74, ${alpha * 1.5 * e})`); // Darker Emerald Green
+           grad.addColorStop(0.8, `rgba(120, 200, 20, ${alpha * 0.8 * e})`); // Darker Lime/Gold
+           grad.addColorStop(1, `rgba(16, 163, 74, 0)`);
+           
+           ctx.shadowBlur = isSlipping ? 35 : 20;
+           ctx.shadowColor = `rgba(16, 163, 74, ${e})`;
+           ctx.setLineDash([]); // Solid life line
+           
+           // GLOWING ECHOES OF TIME (Multiple stroke layers)
+           ctx.strokeStyle = grad;
+           ctx.globalCompositeOperation = "screen";
+           
+           // Outer Echo
+           ctx.lineWidth = this.width * 6;
+           ctx.globalAlpha = 0.3;
+           ctx.stroke();
+           
+           // Mid Echo
+           ctx.lineWidth = this.width * 3.5;
+           ctx.globalAlpha = 0.6;
+           ctx.stroke();
+           
+           // Core Line
+           ctx.lineWidth = this.width * 1.5;
+           ctx.globalAlpha = 1.0;
+           ctx.stroke();
+           
+           ctx.globalCompositeOperation = "source-over";
+           
+        } else {
+           // Dying, flaky, black, grey, decaying ash
+           grad.addColorStop(0, `rgba(50, 50, 50, 0)`);
+           grad.addColorStop(0.2, `rgba(100, 100, 100, ${alpha})`); // Ash Grey
+           grad.addColorStop(0.8, `rgba(40, 40, 40, ${alpha})`); // Dark Ash
+           grad.addColorStop(1, `rgba(20, 20, 20, 0)`);
+           
+           ctx.shadowBlur = 0;
+           // Decaying ash lines are broken and flaky
+           ctx.setLineDash([Math.random() * 5 + 2, Math.random() * 8 + 4]); 
+           
+           ctx.strokeStyle = grad;
+           ctx.lineWidth = this.width * 1.5; // Thicker dead branches
+           ctx.stroke();
+        }
+        
+        ctx.shadowBlur = 0;
+        ctx.setLineDash([]); // Reset dash for other elements
+      }
+    }
+
+    // Swirling Timeline branches that orbit the mouse
+    class OrbitalTimeline {
+      radius: number;
+      angle: number;
+      speed: number;
+      width: number;
+      opacity: number;
+      history: {x: number, y: number}[];
+
+      constructor() {
+        this.radius = Math.random() * 60 + 20; // Orbit distance
+        this.angle = Math.random() * Math.PI * 2;
+        this.speed = (Math.random() - 0.5) * 0.08 + 0.02; // Rotation speed
+        this.width = Math.random() * 2 + 1.5;
+        this.opacity = Math.random() * 0.5 + 0.3;
+        this.history = [];
+      }
+
+      update() {
+        this.angle += this.speed;
+        
+        // Target position orbits the mouse
+        const currentRadius = mouse.isDragging ? this.radius * 0.2 : this.radius;
+        const currentSpeed = mouse.isDragging ? this.speed * 3 : this.speed;
+        this.angle += currentSpeed;
+        
+        const targetX = mouse.x + Math.cos(this.angle) * currentRadius;
+        const targetY = mouse.y + Math.sin(this.angle) * currentRadius;
+
+        this.history.unshift({ x: targetX, y: targetY });
+        if (this.history.length > 25) { // Trail length
+          this.history.pop();
+        }
+      }
+
+      draw(ctx: CanvasRenderingContext2D, isSlipping: boolean) {
+        if (this.history.length < 2) return;
+        
+        ctx.beginPath();
+        ctx.moveTo(this.history[0].x, this.history[0].y);
+        for (let i = 1; i < this.history.length; i++) {
+          // Smooth the trail slightly
+          const xc = (this.history[i].x + this.history[i - 1].x) / 2;
+          const yc = (this.history[i].y + this.history[i - 1].y) / 2;
+          ctx.quadraticCurveTo(this.history[i - 1].x, this.history[i - 1].y, xc, yc);
+        }
+
+        let alpha = isSlipping ? Math.min(1, this.opacity * 2) : this.opacity;
+        if (mouse.isDragging) alpha = Math.min(1, alpha * 2.5);
+        
+        // The orbiting branches are always "touched", so they are constantly bursting with life
+        const grad = ctx.createLinearGradient(this.history[0].x, this.history[0].y, this.history[this.history.length-1].x, this.history[this.history.length-1].y);
+        grad.addColorStop(0, `rgba(0, 255, 255, ${alpha})`); // Cyan
+        grad.addColorStop(0.5, `rgba(16, 255, 90, ${alpha})`); // Green Magic
+        grad.addColorStop(1, `rgba(255, 215, 0, 0)`); // Gold fading out
+        
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = mouse.isDragging ? this.width * 2.5 : this.width * 1.5;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.shadowBlur = isSlipping ? 30 : 15;
+        ctx.shadowColor = "rgba(16, 255, 90, 0.9)";
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    const mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2, radius: 200, isDragging: false };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    
+    const handleMouseDown = () => (mouse.isDragging = true);
+    const handleMouseUp = () => (mouse.isDragging = false);
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+         mouse.x = e.touches[0].clientX;
+         mouse.y = e.touches[0].clientY;
+         mouse.isDragging = true;
+      }
+    };
+    const handleTouchEnd = () => { mouse.isDragging = false; };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mouseleave", handleMouseUp);
+    window.addEventListener("touchstart", handleTouchMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+
+    const isMobile = window.innerWidth < 768;
+    const numEmbers = isMobile ? 60 : 150;
+    const numThreads = isMobile ? 25 : 65;
+    const numOrbitals = isMobile ? 3 : 8;
+
     const embers: MagicEmber[] = [];
-    for (let i = 0; i < 150; i++) embers.push(new MagicEmber());
+    for (let i = 0; i < numEmbers; i++) embers.push(new MagicEmber());
+    
+    const threads: TimelineThread[] = [];
+    for (let i = 0; i < numThreads; i++) threads.push(new TimelineThread());
+
+    const orbitals: OrbitalTimeline[] = [];
+    for (let i = 0; i < numOrbitals; i++) orbitals.push(new OrbitalTimeline());
 
     let animationFrameId: number;
     let time = 0;
@@ -140,28 +429,60 @@ export default function LokiMultiverseBackground() {
       time++;
       ctx.clearRect(0, 0, width, height);
 
-      // Read current state from ref to avoid closure staleness if we were using it, 
-      // but we need to pass isSlipping from state. We'll read the DOM class for a sync check
+      // Smooth mouse interpolation
+      mouse.x += (mouse.targetX - mouse.x) * 0.08;
+      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
       const slipping = document.body.classList.contains('loki-slipping');
+
+      // 1. Draw volumetric mouse hover light
+      ctx.save();
+      const currentRadius = mouse.isDragging ? mouse.radius * 4 : mouse.radius * 2.5;
+      const lightGrad = ctx.createRadialGradient(
+        mouse.x, mouse.y, 0, mouse.x, mouse.y, currentRadius
+      );
+      // Golden magical energy glow that intensifies during a time slip
+      let intensity = slipping ? 0.25 : 0.12;
+      if (mouse.isDragging) intensity = 0.35;
+      lightGrad.addColorStop(0, `rgba(16, 163, 74, ${intensity})`);
+      lightGrad.addColorStop(0.5, `rgba(16, 163, 74, ${intensity * 0.3})`);
+      lightGrad.addColorStop(1, "transparent");
+      ctx.globalCompositeOperation = "screen";
+      ctx.fillStyle = lightGrad;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
 
       if (slipping) {
         // Temporal Glitch Canvas Artifacts
         if (Math.random() > 0.5) {
-          ctx.fillStyle = `rgba(16, 185, 129, ${Math.random() * 0.15})`;
+          ctx.fillStyle = `rgba(16, 163, 74, ${Math.random() * 0.15})`;
           ctx.fillRect(0, 0, width, height);
         }
         
-        // Draw chromatic tear lines
         for (let i = 0; i < 5; i++) {
           ctx.fillStyle = Math.random() > 0.5 ? "rgba(255, 0, 0, 0.4)" : "rgba(0, 100, 255, 0.4)";
           ctx.fillRect(Math.random() * width, Math.random() * height, Math.random() * 400 + 100, Math.random() * 5 + 1);
         }
       }
 
+      // Draw background timelines
+      for (const t of threads) {
+        t.update();
+        t.draw(ctx, slipping);
+      }
+
+      // Draw orbital timelines following mouse
+      for (const o of orbitals) {
+        o.update();
+        o.draw(ctx, slipping);
+      }
+
+      // Draw foreground magic embers
       for (const e of embers) {
         e.update();
         e.draw(ctx, slipping);
       }
+      
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -178,6 +499,13 @@ export default function LokiMultiverseBackground() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mouseleave", handleMouseUp);
+      window.removeEventListener("touchstart", handleTouchMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [theme]);
 

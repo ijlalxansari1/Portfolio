@@ -19,6 +19,15 @@ export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isPruning, setIsPruning] = useState(false);
+
+  const handleClearPrune = () => {
+    setIsPruning(true);
+    setTimeout(() => {
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setIsPruning(false);
+    }, 1000); // 1 second animation time
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +91,17 @@ export default function Contact() {
 
         {/* Form */}
         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes prune {
+              0% { opacity: 1; filter: contrast(1) sepia(0); box-shadow: none; transform: translateY(0) scale(1); }
+              30% { opacity: 1; filter: contrast(2) sepia(1) hue-rotate(340deg); box-shadow: 0 0 30px 10px rgba(255,140,0,0.8); transform: translateY(-3px) scale(1.02); border-color: #ff8c00; color: transparent; background: rgba(255,140,0,0.2); }
+              100% { opacity: 0; filter: blur(15px) sepia(1) hue-rotate(340deg); box-shadow: 0 0 60px 20px rgba(255,80,0,0); transform: translateY(-20px) scale(1.1); border-color: transparent; }
+            }
+            .prune-anim input, .prune-anim select, .prune-anim textarea {
+              animation: prune 1s ease-out forwards;
+            }
+          `}} />
+          <form ref={formRef} onSubmit={handleSubmit} className={`space-y-6 ${isPruning ? 'prune-anim pointer-events-none' : ''}`}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.name}</label>
@@ -137,15 +156,24 @@ export default function Contact() {
               />
             </div>
 
-            <button 
-              type="submit" 
-              disabled={status === "sending"}
-              className="w-full py-5 bg-[var(--accent)] text-[var(--bg-primary)] font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {status === "sending" ? <><Loader2 size={20} className="animate-spin" /> {language === 'en' ? "Sending..." : "Senden..."}</> : 
-               status === "success" ? <><CheckCircle2 size={20} /> {t.submit_success}</> : 
-               <><Send size={20} /> {t.submit_idle}</>}
-            </button>
+            <div className="flex gap-4">
+              <button 
+                type="button" 
+                onClick={handleClearPrune}
+                className="px-6 py-5 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[#ff8c00] hover:border-[#ff8c00]/50 font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center transition-all disabled:opacity-50"
+              >
+                Clear
+              </button>
+              <button 
+                type="submit" 
+                disabled={status === "sending" || isPruning}
+                className="flex-1 py-5 bg-[var(--accent)] text-[var(--bg-primary)] font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {status === "sending" ? <><Loader2 size={20} className="animate-spin" /> {language === 'en' ? "Sending..." : "Senden..."}</> : 
+                 status === "success" ? <><CheckCircle2 size={20} /> {t.submit_success}</> : 
+                 <><Send size={20} /> {t.submit_idle}</>}
+              </button>
+            </div>
             {status === "error" && <p className="text-red-400 text-[12px] font-bold text-center">{errorMessage}</p>}
           </form>
           

@@ -32,25 +32,27 @@ export default function CustomCursor() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-neon-mint rounded-full pointer-events-none z-[9999] mix-blend-difference hidden lg:block"
+        className="fixed top-0 left-0 w-8 h-8 border rounded-full pointer-events-none z-[9999] mix-blend-difference hidden lg:block"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
           translateX: "-50%",
           translateY: "-50%",
+          borderColor: "var(--accent)",
         }}
         animate={{
           scale: isPointer ? 1.5 : 1,
-          backgroundColor: isPointer ? "rgba(0, 255, 179, 0.1)" : "rgba(0, 255, 179, 0)",
+          backgroundColor: isPointer ? "rgba(var(--accent-rgb), 0.1)" : "transparent",
         }}
       />
       <motion.div
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-neon-mint rounded-full pointer-events-none z-[9999] hidden lg:block"
+        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9999] hidden lg:block"
         style={{
           x: cursorX,
           y: cursorY,
           translateX: "-50%",
           translateY: "-50%",
+          backgroundColor: "var(--accent)",
         }}
       />
     </>
