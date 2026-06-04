@@ -91,13 +91,13 @@ export default function LokiMultiverseBackground() {
     canvas.height = height;
 
     class MagicEmber {
-      x: number;
-      y: number;
-      size: number;
-      vx: number;
-      vy: number;
-      life: number;
-      color: string;
+      x!: number;
+      y!: number;
+      size!: number;
+      vx!: number;
+      vy!: number;
+      life!: number;
+      color!: string;
 
       constructor() {
         this.x = Math.random() * width;
@@ -136,17 +136,17 @@ export default function LokiMultiverseBackground() {
 
     // Elegant Golden Timelines flowing up the void
     class TimelineThread {
-      x: number;
-      y: number;
-      length: number;
-      speed: number;
-      amplitude: number;
-      frequency: number;
-      phase: number;
-      opacity: number;
-      width: number;
-      lifeEnergy: number;
-      subBranches: { offset: number, side: number, length: number, phaseOffset: number }[];
+      x!: number;
+      y!: number;
+      length!: number;
+      speed!: number;
+      amplitude!: number;
+      frequency!: number;
+      phase!: number;
+      opacity!: number;
+      width!: number;
+      lifeEnergy!: number;
+      subBranches!: { offset: number, side: number, length: number, phaseOffset: number }[];
       
       constructor() {
         this.reset();
@@ -317,12 +317,12 @@ export default function LokiMultiverseBackground() {
 
     // Swirling Timeline branches that orbit the mouse
     class OrbitalTimeline {
-      radius: number;
-      angle: number;
-      speed: number;
-      width: number;
-      opacity: number;
-      history: {x: number, y: number}[];
+      history!: {x: number, y: number}[];
+      radius!: number;
+      angle!: number;
+      speed!: number;
+      width!: number;
+      opacity!: number;
 
       constructor() {
         this.radius = Math.random() * 60 + 20; // Orbit distance

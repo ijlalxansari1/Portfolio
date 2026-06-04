@@ -116,14 +116,14 @@ export default function TvaBackground() {
     window.addEventListener("touchend", handleTouchEnd);
 
     class TimeDust {
-      x: number;
-      y: number;
-      size: number;
-      vx: number;
-      vy: number;
-      opacity: number;
-      pulseRate: number;
-      life: number;
+      x!: number;
+      y!: number;
+      size!: number;
+      vx!: number;
+      vy!: number;
+      opacity!: number;
+      pulseRate!: number;
+      life!: number;
 
       constructor() {
         this.x = Math.random() * width;
@@ -171,15 +171,15 @@ export default function TvaBackground() {
     }
 
     class TVATimelineBranch {
-      x: number;
-      y: number;
-      length: number;
-      speed: number;
-      amplitude: number;
-      frequency: number;
-      phase: number;
-      opacity: number;
-      width: number;
+      x!: number;
+      y!: number;
+      length!: number;
+      speed!: number;
+      amplitude!: number;
+      frequency!: number;
+      phase!: number;
+      opacity!: number;
+      width!: number;
       
       constructor() {
         this.reset();
