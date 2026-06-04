@@ -50,18 +50,19 @@ html.sunrise .bg-black\/80 { background-color: rgba(255,255,255,0.85) !important
 html.sunrise .bg-\[\#080808\]\/50 { background-color: transparent !important; }
 html.sunrise .shadow-2xl, html.sunrise .shadow-xl { box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; }
 
-/* ── CMD TERMINAL MODE ── */
-html.cmd {
-  --bg-primary: #000000;
-  --bg-secondary: #000000;
-  --bg-card: #000000;
-  --foreground: #00ff41;
-  --accent: #00ff41;
-  --accent-rgb: 0, 255, 65;
-  --text-primary: #00ff41;
-  --text-secondary: #008f11;
-  --border: #00ff41;
-  --border-subtle: rgba(0, 255, 65, 0.2);
+/* ── LOKI (GOD OF STORIES) THEME ── */
+html.loki {
+  --bg-primary: #040d06;
+  --bg-secondary: rgba(8, 26, 12, 0.5);
+  --bg-card: rgba(12, 38, 18, 0.5);
+  --foreground: #10B981;
+  --accent: #10B981;
+  --accent-rgb: 16, 185, 129;
+  --text-primary: #d1fae5;
+  --text-secondary: #6ee7b7;
+  --text-muted: #059669;
+  --border: #064e3b;
+  --border-subtle: rgba(16, 185, 129, 0.15);
 }
 
 /* ── MIDNIGHT THEME ── */
@@ -136,169 +137,7 @@ html[data-accent="yellow"] { --accent: #f59e0b; --accent-rgb: 245, 158, 11; }
 /* ── LIGHT MODE ACCENT OVERRIDE ── */
 /* Removed global black accent to keep buttons colored */
 
-/* ── CMD TRANSFORMATION ── */
-html.cmd body::before {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
-              linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-  z-index: 9999;
-  background-size: 100% 4px, 4px 100%;
-  pointer-events: none;
-}
 
-@keyframes crt-flicker {
-  0% { opacity: 0.01; }
-  50% { opacity: 0.04; }
-  100% { opacity: 0.01; }
-}
-
-html.cmd body::after {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: rgba(0, 255, 65, 0.02);
-  z-index: 10000;
-  pointer-events: none;
-  animation: crt-flicker 0.1s infinite;
-}
-
-html.cmd * {
-  font-family: 'JetBrains Mono', monospace !important;
-  text-shadow: 0 0 8px rgba(0, 255, 65, 0.3) !important;
-  text-transform: uppercase !important;
-  border-color: #00ff41 !important;
-  box-shadow: none !important;
-}
-
-html.cmd *:not(circle):not(ellipse) {
-  border-radius: 0 !important;
-}
-
-/* Glitch Effect */
-@keyframes glitch-text {
-  0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, -2px); }
-  20% { clip-path: inset(92% 0 1% 0); transform: translate(1px, 1px); }
-  40% { clip-path: inset(43% 0 1% 0); transform: translate(-1px, 2px); }
-  60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, -1px); }
-  80% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, 1px); }
-  100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
-}
-
-html.cmd h1:hover, html.cmd h2:hover {
-  animation: glitch-text 0.2s infinite;
-}
-
-/* CMD Text Prefixes */
-html.cmd .hero-greeting::before { content: 'C:\\Users\\ijlal> '; color: #00ff41; }
-html.cmd .hero-name::before { content: '> '; }
-html.cmd .section-label::before { content: '// '; color: #008f11; }
-
-html.cmd .section-heading::before {
-  content: '> ';
-  color: #00ff41;
-}
-
-/* ASCII Bars Visibility */
-html.cmd .progress-bar {
-  display: none !important;
-}
-.progress-ascii {
-  display: none;
-}
-html.cmd .progress-ascii {
-  display: block !important;
-  font-family: monospace;
-  color: #00ff41;
-  font-size: 12px;
-}
-
-/* Cards as terminal boxes */
-html.cmd .card,
-html.cmd .project-card,
-html.cmd .service-card,
-html.cmd .blog-card,
-html.cmd [class*="bg-[var(--bg-secondary)]"],
-html.cmd [class*="bg-[var(--bg-card)]"] {
-  background: #000 !important;
-  border: 1px solid #00ff41 !important;
-  box-shadow: 0 0 8px rgba(0,255,65,0.15) !important;
-}
-
-html.cmd .card:hover,
-html.cmd .project-card:hover,
-html.cmd .service-card:hover,
-html.cmd .blog-card:hover {
-  box-shadow: 0 0 16px rgba(0,255,65,0.3) !important;
-}
-
-/* Buttons */
-html.cmd button,
-html.cmd .btn,
-html.cmd a.button,
-html.cmd [class*="bg-[var(--accent)]"] {
-  background: #000 !important;
-  border: 1px solid #00ff41 !important;
-  color: #00ff41 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 2px !important;
-  font-family: monospace !important;
-}
-
-html.cmd button:hover,
-html.cmd .btn:hover {
-  background: #00ff41 !important;
-  color: #000 !important;
-}
-
-/* Heading Glow */
-html.cmd h1,
-html.cmd h2,
-html.cmd .hero-name {
-  text-shadow: 0 0 10px rgba(0,255,65,0.5) !important;
-}
-
-/* Input Fields */
-html.cmd input,
-html.cmd textarea {
-  background: #000 !important;
-  border: 1px solid #00ff41 !important;
-  color: #00ff41 !important;
-  caret-color: #00ff41 !important;
-}
-
-html.cmd input::placeholder,
-html.cmd textarea::placeholder {
-  color: #008f11 !important;
-}
-
-/* Images Tint */
-html.cmd img {
-  filter: grayscale(100%) sepia(100%) hue-rotate(85deg) saturate(300%) brightness(0.7) !important;
-}
-
-/* Other Specific Fixes */
-html.cmd .radar-fill {
-  fill: rgba(0,255,65,0.15) !important;
-  stroke: #00ff41 !important;
-}
-
-html.cmd .quote-mark {
-  color: #00ff41 !important;
-  text-shadow: 0 0 10px rgba(0,255,65,0.5);
-}
-
-html.cmd .timeline-dot {
-  background: #00ff41 !important;
-  box-shadow: 0 0 8px rgba(0,255,65,0.5) !important;
-}
-
-html.cmd .github-card {
-  border-left: 2px solid #00ff41 !important;
-}
 
 /* ── BASE STYLES ── */
 html {

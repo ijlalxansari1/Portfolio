@@ -8,7 +8,7 @@ import {
   User as UserIcon, Globe, Bold, Italic, Code, Link as LinkIcon, 
   RefreshCw, Award, Mail, Star, ExternalLink, Trash, CheckCircle2, Zap, Search, Cpu,
   ChevronDown, Layers, Palette, Eye, Type, Image as ImageIcon, Tag,
-  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github, Landmark, Briefcase as BriefcaseIcon, Server
+  Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github, Landmark, Briefcase as BriefcaseIcon, Server, Music
 } from "lucide-react";
 import Image from "next/image";
 import { storage } from "../utils/storage";
@@ -103,6 +103,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [siteConfig, setSiteConfig] = useState<any>({});
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
   const [keystats, setKeystats] = useState<any>({ projects: 6, hours: 1000, taught: 100 });
+  const [bgMusic, setBgMusic] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -132,6 +133,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           
           const toolsData = get("admin-skills", { tools: defaultTools });
           setToolSkills(toolsData.tools || defaultTools);
+          setBgMusic(get("admin-bg-music", []));
           setDemos(get("admin-demos", []));
           setServicesData(get("admin-services", [
             { id: 1, title: "Data Pipeline Engineering", badge: "Pipelines", body: "End-to-end ETL/ELT pipelines built with Python, dbt Core, and Dagster.", link: "See My Work", icon: "Activity", status: "Published" },
@@ -248,8 +250,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           className="relative w-full max-w-[1500px] h-full bg-[#050505]/80 border border-white/5 rounded-[48px] overflow-hidden flex shadow-[0_40px_100px_rgba(0,0,0,0.8)] backdrop-blur-xl"
         >
           {/* Creative Sidebar */}
-          <div className="w-[280px] shrink-0 border-r border-white/5 bg-black/40 p-8 flex flex-col gap-1.5 relative z-10">
-            <div className="flex flex-col gap-2 mb-12 px-2">
+          <div className="w-[280px] shrink-0 border-r border-white/5 bg-black/40 p-8 flex flex-col gap-1.5 relative z-10 overflow-hidden">
+            <div className="flex flex-col gap-2 mb-6 px-2 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-[var(--accent)] to-emerald-400 rounded-2xl flex items-center justify-center shadow-2xl rotate-3">
                   <Cpu size={24} className="text-black" />
@@ -260,7 +262,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 </div>
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1 flex-1 min-h-0 overflow-y-auto custom-scrollbar-hidden">
               <h4 className="text-[10px] font-black uppercase text-white/30 tracking-widest px-4 mb-3">Portfolio Modules</h4>
               {[
                 { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400", badge: 0 },
@@ -275,12 +277,13 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 { id: "Activity Log", icon: <Zap size={16} />, color: "text-yellow-400", badge: 0 },
                 { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
                 { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: certs.length },
+                { id: "Music", icon: <Music size={16} />, color: "text-pink-400", badge: bgMusic.length },
                 { id: "Site Config", icon: <Globe size={16} />, color: "text-cyan-400", badge: 0 }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`group flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all relative ${
+                  className={`group flex items-center gap-4 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all relative ${
                     activeTab === tab.id 
                     ? 'bg-white text-black shadow-[0_10px_25px_rgba(255,255,255,0.15)] scale-[1.03]' 
                     : 'text-white/40 hover:text-white hover:bg-white/5'
@@ -298,7 +301,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               ))}
             </div>
 
-            <div className="mt-auto pt-8 border-t border-white/5">
+            <div className="mt-auto pt-4 border-t border-white/5 shrink-0">
               <button onClick={onClose} className="w-full flex items-center gap-4 px-5 py-4 text-red-400 hover:bg-red-500/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
                 <LogOut size={16} /> Terminate Session
               </button>
@@ -837,11 +840,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                      </div>
                                      <div className="space-y-2 pt-2">
                                         <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Technologies/Tags (comma separated)</label>
-                                        <input type="text" value={(exp.technologies || []).join(', ')} onChange={e => { const n = [...experience]; n[i].technologies = e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t); setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-bold text-white/80 outline-none w-full" placeholder="Python, AWS, PostgreSQL..." />
+                                        <input type="text" value={typeof exp.technologies === 'string' ? exp.technologies : (exp.technologies || []).join(', ')} onChange={e => { const n = [...experience]; n[i].technologies = e.target.value; setExperience(n); }} onBlur={() => { const n = [...experience]; if (typeof n[i].technologies === 'string') { n[i].technologies = n[i].technologies.split(',').map((t: string) => t.trim()).filter((t: string) => t); } setExperience(n); saveData("admin-experience", n); }} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-bold text-white/80 outline-none w-full" placeholder="Python, AWS, PostgreSQL..." />
                                      </div>
-                                     <div className="space-y-2 pt-2 border-t border-white/5">
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description (Paragraphs separated by double newline)</label>
-                                        <textarea value={(exp.description || exp.desc || "").split('\n').join('\n')} onChange={e => { const n = [...experience]; n[i].description = e.target.value; n[i].desc = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="w-full bg-transparent text-white/60 text-[13px] outline-none resize-y min-h-[120px]" placeholder="Detailed description of responsibilities and achievements..." />
+                                     <div className="space-y-2 pt-4 border-t border-white/5">
+                                        <div className="flex items-center justify-between">
+                                           <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description</label>
+                                           <span className="text-[8px] font-bold text-white/15 italic mr-1">Each new line = separate bullet point</span>
+                                        </div>
+                                        <textarea value={exp.description || exp.desc || ""} onChange={e => { const n = [...experience]; n[i].description = e.target.value; n[i].desc = e.target.value; setExperience(n); }} onBlur={() => saveData("admin-experience", experience)} className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-5 text-white/60 text-[13px] outline-none resize-y min-h-[140px] leading-relaxed focus:border-orange-400/30 transition-all placeholder:text-white/15" placeholder={"Designed ETL pipelines processing 2M+ records daily\nReduced cloud costs by 30% through infrastructure optimization\nBuilt monitoring dashboards with real-time alerting"} />
                                      </div>
                                   </div>
                                ))}
@@ -871,11 +877,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                      <input type="text" value={edu.period} onChange={e => { const n = [...education]; n[i].period = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-transparent text-white/20 font-bold text-[10px] uppercase tracking-widest outline-none w-full" placeholder="Period" />
                                      <div className="space-y-2 pt-2 border-t border-white/5">
                                         <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Achievements (comma separated)</label>
-                                        <input type="text" value={(edu.achievements || []).join(', ')} onChange={e => { const n = [...education]; n[i].achievements = e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t); setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-bold text-white/80 outline-none w-full" placeholder="Dean's List, Research, etc..." />
+                                        <input type="text" value={typeof edu.achievements === 'string' ? edu.achievements : (edu.achievements || []).join(', ')} onChange={e => { const n = [...education]; n[i].achievements = e.target.value; setEducation(n); }} onBlur={() => { const n = [...education]; if (typeof n[i].achievements === 'string') { n[i].achievements = n[i].achievements.split(',').map((t: string) => t.trim()).filter((t: string) => t); } setEducation(n); saveData("admin-education", n); }} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[11px] font-bold text-white/80 outline-none w-full" placeholder="Dean's List, Research, Open Source..." />
                                      </div>
-                                     <div className="space-y-2 pt-2 border-t border-white/5">
-                                        <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description</label>
-                                        <textarea value={edu.description || edu.desc || ""} onChange={e => { const n = [...education]; n[i].description = e.target.value; n[i].desc = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="w-full bg-transparent text-white/60 text-[13px] outline-none resize-y min-h-[80px]" placeholder="Detailed description of studies..." />
+                                     <div className="space-y-2 pt-4 border-t border-white/5">
+                                        <div className="flex items-center justify-between">
+                                           <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description</label>
+                                           <span className="text-[8px] font-bold text-white/15 italic mr-1">Each new line = separate bullet point</span>
+                                        </div>
+                                        <textarea value={edu.description || edu.desc || ""} onChange={e => { const n = [...education]; n[i].description = e.target.value; n[i].desc = e.target.value; setEducation(n); }} onBlur={() => saveData("admin-education", education)} className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-5 text-white/60 text-[13px] outline-none resize-y min-h-[100px] leading-relaxed focus:border-blue-400/30 transition-all placeholder:text-white/15" placeholder={"Database Systems & Cloud Computing\nMachine Learning & Model Interpretability\nSoftware Engineering Best Practices"} />
                                      </div>
                                   </div>
                                ))}
@@ -972,49 +981,100 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 {/* ── CERTIFICATIONS TAB ── */}
                 {activeTab === "Certifications" && (
                    <motion.div key="certs" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
-                      <div className="flex justify-between items-end">
-                        <div className="space-y-2">
-                           <h3 className="text-[12px] font-black text-yellow-400 uppercase tracking-[4px]">Verified Training</h3>
-                           <p className="text-[14px] text-white/40 font-medium max-w-md">Manage your academic and industry certifications.</p>
-                        </div>
-                        <button onClick={() => {
-                          const updated = [{ id: Date.now(), title: "New Certification", provider: "Institution", link: "#", status: "Draft" }, ...certs];
-                          setCerts(updated);
-                          saveData("admin-certs", updated);
-                        }} className="group flex items-center gap-3 px-8 py-4 bg-yellow-400 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
-                          <Plus size={18} /> Add Credential
-                        </button>
-                      </div>
+                       <div className="flex justify-between items-end">
+                         <div className="space-y-2">
+                            <h3 className="text-[12px] font-black text-yellow-400 uppercase tracking-[4px]">Verified Training</h3>
+                            <p className="text-[14px] text-white/40 font-medium max-w-md">Manage your academic and industry certifications.</p>
+                         </div>
+                         <button onClick={() => {
+                           const updated = [{ id: Date.now(), title: "New Certification", issuer: "Institution", provider: "Institution", credentialId: "", date: new Date().toISOString().split("T")[0], image: "", description: "", verificationUrl: "", verification_url: "", link: "", status: "Draft" }, ...certs];
+                           setCerts(updated);
+                           saveData("admin-certs", updated);
+                         }} className="group flex items-center gap-3 px-8 py-4 bg-yellow-400 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                           <Plus size={18} /> Add Credential
+                         </button>
+                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {certs.map((c, i) => (
-                          <motion.div 
-                             key={c.id} 
-                             className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-yellow-400/30 transition-all space-y-6"
-                          >
-                             <div className="flex justify-between gap-4">
-                                <div className="flex-1 space-y-4">
-                                   <input type="text" value={c.title} onChange={e => { const n = [...certs]; n[i].title = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white font-black text-[18px] outline-none w-full" placeholder="Course/Cert Title" />
-                                   <input type="text" value={c.provider} onChange={e => { const n = [...certs]; n[i].provider = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-yellow-400/60 font-bold text-[11px] uppercase tracking-widest outline-none w-full" placeholder="Issuing Institution" />
-                                </div>
-                                <button onClick={() => { if(confirm("Revoke credential?")) { const updated = certs.filter(x => x.id !== c.id); setCerts(updated); saveData("admin-certs", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
-                             </div>
-                             
-                             <div className="flex items-center gap-4">
-                                <div className="flex-1 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
-                                   <LinkIcon size={12} className="text-white/20" />
-                                   <input type="text" value={c.link} onChange={e => { const n = [...certs]; n[i].link = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white/40 text-[11px] outline-none w-full" placeholder="Credential URL" />
-                                </div>
-                                <select value={c.status} onChange={e => { const n = [...certs]; n[i].status = e.target.value; setCerts(n); saveData("admin-certs", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
-                                   <option className="bg-[#111]">Draft</option>
-                                   <option className="bg-[#111]">Active</option>
-                                </select>
-                             </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                   </motion.div>
-                )}
+                       <div className="grid grid-cols-1 gap-6">
+                         {certs.map((c, i) => (
+                           <motion.div 
+                              key={c.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: i * 0.05 }}
+                              className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] hover:border-yellow-400/30 transition-all space-y-6"
+                           >
+                              <div className="flex flex-col md:flex-row gap-8">
+                                 {/* Left: Image & Date */}
+                                 <div className="w-full md:w-1/3 space-y-4">
+                                    <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/50">
+                                      <ImageUpload 
+                                        type="certifications" 
+                                        currentImage={c.image} 
+                                        onUpload={(url) => { const n = [...certs]; n[i].image = url; setCerts(n); saveData("admin-certs", n); }} 
+                                      />
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-3">
+                                       <div className="space-y-1">
+                                         <label className="text-[9px] font-black uppercase tracking-widest text-white/20">Issue Date</label>
+                                         <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <Calendar size={12} className="text-yellow-400/60" />
+                                            <input type="date" value={c.date || ""} onChange={e => { const n = [...certs]; n[i].date = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-[11px] font-bold text-white/80 outline-none flex-1" />
+                                         </div>
+                                       </div>
+                                       <div className="space-y-1">
+                                         <label className="text-[9px] font-black uppercase tracking-widest text-white/20">Status</label>
+                                         <select value={c.status} onChange={e => { const n = [...certs]; n[i].status = e.target.value; setCerts(n); saveData("admin-certs", n); }} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                            <option className="bg-[#111]">Draft</option>
+                                            <option className="bg-[#111]">Active</option>
+                                         </select>
+                                       </div>
+                                    </div>
+                                 </div>
+
+                                 {/* Right: Details */}
+                                 <div className="flex-1 space-y-4">
+                                    <div className="flex items-center justify-between gap-4">
+                                       <input type="text" value={c.title} onChange={e => { const n = [...certs]; n[i].title = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white font-black text-[24px] outline-none flex-1" placeholder="Certification Title" />
+                                       <button onClick={() => { if(confirm("Revoke credential?")) { const updated = certs.filter(x => x.id !== c.id); setCerts(updated); saveData("admin-certs", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10 shrink-0"><Trash2 size={16} /></button>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                       <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Issuing Organization</label>
+                                       <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                                          <Award size={14} className="text-yellow-400/60 shrink-0" />
+                                          <input type="text" value={c.issuer || c.provider || ""} onChange={e => { const n = [...certs]; n[i].issuer = e.target.value; n[i].provider = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white font-bold text-[13px] outline-none flex-1" placeholder="e.g. Google, AWS, IBM, Coursera" />
+                                       </div>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                       <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Description</label>
+                                       <textarea value={c.description || ""} onChange={e => { const n = [...certs]; n[i].description = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="w-full bg-white/[0.02] border border-white/5 rounded-2xl p-4 text-white/50 text-[13px] outline-none focus:border-yellow-400/20 transition-all resize-none min-h-[80px] leading-relaxed" placeholder="Brief description of what this certification covers..." />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                       <div className="space-y-1">
+                                          <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Credential ID</label>
+                                          <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                                             <Tag size={12} className="text-white/20 shrink-0" />
+                                             <input type="text" value={c.credentialId || ""} onChange={e => { const n = [...certs]; n[i].credentialId = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white/60 text-[12px] font-mono outline-none flex-1" placeholder="e.g. ABC-123-XYZ or 92.6%" />
+                                          </div>
+                                       </div>
+                                       <div className="space-y-1">
+                                          <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Verification URL</label>
+                                          <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                                             <ExternalLink size={12} className="text-white/20 shrink-0" />
+                                             <input type="url" value={c.verificationUrl || c.verification_url || c.link || ""} onChange={e => { const n = [...certs]; n[i].verificationUrl = e.target.value; n[i].verification_url = e.target.value; n[i].link = e.target.value; setCerts(n); }} onBlur={() => saveData("admin-certs", certs)} className="bg-transparent text-white/60 text-[12px] outline-none flex-1" placeholder="https://credly.com/..." />
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </motion.div>
+                         ))}
+                       </div>
+                    </motion.div>
+                 )}
 
                  {/* ── DEMOS TAB ── */}
                  {activeTab === "Demos" && (
@@ -1761,6 +1821,127 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                        </div>
                     </div>
                   </motion.div>
+                )}
+
+                {/* ── MUSIC TAB ── */}
+                {activeTab === "Music" && (
+                   <motion.div key="music" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
+                      <div className="flex justify-between items-center">
+                         <div className="space-y-2">
+                            <h3 className="text-[12px] font-black text-pink-400 uppercase tracking-[4px]">Background Audio</h3>
+                            <p className="text-[14px] text-white/40 font-medium max-w-md">Manage MP4/audio tracks that play in the background.</p>
+                         </div>
+                         <div className="flex gap-2">
+                           <button onClick={() => {
+                              const updated = [...bgMusic, { id: Date.now(), title: "New Track", artist: "Unknown Artist", url: "", status: "Active" }];
+                              setBgMusic(updated);
+                              saveData("admin-bg-music", updated);
+                           }} className="px-6 py-4 bg-pink-500/10 text-pink-400 rounded-[24px] font-black uppercase text-[10px] tracking-[2px] flex items-center gap-3 hover:bg-pink-500 hover:text-black transition-all">
+                              <Plus size={16} /> Add Track
+                           </button>
+
+                           <button onClick={() => document.getElementById('bulk-music-upload')?.click()} className="px-6 py-4 bg-emerald-500/10 text-emerald-400 rounded-[24px] font-black uppercase text-[10px] tracking-[2px] flex items-center gap-3 hover:bg-emerald-500 hover:text-black transition-all">
+                              <UploadIcon size={16} /> Bulk Upload
+                           </button>
+                           <input 
+                             type="file" 
+                             id="bulk-music-upload" 
+                             multiple 
+                             accept="audio/*,video/*" 
+                             className="hidden" 
+                             onChange={async (e) => {
+                               if (!e.target.files?.length) return;
+                               const files = Array.from(e.target.files);
+                               
+                               const newTracks: any[] = [];
+                               const token = sessionStorage.getItem("aether-admin-session");
+
+                               alert(`Starting upload of ${files.length} tracks. Please wait...`);
+
+                               for (const file of files) {
+                                 const formData = new FormData();
+                                 formData.append("file", file);
+                                 formData.append("type", "bgmusic");
+
+                                 try {
+                                   const res = await fetch("/api/upload", {
+                                     method: "POST",
+                                     headers: { "Authorization": `Bearer ${token}` },
+                                     body: formData,
+                                   });
+                                   const data = await res.json();
+                                   if (data.success) {
+                                      newTracks.push({
+                                        id: Date.now() + Math.random(),
+                                        title: file.name.replace(/\.[^/.]+$/, ""),
+                                        artist: "Unknown Artist",
+                                        url: data.url,
+                                        status: "Active"
+                                      });
+                                   }
+                                 } catch (error) {
+                                   console.error("Failed to upload", file.name, error);
+                                 }
+                               }
+
+                               if (newTracks.length > 0) {
+                                 setBgMusic(prev => {
+                                   const updated = [...prev, ...newTracks];
+                                   saveData("admin-bg-music", updated);
+                                   return updated;
+                                 });
+                                 alert(`Successfully added ${newTracks.length} tracks!`);
+                               } else {
+                                 alert("Upload failed for all files.");
+                               }
+                               
+                               e.target.value = ''; // Reset input
+                             }} 
+                           />
+                         </div>
+                      </div>
+
+                      <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
+                         {bgMusic.map((track, i) => (
+                            <div key={track.id} className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] group relative space-y-6">
+                               <button onClick={() => {
+                                  const updated = bgMusic.filter((_, idx) => idx !== i);
+                                  setBgMusic(updated);
+                                  saveData("admin-bg-music", updated);
+                               }} className="absolute top-6 right-6 w-10 h-10 bg-red-500/10 text-red-400 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white">
+                                  <Trash2 size={16} />
+                               </button>
+
+                               <div className="space-y-4">
+                                  <input type="text" value={track.title} onChange={e => { const n = [...bgMusic]; n[i].title = e.target.value; setBgMusic(n); }} onBlur={() => saveData("admin-bg-music", bgMusic)} className="bg-transparent text-[22px] font-black text-white outline-none w-full placeholder:text-white/20" placeholder="Track Title" />
+                                  <input type="text" value={track.artist} onChange={e => { const n = [...bgMusic]; n[i].artist = e.target.value; setBgMusic(n); }} onBlur={() => saveData("admin-bg-music", bgMusic)} className="bg-transparent text-[14px] font-medium text-pink-400/80 outline-none w-full" placeholder="Artist Name" />
+                               </div>
+
+                               <div className="space-y-2">
+                                  <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2">Audio/Video File (MP4)</label>
+                                  <ImageUpload currentImage={track.url} type="bgmusic" onUpload={(url, originalName) => { 
+                                    const n = [...bgMusic]; 
+                                    n[i].url = url; 
+                                    if (originalName && (n[i].title === "New Track" || !n[i].title.trim())) {
+                                      n[i].title = originalName.replace(/\.[^/.]+$/, "");
+                                    }
+                                    setBgMusic(n); 
+                                    saveData("admin-bg-music", n); 
+                                  }} />
+                                  <input type="text" value={track.url} onChange={e => { const n = [...bgMusic]; n[i].url = e.target.value; setBgMusic(n); }} onBlur={() => saveData("admin-bg-music", bgMusic)} className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-[12px] text-white/50 outline-none mt-2" placeholder="Or enter manual URL..." />
+                               </div>
+
+                               <div className="flex gap-4 pt-4 border-t border-white/5">
+                                  {["Active", "Hidden"].map(status => (
+                                     <button key={status} onClick={() => { const n = [...bgMusic]; n[i].status = status; setBgMusic(n); saveData("admin-bg-music", n); }} className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${track.status === status ? status === 'Active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/10 text-white' : 'bg-transparent text-white/20 hover:text-white/60'}`}>
+                                        {status}
+                                     </button>
+                                  ))}
+                               </div>
+                            </div>
+                         ))}
+                      </div>
+                   </motion.div>
                 )}
               </AnimatePresence>
             </div>

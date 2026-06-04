@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark, Award,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code
+  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code, SkipForward
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,10 +38,11 @@ import DemosHub from "./components/DemosHub";
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import AmbientBackground from "./components/AmbientBackground";
+import LokiMultiverseBackground from "./components/LokiMultiverseBackground";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function Home() {
-  const { isPlaying, togglePlay } = useAudio();
+  const { isPlaying, togglePlay, nextTrack, currentTrack, tracks } = useAudio();
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
   const [bootDone, setBootDone] = useState(false);
@@ -186,6 +187,7 @@ export default function Home() {
       >
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <AmbientBackground />
+          <LokiMultiverseBackground />
         </div>
 
       <AnalyticsTracker />
@@ -197,6 +199,15 @@ export default function Home() {
           <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">{translations[language].mobileHeader.role}</span>
         </div>
         <div className="flex items-center gap-3">
+          {tracks?.length > 1 && (
+            <button
+              onClick={nextTrack}
+              className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all shadow-sm"
+              aria-label="Next background track"
+            >
+              <SkipForward size={18} />
+            </button>
+          )}
           <button
             onClick={togglePlay}
             className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all shadow-sm"
@@ -272,14 +283,29 @@ export default function Home() {
           <div className="hidden lg:block mb-2">
             <ThemeBuddy />
           </div>
+          
+          {tracks?.length > 1 && (
+            <button
+              onClick={nextTrack}
+              className="w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)] hover:text-[var(--accent)]"
+              aria-label="Next track"
+            >
+              <SkipForward size={16} />
+            </button>
+          )}
+
           <button
             onClick={togglePlay}
-            className={`w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${
+            className={`group relative w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${
               isPlaying ? "bg-[var(--accent)]/15 text-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.15)]" : "text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)]"
             }`}
             aria-label="Toggle background music"
           >
             {isPlaying ? <Volume2 size={18} className="animate-pulse" /> : <VolumeX size={18} />}
+            {/* Dynamic Hover Tooltip for Desktop */}
+            <span className="hidden lg:block pointer-events-none absolute left-full ml-4 px-3 py-1.5 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.2em] rounded-lg opacity-0 group-hover:opacity-100 whitespace-nowrap transition-all -translate-x-2 group-hover:translate-x-0 z-50 shadow-2xl">
+              {isPlaying && currentTrack ? `${currentTrack.title} - ${currentTrack.artist}` : "Background Music"}
+            </span>
           </button>
 
           {navItems.map((item) => (

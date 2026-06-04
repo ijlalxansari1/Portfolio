@@ -106,10 +106,7 @@ export default function ToolStack() {
                    className="h-full bg-gradient-to-r from-[var(--accent)]/0 to-[var(--accent)] opacity-30"
                  />
               </div>
-              {/* ASCII Bar for CMD Mode */}
-              <div className="progress-ascii font-mono text-[10px] whitespace-pre">
-                {asciiBar(tool.progress || 80)} {tool.progress || 80}%
-              </div>
+
             </div>
             
             {/* Background Glow */}

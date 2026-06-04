@@ -37,10 +37,26 @@ function TimelineItem({ period, title, subtitle, description, tags, index }: {
       <h4 className="text-[var(--text-primary)] font-bold text-lg mb-1">{title}</h4>
       <p className="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest mb-4">{subtitle}</p>
       
-      <div className="text-[var(--text-secondary)] text-[14px] leading-relaxed mb-6 space-y-4">
-        {(description || "").split('\n').filter(p => p.trim() !== "").map((para, i) => (
-          <p key={i}>{para}</p>
-        ))}
+      <div className="text-[var(--text-secondary)] text-[14px] leading-relaxed mb-6 space-y-3">
+        {(() => {
+          const lines = (description || "").split('\n').filter(p => p.trim() !== "");
+          if (lines.length === 0) return null;
+          
+          return (
+            <ul className="space-y-2 pl-1">
+              {lines.map((line, i) => {
+                // Remove bullet prefix if user manually typed one anyway
+                const cleanLine = line.replace(/^[-•–]\s+/, '');
+                return (
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mt-2 shrink-0" />
+                    <span>{cleanLine}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          );
+        })()}
       </div>
 
       {tags && (

@@ -3,8 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { verifyAuth } from "@/app/utils/auth";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 export async function POST(request: NextRequest) {
   // SECURITY: Verify session token
@@ -23,12 +22,17 @@ export async function POST(request: NextRequest) {
 
     // SECURITY: Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: "File too large (Max 5MB)" }, { status: 400 });
+      return NextResponse.json({ error: "File too large (Max 50MB)" }, { status: 400 });
     }
 
     // SECURITY: Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: "Invalid file type. Only images and PDFs allowed." }, { status: 400 });
+    const isValidType = file.type.startsWith("image/") || 
+                        file.type === "application/pdf" || 
+                        file.type.startsWith("video/") || 
+                        file.type.startsWith("audio/");
+                        
+    if (!isValidType) {
+      return NextResponse.json({ error: "Invalid file type. Only media files and PDFs allowed." }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -45,6 +49,7 @@ export async function POST(request: NextRequest) {
 
     // Save file
     const filepath = join(uploadDir, filename);
+    await mkdir(uploadDir, { recursive: true });
     await writeFile(filepath, buffer);
 
     // Return file URL

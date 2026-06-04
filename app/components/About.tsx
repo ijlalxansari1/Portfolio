@@ -91,7 +91,7 @@ export default function About() {
             transition={{ delay: 0.2 }}
             className="hero-name text-[36px] md:text-[64px] lg:text-[92px] font-black text-white leading-[0.95] tracking-tighter"
           >
-            {manifesto?.title?.split('.')[0] || "Ijlal"} <span className="text-[var(--accent)]">{manifesto?.title?.split('.')[1] || "Ansari."}</span>
+            Ijlal <span className="text-[var(--accent)]">Ansari.</span>
           </motion.h1>
           
           <motion.div 
@@ -119,7 +119,7 @@ export default function About() {
         transition={{ delay: 0.4 }}
         className="text-[14px] md:text-[17px] lg:text-[20px] text-[var(--text-secondary)] opacity-60 leading-[1.8] max-w-[700px] mb-12 font-medium"
       >
-        {language === 'en' ? (manifesto?.paragraphs?.[0] || t.bio) : t.bio}
+        {t.bio}
       </motion.p>
 
       {/* Hero Buttons */}

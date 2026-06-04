@@ -2,12 +2,12 @@
 
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Upload, X, Image as ImageIcon, Sparkles } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Sparkles, Music } from "lucide-react";
 import Image from "next/image";
 
 interface ImageUploadProps {
-  onUpload: (url: string) => void;
-  type?: "projects" | "blog" | "certifications" | "skills";
+  onUpload: (url: string, originalName?: string) => void;
+  type?: "projects" | "blog" | "certifications" | "skills" | "bgmusic";
   currentImage?: string;
   defaultImage?: string;
   onAIGenerate?: (prompt: string) => Promise<string>;
@@ -32,9 +32,16 @@ export default function ImageUpload({
   const [aiGenerating, setAiGenerating] = useState(false);
 
   const handleFile = async (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
-      return;
+    if (type === "bgmusic") {
+      if (!file.type.startsWith("audio/") && !file.type.startsWith("video/")) {
+        alert("Please upload an audio or video file");
+        return;
+      }
+    } else {
+      if (!file.type.startsWith("image/")) {
+        alert("Please upload an image file");
+        return;
+      }
     }
 
     setUploading(true);
@@ -53,7 +60,7 @@ export default function ImageUpload({
       const data = await response.json();
       if (data.success) {
         setPreview(data.url);
-        onUpload(data.url);
+        onUpload(data.url, file.name);
       } else {
         alert("Upload failed");
       }
@@ -113,13 +120,20 @@ export default function ImageUpload({
       {preview ? (
         <div className="relative group h-full w-full">
           <div className={`relative w-full rounded-lg overflow-hidden border border-white/10 ${iconOnly ? 'h-full' : 'h-48'}`}>
-            <Image
-              src={preview}
-              alt="Preview"
-              fill
-              className="object-cover"
-              unoptimized={preview.includes('http') || preview.includes('data:image')}
-            />
+            {type === "bgmusic" && preview && !preview.match(/\.(jpeg|jpg|gif|png)$/i) ? (
+              <div className="flex flex-col items-center justify-center h-full bg-black/50 text-white/60 text-sm">
+                <Music size={32} className="mb-2 text-pink-400" />
+                <span className="max-w-[80%] truncate">{preview.split('/').pop()}</span>
+              </div>
+            ) : (
+              <Image
+                src={preview}
+                alt="Preview"
+                fill
+                className="object-cover"
+                unoptimized={preview.includes('http') || preview.includes('data:image')}
+              />
+            )}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -158,21 +172,25 @@ export default function ImageUpload({
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept={type === "bgmusic" ? "audio/*,video/*" : "image/*"}
             onChange={handleChange}
             className="hidden"
           />
-          <ImageIcon className={`${iconOnly ? 'mb-0 text-gray-500' : 'mx-auto mb-4 text-gray-400'}`} size={iconOnly ? 20 : 48} />
+          {type === "bgmusic" ? (
+            <Music className={`${iconOnly ? 'mb-0 text-gray-500' : 'mx-auto mb-4 text-pink-400/50'}`} size={iconOnly ? 20 : 48} />
+          ) : (
+            <ImageIcon className={`${iconOnly ? 'mb-0 text-gray-500' : 'mx-auto mb-4 text-gray-400'}`} size={iconOnly ? 20 : 48} />
+          )}
           {!iconOnly && (
             <>
               <p className="text-gray-400 mb-2">
-                Drag and drop an image or{" "}
+                Drag and drop {type === "bgmusic" ? "an audio file" : "an image"} or{" "}
                 <span className="text-neon-mint hover:underline">
                   browse
                 </span>
               </p>
               <p className="text-gray-500 text-sm">
-                PNG, JPG, WEBP up to 5MB
+                {type === "bgmusic" ? "MP3, WAV, OGG, M4A up to 50MB" : "PNG, JPG, WEBP up to 5MB"}
               </p>
             </>
           )}

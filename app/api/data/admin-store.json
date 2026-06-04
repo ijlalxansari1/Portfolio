@@ -156,5 +156,144 @@
       "icon": "ShieldCheck",
       "status": "Published"
     }
+  ],
+  "admin-certs": [
+    {
+      "id": 1780584190006,
+      "title": "Python for Data Science, AI & Development",
+      "issuer": "IBM , Coursera",
+      "provider": "IBM , Coursera",
+      "credentialId": "",
+      "date": "2025-05-26",
+      "image": "/certifications/1780584218529-Python_data_science_Ai.png",
+      "description": "Python, data science, and Ai",
+      "verificationUrl": "https://coursera.org/verify/EV2YOMDOL7KZ",
+      "verification_url": "https://coursera.org/verify/EV2YOMDOL7KZ",
+      "link": "https://coursera.org/verify/EV2YOMDOL7KZ",
+      "status": "Active"
+    },
+    {
+      "id": 1780584107184,
+      "title": "Business intelligence (BI) Essentials",
+      "issuer": "IBM , Coursera",
+      "provider": "IBM , Coursera",
+      "credentialId": "",
+      "date": "2025-03-04",
+      "image": "/certifications/1780584138666-BI.png",
+      "description": "Bi fundamentals",
+      "verificationUrl": "https://coursera.org/verify/ZMFCI6QLY3M5",
+      "verification_url": "https://coursera.org/verify/ZMFCI6QLY3M5",
+      "link": "https://coursera.org/verify/ZMFCI6QLY3M5",
+      "status": "Active"
+    },
+    {
+      "id": 1,
+      "title": "Introduction to Data Engineering",
+      "provider": "IBM , Coursera",
+      "link": "https://coursera.org/verify/LBCUFHZ7SEAU",
+      "status": "Active",
+      "issuer": "IBM , Coursera",
+      "image": "/certifications/1780584049112-Introduction_to_Data_engineering.png",
+      "date": "2025-04-05",
+      "description": "Introduction to data engineering",
+      "verificationUrl": "https://coursera.org/verify/LBCUFHZ7SEAU",
+      "verification_url": "https://coursera.org/verify/LBCUFHZ7SEAU"
+    }
+  ],
+  "admin-keystats": {
+    "projects": 5,
+    "hours": 1021,
+    "taught": 110
+  },
+  "admin-experience": [
+    {
+      "company": "Precisetec",
+      "role": "Business inteLLIgence intern",
+      "period": "sep 2024 — jan 2025",
+      "desc": "Analyzed 100K+ automotive records to surface vehicle-segment trends and improve business insights.\nBuilt Python/SQL ETL and automated reports (Power BI dashboards) to cut processing time and manual work by ~30–35%.",
+      "technologies": [
+        "Python",
+        "Sql"
+      ],
+      "description": "Analyzed 100K+ automotive records to surface vehicle-segment trends and improve business insights.\nBuilt Python/SQL ETL and automated reports (Power BI dashboards) to cut processing time and manual work by ~30–35%."
+    },
+    {
+      "company": "LivingPath",
+      "role": "Data managment Intern",
+      "period": "jul 2025 — aug 2025",
+      "desc": "Cleaned and validated large-scale senior-housing datasets to boost reliability and analysis accuracy. \nBuilt Python/SQL preprocessing workflows and Git-based version control to cut manual effort and integration conflicts by ~20%, supporting faster, data-driven decisions.",
+      "technologies": [
+        "Python",
+        "Sql",
+        "Excel"
+      ],
+      "description": "Cleaned and validated large-scale senior-housing datasets to boost reliability and analysis accuracy. \nBuilt Python/SQL preprocessing workflows and Git-based version control to cut manual effort and integration conflicts by ~20%, supporting faster, data-driven decisions."
+    }
+  ],
+  "admin-manifesto": {
+    "title": "Built in silence. Engineered with intent.",
+    "paragraphs": [
+      "My path isn't defined by the noise of the industry, but by the structural integrity of the systems I build.",
+      "I specialize in architecting ethical data platforms that balance high-performance engineering with absolute governance.",
+      "My approach in data ops aims for ethical intelligent data systems."
+    ]
+  },
+  "admin-bg-music": [
+    {
+      "id": 1780588381083,
+      "title": "Interstellar Docking scene",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780588388010-interstellar_docking.mp3",
+      "status": "Active"
+    },
+    {
+      "id": 1780588392765,
+      "title": "Hanszimmer",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780588408891-Hans_Zimmer_-_Interstellar_Main_Theme_OST_INTERSTELLER__mp3.pm_.mp3",
+      "status": "Active"
+    },
+    {
+      "id": 1780590811456,
+      "title": "LOKI Season 2 EPISODE 6 END CREDITS Theme _ Natalie Holt _ Epic Version",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780593022149-LOKI_Season_2_EPISODE_6_END_CREDITS_Theme___Natalie_Holt___Epic_Version.mp4",
+      "status": "Active"
+    },
+    {
+      "id": 1780591070809.9724,
+      "title": "Loki Theme V2 _ EPIC GLORIOUS VERSION (Loki Green Theme) [feat. Mandalorian Theme]",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780591070659-Loki_Theme_V2___EPIC_GLORIOUS_VERSION__Loki_Green_Theme___feat._Mandalorian_Theme_.mp4",
+      "status": "Active"
+    },
+    {
+      "id": 1780591070863.1362,
+      "title": "Hans Zimmer - Flight (Man of Steel)",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780591070848-Hans_Zimmer_-_Flight__Man_of_Steel_.mp4",
+      "status": "Active"
+    },
+    {
+      "id": 1780591071116.579,
+      "title": "Ludovico Einaudi - Experience (Live from Teatro dal Verme, Milano)",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780591070999-Ludovico_Einaudi_-_Experience__Live_from_Teatro_dal_Verme__Milano_.mp4",
+      "status": "Active"
+    },
+    {
+      "id": 1780591071201.2673,
+      "title": "Hans Zimmer - Mountains (Interstellar Soundtrack)",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780591071188-Hans_Zimmer_-_Mountains__Interstellar_Soundtrack_.mp4",
+      "status": "Active"
+    },
+    {
+      "id": 1780591071263.705,
+      "title": "Hans Zimmer - No Time For Caution (Interstellar Soundtrack)(Docking)(Interstellar OST)",
+      "artist": "Unknown Artist",
+      "url": "/bgmusic/1780591071245-Hans_Zimmer_-_No_Time_For_Caution__Interstellar_Soundtrack__Docking__Interstellar_OST_.mp4",
+      "status": "Active"
+    }
   ]
 }

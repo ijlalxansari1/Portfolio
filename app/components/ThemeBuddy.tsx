@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Sun, Moon, Check, Palette, Terminal as TerminalIcon } from "lucide-react";
+import { Sun, Moon, Check, Palette, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
-import BootOverlay from "./BootOverlay";
 import { useLanguage } from "../context/LanguageContext";
 
 const accents = [
@@ -23,7 +22,6 @@ export default function ThemeBuddy() {
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
   const [mounted, setMounted] = useState(false);
-  const [isBooting, setIsBooting] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,21 +46,9 @@ export default function ThemeBuddy() {
   }, [isOpen]);
 
   const handleThemeChange = (newTheme: string) => {
-    if (newTheme === 'cmd' && theme !== 'cmd') {
-      setIsBooting(true);
-      setIsOpen(false);
-    } else {
-      setTheme(newTheme);
-      document.documentElement.className = newTheme;
-      localStorage.setItem("portfolio-theme", newTheme);
-    }
-  };
-
-  const finalizeCmd = () => {
-    setTheme('cmd');
-    document.documentElement.className = 'cmd';
-    localStorage.setItem("portfolio-theme", 'cmd');
-    setIsBooting(false);
+    setTheme(newTheme);
+    document.documentElement.className = newTheme;
+    localStorage.setItem("portfolio-theme", newTheme);
   };
 
   const changeAccent = (newAccent: string) => {
@@ -108,9 +94,9 @@ export default function ThemeBuddy() {
                     <Moon size={14} />
                     <span className="text-[9px] font-bold uppercase">Dark</span>
                   </button>
-                  <button onClick={() => handleThemeChange('cmd')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'cmd' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
-                    <TerminalIcon size={14} />
-                    <span className="text-[9px] font-bold uppercase">CMD</span>
+                  <button onClick={() => handleThemeChange('loki')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'loki' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                    <Sparkles size={14} className="text-emerald-500" />
+                    <span className="text-[9px] font-bold uppercase text-emerald-500">Loki</span>
                   </button>
                   <button onClick={() => handleThemeChange('midnight')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'midnight' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                     <div className="w-3 h-3 rounded-full bg-[#0a0b1e]" />
@@ -187,8 +173,6 @@ export default function ThemeBuddy() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <BootOverlay isActive={isBooting} onComplete={finalizeCmd} />
     </div>
   );
 }
