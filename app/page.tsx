@@ -38,7 +38,6 @@ import DemosHub from "./components/DemosHub";
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import AmbientBackground from "./components/AmbientBackground";
-import ParticleBackground from "./components/ParticleBackground";
 import LokiMultiverseBackground from "./components/LokiMultiverseBackground";
 import TvaBackground from "./components/TvaBackground";
 import LoadingScreen from "./components/LoadingScreen";
