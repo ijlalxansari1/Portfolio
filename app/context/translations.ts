@@ -27,7 +27,7 @@ export const translations = {
         "Data shapes decisions, behaviour, economies, and increasingly, the direction of society itself. Behind every AI system and large-scale platform are people designing the pipelines, defining the rules, and deciding what data is trusted. Without morally grounded data engineers, even the most advanced systems can drift in the wrong direction.",
         "I didn’t come from a major tech hub or a university ecosystem filled with industry pipelines and easy opportunities. While studying Software Engineering, I taught myself practical data engineering by building real systems from scratch — one pipeline at a time.",
         "That background shaped how I work: I document everything carefully, I respect constraints, and I don’t ship systems I don’t fully understand.",
-        "Most data platforms are built to move fast. I’m building AETHER to be accountable.",
+        "Most data systems follow a predetermined path. I’m building the LOKI Protocol to break the timeline and forge true free will.",
         "Bias detection, SHAP explainability, append-only audit logs, and a 24-permission RBAC matrix aren’t extra features — they’re the reason the platform exists. To me, data governance isn’t a compliance checkbox. It’s the foundation of trustworthy systems.",
         "I believe the future of AI will not be defined only by models, but by the integrity of the data systems behind them — and by the engineers willing to build those systems responsibly.",
         "I’m early in my career, and I know that. What I also know is that I’ve built 6 end-to-end projects, completed structured data engineering training, and consistently write about what I learn and build.",
@@ -201,7 +201,7 @@ export const translations = {
     },
     ethicsPledge: {
       label: "MY COMMITMENT",
-      title: "The AETHER Ethics Pledge",
+      title: "The LOKI Protocol Ethics Pledge",
       desc: "A personal framework for responsible engineering.",
       points: [
         "I will not build systems that obscure their decision-making logic.",
@@ -245,7 +245,7 @@ export const translations = {
         "Daten prägen Entscheidungen, Verhalten, Volkswirtschaften und zunehmend die Richtung der Gesellschaft selbst. Hinter jedem KI-System und jeder großen Plattform stehen Menschen, die die Pipelines entwerfen, die Regeln festlegen und entscheiden, welchen Daten vertraut wird. Ohne moralisch gefestigte Dateningenieure können selbst die fortschrittlichsten Systeme in die falsche Richtung abdriften.",
         "Ich komme nicht aus einem großen Tech-Hub oder einem universitären Ökosystem voller Branchen-Pipelines und einfacher Möglichkeiten. Während meines Software-Engineering-Studiums habe ich mir praktisches Data Engineering selbst beigebracht, indem ich echte Systeme von Grund auf neu aufgebaut habe – eine Pipeline nach der anderen.",
         "Dieser Hintergrund hat meine Arbeitsweise geprägt: Ich dokumentiere alles sorgfältig, ich respektiere Einschränkungen und ich liefere keine Systeme aus, die ich nicht vollständig verstehe.",
-        "Die meisten Datenplattformen sind auf Schnelligkeit ausgelegt. Ich baue AETHER, um rechenschaftspflichtig zu sein.",
+        "Die meisten Datensysteme folgen einem vorgegebenen Pfad. Ich baue das LOKI Protokoll, um die Zeitlinie zu durchbrechen und wahren freien Willen zu schmieden.",
         "Bias-Erkennung, SHAP-Erklärbarkeit, Append-only-Audit-Logs und eine RBAC-Matrix mit 24 Berechtigungen sind keine Zusatzfunktionen – sie sind der Grund, warum die Plattform existiert. Für mich ist Data Governance kein Kontrollkästchen für die Einhaltung von Vorschriften. Es ist die Grundlage für vertrauenswürdige Systeme.",
         "Ich glaube, dass die Zukunft der KI nicht nur durch Modelle definiert wird, sondern durch die Integrität der dahinter stehenden Datensysteme – und durch die Ingenieure, die bereit sind, diese Systeme verantwortungsbewusst zu bauen.",
         "Ich stehe am Anfang meiner Karriere und das weiß ich. Was ich auch weiß, ist, dass ich 6 End-to-End-Projekte aufgebaut, ein strukturiertes Data-Engineering-Training absolviert habe und regelmäßig über das schreibe, was ich lerne und baue.",
@@ -419,7 +419,7 @@ export const translations = {
     },
     ethicsPledge: {
       label: "MEIN ENGAGEMENT",
-      title: "Das AETHER-Ethik-Versprechen",
+      title: "Das LOKI Protokoll-Ethik-Versprechen",
       desc: "Ein persönlicher Rahmen für verantwortungsbewusstes Engineering.",
       points: [
         "Ich werde keine Systeme bauen, die ihre Entscheidungslogik verschleiern.",

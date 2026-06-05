@@ -52,7 +52,7 @@ export default function Bio() {
 
         <div className="pt-8 flex items-center gap-6">
            <div className="h-px flex-1 bg-white/10" />
-           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">AETHER Protocol</span>
+           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">LOKI Protocol</span>
            <div className="h-px flex-1 bg-white/10" />
         </div>
       </div>

@@ -395,26 +395,29 @@ export default function AmbientBackground() {
     const particles: Particle[] = Array.from({ length: 55 }, () => new Particle());
     let time = 0;
 
+    let cachedBg = "#0c172d";
+    let cachedAccent = "#00e87a";
+
+    const updateColors = () => {
+      cachedBg = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim() || (themeRef.current === "ghost" ? "#040612" : "#0c172d");
+      cachedAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#00e87a";
+    };
+    updateColors();
+
+    const observer = new MutationObserver(updateColors);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-accent'] });
+
     const render = () => {
-      if (!prefersReducedMotion) {
-        time += 1.2;
-      }
+      time += 1.2;
       const isGhost = themeRef.current === "ghost";
 
-      if (!prefersReducedMotion) {
-        mouse.x += (mouse.targetX - mouse.x) * 0.06;
-        mouse.y += (mouse.targetY - mouse.y) * 0.06;
-      } else {
-        mouse.x = mouse.targetX;
-        mouse.y = mouse.targetY;
-      }
+      mouse.x += (mouse.targetX - mouse.x) * 0.06;
+      mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-      const rawAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
-      const accentColor = rawAccent || "#00e87a";
+      const accentColor = cachedAccent;
 
       // 1. Clear Frame
-      const rawBg = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
-      ctx.fillStyle = rawBg || (isGhost ? "#040612" : "#0c172d");
+      ctx.fillStyle = cachedBg;
       ctx.fillRect(0, 0, width, height);
 
       // 2. Horizon sunset glow OR Interstellar nebula cloud
@@ -445,7 +448,7 @@ export default function AmbientBackground() {
 
       // 3. Draw background grass
       backgroundGrass.forEach((blade) => {
-        if (!prefersReducedMotion) blade.update(time);
+        blade.update(time);
         blade.draw(ctx, isGhost);
       });
 
@@ -459,7 +462,7 @@ export default function AmbientBackground() {
 
       // 5. Draw midground grass
       midgroundGrass.forEach((blade) => {
-        if (!prefersReducedMotion) blade.update(time);
+        blade.update(time);
         blade.draw(ctx, isGhost);
       });
 
@@ -482,7 +485,7 @@ export default function AmbientBackground() {
 
       // 7. Draw foreground grass
       foregroundGrass.forEach((blade) => {
-        if (!prefersReducedMotion) blade.update(time);
+        blade.update(time);
         blade.draw(ctx, isGhost);
       });
 
@@ -496,20 +499,20 @@ export default function AmbientBackground() {
       // 9. Draw falling Leaves in Ghost Mode
       if (isGhost) {
         leaves.forEach((l) => {
-          if (!prefersReducedMotion) l.update(time);
+          l.update(time);
           l.draw(ctx);
         });
       }
 
       // 10. Draw cosmic twinkling stars / space sparkles
       particles.forEach((p) => {
-        if (!prefersReducedMotion) p.update();
+        p.update();
         p.draw(ctx, accentColor, isGhost);
       });
 
       // 11. Draw falling snow across all themes
       snowflakes.forEach((s) => {
-        if (!prefersReducedMotion) s.update(time);
+        s.update(time);
         s.draw(ctx);
       });
 
@@ -523,6 +526,7 @@ export default function AmbientBackground() {
       window.removeEventListener("resize", handleResize);
       motionQuery.removeEventListener("change", handleMotionChange);
       cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
     };
   }, []);
 

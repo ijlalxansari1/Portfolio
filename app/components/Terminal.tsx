@@ -20,7 +20,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
 
   useEffect(() => {
     const bootText = [
-      "Initializing AETHER terminal v1.0...",
+      "Initializing LOKI Protocol terminal v1.0...",
       "Loading profile: Ijlal Ansari...",
       "Status: Available for hire ✓",
       "",
@@ -69,7 +69,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
           "skills         Prints ASCII bar chart of skills",
           "projects       Lists all 6 projects",
           "contact        Shows social links",
-          "aether         Special platform info",
+          "loki           Special protocol info",
           "hire           Go to contact section",
           "clear          Clears terminal",
           "exit           Closes terminal",
@@ -79,7 +79,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
         setOutput((prev) => [
           ...prev,
           "Senior Data Engineer & AI Researcher specializing in ethical data intelligence.",
-          "Building AETHER to bring transparency and governance to the modern data stack.",
+          "Building the LOKI Protocol for glorious purpose, free will, and better data systems across the sacred timeline.",
         ]);
         break;
       case "skills":
@@ -98,7 +98,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
       case "projects":
         setOutput((prev) => [
           ...prev,
-          "1. AETHER Platform - Ethical Data Intelligence",
+          "1. LOKI Protocol - Temporal Data Intelligence",
           "2. Data Engineering Tracker - Learning Path",
           "3. ETL Pipeline - dbt + Dagster",
           "4. Bias Audit System - ML Fairness",
@@ -115,9 +115,9 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
           "LinkedIn: linkedin.com/in/ijlalansari",
         ]);
         break;
-      case "aether":
+      case "loki":
         const lines = [
-          "> AETHER — Ethical Data Analysis Platform",
+          "> LOKI — Temporal Data Analysis Protocol. For all time. Always.",
           "> Loading pipeline modules...",
           "> [████████████████████] 100%",
           "> Bias detection: ACTIVE",

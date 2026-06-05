@@ -21,13 +21,13 @@ interface ProjectModalProps {
 
 const caseStudies: Record<number | string, any> = {
   1: {
-    title: "AETHER Platform",
+    title: "LOKI Protocol",
     tag: "Python",
     year: "2025",
     status: "In Progress",
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200",
     problem: "Most data analysis tools are built for speed and scale — not honesty. There was no open-source platform that treated bias detection, audit logging, and explainability as first-class features rather than afterthoughts.",
-    approach: "I designed AETHER from first principles — making governance structural: every analysis passes through a 10-stage pipeline where bias checks and SHAP explanations are mandatory steps.",
+    approach: "I designed the LOKI protocol for glorious purpose—building better data systems that forge free will and break away from the dictated paths of the sacred timeline.",
     architecture: ["Data Ingestion", "Schema Validation", "Cleaning Layer", "Feature Engineering", "Bias Detection", "Model Layer", "SHAP Explainability", "Audit Logger", "RBAC Gate", "Output"],
     tech: [
       { name: "Next.js", why: "Full-stack framework for seamless UI and API integration." },
@@ -41,7 +41,7 @@ const caseStudies: Record<number | string, any> = {
       { metric: "100%", label: "Audit compliance rate" }
     ],
     lessons: ["Governance must be structural", "DuckDB is faster for local OLAP", "RBAC needs paper-prototyping"],
-    github: "https://github.com/ijlalansari17/aether",
+    github: "https://github.com/ijlalansari17/loki-protocol",
     demo: <AetherDemo />
   },
   2: {

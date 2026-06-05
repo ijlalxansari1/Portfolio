@@ -8,7 +8,6 @@ import { LanguageProvider } from "./context/LanguageContext";
 import Script from "next/script";
 import DataLoader from "./components/DataLoader";
 import TemporalRadiation from "./components/TemporalRadiation";
-import MissMinutes from "./components/MissMinutes";
 import { AudioProvider } from "./context/AudioContext";
 
 const poppins = Poppins({ 
@@ -45,8 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   const title = config.title || 'Ijlal Ansari — Data Engineer & AI Ethics Researcher';
-  const description = config.description || "Data Engineer and AI Ethics Researcher building AETHER — an open-source ethical data platform with bias detection, SHAP explainability, and data governance. Skilled in Python, dbt, Dagster, FastAPI, DuckDB, PostgreSQL, and Kafka.";
-  const keywords = config.keywords || "data engineer, data engineering portfolio, Python data engineer, dbt developer, AI ethics researcher, AETHER platform, Fairlearn SHAP bias detection, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Dagster orchestration, open source data platform";
+  const description = config.description || "Data Engineer and AI Ethics Researcher building the LOKI Protocol — an open-source temporal data platform with bias detection, SHAP explainability, and timeline governance. Skilled in Python, dbt, Dagster, FastAPI, DuckDB, PostgreSQL, and Kafka.";
+  const keywords = config.keywords || "data engineer, data engineering portfolio, Python data engineer, dbt developer, AI ethics researcher, LOKI Protocol, temporal data architecture, Fairlearn SHAP bias detection, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Dagster orchestration, open source data platform";
 
   return {
     title: {
@@ -107,7 +106,7 @@ const personSchema = {
   "url": "https://dataden.vercel.app",
   "image": "https://dataden.vercel.app/profile.jpg",
   "jobTitle": "Data Engineer & AI Ethics Researcher",
-  "description": "Data Engineer and AI Ethics Researcher building AETHER — an open-source ethical data analysis platform with bias detection, SHAP explainability, and data governance.",
+  "description": "Data Engineer and AI Ethics Researcher building the LOKI Protocol — an open-source temporal data analysis platform with bias detection, SHAP explainability, and timeline governance.",
   "knowsAbout": [
     "Data Engineering",
     "ETL Pipeline Design",
@@ -176,13 +175,12 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="loki" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'loki', 'midnight', 'tva', 'slate', 'bordeaux', 'sunset']}>
+        <ThemeProvider attribute="class" defaultTheme="loki" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'loki', 'midnight', 'tva', 'slate', 'bordeaux']}>
           <LanguageProvider>
             <AudioProvider>
               <CustomCursor />
               <TemporalRadiation />
               <DataLoader />
-              <MissMinutes />
               <ToastProvider>
                 {children}
               </ToastProvider>

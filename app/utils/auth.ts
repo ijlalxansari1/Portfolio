@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import crypto from "crypto";
 
-const SECRET = process.env.ADMIN_SECRET || "aether_super_secret_key_2025";
+// SECURITY FIX: Fallback secret is now randomly generated to prevent token forgery if ENV is missing
+const SECRET = process.env.ADMIN_SECRET || crypto.randomBytes(32).toString('hex');
 
 export function signToken(username: string): string {
   const timestamp = Date.now();

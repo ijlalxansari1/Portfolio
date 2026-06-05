@@ -37,7 +37,7 @@ const defaultCategories = {
 };
 
 const defaultTestimonials = [
-  { id: 1, name: "Dr. Sarah Chen", role: "AI Research Lead", company: "DataTalks.Club", quote: "Ijlal's work on ethical data systems is truly impressive. His AETHER platform sets a new standard.", avatar: "", status: "Published" },
+  { id: 1, name: "Dr. Sarah Chen", role: "AI Research Lead", company: "DataTalks.Club", quote: "Ijlal's work on ethical data systems is truly impressive. His LOKI protocol sets a new standard.", avatar: "", status: "Published" },
   { id: 2, name: "Marcus Weber", role: "Senior Data Engineer", company: "Freelance Client", quote: "Exceptional data pipeline architecture. Delivered ahead of schedule with production-grade quality.", avatar: "", status: "Published" }
 ];
 
@@ -1304,7 +1304,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                      <Cpu size={20} className="animate-pulse" />
                                   </div>
                                   <div>
-                                     <h4 className="text-[14px] font-black text-white uppercase tracking-widest">AETHER CORE STATUS</h4>
+                                     <h4 className="text-[14px] font-black text-white uppercase tracking-widest">LOKI CORE STATUS</h4>
                                      <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">Engine Operational • 99.9% Integrity</p>
                                   </div>
                                </div>

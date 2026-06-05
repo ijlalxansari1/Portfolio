@@ -11,9 +11,9 @@
     },
     {
       "id": 1780328457981,
-      "title": "Aether",
+      "title": "Loki Protocol",
       "tag": "Next js , python , fast api",
-      "description": "Interactive sandbox for Aether",
+      "description": "Interactive sandbox for the Loki Protocol. Built for glorious purpose.",
       "status": "Active",
       "iframeUrl": "https://aether-five-alpha.vercel.app/",
       "iconUrl": "/projects/1780422806933-Aether.png"
@@ -35,10 +35,10 @@
     },
     {
       "id": 1,
-      "title": "AETHER Platform",
+      "title": "LOKI Protocol",
       "tag": "Python",
       "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-      "description": "Open-source ethical data analysis platform with a 10-stage analytical pipeline.",
+      "description": "A temporal data system forging free will from the sacred timeline. Built for glorious purpose, better data architecture, and something greater. For All Time. Always.",
       "status": "Active",
       "githubUrl": "https://github.com/ijlalxansari1/Aether",
       "liveUrl": "https://aether-five-alpha.vercel.app/",

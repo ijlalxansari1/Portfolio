@@ -10,20 +10,16 @@ export default function TvaBackground() {
   const lastSlideRef = useRef(0);
   
   const slides = [
-    '/tva/tva1.png', // Void Lantern
     '/tva/tva2.png', // Elevator
     '/tva/tva3.png', // Time Vault
     '/tva/tva4.png', // Miss Minutes Room
     '/tva/tva5.png', // Temporal Loom
     '/tva/tva6.png', // Vault
     '/tva/tva7.png', // Spaghettification
-    '/tva/tva8.png', // Loki God of Stories
     '/tva/tva9.png', // Loom Explosion
     '/tva/tva10.png', // Miss Minutes Screen
     '/tva/tva11.png', // Time Keepers
     '/tva/tva12.png', // TVA Retro Monitor Branches
-    '/tva/tva13.png', // Citadel End of Time Void Green Skies
-    '/tva/tva14.png', // Void Ruined Ship
   ];
 
   // Scroll tracking to change slides
@@ -89,11 +85,11 @@ export default function TvaBackground() {
     canvas.width = width;
     canvas.height = height;
 
-    const mouse = { x: width / 2, y: height / 2, isDragging: false };
+    const mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2, isDragging: false };
     
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
     };
     
     const handleMouseDown = () => (mouse.isDragging = true);
@@ -101,8 +97,8 @@ export default function TvaBackground() {
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-         mouse.x = e.touches[0].clientX;
-         mouse.y = e.touches[0].clientY;
+         mouse.targetX = e.touches[0].clientX;
+         mouse.targetY = e.touches[0].clientY;
          mouse.isDragging = true;
       }
     };
@@ -191,11 +187,11 @@ export default function TvaBackground() {
         this.y = height + 200;
         this.length = Math.random() * 400 + 200; 
         this.speed = Math.random() * 1.5 + 0.5; 
-        this.amplitude = Math.random() * 1.5; // Almost perfectly straight branches
-        this.frequency = Math.random() * 0.003 + 0.001; 
+        this.amplitude = Math.random() * 0.2; // Perfectly straight timelines
+        this.frequency = Math.random() * 0.001; 
         this.phase = Math.random() * Math.PI * 2;
-        this.opacity = Math.random() * 0.4 + 0.1;
-        this.width = Math.random() * 3 + 1;
+        this.opacity = Math.random() * 0.4 + 0.1; 
+        this.width = Math.random() * 2.0 + 1.0; // Slightly thicker
       }
       
       update() {
@@ -212,17 +208,17 @@ export default function TvaBackground() {
           let px = this.x + Math.sin(pastPhase) * this.amplitude;
           let py = this.y + i;
 
-          // Mouse pull
+          // Plucking a string effect
           const dx = mouse.x - px;
           const dy = mouse.y - py;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const pullRadius = mouse.isDragging ? 400 : 200;
-          const maxForce = mouse.isDragging ? 50 : 15; // Much lower pull to prevent tangling
+          const hoverRadius = mouse.isDragging ? 300 : 150;
           
-          if (dist < pullRadius) {
-             const force = (1 - dist / pullRadius) * maxForce;
-             px += (dx / dist) * force;
-             py += (dy / dist) * force;
+          if (dist < hoverRadius) {
+             const force = 1 - dist / hoverRadius; 
+             // Oscillates like a plucked string, dampening as it gets further from the mouse Y
+             const pluckWave = Math.sin(time * 0.4 - Math.abs(dy) * 0.02) * (force * 12);
+             px += pluckWave;
           }
 
           if (i === 0) ctx.moveTo(px, py);
@@ -231,23 +227,22 @@ export default function TvaBackground() {
         
         const grad = ctx.createLinearGradient(0, this.y, 0, this.y + this.length);
         grad.addColorStop(0, `rgba(255, 140, 0, 0)`);
-        grad.addColorStop(0.2, `rgba(255, 160, 0, ${this.opacity})`);
-        grad.addColorStop(0.8, `rgba(255, 120, 0, ${this.opacity * 0.8})`);
+        grad.addColorStop(0.2, `rgba(255, 150, 0, ${this.opacity})`);
+        grad.addColorStop(0.8, `rgba(255, 130, 0, ${this.opacity * 0.8})`);
         grad.addColorStop(1, `rgba(255, 140, 0, 0)`);
         
         ctx.strokeStyle = grad;
         ctx.lineWidth = this.width;
         ctx.lineCap = "round";
         ctx.shadowBlur = 15;
-        ctx.shadowColor = "rgba(255, 140, 0, 0.5)";
+        ctx.shadowColor = "rgba(255, 140, 0, 0.6)"; // TVA Orange Glow
         ctx.stroke();
         ctx.shadowBlur = 0;
       }
     }
 
-    const isMobile = window.innerWidth < 768;
-    const numParticles = isMobile ? 60 : 150;
-    const numBranches = isMobile ? 10 : 25;
+    const numParticles = 90;
+    const numBranches = 45;
 
     const particles: TimeDust[] = [];
     for (let i = 0; i < numParticles; i++) particles.push(new TimeDust());
@@ -262,12 +257,10 @@ export default function TvaBackground() {
       time++;
       ctx.clearRect(0, 0, width, height);
 
-      // CRT Scanlines Effect
-      ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
-      for (let i = 0; i < height; i += 4) {
-        ctx.fillRect(0, i, width, 1);
-      }
-      
+      // Smooth mouse interpolation like in other themes
+      mouse.x += (mouse.targetX - mouse.x) * 0.08;
+      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
       // Moving subtle scanline bar
       const scanlineY = (time * 2) % height;
       const scanlineGrad = ctx.createLinearGradient(0, scanlineY - 20, 0, scanlineY + 20);
@@ -291,21 +284,22 @@ export default function TvaBackground() {
 
       // MOUSE GLOW EFFECT
       if (mouse.x > 0 && mouse.y > 0) {
-        const glowRadius = mouse.isDragging ? 300 : 150;
+        ctx.save();
+        const baseRadius = mouse.isDragging ? 300 : 150;
+        // Add a gentle, magical pulsing animation to the light
+        const pulse = Math.sin(time * 0.05) * 30;
+        const glowRadius = baseRadius + pulse;
+
         const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, glowRadius);
-        grad.addColorStop(0, "rgba(255, 140, 0, 0.15)"); // TVA Orange/Amber
+        grad.addColorStop(0, "rgba(255, 140, 0, 0.15)"); // Restored subtle base glow
         grad.addColorStop(1, "rgba(255, 140, 0, 0)");
         ctx.fillStyle = grad;
         ctx.globalCompositeOperation = "screen";
-        ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, glowRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalCompositeOperation = "source-over";
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
       }
       
-      // Static noise grain (subtle)
-      const imageData = ctx.createImageData(width, height);
-      // We won't draw full screen noise as it is too heavy, we'll use CSS for heavy grain
+      // Removed createImageData to fix massive GC memory leak
       
       animationFrameId = requestAnimationFrame(render);
     };

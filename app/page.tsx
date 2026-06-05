@@ -11,7 +11,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-mo
 import { useLanguage } from "./context/LanguageContext";
 import { translations } from "./context/translations";
 import { useAudio } from "./context/AudioContext";
-
+import dynamic from "next/dynamic";
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
 import Bio from "./components/Bio";
@@ -30,16 +30,16 @@ import Certifications from "./components/Certifications";
 
 import ThemeBuddy from "./components/ThemeBuddy";
 
-// New Feature Imports
-import Terminal from "./components/Terminal";
-import GitHubFeed from "./components/GitHubFeed";
-import EthicsPledge from "./components/EthicsPledge";
-import DemosHub from "./components/DemosHub";
+// Dynamically import heavy features for performance and scalability
+const Terminal = dynamic(() => import("./components/Terminal"), { ssr: false });
+const GitHubFeed = dynamic(() => import("./components/GitHubFeed"), { ssr: false });
+const EthicsPledge = dynamic(() => import("./components/EthicsPledge"), { ssr: false });
+const DemosHub = dynamic(() => import("./components/DemosHub"), { ssr: false });
+const AmbientBackground = dynamic(() => import("./components/AmbientBackground"), { ssr: false });
+const LokiMultiverseBackground = dynamic(() => import("./components/LokiMultiverseBackground"), { ssr: false });
+const TvaBackground = dynamic(() => import("./components/TvaBackground"), { ssr: false });
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
-import AmbientBackground from "./components/AmbientBackground";
-import LokiMultiverseBackground from "./components/LokiMultiverseBackground";
-import TvaBackground from "./components/TvaBackground";
 import LoadingScreen from "./components/LoadingScreen";
 
 export default function Home() {
@@ -73,9 +73,11 @@ export default function Home() {
   const [isTimeSlipping, setIsTimeSlipping] = useState(false);
 
   const scrollToSection = (id: string) => {
-    // Trigger Time-Slip Animation
-    setIsTimeSlipping(true);
-    setTimeout(() => setIsTimeSlipping(false), 600); // match animation duration
+    // Only trigger Time-Slip Animation for narrative themes
+    if (theme === "loki" || theme === "tva") {
+      setIsTimeSlipping(true);
+      setTimeout(() => setIsTimeSlipping(false), 600); // match animation duration
+    }
 
     const target = document.getElementById(id);
     if (target) {
@@ -213,7 +215,7 @@ export default function Home() {
         style={{ opacity: bootDone ? 1 : 0, visibility: bootDone ? "visible" : "hidden", perspective: "1500px" }}
       >
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          <AmbientBackground />
+          {theme !== "loki" && theme !== "tva" && <AmbientBackground />}
           {theme === "loki" && <LokiMultiverseBackground />}
           {theme === "tva" && <TvaBackground />}
         </div>
@@ -308,7 +310,7 @@ export default function Home() {
       {/* ── Desktop/Tablet Navigation (Hidden on small mobile) ── */}
       <nav className="hidden md:flex fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex-row lg:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
         <div className="flex flex-row lg:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-2 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
-          <div className="hidden lg:block mb-2">
+          <div className="block lg:mb-2">
             <ThemeBuddy />
           </div>
           

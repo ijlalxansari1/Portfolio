@@ -11,13 +11,19 @@ export default function LokiMultiverseBackground() {
   const lastSlideRef = useRef(0);
   
   const slides = [
-    '/tva/tva2.png', // TVA Elevator
-    '/tva/tva6.png', // The Vault
-    '/tva/tva7.png', // Spaghettification
-    '/tva/tva9.png', // Loom Explosion
+    '/tva/tva1.png', // Void Lantern
     '/loki/slide1.png', // The Void
+    '/tva/tva14.png', // Void Ruined Ship
     '/tva/tva13.png', // Citadel Void Green Skies
     '/loki/slide4.png', // Citadel Window
+    '/images/loki-slide6.png', // Citadel inside looking up (NEW)
+    '/images/loki-slide8.png', // Citadel outside green aura (NEW)
+    '/images/loki-slide1.png', // He Who Remains
+    '/images/loki-slide4.png', // Alioth Diorama
+    '/images/loki-slide7.png', // Void landscape (gloomy) (NEW)
+    '/images/loki-slide2.png', // Sylvie Magic
+    '/images/loki-slide3.png', // Loki & Sylvie
+    '/images/loki-slide5.png', // Loki Flaming Sword
     '/tva/tva8.png', // Loki God of Stories
     '/loki/slide6.png', // Yggdrasil Tree
   ];
@@ -162,7 +168,7 @@ export default function LokiMultiverseBackground() {
         this.frequency = Math.random() * 0.005 + 0.002; 
         this.phase = Math.random() * Math.PI * 2;
         this.opacity = Math.random() * 0.4 + 0.1; 
-        this.width = Math.random() * 1.5 + 0.5; // Thinner branches
+        this.width = Math.random() * 2.0 + 1.0; // Slightly thicker
         this.lifeEnergy = 0; // Starts as decaying ash
         this.subBranches = [];
         const numBranches = Math.floor(Math.random() * 3); 
@@ -186,27 +192,27 @@ export default function LokiMultiverseBackground() {
         let minDistanceToCursor = Infinity;
         const pathPoints: {px: number, py: number}[] = [];
         
-        // Calculate main branch path with subtle magnetic pull
+        // Calculate main branch path
         for (let i = 0; i < this.length; i += 10) {
           const pastPhase = this.phase - (i * this.frequency * 0.8);
           
           let px = this.x + Math.sin(pastPhase) * this.amplitude;
           let py = this.y + i;
 
+          // Plucking a string effect
           const dx = mouse.x - px;
           const dy = mouse.y - py;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < minDistanceToCursor) minDistanceToCursor = dist;
 
-          // Gentle magnetic pull (much lower to avoid tangling)
-          const pullRadius = mouse.isDragging ? 600 : 300;
-          const maxForce = mouse.isDragging ? 100 : 25;
-          if (dist < pullRadius) {
-             const force = (1 - dist / pullRadius) * maxForce;
-             px += (dx / dist) * force;
-             py += (dy / dist) * force;
+          const hoverRadius = mouse.isDragging ? 350 : 200;
+          if (dist < hoverRadius) {
+             const force = 1 - dist / hoverRadius; 
+             // Oscillates like a plucked string, dampening as it gets further from the mouse Y
+             const pluckWave = Math.sin(time * 0.4 - Math.abs(dy) * 0.02) * (force * 15);
+             px += pluckWave;
           }
-          
+
           pathPoints.push({px, py});
         }
 
@@ -269,22 +275,17 @@ export default function LokiMultiverseBackground() {
            grad.addColorStop(0.8, `rgba(120, 200, 20, ${alpha * 0.8 * e})`); // Darker Lime/Gold
            grad.addColorStop(1, `rgba(16, 163, 74, 0)`);
            
-           ctx.shadowBlur = isSlipping ? 35 : 20;
-           ctx.shadowColor = `rgba(16, 163, 74, ${e})`;
+           // Disable shadowBlur as we are manually doing glows with globalAlpha which is faster
+           ctx.shadowBlur = 0;
            ctx.setLineDash([]); // Solid life line
            
            // GLOWING ECHOES OF TIME (Multiple stroke layers)
            ctx.strokeStyle = grad;
            ctx.globalCompositeOperation = "screen";
            
-           // Outer Echo
-           ctx.lineWidth = this.width * 6;
-           ctx.globalAlpha = 0.3;
-           ctx.stroke();
-           
-           // Mid Echo
-           ctx.lineWidth = this.width * 3.5;
-           ctx.globalAlpha = 0.6;
+           // Outer Glow (Optimized from 3 to 2 layers)
+           ctx.lineWidth = this.width * 4;
+           ctx.globalAlpha = 0.4;
            ctx.stroke();
            
            // Core Line
@@ -329,7 +330,7 @@ export default function LokiMultiverseBackground() {
         this.angle = Math.random() * Math.PI * 2;
         this.speed = (Math.random() - 0.5) * 0.08 + 0.02; // Rotation speed
         this.width = Math.random() * 2 + 1.5;
-        this.opacity = Math.random() * 0.5 + 0.3;
+        this.opacity = (Math.random() * 0.5 + 0.3) * 1.5;
         this.history = [];
       }
 
@@ -375,8 +376,8 @@ export default function LokiMultiverseBackground() {
         ctx.lineWidth = mouse.isDragging ? this.width * 2.5 : this.width * 1.5;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        ctx.shadowBlur = isSlipping ? 30 : 15;
-        ctx.shadowColor = "rgba(16, 255, 90, 0.9)";
+        // Removed expensive shadowBlur for orbitals to save performance
+        ctx.shadowBlur = 0;
         ctx.stroke();
         ctx.shadowBlur = 0;
       }
@@ -384,8 +385,8 @@ export default function LokiMultiverseBackground() {
 
     const mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2, radius: 200, isDragging: false };
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouse.targetX = e.clientX;
+      mouse.targetY = e.clientY;
     };
     
     const handleMouseDown = () => (mouse.isDragging = true);
@@ -393,8 +394,8 @@ export default function LokiMultiverseBackground() {
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-         mouse.x = e.touches[0].clientX;
-         mouse.y = e.touches[0].clientY;
+         mouse.targetX = e.touches[0].clientX;
+         mouse.targetY = e.touches[0].clientY;
          mouse.isDragging = true;
       }
     };
@@ -408,10 +409,9 @@ export default function LokiMultiverseBackground() {
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
     window.addEventListener("touchend", handleTouchEnd);
 
-    const isMobile = window.innerWidth < 768;
-    const numEmbers = isMobile ? 60 : 150;
-    const numThreads = isMobile ? 25 : 65;
-    const numOrbitals = isMobile ? 3 : 8;
+    const numEmbers = 90;
+    const numThreads = 40;
+    const numOrbitals = 6;
 
     const embers: MagicEmber[] = [];
     for (let i = 0; i < numEmbers; i++) embers.push(new MagicEmber());
@@ -437,7 +437,11 @@ export default function LokiMultiverseBackground() {
 
       // 1. Draw volumetric mouse hover light
       ctx.save();
-      const currentRadius = mouse.isDragging ? mouse.radius * 4 : mouse.radius * 2.5;
+      const baseRadius = mouse.isDragging ? mouse.radius * 4 : mouse.radius * 2.5;
+      // Add a magical pulsing animation to the Loki energy glow
+      const pulse = Math.sin(time * 0.05) * 40;
+      const currentRadius = baseRadius + pulse;
+
       const lightGrad = ctx.createRadialGradient(
         mouse.x, mouse.y, 0, mouse.x, mouse.y, currentRadius
       );
@@ -445,7 +449,7 @@ export default function LokiMultiverseBackground() {
       let intensity = slipping ? 0.25 : 0.12;
       if (mouse.isDragging) intensity = 0.35;
       lightGrad.addColorStop(0, `rgba(16, 163, 74, ${intensity})`);
-      lightGrad.addColorStop(0.5, `rgba(16, 163, 74, ${intensity * 0.3})`);
+      lightGrad.addColorStop(0.5, `rgba(16, 163, 74, ${intensity * 0.4})`);
       lightGrad.addColorStop(1, "transparent");
       ctx.globalCompositeOperation = "screen";
       ctx.fillStyle = lightGrad;

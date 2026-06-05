@@ -15,9 +15,11 @@ export default function Projects() {
 
   const defaultProjects = useMemo(() => [
     {
-      id: 1, title: language === 'en' ? "AETHER Platform" : "AETHER Plattform", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-      description: language === 'en' ? "My flagship project — an open-source ethical data analysis platform" : "Open-Source-Plattform für ethische Datenanalyse mit einer 10-stufigen Analyse-Pipeline, Bias-Erkennung mit Fairlearn und SHAP.",
-      alt: "AETHER Platform - ethical data analysis pipeline with bias detection by Ijlal Ansari"
+      id: 1, title: language === 'en' ? "LOKI Protocol" : "LOKI Protokoll", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+      description: language === 'en' 
+        ? "A temporal data system forging free will from the sacred timeline. Built for glorious purpose, better data architecture, and something greater. For All Time. Always."
+        : "Ein temporales Datensystem, das den freien Willen aus der heiligen Zeitlinie formt. Gebaut für einen glorreichen Zweck.",
+      alt: "LOKI Protocol - temporal data architecture by Ijlal Ansari"
     },
     {
       id: 2, title: "Data Engineering Tracker", tag: "Next.js", image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800",

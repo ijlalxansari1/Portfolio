@@ -15,7 +15,7 @@ import AnalyticsDashboardDemo from "./demos/AnalyticsDashboardDemo";
 import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
 
 const demoList = [
-  { id: 1, title: "AETHER Platform", tag: "Python", icon: <FlaskConical size={24} />, description: "Run a full 10-stage ethical bias analysis on sample data.", component: <AetherDemo /> },
+  { id: 1, title: "LOKI Protocol", tag: "Python", icon: <FlaskConical size={24} />, description: "Monitor temporal data branches and detect timeline variance for absolute free will.", component: <AetherDemo /> },
   { id: 2, title: "Data Eng Tracker", tag: "Next.js", icon: <GraduationCap size={24} />, description: "Interactive curriculum manager with real-time progress tracking.", component: <DataEngTrackerDemo /> },
   { id: 3, title: "ETL Pipeline", tag: "SQL", icon: <Database size={24} />, description: "Design SQL transformations and view automated dbt lineage.", component: <ETLPipelineDemo /> },
   { id: 4, title: "Bias Audit System", tag: "Python", icon: <ShieldCheck size={24} />, description: "Execute automated fairness audits using disparate impact metrics.", component: <BiasAuditDemo /> },
