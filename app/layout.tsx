@@ -175,7 +175,7 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="loki" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'loki', 'midnight', 'tva', 'slate', 'bordeaux']}>
+        <ThemeProvider attribute="class" defaultTheme="loki" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'loki', 'midnight', 'tva', 'slate', 'bordeaux', 'void']}>
           <LanguageProvider>
             <AudioProvider>
               <CustomCursor />

@@ -38,6 +38,7 @@ const DemosHub = dynamic(() => import("./components/DemosHub"), { ssr: false });
 const AmbientBackground = dynamic(() => import("./components/AmbientBackground"), { ssr: false });
 const LokiMultiverseBackground = dynamic(() => import("./components/LokiMultiverseBackground"), { ssr: false });
 const TvaBackground = dynamic(() => import("./components/TvaBackground"), { ssr: false });
+const VoidBackground = dynamic(() => import("./components/VoidBackground"), { ssr: false });
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import LoadingScreen from "./components/LoadingScreen";
@@ -211,13 +212,14 @@ export default function Home() {
       <LoadingScreen onComplete={() => setBootDone(true)} />
       
       <div 
-        className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 overflow-x-hidden w-full max-w-full transition-opacity duration-1000"
+        className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 w-full max-w-full transition-opacity duration-1000"
         style={{ opacity: bootDone ? 1 : 0, visibility: bootDone ? "visible" : "hidden", perspective: "1500px" }}
       >
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          {theme !== "loki" && theme !== "tva" && <AmbientBackground />}
+          {theme !== "loki" && theme !== "tva" && theme !== "void" && <AmbientBackground />}
           {theme === "loki" && <LokiMultiverseBackground />}
           {theme === "tva" && <TvaBackground />}
+          {theme === "void" && <VoidBackground />}
         </div>
 
       <AnalyticsTracker />
@@ -356,17 +358,17 @@ export default function Home() {
       </nav>
 
       {/* ── Main Layout ── */}
-      <div className="relative lg:absolute lg:inset-0 flex items-center justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full overflow-x-hidden pointer-events-none">
+      <div className="relative lg:absolute lg:inset-0 flex justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full lg:items-center pointer-events-none">
         <motion.div 
-          className="w-full h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
-          style={{ rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" }}
+          className="w-full lg:h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
+          style={typeof window !== 'undefined' && window.innerWidth >= 1024 ? { rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" } : {}}
         >
-          <div className="w-full lg:w-[340px] shrink-0 lg:h-full max-w-full overflow-hidden" style={{ transform: "translateZ(30px)" }}>
+          <div className="w-full lg:w-[340px] shrink-0 lg:h-full max-w-full lg:overflow-hidden" style={{ transform: "translateZ(30px)" }}>
             <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
           </div>
 
-          <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl overflow-hidden flex flex-col transition-all duration-400 relative top-glow" style={{ transform: "translateZ(20px)" }}>
-            <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
+          <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={typeof window !== 'undefined' && window.innerWidth >= 1024 ? { transform: "translateZ(20px)" } : {}}>
+            <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
               <style dangerouslySetInnerHTML={{__html: `
                 @keyframes time-slip {
                   0% { transform: scaleX(1) skewX(0); filter: hue-rotate(0deg) contrast(1); }

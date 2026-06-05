@@ -59,6 +59,21 @@ html.tva {
   --border-subtle: rgba(255, 140, 0, 0.15);
 }
 
+/* ── VOID THEME ── */
+html.void {
+  --bg-primary: #121212;
+  --bg-secondary: rgba(28, 28, 28, 0.5);
+  --bg-card: rgba(40, 40, 40, 0.5);
+  --foreground: #e0e0e0;
+  --accent: #d4af37;
+  --accent-rgb: 212, 175, 55;
+  --text-primary: #f5f5f5;
+  --text-secondary: #c0c0c0;
+  --text-muted: #888888;
+  --border: #333333;
+  --border-subtle: rgba(212, 175, 55, 0.15);
+}
+
 /* ── SLATE THEME ── */
 html.slate {
   --bg-primary: #0f1115;

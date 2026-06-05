@@ -395,18 +395,6 @@ export default function AmbientBackground() {
     const particles: Particle[] = Array.from({ length: 55 }, () => new Particle());
     let time = 0;
 
-    let cachedBg = "#0c172d";
-    let cachedAccent = "#00e87a";
-
-    const updateColors = () => {
-      cachedBg = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim() || (themeRef.current === "ghost" ? "#040612" : "#0c172d");
-      cachedAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#00e87a";
-    };
-    updateColors();
-
-    const observer = new MutationObserver(updateColors);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-accent'] });
-
     const render = () => {
       time += 1.2;
       const isGhost = themeRef.current === "ghost";
@@ -414,10 +402,15 @@ export default function AmbientBackground() {
       mouse.x += (mouse.targetX - mouse.x) * 0.06;
       mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-      const accentColor = cachedAccent;
+      let accentColor = "#00e87a";
+      try {
+        const rawAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+        if (rawAccent) accentColor = rawAccent;
+      } catch (e) {}
 
       // 1. Clear Frame
-      ctx.fillStyle = cachedBg;
+      const rawBg = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
+      ctx.fillStyle = rawBg || (isGhost ? "#040612" : "#0c172d");
       ctx.fillRect(0, 0, width, height);
 
       // 2. Horizon sunset glow OR Interstellar nebula cloud
@@ -526,7 +519,6 @@ export default function AmbientBackground() {
       window.removeEventListener("resize", handleResize);
       motionQuery.removeEventListener("change", handleMotionChange);
       cancelAnimationFrame(animationFrameId);
-      observer.disconnect();
     };
   }, []);
 

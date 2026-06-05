@@ -7,8 +7,16 @@ export default function LokiMultiverseBackground() {
   const { theme } = useTheme();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSlipping, setIsSlipping] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 1024);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lastSlideRef = useRef(0);
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   
   const slides = [
     '/tva/tva1.png', // Void Lantern
@@ -59,9 +67,11 @@ export default function LokiMultiverseBackground() {
         lastSlideRef.current = slideIndex;
         setCurrentSlide(slideIndex);
         
-        // Trigger Time Slipping Glitch effect when a transition happens!
-        setIsSlipping(true);
-        setTimeout(() => setIsSlipping(false), 800); // Glitch lasts 800ms
+        // Trigger Time Slipping Glitch effect when a transition happens! (Desktop only)
+        if (window.innerWidth >= 1024) {
+          setIsSlipping(true);
+          setTimeout(() => setIsSlipping(false), 800); // Glitch lasts 800ms
+        }
       }
     };
 
@@ -555,22 +565,33 @@ export default function LokiMultiverseBackground() {
       <div className="fixed inset-0 bg-[#02040A] z-[-4] pointer-events-none" />
 
       {/* Main Slideshow Layer */}
-      {slides.map((src, index) => (
+      {isMobile ? (
         <div
-          key={src}
-          className={`fixed inset-0 pointer-events-none z-[-3] transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? "opacity-90 slide-anim" : "opacity-0"
-          }`}
+          className="fixed inset-0 pointer-events-none z-[-3] opacity-90"
           style={{
-            backgroundImage: `url('${src}')`,
+            backgroundImage: `url('/loki/slide1.png')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         />
-      ))}
+      ) : (
+        slides.map((src, index) => (
+          <div
+            key={src}
+            className={`fixed inset-0 pointer-events-none z-[-3] transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? "opacity-90 slide-anim" : "opacity-0"
+            }`}
+            style={{
+              backgroundImage: `url('${src}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        ))
+      )}
 
       {/* Time Slipping Glitch Clone Layer */}
-      {isSlipping && (
+      {!isMobile && isSlipping && (
         <div
           className="fixed inset-0 pointer-events-none z-[-2] glitch-active"
           style={{

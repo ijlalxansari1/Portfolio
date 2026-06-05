@@ -131,6 +131,10 @@ export default function ThemeBuddy() {
                         <div className="w-3 h-3 rounded-full bg-[#1a0a0a]" />
                         <span className="text-[9px] font-bold uppercase">Bordeaux</span>
                       </button>
+                      <button onClick={() => handleThemeChange('void')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'void' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                        <div className="w-3 h-3 rounded-full bg-[#0a0216] border border-[#9333ea]/50" />
+                        <span className="text-[9px] font-bold uppercase text-purple-500">Void</span>
+                      </button>
                     </div>
                   </div>
 
@@ -213,6 +217,10 @@ export default function ThemeBuddy() {
                     <button onClick={() => handleThemeChange('bordeaux')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'bordeaux' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
                       <div className="w-3 h-3 rounded-full bg-[#1a0a0a]" />
                       <span className="text-[9px] font-bold uppercase">Bordeaux</span>
+                    </button>
+                    <button onClick={() => handleThemeChange('void')} className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${theme === 'void' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[#222] text-white/40 hover:border-white/10'}`}>
+                      <div className="w-3 h-3 rounded-full bg-[#0a0216] border border-[#9333ea]/50" />
+                      <span className="text-[9px] font-bold uppercase text-purple-500">Void</span>
                     </button>
                   </div>
                 </div>
