@@ -396,6 +396,9 @@ export default function AmbientBackground() {
     const snowflakes: Snowflake[] = Array.from({ length: 75 }, () => new Snowflake());
     
     const particles: Particle[] = Array.from({ length: 55 }, () => new Particle());
+    
+    let time = 0;
+    
     // Cache colors to prevent getComputedStyle layout thrashing in the render loop
     let cachedAccentColor = "#00e87a";
     let cachedBgColor = "";
