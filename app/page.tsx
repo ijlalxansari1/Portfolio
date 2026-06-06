@@ -37,95 +37,6 @@ const LokiMultiverseBackground = dynamic(() => import("./components/LokiMultiver
 const TvaBackground = dynamic(() => import("./components/TvaBackground"), { ssr: false });
 const VoidBackground = dynamic(() => import("./components/VoidBackground"), { ssr: false });
 
-function MobileNarrativeBackground({ theme }: { theme: string }) {
-  if (theme === "loki") {
-    return (
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="loki-glow" cx="50%" cy="40%" r="60%">
-              <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#02040a" stopOpacity="0" />
-            </radialGradient>
-            <filter id="loki-blur"><feGaussianBlur stdDeviation="3" /></filter>
-          </defs>
-          <rect width="390" height="844" fill="url(#loki-glow)" />
-          <path d="M195 844 L195 500 Q195 440 160 400 L100 320 Q70 280 90 240 L130 200" stroke="#fbbf24" strokeWidth="1.5" fill="none" strokeOpacity="0.6" filter="url(#loki-blur)" />
-          <path d="M195 650 Q230 600 260 550 Q290 500 280 440 L270 380" stroke="#fbbf24" strokeWidth="1" fill="none" strokeOpacity="0.4" />
-          <path d="M195 550 Q150 500 120 460 Q90 420 95 370" stroke="#fbbf24" strokeWidth="0.8" fill="none" strokeOpacity="0.3" />
-          <path d="M195 500 Q250 460 290 420 L330 380" stroke="#f59e0b" strokeWidth="0.7" fill="none" strokeOpacity="0.35" />
-          {[[195,650],[260,550],[120,460],[290,420],[130,200]].map(([cx,cy],i) => (
-            <circle key={i} cx={cx} cy={cy} r="3" fill="#fbbf24" fillOpacity="0.7" />
-          ))}
-          <circle cx="195" cy="180" r="50" stroke="#fbbf24" strokeWidth="0.5" strokeOpacity="0.2" fill="none" />
-          <circle cx="195" cy="180" r="38" stroke="#fbbf24" strokeWidth="0.3" strokeOpacity="0.12" fill="none" />
-        </svg>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(1px 1px at 15% 10%, rgba(251,191,36,0.6) 0%, transparent 100%),radial-gradient(1px 1px at 75% 18%, rgba(251,191,36,0.4) 0%, transparent 100%),radial-gradient(1px 1px at 40% 32%, rgba(251,191,36,0.5) 0%, transparent 100%),radial-gradient(1px 1px at 88% 45%, rgba(251,191,36,0.3) 0%, transparent 100%),radial-gradient(1px 1px at 22% 60%, rgba(251,191,36,0.45) 0%, transparent 100%),radial-gradient(1px 1px at 60% 75%, rgba(251,191,36,0.35) 0%, transparent 100%),radial-gradient(1px 1px at 10% 88%, rgba(251,191,36,0.5) 0%, transparent 100%)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(251,191,36,0.06) 0%, transparent 70%)" }} />
-      </div>
-    );
-  }
-
-  if (theme === "tva") {
-    return (
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full opacity-25" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="tva-glow" cx="50%" cy="30%" r="70%">
-              <stop offset="0%" stopColor="#ff8c00" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#1c140d" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-          <rect width="390" height="844" fill="url(#tva-glow)" />
-          {[160,130,100,72,46].map((r,i) => (
-            <circle key={i} cx="195" cy="200" r={r} stroke="#ff8c00" strokeWidth="0.6" strokeOpacity={0.15+i*0.06} fill="none" strokeDasharray={i%2===0?"4 8":"2 12"} />
-          ))}
-          {[0,30,60,90,120,150,180,210,240,270,300,330].map((angle,i) => {
-            const rad = (angle*Math.PI)/180;
-            return <line key={i} x1="195" y1="200" x2={195+Math.cos(rad)*380} y2={200+Math.sin(rad)*380} stroke="#ff8c00" strokeWidth="0.4" strokeOpacity="0.08" />;
-          })}
-          {Array.from({length:12}).map((_,i) => {
-            const a = (i*30*Math.PI)/180;
-            return <line key={i} x1={195+Math.cos(a)*58} y1={200+Math.sin(a)*58} x2={195+Math.cos(a)*50} y2={200+Math.sin(a)*50} stroke="#ff8c00" strokeWidth="1.5" strokeOpacity="0.4" />;
-          })}
-          {Array.from({length:30}).map((_,i) => (
-            <line key={i} x1="0" y1={i*30+400} x2="390" y2={i*30+400} stroke="#ff8c00" strokeWidth="0.3" strokeOpacity="0.04" />
-          ))}
-        </svg>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 100% 60% at 50% 0%, rgba(255,140,0,0.12) 0%, transparent 70%),radial-gradient(ellipse 60% 40% at 50% 100%, rgba(28,20,13,0.8) 0%, transparent 80%)" }} />
-      </div>
-    );
-  }
-
-  if (theme === "void") {
-    return (
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="void-core" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#d4af37" stopOpacity="0.2" />
-              <stop offset="60%" stopColor="#9333ea" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#121212" stopOpacity="0" />
-            </radialGradient>
-            <filter id="void-blur"><feGaussianBlur stdDeviation="4" /></filter>
-          </defs>
-          <rect width="390" height="844" fill="url(#void-core)" />
-          <path d="M0 422 Q80 380 140 400 Q200 420 260 390 Q320 360 390 400" stroke="#d4af37" strokeWidth="1.5" fill="none" strokeOpacity="0.25" filter="url(#void-blur)" />
-          <path d="M0 480 Q100 440 180 470 Q260 500 390 450" stroke="#9333ea" strokeWidth="1.2" fill="none" strokeOpacity="0.2" filter="url(#void-blur)" />
-          <path d="M0 350 Q120 320 200 350 Q280 380 390 340" stroke="#d4af37" strokeWidth="0.8" fill="none" strokeOpacity="0.15" filter="url(#void-blur)" />
-          {[[30,200,2],[90,350,1.5],[180,150,2.5],[280,280,1.8],[340,180,2],[60,600,1.5],[220,680,2],[350,620,1.2],[130,750,1.8],[290,730,2.2]].map(([cx,cy,r],i) => (
-            <circle key={i} cx={cx} cy={cy} r={r} fill="#d4af37" fillOpacity={0.3+(i%3)*0.1} />
-          ))}
-          <ellipse cx="195" cy="422" rx="120" ry="40" stroke="#9333ea" strokeWidth="0.5" strokeOpacity="0.2" fill="none" filter="url(#void-blur)" />
-          <ellipse cx="195" cy="422" rx="80" ry="25" stroke="#d4af37" strokeWidth="0.5" strokeOpacity="0.15" fill="none" />
-        </svg>
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(147,51,234,0.08) 0%, transparent 70%),radial-gradient(ellipse 50% 40% at 20% 30%, rgba(212,175,55,0.06) 0%, transparent 60%),radial-gradient(ellipse 50% 40% at 80% 70%, rgba(212,175,55,0.05) 0%, transparent 60%)" }} />
-      </div>
-    );
-  }
-
-  return null;
-}
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import LoadingScreen from "./components/LoadingScreen";
@@ -169,6 +80,11 @@ export default function Home() {
   }, []);
 
   const isNarrativeTheme = theme === "loki" || theme === "tva" || theme === "void";
+
+  // Force-disable animations on mobile via Tailwind override class to prevent Framer Motion hydration bugs
+  const mobileNoAnimClass = "max-lg:!opacity-100 max-lg:!transform-none";
+
+  const scrollAnim = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-100px" } };
 
   const scrollToSection = (id: string) => {
     if (theme === "loki" || theme === "tva") {
@@ -231,11 +147,23 @@ export default function Home() {
   }, [isMounted, navItems]);
 
   useEffect(() => {
+    const handleScroll = () => {
+      const panel = scrollPanelRef.current;
+      if (window.innerWidth >= 1024 && panel) {
+        setShowScrollTop(panel.scrollTop > 300);
+      } else {
+        setShowScrollTop(window.scrollY > 300);
+      }
+    };
+    
     const panel = scrollPanelRef.current;
-    if (!panel) return;
-    const handleScroll = () => setShowScrollTop(panel.scrollTop > 300);
-    panel.addEventListener("scroll", handleScroll, { passive: true });
-    return () => panel.removeEventListener("scroll", handleScroll);
+    if (panel) panel.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    return () => {
+      if (panel) panel.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const mouseX = useMotionValue(0);
@@ -259,25 +187,25 @@ export default function Home() {
     <>
       <LoadingScreen onComplete={() => setBootDone(true)} />
 
-      {/* ── BACKGROUND — always fixed, always full-screen, never clipped ── */}
+      {/* ── Dynamic Background Layer ── */}
       {isMounted && (
-        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-          {!isMobileView && (
-            <>
-              {!isNarrativeTheme && <AmbientBackground />}
-              {theme === "loki" && <LokiMultiverseBackground />}
-              {theme === "tva"  && <TvaBackground />}
-              {theme === "void" && <VoidBackground />}
-            </>
-          )}
-          {isMobileView && isNarrativeTheme  && <MobileNarrativeBackground theme={theme ?? "loki"} />}
-          {isMobileView && !isNarrativeTheme && <AmbientBackground />}
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          {(!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
+          <AnimatePresence>
+            {theme === "loki" && <LokiMultiverseBackground />}
+            {theme === "tva" && <TvaBackground />}
+            {theme === "void" && <VoidBackground />}
+          </AnimatePresence>
         </div>
       )}
 
       <div
         className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 w-full max-w-full transition-opacity duration-1000"
-        style={{ opacity: bootDone ? 1 : 0, visibility: bootDone ? "visible" : "hidden", perspective: "1500px" }}
+        style={{ 
+          opacity: bootDone ? 1 : 0, 
+          visibility: bootDone ? "visible" : "hidden", 
+          perspective: (typeof window !== 'undefined' && window.innerWidth >= 1024) ? "1500px" : "none" 
+        }}
       >
         <AnalyticsTracker />
 
@@ -377,12 +305,14 @@ export default function Home() {
                 `}} />
                 <div id="sections-container" className={`p-4 pt-4 md:p-10 md:pt-4 lg:p-14 lg:pt-0 space-y-4 lg:space-y-16 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
 
-                  <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} id="about"><About /></motion.section>
-                  <Bio />
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="about"><About /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="skills" className="space-y-20 lg:space-y-32">
-                    <div className="space-y-20">
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="bio"><Bio /></motion.section>
+                  <div className="h-px w-full bg-white/[0.05]" />
+
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="technologies">
+                    <div className="flex flex-col gap-6">
                       <Technologies />
                       <div className="h-px w-full bg-[var(--border-subtle)] opacity-50" />
                       <ToolStack />
@@ -392,29 +322,29 @@ export default function Home() {
                   </motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="services"><Services /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="services"><Services /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="pledge"><EthicsPledge /></motion.section>
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="demo" className="py-20"><DemosHub /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="pledge"><EthicsPledge /></motion.section>
+                  <motion.section {...scrollAnim} className={`py-20 ${mobileNoAnimClass}`} id="demo"><DemosHub /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="projects"><Projects /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="projects"><Projects /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="resume"><Resume /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="resume"><Resume /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="certifications"><Certifications /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="certifications"><Certifications /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="github"><GitHubFeed /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="github"><GitHubFeed /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="blog"><Blog /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="blog"><Blog /></motion.section>
                   <div className="h-px w-full bg-white/[0.05]" />
 
-                  <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} id="contact"><Contact /></motion.section>
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="contact"><Contact /></motion.section>
 
                   {/* CTA Banner */}
                   <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="p-12 bg-gradient-to-r from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/20 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8">
@@ -463,7 +393,19 @@ export default function Home() {
 
       <AnimatePresence>
         {showScrollTop && (
-          <motion.button initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} onClick={() => scrollPanelRef.current?.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-[28px] right-[28px] w-[44px] h-[44px] bg-[var(--accent)] text-black rounded-full flex items-center justify-center shadow-lg z-[999] hover:scale-110 transition-all border-none">
+          <motion.button 
+            initial={{ opacity: 0, scale: 0.8 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            exit={{ opacity: 0, scale: 0.8 }} 
+            onClick={() => {
+              if (window.innerWidth >= 1024 && scrollPanelRef.current) {
+                scrollPanelRef.current.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }} 
+            className="fixed bottom-[28px] right-[28px] w-[44px] h-[44px] bg-[var(--accent)] text-black rounded-full flex items-center justify-center shadow-lg z-[999] hover:scale-110 transition-all border-none"
+          >
             <ArrowUp size={18} />
           </motion.button>
         )}

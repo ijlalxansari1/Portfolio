@@ -434,6 +434,8 @@ export default function LokiMultiverseBackground() {
 
     let animationFrameId: number;
     let time = 0;
+    // Cache bg color to avoid getComputedStyle layout thrashing
+    let cachedBgColor = "#02040a";
 
     const render = () => {
       time++;
@@ -502,7 +504,10 @@ export default function LokiMultiverseBackground() {
 
     render();
 
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
+      if (window.innerWidth < 1024 && window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
@@ -511,6 +516,7 @@ export default function LokiMultiverseBackground() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      clearInterval(colorInterval);
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
@@ -569,7 +575,7 @@ export default function LokiMultiverseBackground() {
         <div
           className="fixed inset-0 pointer-events-none z-[-3] opacity-90"
           style={{
-            backgroundImage: `url('/loki/slide1.png')`,
+            backgroundImage: `url('/loki/yggdrasil.png')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

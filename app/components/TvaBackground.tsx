@@ -430,9 +430,20 @@ export default function TvaBackground() {
     let animationFrameId: number;
     let time = 0;
 
+    // Cache bg color to avoid getComputedStyle layout thrashing
+    let cachedBgColor = "#1c140d";
+    const updateColors = () => {
+      try {
+        cachedBgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
+      } catch(e) {}
+    };
+    updateColors();
+    const colorInterval = setInterval(updateColors, 1000);
+
     const render = () => {
       time++;
-      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = cachedBgColor || "#1c140d";
+      ctx.fillRect(0, 0, width, height);
 
       // Smooth mouse interpolation
       mouse.x += (mouse.targetX - mouse.x) * 0.08;
@@ -506,6 +517,7 @@ export default function TvaBackground() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      clearInterval(colorInterval);
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);

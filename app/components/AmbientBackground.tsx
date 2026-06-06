@@ -38,7 +38,10 @@ export default function AmbientBackground() {
       mouse.targetY = e.clientY;
     };
 
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
+      if (window.innerWidth < 1024 && window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
       
@@ -393,7 +396,18 @@ export default function AmbientBackground() {
     const snowflakes: Snowflake[] = Array.from({ length: 75 }, () => new Snowflake());
     
     const particles: Particle[] = Array.from({ length: 55 }, () => new Particle());
-    let time = 0;
+    // Cache colors to prevent getComputedStyle layout thrashing in the render loop
+    let cachedAccentColor = "#00e87a";
+    let cachedBgColor = "";
+    const updateColors = () => {
+      try {
+        cachedAccentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#00e87a";
+        cachedBgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
+      } catch(e) {}
+    };
+    updateColors();
+    // Re-fetch colors if theme changes by polling every second or just rely on the initial fetch if theme changes remount component
+    const colorInterval = setInterval(updateColors, 1000);
 
     const render = () => {
       time += 1.2;
@@ -402,15 +416,10 @@ export default function AmbientBackground() {
       mouse.x += (mouse.targetX - mouse.x) * 0.06;
       mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-      let accentColor = "#00e87a";
-      try {
-        const rawAccent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
-        if (rawAccent) accentColor = rawAccent;
-      } catch (e) {}
+      let accentColor = cachedAccentColor || "#00e87a";
 
       // 1. Clear Frame
-      const rawBg = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
-      ctx.fillStyle = rawBg || (isGhost ? "#040612" : "#0c172d");
+      ctx.fillStyle = cachedBgColor || (isGhost ? "#040612" : "#0c172d");
       ctx.fillRect(0, 0, width, height);
 
       // 2. Horizon sunset glow OR Interstellar nebula cloud
@@ -518,6 +527,7 @@ export default function AmbientBackground() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       motionQuery.removeEventListener("change", handleMotionChange);
+      clearInterval(colorInterval);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

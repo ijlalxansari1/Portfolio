@@ -425,10 +425,21 @@ export default function VoidBackground() {
 
     let animationFrameId: number;
     let time = 0;
+    
+    // Cache bg color to avoid getComputedStyle layout thrashing
+    let cachedBgColor = "#121212";
+    const updateColors = () => {
+      try {
+        cachedBgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
+      } catch(e) {}
+    };
+    updateColors();
+    const colorInterval = setInterval(updateColors, 1000);
 
     const render = () => {
       time++;
-      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = cachedBgColor || "#121212";
+      ctx.fillRect(0, 0, width, height);
 
       // Smooth mouse interpolation
       mouse.x += (mouse.targetX - mouse.x) * 0.08;
@@ -488,12 +499,15 @@ export default function VoidBackground() {
         e.draw(ctx, slipping);
       }
       
-      animationFrameId = requestAnimationFrame(render);
+           animationFrameId = requestAnimationFrame(render);
     };
 
     render();
 
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
+      if (window.innerWidth < 1024 && window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
@@ -502,7 +516,9 @@ export default function VoidBackground() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      clearInterval(colorInterval);
       cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mousedown", handleMouseDown);
