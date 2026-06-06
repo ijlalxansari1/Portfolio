@@ -159,7 +159,7 @@ export default function ThemeBuddy() {
     theme, accent, language,
     onThemeChange: handleThemeChange,
     onAccentChange: changeAccent,
-    onLanguageChange: (l: string) => { setLanguage(l); if (isMobile) setIsOpen(false); },
+    onLanguageChange: (l: string) => { setLanguage(l as "en" | "de"); if (isMobile) setIsOpen(false); },
   };
 
   return (
