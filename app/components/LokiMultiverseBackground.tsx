@@ -436,6 +436,13 @@ export default function LokiMultiverseBackground() {
     let time = 0;
     // Cache bg color to avoid getComputedStyle layout thrashing
     let cachedBgColor = "#02040a";
+    const updateColors = () => {
+      try {
+        cachedBgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-primary").trim();
+      } catch(e) {}
+    };
+    updateColors();
+    const colorInterval = setInterval(updateColors, 1000);
 
     const render = () => {
       time++;
