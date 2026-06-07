@@ -191,7 +191,8 @@ export default function ThemeBuddy() {
                 transition={{ type: "spring", damping: 28, stiffness: 260 }}
                 className="fixed bottom-0 left-0 right-0 z-[100001] max-h-[85vh] overflow-y-auto custom-scrollbar-hidden rounded-t-3xl p-6 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
                 style={{
-                  backgroundColor: "var(--bg-card)",
+                  backgroundColor: "var(--bg-primary)",
+                  backgroundImage: "linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0.03))",
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
                   borderTop: "1px solid var(--border-subtle)",
@@ -214,7 +215,8 @@ export default function ThemeBuddy() {
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               className="absolute right-auto left-[54px] top-[-100px] rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
               style={{
-                backgroundColor: "var(--bg-card)",
+                backgroundColor: "var(--bg-primary)",
+                backgroundImage: "linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0.03))",
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
                 border: "1px solid var(--border-subtle)",
@@ -224,7 +226,7 @@ export default function ThemeBuddy() {
               <div
                 className="absolute top-[114px] -left-1.5 w-3 h-3 rotate-45"
                 style={{
-                  backgroundColor: "var(--bg-card)",
+                  backgroundColor: "var(--bg-primary)",
                   borderLeft: "1px solid var(--border-subtle)",
                   borderBottom: "1px solid var(--border-subtle)",
                 }}

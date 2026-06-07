@@ -124,7 +124,7 @@ export default function GeneralSkills() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
+                  className="group p-6 bg-[var(--accent)]/[0.03] border border-[var(--accent)]/10 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.08] transition-all flex flex-col justify-between h-full"
                 >
                   <div className="flex justify-between items-start mb-6">
                     <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:scale-110 transition-all border border-white/5 shadow-xl">
@@ -136,7 +136,7 @@ export default function GeneralSkills() {
                   </div>
                   <div>
                     <h4 className="text-[15px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-2">{skill.name}</h4>
-                    <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{skill.desc}</p>
+                    <p className="text-[12px] text-white/60 leading-relaxed group-hover:text-white/90 transition-all">{skill.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -157,14 +157,14 @@ export default function GeneralSkills() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="group p-6 bg-white/[0.03] border border-white/5 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-white/[0.05] transition-all flex flex-col justify-between h-full"
+                className="group p-6 bg-[var(--accent)]/[0.03] border border-[var(--accent)]/10 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.08] transition-all flex flex-col justify-between h-full"
               >
                 <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-[var(--accent)]/10 transition-all border border-white/5 shadow-xl">
                   {practice.icon}
                 </div>
                 <div>
                   <h4 className="text-[15px] font-black text-white mb-2 group-hover:text-[var(--accent)] transition-all">{practice.title}</h4>
-                  <p className="text-[12px] text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-all">{practice.desc}</p>
+                  <p className="text-[12px] text-white/60 leading-relaxed group-hover:text-white/90 transition-all">{practice.desc}</p>
                 </div>
               </motion.div>
             ))}

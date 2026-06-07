@@ -84,7 +84,9 @@ export default function Home() {
   // Force-disable animations on mobile via Tailwind override class to prevent Framer Motion hydration bugs
   const mobileNoAnimClass = "max-lg:!opacity-100 max-lg:!transform-none";
 
-  const scrollAnim = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-100px" } };
+  const scrollAnim = isMobileView 
+    ? { initial: { opacity: 1, y: 0 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "0px" } }
+    : { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-100px" } };
 
   const scrollToSection = (id: string) => {
     if (theme === "loki" || theme === "tva") {

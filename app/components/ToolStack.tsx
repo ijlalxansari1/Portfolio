@@ -65,7 +65,7 @@ export default function ToolStack() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
-            className="card group relative p-8 bg-[#181818]/40 border border-white/5 rounded-[32px] hover:border-[var(--accent)]/30 hover:bg-[#181818]/60 transition-all duration-500 flex flex-col h-full"
+            className="card group relative p-8 bg-[var(--accent)]/[0.03] border border-[var(--accent)]/10 rounded-[32px] hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.08] transition-all duration-500 flex flex-col h-full"
           >
             {/* Glassmorphism Icon */}
             <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mb-8 border border-white/5 group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500 shadow-2xl">
@@ -92,7 +92,7 @@ export default function ToolStack() {
                   {tool.level}
                 </span>
               </div>
-              <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed font-medium opacity-60 group-hover:opacity-100 transition-all">{tool.desc}</p>
+              <p className="text-[12px] text-white/60 leading-relaxed font-medium group-hover:text-white/90 transition-all">{tool.desc}</p>
             </div>
 
             {/* Bottom Progress/Status Line */}

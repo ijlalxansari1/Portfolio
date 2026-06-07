@@ -576,7 +576,7 @@ export default function VoidBackground() {
         <div
           className="fixed inset-0 pointer-events-none z-[-3] opacity-90"
           style={{
-            backgroundImage: `url('/images/loki_void_mobile.png')`,
+            backgroundImage: `url('/loki/slide1.png')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

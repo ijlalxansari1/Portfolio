@@ -30,25 +30,28 @@ function TimelineItem({ period, title, place, body, link, tag }: { period: strin
       viewport={{ once: true }}
       className="relative pl-8 border-l border-[var(--border)]"
     >
-      <div className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
-      <div className="flex items-center gap-3 mb-3">
-        <span className="inline-block px-3 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest rounded-full border border-[var(--border)] opacity-50">
-          {period}
-        </span>
-        {tag && (
-          <span className="inline-block px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] text-[8px] font-black uppercase tracking-widest rounded-md border border-[var(--accent)]/20">
-            [{tag}]
+      <div className="absolute -left-[5px] top-6 w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]" />
+      
+      <div className="group p-6 bg-[var(--accent)]/[0.03] border border-[var(--accent)]/10 rounded-[24px] hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.08] transition-all duration-500 shadow-sm hover:shadow-md">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="inline-block px-3 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest rounded-full border border-[var(--border)] opacity-50">
+            {period}
           </span>
+          {tag && (
+            <span className="inline-block px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] text-[8px] font-black uppercase tracking-widest rounded-md border border-[var(--accent)]/20">
+              [{tag}]
+            </span>
+          )}
+        </div>
+        <h4 className="text-[17px] font-black text-white group-hover:text-[var(--accent)] transition-all mb-1">{title}</h4>
+        <p className="text-white/80 text-[11px] font-bold uppercase tracking-widest mb-3">{place}</p>
+        <p className="text-[13px] text-white/60 group-hover:text-white/90 transition-all leading-[1.8] break-words">{body}</p>
+        {link && (
+          <a href="#" className="inline-flex items-center gap-2 mt-3 text-[11px] font-black uppercase tracking-widest text-[var(--accent)] hover:underline">
+            {link} <ExternalLink size={11} />
+          </a>
         )}
       </div>
-      <h4 className="text-[17px] font-black text-[var(--text-primary)] mb-1">{title}</h4>
-      <p className="text-[var(--accent)] text-[11px] font-bold uppercase tracking-widest mb-3">{place}</p>
-      <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-[1.8] break-words">{body}</p>
-      {link && (
-        <a href="#" className="inline-flex items-center gap-2 mt-3 text-[11px] font-black uppercase tracking-widest text-[var(--accent)] hover:underline">
-          {link} <ExternalLink size={11} />
-        </a>
-      )}
     </motion.div>
   );
 }

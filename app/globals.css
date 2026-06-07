@@ -181,6 +181,16 @@ p {
   font-family: 'Poppins', sans-serif !important;
 }
 
+/* Override paragraph text colors to be explicitly white-based instead of theme-colored gray, 
+   using attribute selectors to beat base tailwind utility specificity (0,1,1 > 0,1,0) 
+   but still allow hover utilities (0,2,0) to work. */
+p[class*="text-[var(--text-secondary)]"] {
+  color: rgba(255, 255, 255, 0.75);
+}
+p[class*="text-[var(--text-muted)]"] {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 span, li, button, input, textarea, div {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }

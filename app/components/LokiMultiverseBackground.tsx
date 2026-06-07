@@ -582,7 +582,7 @@ export default function LokiMultiverseBackground() {
         <div
           className="fixed inset-0 pointer-events-none z-[-3] opacity-90"
           style={{
-            backgroundImage: `url('/loki/yggdrasil.png')`,
+            backgroundImage: `url('/images/loki-slide8.png')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
