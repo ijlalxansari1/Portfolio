@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import { signToken } from '../../utils/auth';
+import { loginAdmin } from '../../utils/auth';
 
 export async function POST(request: Request) {
   const { username, password } = await request.json();
 
-  const ADMIN_USER = process.env.ADMIN_USER || "admin";
-  const ADMIN_PASS = process.env.ADMIN_PASS || "ijlal2025";
+  const token = await loginAdmin(username, password);
 
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
-    const token = signToken(username);
+  if (token) {
     return NextResponse.json({ success: true, token });
   }
 
