@@ -64,7 +64,7 @@ export default function EthicsPledge() {
                 animate={{ opacity: 1, y: 0 }}
                 className="pt-8 border-t border-[var(--border)] mt-8"
               >
-                <p className="text-[18px] font-black text-white mb-6">&quot;This is why I built the LOKI Protocol.&quot;</p>
+                <p className="text-[18px] font-black text-white mb-6">&quot;This is why I focus on reliable, explainable, and auditable data systems.&quot;</p>
                 <button 
                   onClick={() => {
                     const panel = document.getElementById("content-scroll-panel");

@@ -1,11 +1,11 @@
 export const translations = {
   en: {
     hero: {
-      label: "DATA ENGINEER & AI ETHICS RESEARCHER",
+      label: "Data Ops Engineer",
       greeting: "HELLO, I'M",
       expertIn: "Expert in",
-      titles: ["Data Engineer", "Pipeline Developer", "AI Ethics Researcher", "Platform Builder"],
-      bio: "I build data systems focused on accountability, transparency, and correctness by design. My work sits at the intersection of data engineering and responsible AI — where pipelines must be traceable, explainable, and auditable. I design systems with one constraint: if data drives decisions, its lineage should be inspectable end to end. I focus on embedding governance, bias awareness, and explainability directly into data infrastructure, not as afterthoughts. I’ve built multiple end-to-end data projects and continue working across data engineering and system design with this principle at the core.",
+      titles: ["Data Ops Engineer", "Data Engineer", "Pipeline Builder", "Platform Builder"],
+      bio: "I build reliable data systems focused on correctness, scalability, and trust. My work sits at the intersection of data engineering and modern analytics — where pipelines must be observable, maintainable, and ready for real-world decision-making.",
       cta_work: "See My Work",
       cta_talk: "Let's Talk",
       stats: {
@@ -20,18 +20,16 @@ export const translations = {
       scroll: "Scroll"
     },
     story: {
-      label: "THE STORY SO FAR",
+      label: "MY JOURNEY",
       heading: "Built in silence.",
       headingAccent: "Engineered with intent.",
       paragraphs: [
-        "Data shapes decisions, behaviour, economies, and increasingly, the direction of society itself. Behind every AI system and large-scale platform are people designing the pipelines, defining the rules, and deciding what data is trusted. Without morally grounded data engineers, even the most advanced systems can drift in the wrong direction.",
-        "I didn’t come from a major tech hub or a university ecosystem filled with industry pipelines and easy opportunities. While studying Software Engineering, I taught myself practical data engineering by building real systems from scratch — one pipeline at a time.",
-        "That background shaped how I work: I document everything carefully, I respect constraints, and I don’t ship systems I don’t fully understand.",
-        "Most data systems follow a predetermined path. I’m building the LOKI Protocol to break the timeline and forge true free will.",
-        "Bias detection, SHAP explainability, append-only audit logs, and a 24-permission RBAC matrix aren’t extra features — they’re the reason the platform exists. To me, data governance isn’t a compliance checkbox. It’s the foundation of trustworthy systems.",
-        "I believe the future of AI will not be defined only by models, but by the integrity of the data systems behind them — and by the engineers willing to build those systems responsibly.",
-        "I’m early in my career, and I know that. What I also know is that I’ve built 6 end-to-end projects, completed structured data engineering training, and consistently write about what I learn and build.",
-        "I’m looking for teams that care about building data systems responsibly — not just shipping them quickly."
+        "I’m a Software Engineering graduate with a growing passion for Data Engineering.",
+        "I didn’t have a roadmap into this field. There were no internships waiting, no large tech community around me, and no shortcuts. Most of what I know came from curiosity, long nights of learning, and building projects from scratch.",
+        "For me, data engineering is not just about moving data from one system to another. It is about creating reliable foundations that people and applications can trust. Good data makes better decisions, better products, and better AI.",
+        "Over the past year, I’ve focused on strengthening my fundamentals by building end-to-end ETL pipelines, working with relational databases, learning data modeling, and exploring workflow automation instead of simply copying tutorials.",
+        "The journey has not been straightforward. Like many graduates, I’ve faced rejection, uncertainty, and long periods without the opportunity I hoped for. Those experiences taught me patience, resilience, and the importance of continuing to learn even when progress feels slow.",
+        "Today, I’m looking for an opportunity to contribute, learn from experienced engineers, and continue building data systems that are reliable, maintainable, and made with care. I’m not trying to be the loudest engineer in the room — I’m trying to become one that people can trust."
       ]
     },
     sidebar: {
@@ -132,6 +130,7 @@ export const translations = {
       about: "About",
       skills: "Skills",
       services: "Services",
+      languages: "Languages",
       demo: "Demo",
       projects: "Projects",
       resume: "Resume",
@@ -149,7 +148,7 @@ export const translations = {
       launch: "Launch ijlal.sh"
     },
     mobileHeader: {
-      role: "DataOps Expert",
+      role: "Data Engineer",
       nav: "Navigation"
     },
     certifications: {
@@ -201,7 +200,7 @@ export const translations = {
     },
     ethicsPledge: {
       label: "MY COMMITMENT",
-      title: "The LOKI Protocol Ethics Pledge",
+      title: "A Responsible Data Engineering Standard",
       desc: "A personal framework for responsible engineering.",
       points: [
         "I will not build systems that obscure their decision-making logic.",
@@ -219,11 +218,11 @@ export const translations = {
   },
   de: {
     hero: {
-      label: "DATA ENGINEER & KI-ETHIK-FORSCHER",
+      label: "Daten-Ingenieur",
       greeting: "HALLO, ICH BIN",
       expertIn: "Experte für",
-      titles: ["Daten-Ingenieur", "Pipeline-Entwickler", "KI-Ethik-Forscher", "Plattform-Entwickler"],
-      bio: "Ich entwickle Datensysteme mit Fokus auf Rechenschaftspflicht, Transparenz und Korrektheit durch Design. Meine Arbeit liegt an der Schnittstelle von Data Engineering und verantwortungsbewusster KI – wo Pipelines rückverfolgbar, erklärbar und prüfbar sein müssen. Ich entwerfe Systeme mit einer Einschränkung: Wenn Daten Entscheidungen steuern, sollte ihre Herkunft durchgehend überprüfbar sein. Ich konzentriere mich darauf, Governance, Bias-Bewusstsein und Erklärbarkeit direkt in die Dateninfrastruktur einzubetten, nicht als nachträgliche Überlegung. Ich habe mehrere End-to-End-Datenprojekte aufgebaut und arbeite weiterhin in den Bereichen Data Engineering und Systemdesign mit diesem Prinzip im Kern.",
+      titles: ["Daten-Ingenieur", "Data-Ops-Ingenieur", "Pipeline-Builder", "Plattform-Builder"],
+      bio: "Ich entwickle zuverlässige Datensysteme mit Fokus auf Korrektheit, Skalierbarkeit und Vertrauen. Meine Arbeit liegt an der Schnittstelle von Data Engineering und moderner Analyse – wo Pipelines beobachtbar, wartbar und bereit für echte Entscheidungen sind.",
       cta_work: "Meine Arbeit",
       cta_talk: "Kontakt",
       stats: {
@@ -238,18 +237,16 @@ export const translations = {
       scroll: "Scrollen"
     },
     story: {
-      label: "DIE BISHERIGE GESCHICHTE",
+      label: "MEINE REISE",
       heading: "In der Stille gebaut.",
       headingAccent: "Mit Absicht konstruiert.",
       paragraphs: [
-        "Daten prägen Entscheidungen, Verhalten, Volkswirtschaften und zunehmend die Richtung der Gesellschaft selbst. Hinter jedem KI-System und jeder großen Plattform stehen Menschen, die die Pipelines entwerfen, die Regeln festlegen und entscheiden, welchen Daten vertraut wird. Ohne moralisch gefestigte Dateningenieure können selbst die fortschrittlichsten Systeme in die falsche Richtung abdriften.",
-        "Ich komme nicht aus einem großen Tech-Hub oder einem universitären Ökosystem voller Branchen-Pipelines und einfacher Möglichkeiten. Während meines Software-Engineering-Studiums habe ich mir praktisches Data Engineering selbst beigebracht, indem ich echte Systeme von Grund auf neu aufgebaut habe – eine Pipeline nach der anderen.",
-        "Dieser Hintergrund hat meine Arbeitsweise geprägt: Ich dokumentiere alles sorgfältig, ich respektiere Einschränkungen und ich liefere keine Systeme aus, die ich nicht vollständig verstehe.",
-        "Die meisten Datensysteme folgen einem vorgegebenen Pfad. Ich baue das LOKI Protokoll, um die Zeitlinie zu durchbrechen und wahren freien Willen zu schmieden.",
-        "Bias-Erkennung, SHAP-Erklärbarkeit, Append-only-Audit-Logs und eine RBAC-Matrix mit 24 Berechtigungen sind keine Zusatzfunktionen – sie sind der Grund, warum die Plattform existiert. Für mich ist Data Governance kein Kontrollkästchen für die Einhaltung von Vorschriften. Es ist die Grundlage für vertrauenswürdige Systeme.",
-        "Ich glaube, dass die Zukunft der KI nicht nur durch Modelle definiert wird, sondern durch die Integrität der dahinter stehenden Datensysteme – und durch die Ingenieure, die bereit sind, diese Systeme verantwortungsbewusst zu bauen.",
-        "Ich stehe am Anfang meiner Karriere und das weiß ich. Was ich auch weiß, ist, dass ich 6 End-to-End-Projekte aufgebaut, ein strukturiertes Data-Engineering-Training absolviert habe und regelmäßig über das schreibe, was ich lerne und baue.",
-        "Ich suche Teams, denen es wichtig ist, Datensysteme verantwortungsbewusst aufzubauen – und nicht nur schnell auszuliefern."
+        "Ich bin Absolventin des Software Engineering mit wachsender Leidenschaft für Data Engineering.",
+        "Ich hatte keinen klaren Weg in dieses Feld. Es gab keine Wartelisten für Praktika, kein großes Tech-Umfeld um mich herum und keine Abkürzungen. Das meiste, was ich gelernt habe, kam aus Neugier, langen Nächten des Lernens und dem Aufbau von Projekten von Grund auf.",
+        "Für mich ist Data Engineering nicht nur das Verschieben von Daten von A nach B. Es geht darum, zuverlässige Fundamente zu schaffen, denen Menschen und Anwendungen vertrauen können. Gute Daten führen zu besseren Entscheidungen, besseren Produkten und besserer KI.",
+        "Im vergangenen Jahr habe ich mich auf die Stärkung meiner Grundlagen konzentriert, indem ich End-to-End-ETL-Pipelines gebaut, mit relationalen Datenbanken gearbeitet, Datenmodellierung gelernt und Workflow-Automatisierung erkundet habe, statt einfach nur Tutorials zu kopieren.",
+        "Der Weg war nicht einfach. Wie viele Absolventen habe ich Ablehnung, Unsicherheit und lange Phasen ohne die Chance erlebt, die ich mir erhofft hatte. Diese Erfahrungen haben mir Geduld, Resilienz und die Bedeutung des Weiterlernens beigebracht, selbst wenn der Fortschritt langsam wirkt.",
+        "Heute suche ich nach einer Gelegenheit, beizutragen, von erfahrenen Ingenieuren zu lernen und weiter Datenysteme zu bauen, die zuverlässig, wartbar und mit Sorgfalt entwickelt sind. Ich will nicht der lauteste Ingenieur im Raum sein – ich will einer sein, dem andere vertrauen."
       ]
     },
     sidebar: {
@@ -350,6 +347,7 @@ export const translations = {
       about: "Über mich",
       skills: "Fähigkeiten",
       services: "Dienste",
+      languages: "Sprachen",
       demo: "Demo",
       projects: "Projekte",
       resume: "Lebenslauf",
@@ -419,7 +417,7 @@ export const translations = {
     },
     ethicsPledge: {
       label: "MEIN ENGAGEMENT",
-      title: "Das LOKI Protokoll-Ethik-Versprechen",
+      title: "Ein verantwortungsvoller Standard für Data Engineering",
       desc: "Ein persönlicher Rahmen für verantwortungsbewusstes Engineering.",
       points: [
         "Ich werde keine Systeme bauen, die ihre Entscheidungslogik verschleiern.",

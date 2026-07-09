@@ -257,7 +257,7 @@ export default function GitHubFeed() {
 
 
       <div className="mt-12 p-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
-         <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">Powered by GitHub REST API v3</p>
+         <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">Live GitHub data from public repositories</p>
          <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
                <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />

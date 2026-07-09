@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Moon, Check, Palette, Sparkles } from "lucide-react";
+import { Moon, Check, Palette } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
@@ -17,9 +17,16 @@ const accents = [
   { name: "yellow", color: "#f59e0b" },
 ];
 
-const themes = [
+const themes: Array<{
+  id: string;
+  label: string;
+  icon?: any;
+  iconClass?: string;
+  labelClass?: string;
+  dot?: string;
+  dotBorder?: string;
+}> = [
   { id: "dark",      label: "Dark",     icon: <Moon size={14} /> },
-  { id: "loki",      label: "Loki",     icon: <Sparkles size={14} />, iconClass: "text-[#fbbf24]", labelClass: "text-[#fbbf24]" },
   { id: "midnight",  label: "Midnight", dot: "#0a0b1e" },
   { id: "tva",       label: "TVA",      dot: "#1c140d", dotBorder: "#ff8c00", labelClass: "text-orange-400" },
   { id: "slate",     label: "Slate",    dot: "#1a1d23" },

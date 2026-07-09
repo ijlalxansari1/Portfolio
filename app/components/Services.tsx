@@ -1,16 +1,27 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Activity, ShieldCheck, Layers, BarChart3, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
-
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
+import { CheckCircle2 } from "lucide-react";
+
+const WHAT_I_BUILD = [
+  { name: "Data Pipelines & Integration", desc: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation using Python, SQL, and orchestration tools." },
+  { name: "Database Architecture", desc: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing, and query optimization." },
+  { name: "Data Quality & Validation", desc: "Implement validation rules, schema checks, duplicate detection, missing value handling, and comprehensive data quality monitoring." },
+  { name: "Data Governance", desc: "Design data systems with documentation, audit trails, access control, metadata management, and governance best practices." },
+  { name: "Analytics Engineering", desc: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting, and data-driven insights." },
+  { name: "Pipeline Reliability & Monitoring", desc: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, DataOps practices, testing, and CI/CD deployment." },
+  { name: "API Development", desc: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers." },
+  { name: "Web Scraping & Data Collection", desc: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources, and third-party services for downstream processing." },
+  { name: "Performance Optimization", desc: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability for production performance." },
+  { name: "Technical Documentation", desc: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation for maintainability and knowledge sharing." }
+];
 
 export default function Services() {
   const { language } = useLanguage();
   const t = translations[language].services;
-
   const [dynamicServices, setDynamicServices] = useState<any[]>([]);
 
   useEffect(() => {
@@ -25,77 +36,46 @@ export default function Services() {
     return () => window.removeEventListener("admin-updated", handleStorage);
   }, []);
 
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case "Activity": return <Activity size={24} />;
-      case "ShieldCheck": return <ShieldCheck size={24} />;
-      case "Layers": return <Layers size={24} />;
-      case "BarChart3": return <BarChart3 size={24} />;
-      default: return <Wrench size={24} />;
-    }
-  };
-
-  const services = dynamicServices.length > 0 ? dynamicServices.filter(s => s.status !== "Draft") : [
-    {
-      badge: t.pipelines.badge,
-      icon: <Activity size={24} />,
-      title: t.pipelines.title,
-      body: t.pipelines.body,
-      link: t.cta
-    },
-    {
-      badge: t.ai.badge,
-      icon: <ShieldCheck size={24} />,
-      title: t.ai.title,
-      body: t.ai.body,
-      link: t.cta
-    },
-    {
-      badge: t.platform.badge,
-      icon: <Layers size={24} />,
-      title: t.platform.title,
-      body: t.platform.body,
-      link: t.cta
-    },
-    {
-      badge: t.storytelling.badge,
-      icon: <BarChart3 size={24} />,
-      title: t.storytelling.title,
-      body: t.storytelling.body,
-      link: t.cta
-    },
-  ];
-
   return (
-    <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">{t.title}</p>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.subtitle}</h2>
-      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.subheading}</p>
+    <div className="w-full space-y-8">
+      <div>
+        <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">{t?.title || "Services"}</p>
+        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] mb-4">What I Build</h2>
+        <p className="text-[14px] text-[var(--text-secondary)] opacity-50 max-w-2xl leading-relaxed">
+          End-to-end data solutions spanning pipeline design, quality assurance, governance, and production deployment.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {services.map((s, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {WHAT_I_BUILD.map((service, idx) => (
           <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 16 }}
+            key={service.name}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className="service-card p-8 bg-[#141414] border border-[#222222] rounded-xl hover:border-[var(--accent)] hover:translate-y-[-4px] transition-all group flex flex-col h-full"
+            transition={{ delay: idx * 0.04 }}
+            className="group p-6 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all flex flex-col"
           >
-            <div className="flex justify-between items-start mb-6">
-               <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-[var(--accent)] border border-white/5 group-hover:scale-110 transition-all overflow-hidden shrink-0">
-                  {s.iconUrl ? <img src={s.iconUrl} alt="icon" className="w-full h-full object-cover" /> : (typeof s.icon === 'string' ? getIcon(s.icon) : s.icon)}
-               </div>
-               <span className="inline-block px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">
-                 {s.badge}
-               </span>
+            <div className="flex gap-4 flex-1">
+              <div className="flex items-start justify-center">
+                <div className="w-6 h-6 rounded-lg bg-[var(--accent)]/15 flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/30 shrink-0 mt-0.5">
+                  <CheckCircle2 size={16} className="opacity-70" />
+                </div>
+              </div>
+              <div className="flex-1 space-y-2">
+                <h3 className="text-[14px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+                  {service.name}
+                </h3>
+                <p className="text-[12px] text-[var(--text-secondary)] opacity-50 leading-[1.6] group-hover:opacity-70 transition-opacity">
+                  {service.desc}
+                </p>
+              </div>
             </div>
-            
-            <h3 className="text-[18px] font-black text-[var(--text-primary)] mb-4 leading-tight shrink-0">{s.title}</h3>
-            <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-[1.8] flex-1 mb-6">{s.body}</p>
-            
-            <a href="#contact" className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-[var(--accent)] hover:gap-4 transition-all shrink-0 mt-auto">
-              {s.link || t.cta} <ArrowRight size={14} />
+            <a href="#contact" className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-[var(--accent)]/10 text-[var(--accent)] text-[11px] font-black uppercase tracking-widest rounded-lg border border-[var(--accent)]/30 hover:bg-[var(--accent)] hover:text-[var(--bg-primary)] transition-all self-start group-hover:gap-3">
+              Let's Connect
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </a>
           </motion.div>
         ))}

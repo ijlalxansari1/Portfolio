@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Linkedin, Github, Twitter, Mail, MessageSquare } from "lucide-react";
+import { Linkedin, Github, Twitter, Mail, MessageSquare, Download } from "lucide-react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
@@ -25,9 +25,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
 
   const titles = [
     language === 'en' ? "Data Engineer" : "Daten-Ingenieur",
-    language === 'en' ? "AI Ethics Researcher" : "KI-Ethik-Forscher",
-    language === 'en' ? "Pipeline Developer" : "Pipeline-Entwickler",
-    language === 'en' ? "Data Ops Engineer" : "Data Ops Ingenieur"
+    language === 'en' ? "Data Ops Engineer" : "Data-Ops-Ingenieur",
+    language === 'en' ? "Pipeline Builder" : "Pipeline-Builder",
+    language === 'en' ? "Platform Builder" : "Plattform-Builder"
   ];
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
         <div className="relative aspect-[1/1.1] lg:aspect-[1/1.1] w-full rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-inner">
           <Image
             src="/profile.png"
-            alt="Ijlal Ansari - Data Engineer & AI Ethics Researcher" fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover object-center scale-105" priority
+            alt="Ijlal Ansari - Data Engineer" fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover object-center scale-105" priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)]/40 to-transparent" />
         </div>
@@ -131,8 +131,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
       <div className="w-full flex border-t border-[var(--border)] h-[70px] bg-[var(--bg-secondary)] mt-auto">
         <button
           onClick={downloadResume}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[var(--border)]"
+          className="flex-1 flex items-center justify-center gap-2 text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all border-r border-[var(--border)]"
         >
+          <Download size={14} />
           {t.download_cv}
         </button>
         <button
@@ -141,8 +142,9 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             const target = document.getElementById("contact");
             if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
           }}
-          className="flex-1 flex items-center justify-center text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
+          className="flex-1 flex items-center justify-center gap-2 text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
         >
+          <MessageSquare size={14} />
           {t.contact_me}
         </button>
       </div>

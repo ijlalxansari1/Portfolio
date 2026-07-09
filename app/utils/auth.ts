@@ -5,14 +5,36 @@ import { v4 as uuidv4 } from "uuid";
 
 // Validate credentials and return a secure session token
 export async function loginAdmin(username: string, passwordHashAttempt: string): Promise<string | null> {
+  const normalizedUsername = username.trim().toLowerCase();
+  const trimmedPassword = passwordHashAttempt.trim();
+
   try {
-    const { rows } = await sql`SELECT id, password_hash FROM admins WHERE username = ${username}`;
-    if (rows.length === 0) return null;
+    const { rows } = await sql`
+      SELECT id, password_hash FROM admins
+      WHERE LOWER(username) = ${normalizedUsername}
+    `;
+
+    if (rows.length === 0) {
+      const existingAdmins = await sql`SELECT 1 FROM admins LIMIT 1`;
+      if (existingAdmins.rows.length === 0) {
+        const defaultUser = (process.env.ADMIN_USER || "admin").trim();
+        const defaultPassword = (process.env.ADMIN_SECRET || "changeme123").trim();
+        const hash = await bcrypt.hash(defaultPassword, 10);
+
+        await sql`
+          INSERT INTO admins (username, password_hash)
+          VALUES (${defaultUser}, ${hash})
+        `;
+
+        if (defaultUser.toLowerCase() === normalizedUsername && defaultPassword === trimmedPassword) {
+          return await loginAdmin(defaultUser, trimmedPassword);
+        }
+      }
+      return null;
+    }
 
     const admin = rows[0];
-    // Normally you'd compare the plain password, but if the client sends it in some form, we just compare.
-    // Assuming the client sends plain password here in `passwordHashAttempt`
-    const isMatch = await bcrypt.compare(passwordHashAttempt, admin.password_hash);
+    const isMatch = await bcrypt.compare(trimmedPassword, admin.password_hash);
     if (!isMatch) return null;
 
     const token = uuidv4();

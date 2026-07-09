@@ -96,6 +96,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [clientEvents, setClientEvents] = useState<any[]>([]);
   const [inboxMessages, setInboxMessages] = useState<any[]>([]);
   const [readMessages, setReadMessages] = useState<string[]>([]);
+  const [heroConfig, setHeroConfig] = useState<any>({ label: "Data Ops Engineer", titles: ["Data Ops Engineer", "Data Engineer", "Pipeline Builder", "Platform Builder"], techTags: ["Python", "SQL", "Apache Spark", "Airflow", "dbt", "ETL/ELT", "AWS", "Data Engineering"] });
   const [manifesto, setManifesto] = useState<any>(null);
   const [experience, setExperience] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
@@ -189,6 +190,11 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
             { school: "Karakoram International University", degree: "BS Software Engineering", period: "2021 — 2025" }
           ]));
           setKeystats(get("admin-keystats", { projects: 6, hours: 1000, taught: 100 }));
+          setHeroConfig(get("admin-hero", {
+            label: "Data Ops Engineer",
+            titles: ["Data Ops Engineer", "Data Engineer", "Pipeline Builder", "Platform Builder"],
+            techTags: ["Python", "SQL", "Apache Spark", "Airflow", "dbt", "ETL/ELT", "AWS", "Data Engineering"]
+          }));
         } catch (e) {
           console.error("Failed to load admin data from API", e);
         }
@@ -268,6 +274,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400", badge: 0 },
                 { id: "Inbox", icon: <Inbox size={16} />, color: "text-cyan-400", badge: inboxMessages.filter((m: any) => !readMessages.includes(String(m.id))).length },
                 { id: "Radar & Tools", icon: <Layers size={16} />, color: "text-purple-400", badge: 0 },
+                { id: "Language Skills", icon: <Globe size={16} />, color: "text-sky-400", badge: langSkills.length },
                 { id: "Projects", icon: <BriefcaseIcon size={16} />, color: "text-orange-400", badge: projects.length },
                 { id: "Blog", icon: <Newspaper size={16} />, color: "text-emerald-400", badge: posts.length },
                 { id: "Services", icon: <Server size={16} />, color: "text-amber-400", badge: servicesData.length },
@@ -707,7 +714,37 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
 
                       <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-8">
                          <div className="space-y-2">
-                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Hero Heading</label>
+                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Hero Role</label>
+                            <input 
+                              type="text" 
+                              value={heroConfig.label} 
+                              onChange={e => setHeroConfig({ ...heroConfig, label: e.target.value })} 
+                              onBlur={() => saveData("admin-hero", heroConfig)}
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-black text-[24px] outline-none focus:border-[var(--accent)] transition-all"
+                            />
+                         </div>
+                         <div className="space-y-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Hero Titles</label>
+                            <textarea
+                              value={(heroConfig.titles || []).join("\n")} 
+                              onChange={e => setHeroConfig({ ...heroConfig, titles: e.target.value.split("\n").filter(Boolean) })} 
+                              onBlur={() => saveData("admin-hero", heroConfig)}
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-[14px] outline-none focus:border-[var(--accent)] min-h-[120px] resize-none transition-all"
+                              placeholder="Data Ops Engineer\nData Engineer\nPipeline Builder\nPlatform Builder"
+                            />
+                         </div>
+                         <div className="space-y-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">Tech Tags</label>
+                            <textarea
+                              value={(heroConfig.techTags || []).join(", ")} 
+                              onChange={e => setHeroConfig({ ...heroConfig, techTags: e.target.value.split(",").map(tag => tag.trim()).filter(Boolean) })} 
+                              onBlur={() => saveData("admin-hero", heroConfig)}
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-[14px] outline-none focus:border-[var(--accent)] min-h-[80px] resize-none transition-all"
+                              placeholder="Python, SQL, Apache Spark, Airflow, dbt, ETL/ELT, AWS, Data Engineering"
+                            />
+                         </div>
+                         <div className="space-y-2">
+                            <label className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-1">About Title</label>
                             <input 
                               type="text" 
                               value={manifesto?.title} 

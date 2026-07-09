@@ -18,16 +18,24 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedUsername || !trimmedPassword) {
+      setError("Please enter both username and password.");
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         sessionStorage.setItem("aether-admin-session", data.token);
         onLoginSuccess();

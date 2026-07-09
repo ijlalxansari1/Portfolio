@@ -50,7 +50,7 @@ export default function AetherDemo() {
           <BarChart3 size={20} />
         </div>
         <div>
-          <h3 className="text-[14px] font-black text-white uppercase tracking-wider">LOKI Variance Analysis</h3>
+          <h3 className="text-[14px] font-black text-white uppercase tracking-wider">TraceFlow Variance Analysis</h3>
           <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">Ethical AI Pipeline Simulator</p>
         </div>
       </div>

@@ -135,10 +135,10 @@ export default function Technologies() {
   return (
     <div className="w-full">
       <p className="text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">
-        {language === 'en' ? "TECHNICAL SKILLS" : "Technologien"}
+        {language === 'en' ? "SKILLS" : "Fähigkeiten"}
       </p>
       <h2 className="text-[28px] font-black text-[var(--text-primary)] mb-8">
-        {language === 'en' ? "Technologies" : "Technisches Kompetenz-Radar"}
+        {language === 'en' ? "My Skills" : "Meine Fähigkeiten"}
       </h2>
       
       <div className="flex flex-col md:flex-row items-center gap-12 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-6 md:p-12 shadow-2xl relative overflow-hidden">

@@ -43,9 +43,9 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Failed to read SEO config", e);
   }
 
-  const title = config.title || 'Ijlal Ansari — Data Engineer & AI Ethics Researcher';
-  const description = config.description || "Data Engineer and AI Ethics Researcher building the LOKI Protocol — an open-source temporal data platform with bias detection, SHAP explainability, and timeline governance. Skilled in Python, dbt, Dagster, FastAPI, DuckDB, PostgreSQL, and Kafka.";
-  const keywords = config.keywords || "data engineer, data engineering portfolio, Python data engineer, dbt developer, AI ethics researcher, LOKI Protocol, temporal data architecture, Fairlearn SHAP bias detection, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Dagster orchestration, open source data platform";
+  const title = config.title || 'Ijlal Ansari — Data Engineer';
+  const description = config.description || "Data Engineer focused on building reliable data pipelines, modern analytics systems, and practical data platforms. Skilled in Python, SQL, dbt, Airflow, FastAPI, DuckDB, PostgreSQL, and cloud tooling.";
+  const keywords = config.keywords || "data engineer, data engineering portfolio, Python data engineer, dbt developer, data ops engineer, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Airflow orchestration, open source data platform";
 
   return {
     title: {
@@ -105,8 +105,8 @@ const personSchema = {
   "name": "Ijlal Ansari",
   "url": "https://dataden.vercel.app",
   "image": "https://dataden.vercel.app/profile.jpg",
-  "jobTitle": "Data Engineer & AI Ethics Researcher",
-  "description": "Data Engineer and AI Ethics Researcher building the LOKI Protocol — an open-source temporal data analysis platform with bias detection, SHAP explainability, and timeline governance.",
+  "jobTitle": "Data Engineer",
+  "description": "Data Engineer building reliable pipelines, analytics systems, and practical data platforms with a strong focus on maintainability and trust.",
   "knowsAbout": [
     "Data Engineering",
     "ETL Pipeline Design",
@@ -175,7 +175,7 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="loki" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'loki', 'midnight', 'tva', 'slate', 'bordeaux', 'void']}>
+        <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'tva', 'slate', 'bordeaux', 'void']}>
           <LanguageProvider>
             <AudioProvider>
               <CustomCursor />

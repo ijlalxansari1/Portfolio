@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark, Award,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code, SkipForward
+  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code, SkipForward, Globe2
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
@@ -14,13 +14,10 @@ import { useAudio } from "./context/AudioContext";
 import dynamic from "next/dynamic";
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
-import Bio from "./components/Bio";
-import Technologies from "./components/Technologies";
-import ToolStack from "./components/ToolStack";
-import GeneralSkills from "./components/GeneralSkills";
+import Skills from "./components/Skills";
 import Services from "./components/Services";
+import LanguageSkills from "./components/LanguageSkills";
 import Projects from "./components/Projects";
-import Resume from "./components/Resume";
 import Blog from "./components/Blog";
 import Contact from "./components/Contact";
 import AdminPanel from "./components/AdminPanel";
@@ -59,13 +56,11 @@ export default function Home() {
   const navItems = useMemo(() => [
     { id: "about",         icon: <User size={18} />,         label: nav.about         },
     { id: "skills",        icon: <Dumbbell size={18} />,     label: nav.skills        },
-    { id: "services",      icon: <Wrench size={18} />,       label: nav.services      },
-    { id: "demo",          icon: <FlaskConical size={18} />, label: nav.demo          },
     { id: "projects",      icon: <Briefcase size={18} />,    label: nav.projects      },
-    { id: "resume",        icon: <Landmark size={18} />,     label: nav.resume        },
+    { id: "services",      icon: <Wrench size={18} />,       label: nav.services      },
+    { id: "languages",     icon: <Globe2 size={18} />,       label: nav.languages || "Languages" },
     { id: "certifications",icon: <Award size={18} />,        label: nav.certifications},
     { id: "github",        icon: <Github size={18} />,       label: nav.github        },
-    { id: "blog",          icon: <Newspaper size={18} />,    label: nav.blog          },
     { id: "contact",       icon: <Send size={18} />,         label: nav.contact       },
   ], [language, nav]);
 
@@ -247,7 +242,10 @@ export default function Home() {
                   {navItems.map((item) => (
                     <button key={item.id} onClick={() => { scrollToSection(item.id); setIsMenuOpen(false); }} className={`flex items-center gap-4 text-[14px] font-black uppercase tracking-widest transition-all ${activeSection === item.id ? "text-[var(--accent)] translate-x-2" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}>
                       <span className={`w-1.5 h-1.5 rounded-full bg-[var(--accent)] transition-all ${activeSection === item.id ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
-                      {item.label}
+                      <span className="flex items-center gap-2">
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -258,8 +256,8 @@ export default function Home() {
         </AnimatePresence>
 
         {/* ── Desktop/Tablet Navigation ── */}
-        <nav className="hidden md:flex fixed bottom-5 left-5 right-5 lg:left-5 lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:right-auto lg:w-[56px] lg:h-auto bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-6 rounded-[20px] lg:rounded-[28px] flex-row lg:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
-          <div className="flex flex-row lg:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-2 overflow-x-auto lg:overflow-x-visible custom-scrollbar-hidden w-full lg:w-auto px-1 lg:px-0">
+        <nav className="hidden md:flex fixed left-4 top-4 bottom-4 lg:w-[62px] lg:min-h-[calc(100dvh-2rem)] bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-4 rounded-[24px] flex-row md:flex-col items-center justify-between gap-4 md:gap-6 lg:gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
+          <div className="flex flex-row md:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-3 overflow-x-auto md:overflow-x-visible custom-scrollbar-hidden w-full md:w-auto px-1 md:px-0">
             <div className="block lg:mb-2"><ThemeBuddy /></div>
             {tracks?.length > 1 && (
               <button onClick={nextTrack} className="w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)] hover:text-[var(--accent)]" aria-label="Next track">
@@ -284,12 +282,12 @@ export default function Home() {
         </nav>
 
         {/* ── Main Layout ── */}
-        <div className="relative lg:absolute lg:inset-0 flex justify-center p-4 md:p-6 lg:pl-[85px] lg:pr-6 min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full lg:items-center pointer-events-none">
+        <div className="relative lg:absolute lg:inset-0 flex justify-center p-4 md:p-6 lg:pr-[24px] lg:pl-[96px] min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full lg:items-center pointer-events-none">
           <motion.div
-            className="w-full lg:h-full max-w-[1300px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
+            className="w-full lg:h-full max-w-[1380px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
             style={typeof window !== 'undefined' && window.innerWidth >= 1024 ? { rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" } : {}}
           >
-            <div className="w-full lg:w-[340px] shrink-0 lg:h-full max-w-full lg:overflow-hidden" style={{ transform: "translateZ(30px)" }}>
+            <div className="w-full lg:w-[300px] shrink-0 lg:h-full max-w-full lg:overflow-hidden" style={{ transform: "translateZ(30px)" }}>
               <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
             </div>
 
@@ -305,51 +303,47 @@ export default function Home() {
                   }
                   .time-slip-anim { animation: time-slip 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
                 `}} />
-                <div id="sections-container" className={`p-4 pt-4 md:p-10 md:pt-4 lg:p-14 lg:pt-0 space-y-4 lg:space-y-16 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
+                <div id="sections-container" className={`p-3 pt-0 md:p-6 md:pt-0 lg:p-8 lg:pt-0 space-y-3 lg:space-y-6 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
 
+                  {/* 1. Hero / About */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="about"><About /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  <div className="h-px w-full bg-white/[0.04]" />
 
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="bio"><Bio /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  {/* 2. Skills */}
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="skills"><Skills /></motion.section>
+                  <div className="h-px w-full bg-white/[0.04]" />
 
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="technologies">
-                    <div className="flex flex-col gap-6">
-                      <Technologies />
-                      <div className="h-px w-full bg-[var(--border-subtle)] opacity-50" />
-                      <ToolStack />
-                      <div className="h-px w-full bg-[var(--border-subtle)] opacity-50" />
-                      <GeneralSkills />
-                    </div>
-                  </motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
-
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="services"><Services /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
-
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="pledge"><EthicsPledge /></motion.section>
-                  <motion.section {...scrollAnim} className={`py-20 ${mobileNoAnimClass}`} id="demo"><DemosHub /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
-
+                  {/* 3. Featured Projects */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="projects"><Projects /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  <div className="h-px w-full bg-white/[0.04]" />
 
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="resume"><Resume /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  {/* 4. Services */}
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="services"><Services /></motion.section>
+                  <div className="h-px w-full bg-white/[0.04]" />
 
+                  {/* 5. Languages */}
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="languages"><LanguageSkills /></motion.section>
+                  <div className="h-px w-full bg-white/[0.04]" />
+
+                  {/* 7. Certifications */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="certifications"><Certifications /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  <div className="h-px w-full bg-white/[0.04]" />
 
+                  {/* 8. GitHub */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="github"><GitHubFeed /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  <div className="h-px w-full bg-white/[0.04]" />
 
+                  {/* 8. Blog */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="blog"><Blog /></motion.section>
-                  <div className="h-px w-full bg-white/[0.05]" />
+                  <div className="h-px w-full bg-white/[0.04]" />
 
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="contact"><Contact /></motion.section>
+                  {/* ── Secondary sections (preserved) ── */}
+                  <div className="h-px w-full bg-white/[0.04]" />
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="pledge"><EthicsPledge /></motion.section>
+                  <motion.section {...scrollAnim} className={`py-8 md:py-10 ${mobileNoAnimClass}`} id="demo"><DemosHub /></motion.section>
 
                   {/* CTA Banner */}
-                  <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="p-12 bg-gradient-to-r from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/20 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8">
+                  <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="p-8 md:p-10 bg-gradient-to-r from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/20 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8">
                     <div>
                       <h3 className="text-[24px] font-black text-[var(--text-primary)] mb-2">{translations[language].footer.cta_title}</h3>
                       <p className="text-[14px] text-[var(--text-muted)]">{translations[language].footer.cta_desc}</p>
@@ -359,8 +353,18 @@ export default function Home() {
                     </button>
                   </motion.div>
 
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    id="contact"
+                    className="w-full"
+                  >
+                    <Contact />
+                  </motion.div>
+
                   {/* Footer */}
-                  <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row gap-8 justify-between items-center">
+                  <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row gap-8 justify-between items-center">
                     <div className="flex flex-col md:flex-row items-center gap-6">
                       <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)]">{translations[language].footer.copy}</span>
                       <button onClick={() => setShowTerminal(true)} className="group flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all">
