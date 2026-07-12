@@ -51,7 +51,35 @@ export default function GitHubFeed() {
         const savedUsername = localStorage.getItem("admin-github-username") || "ijlalxansari1";
         const repoOffset = parseInt(localStorage.getItem("admin-github-repos-offset") || "0");
         const starOffset = parseInt(localStorage.getItem("admin-github-stars-offset") || "0");
+        const storedRepos = localStorage.getItem("admin-github-repos");
         setUsername(savedUsername);
+
+        if (storedRepos) {
+          const parsedRepos = JSON.parse(storedRepos);
+          const publishedRepos = (Array.isArray(parsedRepos) ? parsedRepos : []).filter((repo: any) => String(repo?.status || "Published").toLowerCase() !== "draft");
+
+          if (publishedRepos.length > 0) {
+            const normalizedRepos = publishedRepos.map((repo: any, index: number) => ({
+              id: repo.id || `${repo.name || "repo"}-${index}`,
+              name: repo.name || repo.title || "Repository",
+              description: repo.description || "Open-source data engineering work.",
+              language: repo.language || "TypeScript",
+              stargazers_count: Number(repo.stars || 0),
+              html_url: repo.html_url || repo.url || repo.repoUrl || `https://github.com/${savedUsername}/${repo.name}`,
+              homepage: repo.homepage || repo.liveUrl || repo.demoUrl || "",
+            }));
+            setRepos(normalizedRepos);
+            setStats({
+              repos: normalizedRepos.length + repoOffset,
+              stars: normalizedRepos.reduce((sum: number, repo: any) => sum + Number(repo.stargazers_count || 0), 0) + starOffset,
+              followers: 24,
+              contributions: 0,
+            });
+            setEvents(fallbackEvents);
+            setLoading(false);
+            return;
+          }
+        }
 
         // Fetch Events
         const eventsRes = await fetch(`https://api.github.com/users/${savedUsername}/events/public`);
@@ -100,13 +128,13 @@ export default function GitHubFeed() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-12">
         <div className="space-y-2">
             <div className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2 flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
               {t.label}
             </div>
-           <h2 className="section-heading text-[32px] font-black text-[var(--text-primary)]">{t.title}</h2>
+           <h2 className="section-heading text-[28px] sm:text-[32px] font-black text-[var(--text-primary)]">{t.title}</h2>
            <p className="text-[14px] text-[var(--text-secondary)] opacity-50 max-w-lg">{t.desc}</p>
         </div>
         
@@ -136,7 +164,7 @@ export default function GitHubFeed() {
       </div>
 
       {/* Activity Feed Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mb-8 sm:mb-12">
         {loading ? (
           [...Array(4)].map((_, i) => (
             <div key={i} className="h-[100px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl skeleton-shimmer" />
@@ -183,12 +211,12 @@ export default function GitHubFeed() {
       </div>
 
       {/* Repositories Section */}
-      <div className="mb-16">
-        <div className="flex items-center gap-3 mb-8">
+      <div className="mb-12 sm:mb-16">
+        <div className="flex items-center gap-3 mb-6 sm:mb-8">
            <Package size={16} className="text-[var(--accent)]" />
            <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[var(--text-primary)]">{t.label}</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {loading ? (
             [...Array(6)].map((_, i) => (
               <div key={i} className="h-[180px] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl skeleton-shimmer" />
@@ -200,7 +228,7 @@ export default function GitHubFeed() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
-                className="p-6 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl group hover:border-[var(--accent)]/30 transition-all flex flex-col justify-between"
+                className="p-5 sm:p-6 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl group hover:border-[var(--accent)]/30 transition-all flex flex-col justify-between min-h-[220px]"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -213,7 +241,7 @@ export default function GitHubFeed() {
                        </span>
                     </div>
                   </div>
-                  <h4 className="text-[15px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-all mb-2 truncate">
+                  <h4 className="text-[15px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-all mb-2 break-words">
                     {repo.name}
                   </h4>
                   <p className="text-[12px] text-[var(--text-secondary)] opacity-50 line-clamp-2 mb-6 leading-relaxed min-h-[36px]">

@@ -17,8 +17,13 @@ export async function loginAdmin(username: string, passwordHashAttempt: string):
     if (rows.length === 0) {
       const existingAdmins = await sql`SELECT 1 FROM admins LIMIT 1`;
       if (existingAdmins.rows.length === 0) {
-        const defaultUser = (process.env.ADMIN_USER || "admin").trim();
-        const defaultPassword = (process.env.ADMIN_SECRET || "changeme123").trim();
+        const defaultUser = process.env.ADMIN_USER?.trim();
+        const defaultPassword = process.env.ADMIN_SECRET?.trim();
+
+        if (!defaultUser || !defaultPassword) {
+          console.error("ADMIN_USER or ADMIN_SECRET is not set. Cannot initialize admin account securely.");
+          return null;
+        }
         const hash = await bcrypt.hash(defaultPassword, 10);
 
         await sql`

@@ -70,6 +70,12 @@ const defaultTools = [
   { name: "Apache Airflow", progress: 88, level: "Advanced", desc: "Workflow automation" }
 ];
 
+const defaultGithubRepos = [
+  { id: 1, name: "Aether", description: "A modern data and AI platform for experimentation and observability.", language: "TypeScript", stars: 5, html_url: "https://github.com/ijlalxansari1/Aether", homepage: "", status: "Published" },
+  { id: 2, name: "Data-Engineering-Foundry", description: "Reference implementations for pipelines, warehousing and analytics engineering.", language: "Python", stars: 8, html_url: "https://github.com/ijlalxansari1/Data-Engineering-Foundry", homepage: "", status: "Published" },
+  { id: 3, name: "Portfolio", description: "A dynamic Next.js portfolio with admin-managed content and integrations.", language: "TypeScript", stars: 3, html_url: "https://github.com/ijlalxansari1/Portfolio", homepage: "", status: "Published" }
+];
+
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -101,6 +107,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [experience, setExperience] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
   const [servicesData, setServicesData] = useState<any[]>([]);
+  const [githubRepos, setGithubRepos] = useState<any[]>([]);
   const [siteConfig, setSiteConfig] = useState<any>({});
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
   const [keystats, setKeystats] = useState<any>({ projects: 6, hours: 1000, taught: 100 });
@@ -136,10 +143,100 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setToolSkills(toolsData.tools || defaultTools);
           setBgMusic(get("admin-bg-music", []));
           setDemos(get("admin-demos", []));
-          setServicesData(get("admin-services", [
-            { id: 1, title: "Data Pipeline Engineering", badge: "Pipelines", body: "End-to-end ETL/ELT pipelines built with Python, dbt Core, and Dagster.", link: "See My Work", icon: "Activity", status: "Published" },
-            { id: 2, title: "Bias Detection & Explainability", badge: "Ethics & AI", body: "ML fairness audits using Fairlearn and SHAP.", link: "See My Work", icon: "ShieldCheck", status: "Published" }
-          ]));
+          const rawServices = get("admin-services", null);
+          const defaultAdminServices = [
+            { 
+              id: 1, title: "Data Pipelines & Integration", icon: "Workflow", status: "Published", badge: "DataOps",
+              summary: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation.",
+              body: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation using Python, SQL, and orchestration tools.",
+              deliverables: ["Custom Extract/Load connect", "dbt data transformations", "Airflow/Dagster automation"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 2, title: "Database Architecture", icon: "Database", status: "Published", badge: "Data Platforms",
+              summary: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing.",
+              body: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing, and query optimization.",
+              deliverables: ["Star/Snowflake Schemas", "Query Optimization", "Performance Indexing"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 3, title: "Data Quality & Validation", icon: "ShieldCheck", status: "Published", badge: "Reliability",
+              summary: "Implement validation rules, schema checks, duplicate detection, missing value handling, and monitoring.",
+              body: "Implement validation rules, schema checks, duplicate detection, missing value handling, and comprehensive data quality monitoring.",
+              deliverables: ["Automated schema checks", "Anomaly detection", "Data quality monitoring"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 4, title: "Data Governance", icon: "Network", status: "Published", badge: "Governance",
+              summary: "Design data systems with documentation, audit trails, access control, metadata management, and best practices.",
+              body: "Design data systems with documentation, audit trails, access control, metadata management, and governance best practices.",
+              deliverables: ["Audit trails", "Role-Based Access", "Metadata management"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published", badge: "BI & Analytics",
+              summary: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting.",
+              body: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting, and data-driven insights.",
+              deliverables: ["Dimensional modeling", "Dashboard ready datasets", "BI Integration"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 6, title: "Pipeline Reliability & Monitoring", icon: "Activity", status: "Published", badge: "Ops",
+              summary: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, testing, and CI/CD.",
+              body: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, DataOps practices, testing, and CI/CD deployment.",
+              deliverables: ["Error handling & retries", "CI/CD deployment", "DataOps practices"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 7, title: "API Development", icon: "Code2", status: "Published", badge: "Integration",
+              summary: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
+              body: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
+              deliverables: ["FastAPI microservices", "Secure data access", "Rate limiting & logging"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 8, title: "Web Scraping & Data Collection", icon: "Globe", status: "Published", badge: "Data Collection",
+              summary: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources.",
+              body: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources, and third-party services for downstream processing.",
+              deliverables: ["Automated Scrapers", "API Integrations", "Data Parsing"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 9, title: "Performance Optimization", icon: "Zap", status: "Published", badge: "Scale",
+              summary: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability.",
+              body: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability for production performance.",
+              deliverables: ["SQL tuning", "Pipeline scaling", "Storage efficiency"],
+              link: "Let's Connect", href: "#contact"
+            },
+            { 
+              id: 10, title: "Technical Documentation", icon: "BookOpen", status: "Published", badge: "Documentation",
+              summary: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation.",
+              body: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation for maintainability and knowledge sharing.",
+              deliverables: ["Architecture diagrams", "Data dictionaries", "Pipeline documentation"],
+              link: "Let's Connect", href: "#contact"
+            },
+          ];
+          
+          if (!rawServices || rawServices.length < 5) {
+            setServicesData(defaultAdminServices);
+            saveData("admin-services", defaultAdminServices);
+          } else {
+            const mergedMap = new Map();
+            defaultAdminServices.forEach(s => mergedMap.set(s.title, s));
+            rawServices.forEach((s: any) => {
+              if (s.title) {
+                mergedMap.set(s.title, {
+                  ...s,
+                  deliverables: s.deliverables || ["Requirement gathering", "Custom Implementation", "Testing & CI/CD"],
+                  summary: s.summary || s.body?.substring(0, 80) + '...'
+                });
+              }
+            });
+            const mergedArr = Array.from(mergedMap.values());
+            setServicesData(mergedArr);
+            saveData("admin-services", mergedArr);
+          }
+          setGithubRepos(get("admin-github-repos", defaultGithubRepos));
           setSiteConfig(get("admin-config", { title: "Portfolio", description: "Data Engineer Portfolio", maintenanceMode: false }));
           setSystemAudit({ totalSize: "Remote Server", items: Object.keys(data || {}).length });
 
@@ -688,15 +785,23 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                <textarea value={s.body} onChange={e => { const n = [...servicesData]; n[i].body = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Describe what you provide..." />
                              </div>
 
-                             <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
-                                  <LinkIcon size={14} className="text-white/30" />
-                                  <input type="text" value={s.link} onChange={e => { const n = [...servicesData]; n[i].link = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none w-32" placeholder="Button Text" />
+                             <div className="space-y-3 pt-4 border-t border-white/5">
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                  <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex-1">
+                                    <LinkIcon size={14} className="text-white/30" />
+                                    <input type="text" value={s.link || ""} onChange={e => { const n = [...servicesData]; n[i].link = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none flex-1" placeholder="Button Text" />
+                                  </div>
+                                  <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex-1">
+                                    <LinkIcon size={14} className="text-white/30" />
+                                    <input type="text" value={s.href || ""} onChange={e => { const n = [...servicesData]; n[i].href = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none flex-1" placeholder="https://... or #section" />
+                                  </div>
                                 </div>
-                                <select value={s.status} onChange={e => { const n = [...servicesData]; n[i].status = e.target.value; setServicesData(n); saveData("admin-services", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
-                                  <option value="Published">Published</option>
-                                  <option value="Draft">Draft</option>
-                                </select>
+                                <div className="flex justify-end">
+                                  <select value={s.status} onChange={e => { const n = [...servicesData]; n[i].status = e.target.value; setServicesData(n); saveData("admin-services", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                    <option value="Published">Published</option>
+                                    <option value="Draft">Draft</option>
+                                  </select>
+                                </div>
                              </div>
                           </motion.div>
                         ))}
@@ -975,6 +1080,45 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                       </p>
                                    </div>
                                 </div>
+                             </div>
+                          </div>
+
+                          <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-8">
+                             <div className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                   <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-[var(--accent)]">
+                                      <Github size={24} />
+                                   </div>
+                                   <div>
+                                      <h4 className="text-[15px] font-black text-white">Featured Repositories</h4>
+                                      <p className="text-[11px] text-white/40 uppercase tracking-widest font-bold">Curated open-source links</p>
+                                   </div>
+                                </div>
+                                <button onClick={() => {
+                                   const updated = [{ id: Date.now(), name: "new-repo", description: "Describe the project", language: "TypeScript", stars: 0, html_url: "https://github.com/username/repo", homepage: "", status: "Published" }, ...githubRepos];
+                                   setGithubRepos(updated);
+                                   saveData("admin-github-repos", updated);
+                                }} className="w-10 h-10 bg-[var(--accent)] text-black rounded-xl flex items-center justify-center"><Plus size={18} /></button>
+                             </div>
+
+                             <div className="space-y-4">
+                               {githubRepos.map((repo, index) => (
+                                 <div key={repo.id || index} className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                       <input type="text" value={repo.name || ""} onChange={(e) => { const n = [...githubRepos]; n[index].name = e.target.value; setGithubRepos(n); }} onBlur={() => saveData("admin-github-repos", githubRepos)} className="bg-transparent text-white font-black text-[14px] outline-none flex-1" placeholder="Repository name" />
+                                       <button onClick={() => { const updated = githubRepos.filter((_, idx) => idx !== index); setGithubRepos(updated); saveData("admin-github-repos", updated); }} className="text-red-400 hover:text-red-300"><Trash2 size={16} /></button>
+                                    </div>
+                                    <textarea value={repo.description || ""} onChange={(e) => { const n = [...githubRepos]; n[index].description = e.target.value; setGithubRepos(n); }} onBlur={() => saveData("admin-github-repos", githubRepos)} className="w-full bg-transparent border border-white/10 rounded-xl p-3 text-[12px] text-white/50 outline-none h-20 resize-none" placeholder="Short project description" />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                       <input type="text" value={repo.language || ""} onChange={(e) => { const n = [...githubRepos]; n[index].language = e.target.value; setGithubRepos(n); }} onBlur={() => saveData("admin-github-repos", githubRepos)} className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[11px] text-white/70 outline-none" placeholder="Language" />
+                                       <input type="number" value={repo.stars || 0} onChange={(e) => { const n = [...githubRepos]; n[index].stars = parseInt(e.target.value || "0"); setGithubRepos(n); }} onBlur={() => saveData("admin-github-repos", githubRepos)} className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[11px] text-white/70 outline-none" placeholder="Stars" />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                       <input type="text" value={repo.html_url || ""} onChange={(e) => { const n = [...githubRepos]; n[index].html_url = e.target.value; setGithubRepos(n); }} onBlur={() => saveData("admin-github-repos", githubRepos)} className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[11px] text-white/70 outline-none" placeholder="https://github.com/..." />
+                                       <input type="text" value={repo.homepage || ""} onChange={(e) => { const n = [...githubRepos]; n[index].homepage = e.target.value; setGithubRepos(n); }} onBlur={() => saveData("admin-github-repos", githubRepos)} className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[11px] text-white/70 outline-none" placeholder="Live/demo URL" />
+                                    </div>
+                                 </div>
+                               ))}
                              </div>
                           </div>
 

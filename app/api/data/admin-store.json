@@ -11,9 +11,9 @@
     },
     {
       "id": 1780328457981,
-      "title": "Loki Protocol",
+      "title": "Aether",
       "tag": "Next js , python , fast api",
-      "description": "Interactive sandbox for the Loki Protocol. Built for glorious purpose.",
+      "description": "Interactive sandbox for the Aether Protocol. Built for glorious purpose.",
       "status": "Active",
       "iframeUrl": "https://aether-five-alpha.vercel.app/",
       "iconUrl": "/projects/1780422806933-Aether.png"
@@ -35,7 +35,7 @@
     },
     {
       "id": 1,
-      "title": "LOKI Protocol",
+      "title": "Aether project",
       "tag": "Python",
       "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
       "description": "A temporal data system forging free will from the sacred timeline. Built for glorious purpose, better data architecture, and something greater. For All Time. Always.",
@@ -140,36 +140,192 @@
   "admin-services": [
     {
       "id": 1,
-      "title": "Data Pipeline Engineering",
-      "badge": "Pipelines",
-      "body": "End-to-end ETL/ELT pipelines built with Python, dbt Core, and Dagster.",
-      "link": "See My Work",
-      "icon": "Activity",
-      "status": "Published"
+      "title": "Data Pipelines & Integration",
+      "icon": "Workflow",
+      "status": "Published",
+      "badge": "DataOps",
+      "summary": "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation.",
+      "body": "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation using Python, SQL, and orchestration tools.",
+      "deliverables": [
+        "Custom Extract/Load connect",
+        "dbt data transformations",
+        "Airflow/Dagster automation"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
     },
     {
       "id": 2,
-      "title": "Bias Detection & Explainability",
-      "badge": "Ethics & AI",
-      "body": "ML fairness audits using Fairlearn and SHAP.",
-      "link": "See My Work",
+      "title": "Database Architecture",
+      "icon": "Database",
+      "status": "Published",
+      "badge": "Data Platforms",
+      "summary": "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing.",
+      "body": "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing, and query optimization.",
+      "deliverables": [
+        "Star/Snowflake Schemas",
+        "Query Optimization",
+        "Performance Indexing"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 3,
+      "title": "Data Quality & Validation",
       "icon": "ShieldCheck",
-      "status": "Published"
+      "status": "Published",
+      "badge": "Reliability",
+      "summary": "Implement validation rules, schema checks, duplicate detection, missing value handling, and monitoring.",
+      "body": "Implement validation rules, schema checks, duplicate detection, missing value handling, and comprehensive data quality monitoring.",
+      "deliverables": [
+        "Automated schema checks",
+        "Anomaly detection",
+        "Data quality monitoring"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 4,
+      "title": "Data Governance",
+      "icon": "Network",
+      "status": "Published",
+      "badge": "Governance",
+      "summary": "Design data systems with documentation, audit trails, access control, metadata management, and best practices.",
+      "body": "Design data systems with documentation, audit trails, access control, metadata management, and governance best practices.",
+      "deliverables": [
+        "Audit trails",
+        "Role-Based Access",
+        "Metadata management"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 5,
+      "title": "Analytics Engineering",
+      "icon": "LineChart",
+      "status": "Published",
+      "badge": "BI & Analytics",
+      "summary": "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting.",
+      "body": "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting, and data-driven insights.",
+      "deliverables": [
+        "Dimensional modeling",
+        "Dashboard ready datasets",
+        "BI Integration"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 6,
+      "title": "Pipeline Reliability & Monitoring",
+      "icon": "Activity",
+      "status": "Published",
+      "badge": "Ops",
+      "summary": "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, testing, and CI/CD.",
+      "body": "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, DataOps practices, testing, and CI/CD deployment.",
+      "deliverables": [
+        "Error handling & retries",
+        "CI/CD deployment",
+        "DataOps practices"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 7,
+      "title": "API Development",
+      "icon": "Code2",
+      "status": "Published",
+      "badge": "Integration",
+      "summary": "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
+      "body": "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
+      "deliverables": [
+        "FastAPI microservices",
+        "Secure data access",
+        "Rate limiting & logging"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 8,
+      "title": "Web Scraping & Data Collection",
+      "icon": "Globe",
+      "status": "Published",
+      "badge": "Data Collection",
+      "summary": "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources.",
+      "body": "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources, and third-party services for downstream processing.",
+      "deliverables": [
+        "Automated Scrapers",
+        "API Integrations",
+        "Data Parsing"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 9,
+      "title": "Performance Optimization",
+      "icon": "Zap",
+      "status": "Published",
+      "badge": "Scale",
+      "summary": "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability.",
+      "body": "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability for production performance.",
+      "deliverables": [
+        "SQL tuning",
+        "Pipeline scaling",
+        "Storage efficiency"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
+    },
+    {
+      "id": 10,
+      "title": "Technical Documentation",
+      "icon": "BookOpen",
+      "status": "Published",
+      "badge": "Documentation",
+      "summary": "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation.",
+      "body": "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation for maintainability and knowledge sharing.",
+      "deliverables": [
+        "Architecture diagrams",
+        "Data dictionaries",
+        "Pipeline documentation"
+      ],
+      "link": "Let's Connect",
+      "href": "#contact"
     }
   ],
   "admin-certs": [
+    {
+      "id": 1783871595226,
+      "title": "Python Project for Data Engineering",
+      "issuer": "Coursera",
+      "provider": "Coursera",
+      "credentialId": "",
+      "date": "2026-07-12",
+      "image": "/certifications/1783871694236-Python_project_for_data_engineering.png",
+      "description": "Python Project for Data Engineering involving a real-world case study\n",
+      "verificationUrl": "",
+      "verification_url": "",
+      "link": "",
+      "status": "Active"
+    },
     {
       "id": 1780584190006,
       "title": "Python for Data Science, AI & Development",
       "issuer": "IBM , Coursera",
       "provider": "IBM , Coursera",
       "credentialId": "",
-      "date": "2025-05-26",
+      "date": "2026-07-03",
       "image": "/certifications/1780584218529-Python_data_science_Ai.png",
       "description": "Python, data science, and Ai",
-      "verificationUrl": "https://coursera.org/verify/EV2YOMDOL7KZ",
-      "verification_url": "https://coursera.org/verify/EV2YOMDOL7KZ",
-      "link": "https://coursera.org/verify/EV2YOMDOL7KZ",
+      "verificationUrl": "https://www.coursera.org/account/accomplishments/verify/8FCC8DG4PTTB",
+      "verification_url": "https://www.coursera.org/account/accomplishments/verify/8FCC8DG4PTTB",
+      "link": "https://www.coursera.org/account/accomplishments/verify/8FCC8DG4PTTB",
       "status": "Active"
     },
     {

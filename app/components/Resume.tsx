@@ -28,7 +28,7 @@ const defaultExperience = [
 ];
 
 const defaultEducation = [
-  { school: "Karakoram International University", location: "Gilgit", degree: "Bachelors in Software Engineering", period: "Sep 2021 - Sep 2025", link: "#", startYear: 2021, endYear: 2025 }
+  { school: "Karakoram International University", location: "Gilgit", degree: "BS - SOFTWARE ENGINEERING", period: "Sep 2021 - Sep 2025", link: "#", startYear: 2021, endYear: 2025 }
 ];
 
 export default function Resume() {
@@ -57,16 +57,16 @@ export default function Resume() {
   ].sort((a, b) => (b.startYear || 0) - (a.startYear || 0));
 
   return (
-    <div className="w-full space-y-20">
+    <div className="w-full space-y-12">
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-8 h-8 rounded-lg bg-[var(--accent)]/15 flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/30">
             <Briefcase size={16} />
           </div>
-          <p className="section-label uppercase tracking-[3px] text-[11px] font-bold text-[var(--accent)]">Roadmap</p>
+          <p className="section-label uppercase tracking-[3px] text-[11px] font-bold text-[var(--accent)]">{t.label}</p>
         </div>
-        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)]">Career Timeline</h2>
+        <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)]">{t.title}</h2>
       </div>
 
       {/* Vertical Timeline Roadmap */}

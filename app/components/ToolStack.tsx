@@ -3,17 +3,15 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Wrench, Terminal, Database, ShieldCheck, Zap, Globe, Package, Cpu } from "lucide-react";
+import { Wrench, ArrowRight, ArrowUpRight } from "lucide-react";
 
 const defaultTools = [
-  { name: "dbt Core", progress: 80, level: "Production", desc: "SQL transformations & lineage", icon: null, badge: "dbt", color: "text-[#CFFF1C]" },
-  { name: "Dagster", progress: 78, level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-  { name: "Apache Airflow", progress: 72, level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apacheairflow/apacheairflow-original.svg" },
-  { name: "DuckDB", progress: 82, level: "Expert", desc: "Fast analytical SQL processing", icon: null, badge: "🦆" },
-  { name: "FastAPI", progress: 80, level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
-  { name: "Next.js", progress: 70, level: "Advanced", desc: "Full-stack React intelligence", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
-  { name: "Docker", progress: 68, level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
-  { name: "GitHub Actions", progress: 72, level: "Advanced", desc: "CI/CD & automation pipelines", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+  { name: "dbt Core", level: "Production", desc: "SQL transformations & lineage", icon: null, badge: "dbt", color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
+  { name: "Dagster", level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
+  { name: "Apache Airflow", level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apacheairflow/apacheairflow-original.svg", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
+  { name: "DuckDB", level: "Expert", desc: "Fast analytical SQL processing", icon: null, badge: "🦆", color: "text-[#FFF000]", mockup: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "https://duckdb.org/" },
+  { name: "FastAPI", level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
+  { name: "Docker", level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
 ];
 
 export default function ToolStack() {
@@ -25,11 +23,19 @@ export default function ToolStack() {
       if (adminData) {
         const parsed = JSON.parse(adminData);
         if (parsed.tools && parsed.tools.length > 0) {
-          const mapped = parsed.tools.map((t: any) => ({
-            ...t,
-            level: t.progress > 90 ? "Expert" : t.progress > 80 ? "Professional" : "Advanced",
-            desc: t.desc || "Custom tool entry from admin"
-          }));
+          const mapped = parsed.tools.map((t: any) => {
+             const fallbackMockups = [
+               "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800",
+               "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+             ];
+             return {
+               ...t,
+               level: t.progress > 90 ? "Expert" : t.progress > 80 ? "Professional" : "Advanced",
+               desc: t.desc || "Custom tool entry from admin",
+               mockup: t.mockup || fallbackMockups[Math.floor(Math.random()*fallbackMockups.length)],
+               link: t.link || "#"
+             };
+          });
           setTools(mapped);
         }
       }
@@ -39,78 +45,88 @@ export default function ToolStack() {
     return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);
 
-  function asciiBar(percent: number) {
-    const filled = Math.round(percent / 5);
-    const empty = 20 - filled;
-    return '█'.repeat(filled) + '░'.repeat(empty);
-  }
-
   return (
     <div className="w-full">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div>
-          <div className="section-pill"><Wrench size={14} /> Tool Skills</div>
-          <h2 className="section-heading text-[32px] md:text-[42px] font-black text-white leading-tight">Tool Stack</h2>
-        </div>
-        <p className="text-[14px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed">
-          A carefully curated selection of tools for building production-grade data infrastructure and governing intelligent pipelines.
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
+          Tool Stack
+        </p>
+        <h2 className="section-heading text-[32px] md:text-[40px] font-black text-[var(--text-primary)] mb-4">
+          Software Ecosystem
+        </h2>
+        <p className="text-[14px] text-[var(--text-secondary)] opacity-60 leading-relaxed">
+          The specialized tools and platforms I use to build scalable, production-grade infrastructure.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         {tools.map((tool: any, i: number) => (
           <motion.div
-            key={i}
+            key={tool.name}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.05 }}
-            className="card group relative p-8 bg-[var(--accent)]/[0.03] border border-[var(--accent)]/10 rounded-[32px] hover:border-[var(--accent)]/30 hover:bg-[var(--accent)]/[0.08] transition-all duration-500 flex flex-col h-full"
+            transition={{ delay: i * 0.1, duration: 0.4 }}
+            className="group relative flex flex-col rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden hover:border-[var(--accent)]/40 hover:shadow-[0_15px_40px_rgba(var(--accent-rgb),0.1)] hover:-translate-y-2 transition-all duration-500 h-full"
           >
-            {/* Glassmorphism Icon */}
-            <div className="w-16 h-16 bg-white/[0.03] rounded-2xl flex items-center justify-center mb-8 border border-white/5 group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500 shadow-2xl">
-              {tool.icon ? (
-                <Image 
-                  src={tool.icon} 
-                  alt={tool.name} 
-                  width={32} 
-                  height={32}
-                  unoptimized
-                  className="shrink-0 opacity-80 group-hover:opacity-100 transition-all filter grayscale group-hover:grayscale-0"
-                />
-              ) : (
-                <span className={`shrink-0 text-[20px] font-black ${tool.color || 'text-[var(--accent)]'}`}>
-                  {tool.badge || tool.name[0]}
-                </span>
-              )}
-            </div>
-
-            <div className="flex-1 space-y-4">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <h4 className="text-[18px] font-black text-white group-hover:text-[var(--accent)] transition-all leading-none">{tool.name}</h4>
-                <span className="inline-block px-2 py-0.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[8px] font-black uppercase tracking-widest text-[var(--accent)] rounded-md">
-                  {tool.level}
-                </span>
+            {/* Top Mockup Section */}
+            <div className="relative w-full aspect-video overflow-hidden border-b border-[var(--border-subtle)]">
+              <Image
+                src={tool.mockup}
+                alt={`${tool.name} interface`}
+                fill
+                className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity hover:mix-blend-normal"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)] via-transparent to-transparent opacity-80" />
+              
+              {/* Floating Icon Over Mockup */}
+              <div className="absolute bottom-4 left-6 w-12 h-12 bg-black/60 backdrop-blur-md border border-white/10 rounded-xl flex items-center justify-center shadow-lg group-hover:-translate-y-2 group-hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)] transition-all duration-500">
+                {tool.icon ? (
+                  <Image 
+                    src={tool.icon} 
+                    alt={tool.name} 
+                    width={24} 
+                    height={24}
+                    unoptimized
+                    className="shrink-0 transition-all filter grayscale group-hover:grayscale-0"
+                  />
+                ) : (
+                  <span className={`shrink-0 text-[18px] font-black ${tool.color || 'text-[var(--accent)]'}`}>
+                    {tool.badge || tool.name[0]}
+                  </span>
+                )}
               </div>
-              <p className="text-[12px] text-white/60 leading-relaxed font-medium group-hover:text-white/90 transition-all">{tool.desc}</p>
             </div>
 
-            {/* Bottom Progress/Status Line */}
-            <div className="mt-8 pt-6 border-t border-white/5">
-              {/* Normal Bar */}
-              <div className="progress-bar w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                 <motion.div 
-                   initial={{ width: 0 }}
-                   whileInView={{ width: "100%" }}
-                   transition={{ delay: i * 0.1 + 0.5, duration: 1.5 }}
-                   className="h-full bg-gradient-to-r from-[var(--accent)]/0 to-[var(--accent)] opacity-30"
-                 />
+            {/* Details Section */}
+            <div className="p-6 flex flex-col flex-1">
+              <div className="mb-6">
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <h4 className="text-xl font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+                    {tool.name}
+                  </h4>
+                  <span className="px-2 py-0.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[9px] font-black uppercase tracking-widest text-[var(--accent)] rounded-md shrink-0">
+                    {tool.level}
+                  </span>
+                </div>
+                <p className="text-[13px] text-[var(--text-secondary)] opacity-70 leading-relaxed min-h-[40px]">
+                  {tool.desc}
+                </p>
               </div>
 
+              {/* Action Button */}
+              <div className="mt-auto pt-5 border-t border-[var(--border-subtle)]">
+                <a
+                  href={tool.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full px-5 py-3 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl text-[11px] font-black uppercase tracking-widest text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] group-hover:bg-[var(--accent)]/10 group-hover:border-[var(--accent)]/30 transition-all duration-300 group-hover:shadow-inner"
+                >
+                  <span className="group-hover:text-[var(--accent)] transition-colors">Launch App</span>
+                  <ArrowUpRight size={14} className="opacity-50 group-hover:opacity-100 group-hover:text-[var(--accent)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                </a>
+              </div>
             </div>
-            
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--accent-rgb),0.08)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none rounded-[32px]" />
           </motion.div>
         ))}
       </div>

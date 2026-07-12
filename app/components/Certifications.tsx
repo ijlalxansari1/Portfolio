@@ -26,7 +26,24 @@ export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
   useEffect(() => {
-    const handleUpdate = () => {
+    const fetchCerts = async () => {
+      try {
+        const res = await fetch("/api/data/admin?key=admin-certs");
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data.length > 0) {
+            setCertifications(data.filter((c: any) => c.status !== 'Draft').map((c: any) => ({
+              ...c,
+              verificationUrl: c.verificationUrl || c.verification_url,
+            })));
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch certs from API, falling back to local storage", err);
+      }
+      
       const adminData = localStorage.getItem("admin-certs");
       if (adminData) {
         const parsed = JSON.parse(adminData);
@@ -53,7 +70,9 @@ export default function Certifications() {
       setLoading(false);
     };
 
-    handleUpdate();
+    fetchCerts();
+    
+    const handleUpdate = () => fetchCerts();
     window.addEventListener("admin-updated", handleUpdate);
     return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);

@@ -51,6 +51,7 @@ export default function Home() {
   const { theme } = useTheme();
   const { language } = useLanguage();
   const t = translations[language].sidebar;
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const nav = translations[language].nav;
   const navItems = useMemo(() => [
@@ -83,6 +84,12 @@ export default function Home() {
     ? { initial: { opacity: 1, y: 0 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "0px" } }
     : { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-100px" } };
 
+  const activeSectionRef = useRef("about");
+  const scrollPanelRef = useRef<HTMLDivElement>(null);
+  const isScrollingRef = useRef(false);
+
+  useEffect(() => { setIsMounted(true); }, []);
+
   const scrollToSection = (id: string) => {
     if (theme === "loki" || theme === "tva") {
       setIsTimeSlipping(true);
@@ -90,21 +97,23 @@ export default function Home() {
     }
     const target = document.getElementById(id);
     if (target) {
+      isScrollingRef.current = true; // Lock intersection observer
+      setActiveSection(id);
+      activeSectionRef.current = id;
+      
       if (window.innerWidth >= 1024 && scrollPanelRef.current) {
         scrollPanelRef.current.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
       } else {
         const y = target.getBoundingClientRect().top + window.scrollY - 80;
         window.scrollTo({ top: y, behavior: "smooth" });
       }
-      setActiveSection(id);
-      activeSectionRef.current = id;
+      
+      // Unlock after scrolling animation (approx 800ms)
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 800);
     }
   };
-
-  const activeSectionRef = useRef("about");
-  const scrollPanelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { setIsMounted(true); }, []);
 
   useEffect(() => {
     const TARGET = "ijlal";
@@ -130,6 +139,8 @@ export default function Home() {
       threshold: [0, 0.05, 0.1, 0.2]
     };
     const observer = new IntersectionObserver((entries) => {
+      if (isScrollingRef.current) return; // Skip if currently smooth scrolling
+      
       entries.forEach((entry) => {
         if (entry.isIntersecting && entry.intersectionRatio > 0) {
           const id = entry.target.id;
@@ -148,8 +159,12 @@ export default function Home() {
       const panel = scrollPanelRef.current;
       if (window.innerWidth >= 1024 && panel) {
         setShowScrollTop(panel.scrollTop > 300);
+        const progress = panel.scrollTop / (panel.scrollHeight - panel.clientHeight);
+        setScrollProgress(Number.isNaN(progress) ? 0 : progress);
       } else {
         setShowScrollTop(window.scrollY > 300);
+        const progress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+        setScrollProgress(Number.isNaN(progress) ? 0 : progress);
       }
     };
     
@@ -201,10 +216,16 @@ export default function Home() {
         style={{ 
           opacity: bootDone ? 1 : 0, 
           visibility: bootDone ? "visible" : "hidden", 
-          perspective: (typeof window !== 'undefined' && window.innerWidth >= 1024) ? "1500px" : "none" 
+          perspective: (!isMobileView) ? "1500px" : "none" 
         }}
       >
         <AnalyticsTracker />
+        
+        {/* Scroll Progress Bar */}
+        <div
+          className="fixed top-0 left-0 h-[2px] lg:h-[3px] bg-[var(--accent)] z-[10001] transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress * 100}%`, willChange: 'width' }}
+        />
 
         {/* ── Mobile Header ── */}
         <header className="lg:hidden fixed top-0 left-0 right-0 h-[70px] bg-[var(--bg-card)]/80 backdrop-blur-xl border-b border-[var(--border-subtle)] z-[10000] flex items-center justify-between px-6 shadow-lg">
@@ -285,13 +306,13 @@ export default function Home() {
         <div className="relative lg:absolute lg:inset-0 flex justify-center p-4 md:p-6 lg:pr-[24px] lg:pl-[96px] min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full lg:items-center pointer-events-none">
           <motion.div
             className="w-full lg:h-full max-w-[1380px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
-            style={typeof window !== 'undefined' && window.innerWidth >= 1024 ? { rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" } : {}}
+            style={!isMobileView ? { rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" } : {}}
           >
             <div className="w-full lg:w-[300px] shrink-0 lg:h-full max-w-full lg:overflow-hidden" style={{ transform: "translateZ(30px)" }}>
               <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
             </div>
 
-            <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={typeof window !== 'undefined' && window.innerWidth >= 1024 ? { transform: "translateZ(20px)" } : {}}>
+            <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={!isMobileView ? { transform: "translateZ(20px)" } : {}}>
               <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
                 <style dangerouslySetInnerHTML={{__html: `
                   @keyframes time-slip {
@@ -303,10 +324,10 @@ export default function Home() {
                   }
                   .time-slip-anim { animation: time-slip 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
                 `}} />
-                <div id="sections-container" className={`p-3 pt-0 md:p-6 md:pt-0 lg:p-8 lg:pt-0 space-y-3 lg:space-y-6 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
+                <div id="sections-container" className={`p-3 md:p-6 lg:p-8 space-y-3 lg:space-y-6 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
 
                   {/* 1. Hero / About */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="about"><About /></motion.section>
+                  <motion.section {...scrollAnim} className={`${mobileNoAnimClass} !pt-0`} id="about"><About /></motion.section>
                   <div className="h-px w-full bg-white/[0.04]" />
 
                   {/* 2. Skills */}

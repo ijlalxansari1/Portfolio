@@ -72,7 +72,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
   };
 
   return (
-    <div className="sidebar w-full h-auto lg:h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border-subtle)] transition-all duration-400 pb-4 lg:pb-0 relative">
+    <div className="sidebar w-full h-auto lg:h-full flex flex-col bg-[var(--bg-card)] rounded-[28px] overflow-hidden shadow-2xl border border-[var(--border-subtle)] transition-all duration-400 relative">
       {/* Premium Glass Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
 

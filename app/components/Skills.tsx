@@ -1,186 +1,233 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  Code2, Database, Cloud, Zap, BarChart3,
-  GitBranch, Wrench, Server
+  Layers, Database, Workflow, BarChart3, Code2, Server, Bot, ShieldCheck, Cloud, Check, Compass
 } from "lucide-react";
+import Image from "next/image";
 
-/* ── Default skill categories ── */
-const DEFAULT_CATEGORIES = [
-  {
-    icon: <Code2 size={16} />,
-    label: "Programming",
-    color: "text-sky-400",
-    border: "border-sky-400/20 hover:border-sky-400/40",
-    bg: "bg-sky-400/5",
-    techs: ["Python", "SQL", "TypeScript", "Bash"],
-  },
-  {
-    icon: <Zap size={16} />,
-    label: "Data Engineering",
-    color: "text-[var(--accent)]",
-    border: "border-[var(--accent)]/20 hover:border-[var(--accent)]/40",
-    bg: "bg-[var(--accent)]/5",
-    techs: ["ETL / ELT", "dbt Core", "Apache Airflow", "Data Lineage"],
-  },
-  {
-    icon: <Database size={16} />,
-    label: "Databases",
-    color: "text-violet-400",
-    border: "border-violet-400/20 hover:border-violet-400/40",
-    bg: "bg-violet-400/5",
-    techs: ["PostgreSQL", "DuckDB", "Snowflake", "Redis"],
-  },
-  {
-    icon: <Cloud size={16} />,
-    label: "Cloud",
-    color: "text-orange-400",
-    border: "border-orange-400/20 hover:border-orange-400/40",
-    bg: "bg-orange-400/5",
-    techs: ["AWS S3 / Lambda", "GCP BigQuery", "Vercel", "Docker"],
-  },
-  {
-    icon: <Server size={16} />,
-    label: "Big Data",
-    color: "text-rose-400",
-    border: "border-rose-400/20 hover:border-rose-400/40",
-    bg: "bg-rose-400/5",
-    techs: ["Apache Spark", "Kafka", "Parquet", "Delta Lake"],
-  },
-  {
-    icon: <GitBranch size={16} />,
-    label: "Orchestration",
-    color: "text-teal-400",
-    border: "border-teal-400/20 hover:border-teal-400/40",
-    bg: "bg-teal-400/5",
-    techs: ["Dagster", "Apache Airflow", "Prefect", "cron"],
-  },
-  {
-    icon: <BarChart3 size={16} />,
-    label: "Analytics",
-    color: "text-amber-400",
-    border: "border-amber-400/20 hover:border-amber-400/40",
-    bg: "bg-amber-400/5",
-    techs: ["Pandas", "Matplotlib", "Fairlearn", "SHAP"],
-  },
-  {
-    icon: <Wrench size={16} />,
-    label: "Dev Tools",
-    color: "text-pink-400",
-    border: "border-pink-400/20 hover:border-pink-400/40",
-    bg: "bg-pink-400/5",
-    techs: ["Git", "VS Code", "FastAPI", "Jupyter"],
-  },
+const CORE_STACK = [
+  { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
+  { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primary Database", desc: "Relational data modeling, indexing, and robust ACID storage.", tags: ["ACID", "Relational", "JSONB"] },
+  { name: "Dagster", icon: "https://img.icons8.com/color/96/workflow.png", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerization", desc: "Consistent environments and reproducible builds.", tags: ["DevOps", "Microservices", "Deployment"] },
+  { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API Framework", desc: "High-performance data delivery and REST API development.", tags: ["Async", "REST", "Endpoints"] },
+  { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
+  { name: "Power BI", icon: "https://img.icons8.com/color/96/power-bi.png", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React framework for building fast data applications.", tags: ["React", "SSR", "UI"] },
 ];
 
-/* Core proficiencies with animated bars */
-const CORE_SKILLS = [
-  { name: "Python",         pct: 90 },
-  { name: "SQL",            pct: 92 },
-  { name: "Apache Spark",   pct: 80 },
-  { name: "Apache Airflow", pct: 78 },
-  { name: "dbt Core",       pct: 82 },
-  { name: "Snowflake",      pct: 80 },
+const CLOUD_PLATFORMS = [
+  {
+    name: "Amazon Web Services",
+    shortName: "AWS",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+    desc: "Cloud infrastructure for scalable data pipelines and storage.",
+    status: "used" as const,
+    services: [
+      { name: "S3", desc: "Object storage for data lakes" },
+      { name: "Glue", desc: "Managed ETL service" },
+      { name: "RDS", desc: "Managed relational databases" },
+      { name: "Lambda", desc: "Serverless compute" },
+    ],
+  },
+  {
+    name: "Microsoft Azure",
+    shortName: "Azure",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg",
+    desc: "Enterprise cloud platform for data integration and analytics.",
+    status: "exploring" as const,
+    services: [
+      { name: "Data Factory", desc: "Orchestration & integration" },
+      { name: "Blob Storage", desc: "Scalable object storage" },
+      { name: "Azure SQL", desc: "Managed SQL databases" },
+      { name: "Synapse", desc: "Unified analytics workspace" },
+    ],
+  },
+  {
+    name: "Google Cloud Platform",
+    shortName: "GCP",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+    desc: "Data-first cloud with powerful analytics and ML capabilities.",
+    status: "exploring" as const,
+    services: [
+      { name: "BigQuery", desc: "Serverless data warehouse" },
+      { name: "Cloud Storage", desc: "Unified object storage" },
+      { name: "Cloud Functions", desc: "Event-driven compute" },
+      { name: "Dataflow", desc: "Stream & batch processing" },
+    ],
+  },
 ];
 
 export default function Skills() {
-  const [coreSkills, setCoreSkills] = useState(CORE_SKILLS);
-
-  useEffect(() => {
-    const handleUpdate = () => {
-      const adminData = localStorage.getItem("admin-skills-radar");
-      if (adminData) {
-        const parsed = JSON.parse(adminData);
-        if (parsed.length > 0) {
-          setCoreSkills(parsed.map((s: any) => ({ name: s.name, pct: s.value })));
-        }
-      }
-    };
-    handleUpdate();
-    window.addEventListener("admin-updated", handleUpdate);
-    return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, []);
-
   return (
-    <section id="skills" className="w-full space-y-14" aria-label="Technical Skills">
-      {/* Section header */}
-      <div>
-        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
-          Core Proficiencies
-        </p>
-        <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-1">
-          Technical Skills
-        </h2>
-        <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-md">
-          Technologies I actively use to design and deliver data systems end-to-end.
+    <section id="skills" className="w-full space-y-8" aria-label="Engineering Stack">
+      
+      {/* ── Section Header ── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
+            My Recommended Final Stack
+          </p>
+          <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] leading-tight">
+            Engineering Stack
+          </h2>
+        </div>
+        <p className="text-[14px] text-[var(--text-secondary)] opacity-60 max-w-md leading-relaxed">
+          A cohesive, production-ready ecosystem of tools spanning the entire data lifecycle.
         </p>
       </div>
 
-      {/* ── Category grid ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {DEFAULT_CATEGORIES.map((cat, i) => (
+      {/* ── Core Stack (Bento Grid) ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {CORE_STACK.map((tech, i) => (
           <motion.div
-            key={cat.label}
-            initial={{ opacity: 0, y: 16 }}
+            key={tech.name}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.06, duration: 0.35 }}
-            whileHover={{ y: -4 }}
-            className={`group p-5 rounded-2xl border ${cat.border} ${cat.bg} bg-[var(--bg-secondary)] transition-all duration-300 cursor-default`}
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            className="group relative p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl hover:border-[var(--accent)]/40 hover:bg-[var(--bg-secondary)] transition-all duration-500 overflow-hidden"
           >
-            {/* Category header */}
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className={cat.color}>{cat.icon}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.18em] ${cat.color}`}>
-                {cat.label}
+            {/* Background Glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(var(--accent-rgb),0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
+            
+            <div className="flex items-start justify-between mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500">
+                <Image 
+                  src={tech.icon} 
+                  alt={tech.name} 
+                  width={28} 
+                  height={28}
+                  unoptimized
+                  className="transition-all duration-500"
+                />
+              </div>
+              <span className="px-2.5 py-1 bg-white/[0.03] border border-[var(--border-subtle)] text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)] rounded-lg group-hover:text-[var(--text-primary)] transition-colors">
+                {tech.role}
               </span>
             </div>
-            {/* Tech list */}
-            <ul className="space-y-1.5">
-              {cat.techs.map((tech) => (
-                <li
-                  key={tech}
-                  className="text-[12px] text-[var(--text-secondary)] opacity-60 group-hover:opacity-90 transition-opacity flex items-center gap-2"
+
+            <h3 className="text-xl font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-2">
+              {tech.name}
+            </h3>
+            <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed opacity-70 mb-6 min-h-[40px]">
+              {tech.desc}
+            </p>
+
+            <div className="flex flex-wrap gap-2 mt-auto">
+              {tech.tags.map((tag) => (
+                <span 
+                  key={tag}
+                  className="px-2 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[10px] font-bold text-[var(--text-secondary)] rounded-md group-hover:border-[var(--accent)]/20 transition-colors"
                 >
-                  <span className={`w-1 h-1 rounded-full ${cat.color.replace("text-", "bg-")} opacity-60`} />
-                  {tech}
-                </li>
+                  {tag}
+                </span>
               ))}
-            </ul>
+            </div>
           </motion.div>
         ))}
       </div>
 
-      {/* ── Core skill bars ── */}
-      <div className="pt-4">
-        <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-[var(--text-muted)] mb-8 flex items-center gap-3">
-          <span className="w-6 h-px bg-[var(--accent)]" />
-          Proficiency Index
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-8">
-          {coreSkills.map((s) => (
-            <div key={s.name} className="group space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-black uppercase tracking-[0.18em] text-[var(--text-secondary)] opacity-50 group-hover:opacity-100 transition-opacity">
-                  {s.name}
-                </span>
-                <span className="text-[10px] font-black text-[var(--accent)]">{s.pct}%</span>
-              </div>
-              <div className="h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${s.pct}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.4, ease: "circOut" }}
-                  className="h-full bg-[var(--accent)] rounded-full"
-                />
-              </div>
+      {/* ── Cloud & Platform Engineering ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="pt-10"
+      >
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3 flex items-center gap-2">
+              <Cloud size={12} />
+              Cloud & Platform Engineering
+            </p>
+            <h3 className="text-[24px] md:text-[28px] font-black text-[var(--text-primary)] leading-tight">
+              Infrastructure Layer
+            </h3>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">Used in Projects</span>
             </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">Exploring</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {CLOUD_PLATFORMS.map((platform, i) => (
+            <motion.div
+              key={platform.shortName}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.12, duration: 0.5 }}
+              className="group relative p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl hover:border-[var(--accent)]/40 hover:bg-[var(--bg-secondary)] transition-all duration-500 overflow-hidden flex flex-col"
+            >
+              {/* Background Glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(var(--accent-rgb),0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
+
+              {/* Header */}
+              <div className="flex items-start justify-between mb-5">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500">
+                  <Image
+                    src={platform.icon}
+                    alt={platform.name}
+                    width={28}
+                    height={28}
+                    unoptimized
+                    className="transition-all duration-500"
+                  />
+                </div>
+                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 border ${
+                  platform.status === "used"
+                    ? "bg-[var(--accent)]/10 border-[var(--accent)]/20 text-[var(--accent)]"
+                    : "bg-blue-400/10 border-blue-400/20 text-blue-400"
+                }`}>
+                  {platform.status === "used" ? <Check size={10} /> : <Compass size={10} />}
+                  {platform.status === "used" ? "Used" : "Exploring"}
+                </span>
+              </div>
+
+              {/* Name & Description */}
+              <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-1">
+                {platform.shortName}
+              </h4>
+              <p className="text-[11px] text-[var(--text-muted)] font-bold mb-1">{platform.name}</p>
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed opacity-70 mb-5">
+                {platform.desc}
+              </p>
+
+              {/* Services */}
+              <div className="mt-auto space-y-2.5 pt-4 border-t border-[var(--border-subtle)]">
+                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">
+                  Core Services
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  {platform.services.map((svc) => (
+                    <div
+                      key={svc.name}
+                      className="px-2.5 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-lg group-hover:border-[var(--accent)]/15 transition-colors"
+                    >
+                      <span className="text-[11px] font-black text-[var(--text-primary)] block leading-tight">
+                        {svc.name}
+                      </span>
+                      <span className="text-[9px] text-[var(--text-muted)] leading-tight">
+                        {svc.desc}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -292,7 +292,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                         <div className="grid grid-cols-2 gap-4">
                            {project.gallery.map((img: string, idx: number) => (
                               <div key={idx} className={`relative rounded-2xl overflow-hidden border border-white/5 ${idx % 3 === 0 ? 'col-span-2 aspect-[21/9]' : 'aspect-square'}`}>
-                                 <Image src={img} alt={`Gallery image ${idx + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-700" unoptimized />
+                                 <Image src={img} alt={`Gallery image ${idx + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover hover:scale-105 transition-transform duration-700" />
                               </div>
                            ))}
                         </div>

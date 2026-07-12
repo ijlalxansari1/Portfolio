@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { Send, CheckCircle2, Mail, Globe, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, CheckCircle2, Mail, Globe, Loader2, Copy, Check } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
 import emailjs from '@emailjs/browser';
 
@@ -20,6 +20,13 @@ export default function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [isPruning, setIsPruning] = useState(false);
+  const [copiedItem, setCopiedItem] = useState<string | null>(null);
+
+  const handleCopy = (value: string, label: string) => {
+    navigator.clipboard.writeText(value);
+    setCopiedItem(label);
+    setTimeout(() => setCopiedItem(null), 2000);
+  };
 
   const handleClearPrune = () => {
     setIsPruning(true);
@@ -182,31 +189,57 @@ export default function Contact() {
         </div>
 
         {/* Contact Info */}
-        <div className="flex flex-col md:flex-row justify-center items-center gap-6 mt-16">
+        <div className="flex flex-col md:flex-row justify-center items-stretch gap-6 mt-16">
           {[
-            { label: t.email_label, value: t.email_value, icon: <Mail size={16} />, href: `mailto:${t.email_value}`, color: "from-blue-400/20 to-cyan-400/20" },
-            { label: t.portfolio_label, value: t.portfolio_value, icon: <Globe size={16} />, href: "https://dataden.vercel.app", color: "from-[#00e87a]/20 to-emerald-400/20" }
+            { label: t.email_label, value: t.email_value, icon: <Mail size={16} />, href: `mailto:${t.email_value}`, color: "from-blue-400/20 to-cyan-400/20", copyValue: t.email_value },
+            { label: "LinkedIn", value: "in/ijlal-ansari", icon: <Globe size={16} />, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0", color: "from-[#0077B5]/20 to-blue-400/20", copyValue: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
+            { label: "GitHub", value: "ijlalxansari1", icon: <Globe size={16} />, href: "https://github.com/ijlalxansari1", color: "from-white/10 to-gray-400/20", copyValue: "https://github.com/ijlalxansari1" }
           ].map((item, i) => (
             <motion.div
               key={i}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="relative group flex items-center gap-4 px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-white/10 hover:bg-white/[0.05] transition-all"
+              className="relative group flex items-center justify-between gap-6 px-6 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:border-white/10 hover:bg-white/[0.05] transition-all flex-1"
             >
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white group-hover:scale-110 transition-all shadow-lg`}>
-                {item.icon}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] opacity-40 group-hover:opacity-100 transition-all">{item.label}</span>
-                {item.href ? (
-                  <a href={item.href} className="text-[14px] font-black text-white hover:text-[#00e87a] transition-all">
+              <div className="flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white group-hover:scale-110 transition-all shadow-lg`}>
+                  {item.icon}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] opacity-40 group-hover:opacity-100 transition-all">{item.label}</span>
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="text-[14px] font-black text-white hover:text-[var(--accent)] transition-all">
                     {item.value}
                   </a>
-                ) : (
-                  <span className="text-[14px] font-black text-white">{item.value}</span>
-                )}
+                </div>
               </div>
+              
+              <button 
+                onClick={(e) => { e.preventDefault(); handleCopy(item.copyValue, item.label); }}
+                className="w-8 h-8 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:bg-white/10 transition-colors"
+                aria-label={`Copy ${item.label}`}
+              >
+                {copiedItem === item.label ? <Check size={14} className="text-[#00e87a]" /> : <Copy size={14} />}
+              </button>
             </motion.div>
           ))}
+        </div>
+        
+        {/* Global Toast for Copied Status */}
+        <div aria-live="polite" aria-atomic="true">
+          <AnimatePresence>
+            {copiedItem && (
+              <motion.div
+                initial={{ opacity: 0, y: 50, x: "-50%" }}
+                animate={{ opacity: 1, y: 0, x: "-50%" }}
+                exit={{ opacity: 0, y: 50, x: "-50%" }}
+                className="fixed bottom-10 left-1/2 z-[10000] px-6 py-3 bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-2xl rounded-2xl flex items-center gap-3"
+              >
+                <CheckCircle2 size={16} className="text-[var(--accent)]" />
+                <span className="text-[12px] font-black uppercase tracking-widest text-[var(--text-primary)]">
+                  {copiedItem} Copied
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

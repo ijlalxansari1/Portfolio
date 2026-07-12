@@ -214,6 +214,48 @@ export const translations = {
       title: "Methodology & Architecture",
       practices_title: "Professional Practices",
       banner: "Focused on building systems that are not just technically efficient, but ethically governed and fully documented."
+    },
+    about: {
+      about_me: "About Me",
+      milestones: "Milestones",
+      timeline: [
+        { year: "2021", title: "Started Degree", desc: "Karakoram International University" },
+        { year: "2025", title: "Graduated", desc: "BS - SOFTWARE ENGINEERING" },
+        { year: "2026", title: "AI & Data", desc: "Scaling LLMs & Data Platforms" }
+      ],
+      dataops: {
+        title: "DataOps Lifecycle",
+        subtitle: "A modern, systems-thinking approach to moving data from raw sources to business value.",
+        sources: "Data Sources",
+        sources_desc: "Extracting from APIs, event streams, and databases.",
+        ingestion: "Ingestion",
+        ingestion_desc: "Reliable batch and real-time streaming ingestion.",
+        storage: "Storage",
+        storage_desc: "Unified Data Lake and Cloud Data Warehouse.",
+        validation: "Validation",
+        validation_desc: "Automated data quality and anomaly detection.",
+        modeling: "Modeling",
+        modeling_desc: "SQL-first dimensional modeling and aggregations.",
+        orchestration: "Orchestration",
+        orchestration_desc: "Asset-based scheduling and dependency monitoring.",
+        serving: "Serving Layer",
+        serving_desc: "Delivering governed data to downstream consumers."
+      },
+      principles_title: "Engineering Principles",
+      principles_desc: "Core philosophies that guide how I architect, build, and scale data infrastructure.",
+      principles: [
+        { title: "Reliable by Design", desc: "Data systems must be idempotent, tested, and observable from day one. I build for fault-tolerance, not just happy paths." },
+        { title: "Automation First", desc: "If a process requires manual intervention twice, it gets automated. Human effort should go to logic, not execution." },
+        { title: "Business Value Driven", desc: "Technology is a means to an end. Every pipeline must serve a business objective or improve decision-making." },
+        { title: "Transparent Lineage", desc: "Data is useless if it cannot be trusted. Every transformation is documented, version-controlled, and traceable." }
+      ],
+      serving_branches: [
+        "Business Intelligence",
+        "Machine Learning",
+        "AI Applications",
+        "Data APIs",
+        "Operational Systems"
+      ]
     }
   },
   de: {
@@ -431,6 +473,48 @@ export const translations = {
       title: "Methodik & Architektur",
       practices_title: "Professionelle Praktiken",
       banner: "Fokus auf den Bau von Systemen, die nicht nur technisch effizient, sondern auch ethisch gesteuert und vollständig dokumentiert sind."
+    },
+    about: {
+      about_me: "Über mich",
+      milestones: "Meilensteine",
+      timeline: [
+        { year: "2021", title: "Studienbeginn", desc: "Karakoram International University" },
+        { year: "2025", title: "Abschluss", desc: "BS - SOFTWARE ENGINEERING" },
+        { year: "2026", title: "KI & Daten", desc: "Skalierung von LLMs & Datenplattformen" }
+      ],
+      dataops: {
+        title: "DataOps Lebenszyklus",
+        subtitle: "Ein moderner, systemdenkender Ansatz, um Daten von Rohquellen in geschäftlichen Wert umzuwandeln.",
+        sources: "Datenquellen",
+        sources_desc: "Extraktion aus APIs, Event-Streams und Datenbanken.",
+        ingestion: "Aufnahme",
+        ingestion_desc: "Zuverlässige Batch- und Echtzeit-Streaming-Aufnahme.",
+        storage: "Speicherung",
+        storage_desc: "Einheitlicher Data Lake und Cloud Data Warehouse.",
+        validation: "Validierung",
+        validation_desc: "Automatisierte Datenqualität und Anomalieerkennung.",
+        modeling: "Modellierung",
+        modeling_desc: "SQL-first dimensionale Modellierung und Aggregationen.",
+        orchestration: "Orchestrierung",
+        orchestration_desc: "Asset-basiertes Scheduling und Abhängigkeitsüberwachung.",
+        serving: "Bereitstellungsebene",
+        serving_desc: "Bereitstellung von regulierten Daten an Endnutzer."
+      },
+      principles_title: "Ingenieurprinzipien",
+      principles_desc: "Kernphilosophien, die mich beim Aufbau und der Skalierung von Dateninfrastrukturen leiten.",
+      principles: [
+        { title: "Zuverlässig durch Design", desc: "Datensysteme müssen von Tag eins an idempotent, getestet und beobachtbar sein. Ich baue für Fehlertoleranz, nicht nur für Happy Paths." },
+        { title: "Automatisierung zuerst", desc: "Wenn ein Prozess zweimal manuelles Eingreifen erfordert, wird er automatisiert. Menschliche Anstrengung sollte in Logik, nicht in Ausführung fließen." },
+        { title: "Geschäftswertgetrieben", desc: "Technologie ist ein Mittel zum Zweck. Jede Pipeline muss einem Geschäftsziel dienen oder die Entscheidungsfindung verbessern." },
+        { title: "Transparente Abstammung", desc: "Daten sind nutzlos, wenn man ihnen nicht vertrauen kann. Jede Transformation wird dokumentiert, versionskontrolliert und ist nachvollziehbar." }
+      ],
+      serving_branches: [
+        "Business Intelligence",
+        "Maschinelles Lernen",
+        "KI-Anwendungen",
+        "Daten-APIs",
+        "Operative Systeme"
+      ]
     }
   }
 };

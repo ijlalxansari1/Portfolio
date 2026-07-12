@@ -26,18 +26,22 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const viewport = {
   themeColor: "#0d0d0d",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { existsSync } from 'fs';
 
 export async function generateMetadata(): Promise<Metadata> {
   let config: any = {};
   try {
     const storePath = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
-    if (fs.existsSync(storePath)) {
-      const data = JSON.parse(fs.readFileSync(storePath, 'utf8'));
-      config = data['admin-config'] || {};
+    if (existsSync(storePath)) {
+      const data = await fs.readFile(storePath, 'utf8');
+      config = JSON.parse(data)['admin-config'] || {};
     }
   } catch (e) {
     console.error("Failed to read SEO config", e);

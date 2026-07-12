@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import {
-  Download, Send, Github, Linkedin, ExternalLink,
-  Database, Zap, Clock, Award, ChevronRight
+  Download, Send, Github, Linkedin, Database, Zap, Clock, Award, ChevronRight, UserCircle2, Briefcase, GraduationCap, ShieldCheck, Bot, BarChart3, Layers, FileText, Workflow, HardDrive, ArrowRightLeft
 } from "lucide-react";
 import Magnetic from "./Magnetic";
 import { useLanguage } from "../context/LanguageContext";
@@ -16,10 +16,41 @@ const TECH_TAGS = [
   "dbt", "ETL/ELT", "AWS", "Data Engineering",
 ];
 
+const TIMELINE = [
+  { year: "2021", title: "Started Degree", desc: "Karakoram International University", icon: GraduationCap },
+  { year: "2025", title: "Graduated", desc: "BS - SOFTWARE ENGINEERING", icon: Award },
+  { year: "2026", title: "AI & Data", desc: "Scaling LLMs & Data Platforms", icon: Zap },
+];
+
+const PRINCIPLES = [
+  { title: "Reliable by Design", icon: ShieldCheck, desc: "Data systems must be idempotent, tested, and observable from day one. I build for fault-tolerance, not just happy paths." },
+  { title: "Automation First", icon: Bot, desc: "If a process requires manual intervention twice, it gets automated. Human effort should go to logic, not execution." },
+  { title: "Business Value Driven", icon: BarChart3, desc: "Technology is a means to an end. Every pipeline must serve a business objective or improve decision-making." },
+  { title: "Transparent Lineage", icon: Layers, desc: "Data is useless if it cannot be trusted. Every transformation is documented, version-controlled, and traceable." }
+];
+
+const DATAOPS_LIFECYCLE = [
+  { iconUrl: "https://img.icons8.com/color/96/database.png", stepKey: "sources", descKey: "sources_desc" },
+  { iconUrl: "https://img.icons8.com/color/96/data-transfer.png", stepKey: "ingestion", descKey: "ingestion_desc" },
+  { iconUrl: "https://img.icons8.com/color/96/server.png", stepKey: "storage", descKey: "storage_desc" },
+  { iconUrl: "https://img.icons8.com/color/96/inspection.png", stepKey: "validation", descKey: "validation_desc" },
+  { iconUrl: "https://img.icons8.com/color/96/module.png", stepKey: "modeling", descKey: "modeling_desc" },
+  { iconUrl: "https://img.icons8.com/color/96/workflow.png", stepKey: "orchestration", descKey: "orchestration_desc" },
+  { iconUrl: "https://img.icons8.com/color/96/api-settings.png", stepKey: "serving", descKey: "serving_desc" }
+];
+
+const SERVING_BRANCHES = [
+  "Business Intelligence",
+  "Machine Learning",
+  "AI Applications",
+  "Data APIs",
+  "Operational Systems"
+];
+
 export default function About() {
   const { language } = useLanguage();
   const heroText = translations[language].hero;
-  const storyText = translations[language].story;
+  const tAbout = translations[language].about;
   const t = heroText;
 
   const [stats, setStats] = useState({ projects: 6, hours: 1000, taught: 100 });
@@ -28,15 +59,16 @@ export default function About() {
     titles: heroText.titles,
     techTags: TECH_TAGS,
   });
-  const [manifesto, setManifesto] = useState({
-    title: `${storyText.heading} ${storyText.headingAccent}`,
-    paragraphs: storyText.paragraphs,
-  });
-  const [displayText, setDisplayText] = useState("");
-  const titleIndexRef = useRef(0);
-  const charIndexRef = useRef(0);
-  const isDeletingRef = useRef(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [titleIndex, setTitleIndex] = useState(0);
+
+  useEffect(() => {
+    if (!heroConfig.titles || heroConfig.titles.length === 0) return;
+    const interval = setInterval(() => {
+      setTitleIndex((prev) => (prev + 1) % heroConfig.titles.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [heroConfig.titles]);
 
   useEffect(() => {
     const loadData = () => {
@@ -46,60 +78,27 @@ export default function About() {
         titles: heroText.titles,
         techTags: TECH_TAGS,
       }));
-      setManifesto(storage.get("admin-manifesto", {
-        title: `${storyText.heading} ${storyText.headingAccent}`,
-        paragraphs: storyText.paragraphs,
-      }));
     };
     loadData();
     window.addEventListener("admin-updated", loadData);
     return () => window.removeEventListener("admin-updated", loadData);
-  }, [heroText.label, heroText.titles, storyText.heading, storyText.headingAccent, storyText.paragraphs]);
-
-  const titles = heroConfig.titles;
-
-  useEffect(() => {
-    function type() {
-      const current = titles[titleIndexRef.current];
-      if (isDeletingRef.current) {
-        setDisplayText(current.substring(0, charIndexRef.current - 1));
-        charIndexRef.current--;
-      } else {
-        setDisplayText(current.substring(0, charIndexRef.current + 1));
-        charIndexRef.current++;
-      }
-      if (!isDeletingRef.current && charIndexRef.current === current.length) {
-        timerRef.current = setTimeout(() => { isDeletingRef.current = true; type(); }, 1800);
-        return;
-      }
-      if (isDeletingRef.current && charIndexRef.current === 0) {
-        isDeletingRef.current = false;
-        titleIndexRef.current = (titleIndexRef.current + 1) % titles.length;
-      }
-      timerRef.current = setTimeout(type, isDeletingRef.current ? 60 : 100);
-    }
-    timerRef.current = setTimeout(type, 500);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [language, titles]);
+  }, [heroText]);
 
   const statItems = [
     {
       num: `${stats.projects}+`,
       label: t.stats.projects_sub,
-      icon: <Zap size={18} className="text-yellow-400" />,
-      gradient: "from-yellow-400 to-orange-500",
+      icon: <Zap size={18} className="text-[var(--accent)]" />,
     },
     {
       num: `${stats.hours >= 1000 ? (stats.hours / 1000).toFixed(stats.hours % 1000 === 0 ? 0 : 1) + "K" : stats.hours}+`,
       label: t.stats.hours_sub,
-      icon: <Clock size={18} className="text-blue-400" />,
-      gradient: "from-blue-400 to-cyan-500",
+      icon: <Clock size={18} className="text-[var(--accent)]" />,
     },
     {
       num: `${stats.taught}%`,
       label: t.stats.taught_sub,
       icon: <Award size={18} className="text-[var(--accent)]" />,
-      gradient: "from-[var(--accent)] to-emerald-500",
     },
   ];
 
@@ -111,19 +110,19 @@ export default function About() {
   };
 
   return (
-    <div className="w-full relative min-h-[88vh] flex flex-col justify-start pt-0 lg:pt-0">
+    <div id="about-content" className="w-full relative flex flex-col justify-start" aria-label="About and Hero Section">
       {/* Watermark */}
-      <div className="absolute -top-16 -right-10 text-[180px] font-black text-white/[0.018] pointer-events-none select-none uppercase tracking-tighter font-jakarta hidden lg:block leading-none">
+      <div className="absolute -top-16 -right-10 text-[180px] font-black text-white/[0.015] pointer-events-none select-none uppercase tracking-tighter font-jakarta hidden lg:block leading-none">
         DE
       </div>
 
-      <div className="relative z-10 space-y-8 max-w-[720px]">
+      <div className="relative z-10 flex flex-col gap-8 max-w-[800px] mt-8 lg:mt-10">
         {/* Availability badge */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-2.5 px-4 py-2 bg-[var(--accent)]/8 border border-[var(--accent)]/20 rounded-full w-fit"
+          className="inline-flex items-center gap-2.5 px-4 py-2 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-full w-fit shadow-sm"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse shadow-[0_0_8px_rgba(var(--accent-rgb),0.8)]" />
           <span className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.25em]">
@@ -132,7 +131,7 @@ export default function About() {
         </motion.div>
 
         {/* Greeting & Name */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -145,84 +144,93 @@ export default function About() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="section-heading text-[40px] sm:text-[56px] lg:text-[76px] font-black text-white leading-[0.92] tracking-tighter"
+            className="text-[48px] sm:text-[64px] lg:text-[80px] font-black text-[var(--text-primary)] leading-[0.9] tracking-tighter"
           >
             Ijlal{" "}
             <span className="text-[var(--accent)]">Ansari.</span>
           </motion.h1>
 
-          {/* Role badge */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-lg"
+            className="inline-flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl mt-4 overflow-hidden"
           >
-            <Database size={12} className="text-[var(--accent)]" aria-hidden="true" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)]">
-              {heroConfig.label}
-            </span>
+            <Database size={14} className="text-[var(--accent)] shrink-0" />
+            <AnimatePresence mode="wait">
+              {heroConfig.titles && heroConfig.titles.length > 0 && (
+                <motion.span
+                  key={titleIndex}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="text-[11px] sm:text-[12px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] whitespace-nowrap block"
+                >
+                  {heroConfig.titles[titleIndex]}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
 
-        {/* Typewriter */}
+        {/* Visual Storytelling Section */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.35 }}
-          className="flex items-center gap-3 flex-wrap"
-        >
-          <span className="text-[18px] lg:text-[22px] font-medium text-[var(--text-secondary)] opacity-40">
-            {t.expertIn}
-          </span>
-          <span className="text-[18px] lg:text-[22px] font-black text-[var(--accent)]">
-            <span>{displayText}</span>
-            <span className="cursor opacity-80">|</span>
-          </span>
-        </motion.div>
-
-        {/* Story manifest */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="space-y-6 max-w-[720px]"
-        >
-          <h2 className="text-[24px] font-black text-white tracking-tight">
-            {manifesto.title}
-          </h2>
-          <div className="space-y-4 text-[15px] lg:text-[17px] text-[var(--text-secondary)] leading-[1.8] opacity-75">
-            {manifesto.paragraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Bio — concise, recruiter-first */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-[15px] lg:text-[17px] text-[var(--text-secondary)] leading-[1.75] max-w-[580px] opacity-65"
-        >
-          {t.bio}
-        </motion.p>
-
-        {/* Tech tags */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55 }}
-          className="flex flex-wrap gap-2"
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="grid md:grid-cols-2 gap-8 pt-4"
         >
-          {heroConfig.techTags.map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-lg bg-white/[0.04] border border-white/[0.07] text-[var(--text-secondary)] hover:border-[var(--accent)]/30 hover:text-[var(--accent)] transition-colors"
-            >
-              {tag}
-            </span>
-          ))}
+           {/* Left: Short Bio */}
+           <article className="space-y-6">
+              <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2">
+                 <UserCircle2 size={20} className="text-[var(--accent)]" />
+                 {tAbout.about_me}
+              </h3>
+              <p className="text-[14px] text-[var(--text-secondary)] leading-[1.8] opacity-80">
+                {t.bio || "I build reliable data infrastructure. My focus is on turning chaotic datasets into clean, accessible, and automated pipelines that power intelligent business decisions."}
+              </p>
+              {/* Tech tags */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {heroConfig.techTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+           </article>
+
+           {/* Right: Timeline */}
+           <div className="space-y-6">
+              <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2">
+                 <Briefcase size={20} className="text-[var(--accent)]" />
+                 {tAbout.milestones}
+              </h3>
+              <div className="space-y-0 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent hidden sm:block">
+                 {/* Timeline Layout */}
+                 {tAbout.timeline.map((item, idx) => {
+                    const icons = [GraduationCap, Award, Zap];
+                    const Icon = icons[idx] || Zap;
+                    return (
+                      <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-[var(--accent)] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform">
+                           <Icon size={16} />
+                        </div>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm group-hover:border-[var(--accent)]/30 group-hover:shadow-md transition-all">
+                           <div className="flex items-center justify-between mb-1">
+                              <span className="font-black text-sm text-[var(--text-primary)]">{item.title}</span>
+                              <span className="text-[10px] font-bold text-[var(--accent)]">{item.year}</span>
+                           </div>
+                           <div className="text-[12px] text-[var(--text-secondary)] opacity-70">{item.desc}</div>
+                        </div>
+                      </div>
+                    );
+                 })}
+              </div>
+           </div>
         </motion.div>
 
         {/* CTA buttons */}
@@ -230,13 +238,12 @@ export default function About() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-wrap gap-4 pt-2"
+          className="flex flex-wrap items-center gap-4 pt-6"
         >
           <Magnetic>
             <button
               onClick={() => scrollTo("contact")}
-              className="group px-7 py-4 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:scale-[1.04] active:scale-[0.97] transition-all shadow-[0_12px_28px_rgba(var(--accent-rgb),0.2)]"
-              aria-label="Go to contact section"
+              className="group px-8 py-4 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:scale-105 transition-all shadow-[0_10px_20px_rgba(var(--accent-rgb),0.15)]"
             >
               {t.cta_talk}
               <Send size={15} />
@@ -246,41 +253,41 @@ export default function About() {
           <Magnetic>
             <button
               onClick={() => scrollTo("projects")}
-              className="group px-7 py-4 bg-transparent border border-[var(--border-subtle)] text-[var(--text-primary)] text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-white/[0.04] hover:border-white/10 transition-all"
-              aria-label="View my projects"
+              className="group px-8 py-4 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-[var(--accent)]/5 hover:border-[var(--accent)]/30 transition-all"
             >
               {t.cta_work}
-              <ChevronRight size={15} className="group-hover:translate-x-1 transition-transform" />
+              <ChevronRight size={15} className="group-hover:translate-x-1 transition-transform text-[var(--accent)]" />
             </button>
           </Magnetic>
 
-          <div className="flex items-center gap-3">
+          <Magnetic>
             <a
-              href="https://github.com/ijlalxansari1"
+              href="/ijlalansari.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="GitHub profile"
-              className="w-11 h-11 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:bg-white/[0.08] hover:border-white/10 transition-all"
-            >
-              <Github size={18} />
-            </a>
-            <a
-              href="https://linkedin.com/in/ijlal-ansari-56b0371b0"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn profile"
-              className="w-11 h-11 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[var(--text-secondary)] hover:text-[#0a66c2] hover:bg-[#0a66c2]/10 hover:border-[#0a66c2]/20 transition-all"
-            >
-              <Linkedin size={18} />
-            </a>
-            <a
-              href="/resume.pdf"
               download
-              aria-label="Download resume"
-              className="w-11 h-11 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/20 transition-all"
+              className="group px-8 py-4 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-white/5 transition-all"
             >
-              <Download size={18} />
+              Download Resume
+              <Download size={15} className="group-hover:-translate-y-1 transition-transform opacity-70" />
             </a>
+          </Magnetic>
+
+          <div className="flex items-center gap-3 ml-2">
+            {[
+              { href: "https://github.com/ijlalxansari1", icon: Github },
+              { href: "https://linkedin.com/in/ijlal-ansari-56b0371b0", icon: Linkedin }
+            ].map((link, i) => (
+               <a
+                  key={i}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all group hover:-translate-y-1"
+               >
+                 <link.icon size={18} className="opacity-70 group-hover:opacity-100 transition-opacity" />
+               </a>
+            ))}
           </div>
         </motion.div>
       </div>
@@ -290,35 +297,124 @@ export default function About() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.65 }}
-        className="mt-auto pt-12 border-t border-white/[0.05] grid grid-cols-3 gap-6 max-w-[540px]"
+        className="mt-16 pt-10 border-t border-[var(--border-subtle)] grid grid-cols-3 gap-6 max-w-[600px]"
       >
         {statItems.map((s, i) => (
           <motion.div
             key={i}
             whileHover={{ y: -4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="flex flex-col gap-2 group"
+            className="flex flex-col gap-3 group"
           >
-            <div className="flex items-center gap-2">
-              {s.icon}
-              <span className={`text-[36px] font-black leading-none tracking-tighter bg-gradient-to-br ${s.gradient} bg-clip-text text-transparent`}>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center group-hover:border-[var(--accent)]/30 transition-colors">
+                {s.icon}
+              </div>
+              <span className="text-[32px] font-black text-[var(--text-primary)]">
                 {s.num}
               </span>
             </div>
-            <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.12em] group-hover:text-white/50 transition-colors">
+            <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] group-hover:text-[var(--text-secondary)] transition-colors">
               {s.label}
             </span>
           </motion.div>
         ))}
       </motion.div>
+      {/* Engineering Principles */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="mt-20 pt-16 border-t border-[var(--border-subtle)]"
+      >
+        <div className="mb-8">
+          <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2 mb-2">
+            <Zap size={20} className="text-[var(--accent)]" />
+            {tAbout.principles_title}
+          </h3>
+          <p className="text-[13px] text-[var(--text-secondary)] opacity-80 max-w-lg">
+            {tAbout.principles_desc}
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {tAbout.principles.map((principle: any, i: number) => {
+            const icons = [ShieldCheck, Bot, BarChart3, Layers];
+            const Icon = icons[i] || ShieldCheck;
+            return (
+            <div key={i} className="p-6 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 transition-colors group">
+              <div className="w-10 h-10 rounded-xl bg-[var(--bg-primary)] flex items-center justify-center text-[var(--accent)] mb-4 border border-[var(--border-subtle)] group-hover:scale-110 transition-transform">
+                <Icon size={18} />
+              </div>
+              <h4 className="text-[14px] font-black text-[var(--text-primary)] mb-2">{principle.title}</h4>
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed opacity-80">
+                {principle.desc}
+              </p>
+            </div>
+            );
+          })}
+        </div>
+      </motion.div>
 
-      {/* Scroll hint */}
-      <div className="absolute bottom-2 right-0 hidden lg:flex items-center gap-3 opacity-15">
-        <span className="text-[9px] font-black uppercase tracking-[0.4em] rotate-90 origin-right translate-y-10">
-          {t.scroll}
-        </span>
-        <div className="w-px h-20 bg-white/30" />
-      </div>
+      {/* DataOps Lifecycle */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="mt-16 pb-10"
+      >
+        <div className="mb-8">
+          <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2 mb-2">
+            <Workflow size={20} className="text-[var(--accent)]" />
+            {tAbout.dataops.title}
+          </h3>
+          <p className="text-[13px] text-[var(--text-secondary)] opacity-80 max-w-lg">
+            {tAbout.dataops.subtitle}
+          </p>
+        </div>
+
+        <div className="w-full overflow-x-auto custom-scrollbar pb-6">
+          <div className="flex items-center min-w-max">
+            {DATAOPS_LIFECYCLE.map((step, i) => (
+              <div key={i} className="flex items-center">
+                <div className="flex flex-col items-center gap-3 w-32 group">
+                  <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-sm group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/10 transition-all">
+                    <Image src={step.iconUrl} alt={tAbout.dataops[step.stepKey as keyof typeof tAbout.dataops] as string} width={24} height={24} unoptimized className="group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                  <div className="text-center">
+                    <div className="text-[11px] font-black uppercase tracking-widest text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent)] transition-colors">{tAbout.dataops[step.stepKey as keyof typeof tAbout.dataops] as string}</div>
+                    <div className="text-[10px] text-[var(--text-secondary)] opacity-70 leading-tight px-2">{tAbout.dataops[step.descKey as keyof typeof tAbout.dataops] as string}</div>
+                  </div>
+                </div>
+                
+                {i < DATAOPS_LIFECYCLE.length - 1 ? (
+                  <div className="w-12 flex items-center justify-center mb-8 relative">
+                    <div className="w-full h-[2px] bg-gradient-to-r from-[var(--border-subtle)] to-[var(--accent)]/50 rounded-full" />
+                    <ChevronRight size={16} className="text-[var(--accent)] absolute -right-2 bg-[var(--bg-card)]" />
+                  </div>
+                ) : (
+                  <div className="flex items-center ml-2 mb-8 relative">
+                    <div className="w-8 h-[2px] bg-[var(--border-subtle)] relative">
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--border-subtle)]" />
+                    </div>
+                    <div className="flex flex-col gap-2 py-4 pl-4 border-l-2 border-[var(--border-subtle)] relative">
+                      {tAbout.serving_branches.map((branch: string, j: number) => (
+                        <div key={j} className="flex items-center gap-2 group/branch">
+                          <div className="w-3 h-px bg-[var(--border-subtle)] group-hover/branch:bg-[var(--accent)]/50 transition-colors" />
+                          <span className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-md group-hover/branch:border-[var(--accent)]/30 group-hover/branch:text-[var(--text-primary)] transition-colors cursor-default whitespace-nowrap">
+                            {branch}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
