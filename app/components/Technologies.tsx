@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 const defaultSkills = [
-  { name: "Python", value: 82 },
-  { name: "PostgreSQL", value: 78 },
-  { name: "Apache Kafka", value: 65 },
-  { name: "AWS", value: 60 },
+  { name: "Python", value: 92, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "PostgreSQL", value: 85, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
+  { name: "DuckDB", value: 90, icon: "https://upload.wikimedia.org/wikipedia/en/2/2f/DuckDB_logo.svg" },
+  { name: "FastAPI", value: 87, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+  { name: "Kafka", value: 75, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" },
+  { name: "Next.js", value: 88, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" }
 ];
 
 import { useLanguage } from "../context/LanguageContext";
@@ -155,7 +157,11 @@ export default function Technologies() {
               className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${hoveredSkill === skill.name ? 'border-[var(--accent)] bg-[var(--accent)]/5 scale-105' : 'border-transparent bg-[var(--bg-card)]/50'}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[var(--accent)]" />
+                {skill.icon ? (
+                  <img src={skill.icon} alt={skill.name} className="w-4 h-4 object-contain" />
+                ) : (
+                  <div className="w-2 h-2 rounded-full bg-[var(--accent)]" />
+                )}
                 <span className={`text-[12px] font-black uppercase tracking-wider ${hoveredSkill === skill.name ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}>
                   {skill.name}
                 </span>

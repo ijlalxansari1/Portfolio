@@ -88,7 +88,12 @@ const defaultPractices = [
 ];
 
 const defaultRadar = [
-  { name: "Python", value: 92 }, { name: "PostgreSQL", value: 85 }, { name: "DuckDB", value: 90 }, { name: "FastAPI", value: 87 }, { name: "Kafka", value: 75 }, { name: "Next.js", value: 88 }
+  { name: "Python", value: 92, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "PostgreSQL", value: 85, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
+  { name: "DuckDB", value: 90, icon: "https://upload.wikimedia.org/wikipedia/en/2/2f/DuckDB_logo.svg" },
+  { name: "FastAPI", value: 87, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+  { name: "Kafka", value: 75, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" },
+  { name: "Next.js", value: 88, icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" }
 ];
 
 const defaultTools = [
@@ -1456,6 +1461,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                             <div className="space-y-4">
                                {radarSkills.map((s, i) => (
                                   <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl group">
+                                     <div className="w-8 h-8 shrink-0">
+                                       <ImageUpload 
+                                          onUpload={(url) => { const n = [...radarSkills]; n[i].icon = url; setRadarSkills(n); saveData("admin-skills-radar", n); }} 
+                                          defaultImage={s.icon}
+                                          className="h-full w-full !p-1"
+                                          iconOnly={true}
+                                       />
+                                     </div>
                                      <input type="text" value={s.name} onChange={e => { const n = [...radarSkills]; n[i].name = e.target.value; setRadarSkills(n); }} onBlur={() => saveData("admin-skills-radar", radarSkills)} className="bg-transparent text-white font-bold text-[13px] outline-none flex-1" />
                                      <input type="number" value={s.value} onChange={e => { const n = [...radarSkills]; n[i].value = parseInt(e.target.value); setRadarSkills(n); }} onBlur={() => saveData("admin-skills-radar", radarSkills)} className="w-12 bg-white/5 border border-white/10 rounded-lg p-1 text-[11px] text-purple-400 font-bold text-center outline-none" />
                                      <button onClick={() => {
@@ -1909,23 +1922,68 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                          {/* Cloud Platforms (Infrastructure Layer) Logos */}
                          <div className="space-y-8">
                            <div className="flex justify-between items-center">
-                             <h3 className="text-[12px] font-black text-orange-400 uppercase tracking-[4px]">Infrastructure Layer Logos</h3>
+                             <h3 className="text-[12px] font-black text-orange-400 uppercase tracking-[4px]">Cloud Platforms & Infrastructure</h3>
+                             <button onClick={() => {
+                                const updated = [...cloudPlatforms, { name: "New Cloud", shortName: "NCL", icon: "", desc: "Description here...", status: "exploring", services: [] }];
+                                setCloudPlatforms(updated);
+                                saveData("admin-cloud-platforms", updated);
+                             }} className="w-10 h-10 bg-orange-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
                            </div>
-                           <div className="grid grid-cols-2 gap-4">
+                           <div className="space-y-6">
                              {cloudPlatforms.map((platform, i) => (
-                               <div key={i} className="flex flex-col items-center gap-2 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
-                                 <span className="text-[11px] font-bold text-white/70 text-center">{platform.name}</span>
-                                 <div className="w-12 h-12">
-                                   <ImageUpload 
-                                      onUpload={(url) => { const n = [...cloudPlatforms]; n[i].icon = url; setCloudPlatforms(n); saveData("admin-cloud-platforms", n); }} 
-                                      defaultImage={platform.icon}
-                                      className="h-full w-full !p-1"
-                                      iconOnly={true}
-                                   />
+                               <div key={i} className="flex flex-col gap-4 p-6 bg-white/[0.02] border border-white/5 rounded-2xl group">
+                                 <div className="flex justify-between items-start">
+                                   <div className="flex-1 flex flex-col gap-2">
+                                     <div className="flex gap-4 items-center">
+                                       <input type="text" value={platform.name} onChange={e => { const n = [...cloudPlatforms]; n[i].name = e.target.value; setCloudPlatforms(n); }} onBlur={() => saveData("admin-cloud-platforms", cloudPlatforms)} className="bg-transparent text-white font-black text-[16px] outline-none flex-1 border-b border-transparent focus:border-white/20" placeholder="Platform Name (e.g. AWS)" />
+                                       <input type="text" value={platform.shortName} onChange={e => { const n = [...cloudPlatforms]; n[i].shortName = e.target.value; setCloudPlatforms(n); }} onBlur={() => saveData("admin-cloud-platforms", cloudPlatforms)} className="bg-transparent text-white/50 font-bold text-[13px] outline-none w-20 border-b border-transparent focus:border-white/20" placeholder="Short (AWS)" />
+                                     </div>
+                                     <textarea value={platform.desc} onChange={e => { const n = [...cloudPlatforms]; n[i].desc = e.target.value; setCloudPlatforms(n); }} onBlur={() => saveData("admin-cloud-platforms", cloudPlatforms)} className="w-full bg-transparent text-white/60 text-[12px] outline-none resize-none h-10 border-b border-transparent focus:border-white/20" placeholder="Description of platform..." />
+                                   </div>
+                                   <div className="flex items-center gap-4 ml-4">
+                                     <div className="w-12 h-12 shrink-0">
+                                       <ImageUpload 
+                                          onUpload={(url) => { const n = [...cloudPlatforms]; n[i].icon = url; setCloudPlatforms(n); saveData("admin-cloud-platforms", n); }} 
+                                          defaultImage={platform.icon}
+                                          className="h-full w-full !p-1"
+                                          iconOnly={true}
+                                       />
+                                     </div>
+                                     <button onClick={() => {
+                                        const updated = cloudPlatforms.filter((_, idx) => idx !== i);
+                                        setCloudPlatforms(updated);
+                                        saveData("admin-cloud-platforms", updated);
+                                     }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all p-2 shrink-0"><Trash size={16} /></button>
+                                   </div>
+                                 </div>
+                                 
+                                 {/* Sub Services */}
+                                 <div className="mt-2 pl-4 border-l border-white/10 space-y-3">
+                                   <div className="flex justify-between items-center">
+                                     <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Sub-Services</span>
+                                     <button onClick={() => {
+                                        const n = [...cloudPlatforms];
+                                        if (!n[i].services) n[i].services = [];
+                                        n[i].services.push({ name: "New Service", desc: "Service desc" });
+                                        setCloudPlatforms(n);
+                                        saveData("admin-cloud-platforms", n);
+                                     }} className="text-[10px] text-orange-400 hover:text-orange-300 uppercase tracking-wider font-bold flex items-center gap-1"><Plus size={12}/> Add Service</button>
+                                   </div>
+                                   {platform.services && platform.services.map((svc: any, svcIdx: number) => (
+                                     <div key={svcIdx} className="flex items-center gap-3 group/svc">
+                                       <input type="text" value={svc.name} onChange={e => { const n = [...cloudPlatforms]; n[i].services[svcIdx].name = e.target.value; setCloudPlatforms(n); }} onBlur={() => saveData("admin-cloud-platforms", cloudPlatforms)} className="bg-white/5 border border-white/5 rounded px-2 py-1 text-white text-[11px] outline-none w-32 focus:border-orange-400/30" placeholder="Name" />
+                                       <input type="text" value={svc.desc} onChange={e => { const n = [...cloudPlatforms]; n[i].services[svcIdx].desc = e.target.value; setCloudPlatforms(n); }} onBlur={() => saveData("admin-cloud-platforms", cloudPlatforms)} className="bg-white/5 border border-white/5 rounded px-2 py-1 text-white/60 text-[11px] outline-none flex-1 focus:border-orange-400/30" placeholder="Description" />
+                                       <button onClick={() => {
+                                          const n = [...cloudPlatforms];
+                                          n[i].services = n[i].services.filter((_: any, idx: number) => idx !== svcIdx);
+                                          setCloudPlatforms(n);
+                                          saveData("admin-cloud-platforms", n);
+                                       }} className="text-red-400 opacity-0 group-hover/svc:opacity-100 transition-all p-1 shrink-0"><Trash size={12} /></button>
+                                     </div>
+                                   ))}
                                  </div>
                                </div>
                              ))}
-                           </div>
                          </div>
                        </div>
                      </div>
