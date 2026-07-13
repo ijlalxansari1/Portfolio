@@ -1445,7 +1445,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                {toolSkills.map((s, i) => (
                                   <div key={i} className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl group space-y-4">
                                      <div className="flex justify-between items-start">
-                                        <input type="text" value={s.name} onChange={e => { const n = [...toolSkills]; n[i].name = e.target.value; setToolSkills(n); }} onBlur={() => saveData("admin-skills", { tools: toolSkills })} className="bg-transparent text-white font-bold text-[15px] outline-none" />
+                                        <input type="text" value={s.name} onChange={e => { const n = [...toolSkills]; n[i].name = e.target.value; setToolSkills(n); }} onBlur={() => saveData("admin-skills", { tools: toolSkills })} className="bg-transparent text-white font-bold text-[15px] outline-none flex-1" />
                                         <button onClick={() => {
                                            const updated = toolSkills.filter((_, idx) => idx !== i);
                                            setToolSkills(updated);
@@ -1462,6 +1462,28 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                         </select>
                                      </div>
                                      <textarea value={s.desc} onChange={e => { const n = [...toolSkills]; n[i].desc = e.target.value; setToolSkills(n); }} onBlur={() => saveData("admin-skills", { tools: toolSkills })} className="w-full bg-transparent text-white/40 text-[11px] outline-none border-t border-white/5 pt-2 resize-none h-12" placeholder="Brief description..." />
+                                     
+                                     {/* Tool Icons & Mockup */}
+                                     <div className="flex gap-4 items-center pt-2 border-t border-white/5">
+                                        <div className="w-12 h-12 shrink-0">
+                                            <span className="text-[9px] uppercase font-black text-white/30 block mb-1">Icon</span>
+                                            <ImageUpload 
+                                               onUpload={(url) => { const n = [...toolSkills]; n[i].icon = url; setToolSkills(n); saveData("admin-skills", { tools: n }); }} 
+                                               defaultImage={s.icon}
+                                               className="h-full w-full !p-1"
+                                               iconOnly={true}
+                                            />
+                                        </div>
+                                        <div className="h-12 flex-1">
+                                            <span className="text-[9px] uppercase font-black text-white/30 block mb-1">Background Mockup</span>
+                                            <ImageUpload 
+                                               onUpload={(url) => { const n = [...toolSkills]; n[i].mockup = url; setToolSkills(n); saveData("admin-skills", { tools: n }); }} 
+                                               defaultImage={s.mockup}
+                                               className="h-full w-full !p-1 text-[10px]"
+                                               iconOnly={false}
+                                            />
+                                        </div>
+                                     </div>
                                   </div>
                                ))}
                             </div>
