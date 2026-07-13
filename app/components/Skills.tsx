@@ -11,11 +11,11 @@ import { useState, useEffect } from "react";
 const CORE_STACK = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primary Database", desc: "Relational data modeling, indexing, and robust ACID storage.", tags: ["ACID", "Relational", "JSONB"] },
-  { name: "Dagster", icon: Workflow, isLucide: true, role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Dagster", icon: "https://cdn.simpleicons.org/dagster/white", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
   { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerization", desc: "Consistent environments and reproducible builds.", tags: ["DevOps", "Microservices", "Deployment"] },
   { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API Framework", desc: "High-performance data delivery and REST API development.", tags: ["Async", "REST", "Endpoints"] },
   { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
-  { name: "Power BI", icon: BarChart3, isLucide: true, role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Power BI", icon: "https://cdn.simpleicons.org/powerbi/white", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React framework for building fast data applications.", tags: ["React", "SSR", "UI"] },
 ];
 
@@ -64,11 +64,11 @@ const CLOUD_PLATFORMS = [
 const CORE_STACK_DE = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Kernsprache", desc: "Datenverarbeitung, API-Entwicklung und Automatisierungsskripte.", tags: ["ETL", "Automatisierung", "APIs"] },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primäre Datenbank", desc: "Relationale Datenmodellierung, Indizierung und robuster ACID-Speicher.", tags: ["ACID", "Relational", "JSONB"] },
-  { name: "Dagster", icon: Workflow, isLucide: true, role: "Orchestrierung", desc: "Asset-basierte Datenpipeline-Orchestrierung und -Planung.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Dagster", icon: "https://cdn.simpleicons.org/dagster/white", role: "Orchestrierung", desc: "Asset-basierte Datenpipeline-Orchestrierung und -Planung.", tags: ["DataOps", "Pipelines", "Assets"] },
   { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerisierung", desc: "Konsistente Umgebungen und reproduzierbare Builds.", tags: ["DevOps", "Microservices", "Deployment"] },
   { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API-Framework", desc: "Hochleistungs-Datenbereitstellung und REST-API-Entwicklung.", tags: ["Async", "REST", "Endpoints"] },
   { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first Datenmodellierung und -tests im Data Warehouse.", tags: ["ELT", "Testing", "Lineage"] },
-  { name: "Power BI", icon: BarChart3, isLucide: true, role: "Visualisierung", desc: "Interaktive Dashboards und Business-Intelligence-Reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Power BI", icon: "https://cdn.simpleicons.org/powerbi/white", role: "Visualisierung", desc: "Interaktive Dashboards und Business-Intelligence-Reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React-Framework für den Bau schneller Datenanwendungen.", tags: ["React", "SSR", "UI"] },
 ];
 
@@ -187,12 +187,11 @@ export default function Skills() {
                   <tech.icon size={28} className="transition-all duration-500" />
                 ) : (
                   <Image 
-                    src={tech.icon} 
+                    src={tech.icon || "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png"} 
                     alt={tech.name} 
                     width={28} 
                     height={28}
-                    unoptimized
-                    className="transition-all duration-500 opacity-80 group-hover:opacity-100"
+                    className="opacity-70 group-hover:opacity-100 transition-all duration-500 filter drop-shadow-md"
                   />
                 )}
               </div>
@@ -269,8 +268,8 @@ export default function Skills() {
               <div className="flex items-start justify-between mb-5">
                 <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500">
                   <Image
-                    src={platform.icon}
-                    alt={platform.name}
+                    src={platform.icon || "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png"}
+                    alt={platform.shortName}
                     width={28}
                     height={28}
                     unoptimized

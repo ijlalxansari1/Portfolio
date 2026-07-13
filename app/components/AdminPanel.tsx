@@ -45,11 +45,11 @@ const defaultTestimonials = [
 const defaultCoreStack = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primary Database", desc: "Relational data modeling, indexing, and robust ACID storage.", tags: ["ACID", "Relational", "JSONB"] },
-  { name: "Dagster", icon: "", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Dagster", icon: "https://cdn.simpleicons.org/dagster/white", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
   { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerization", desc: "Consistent environments and reproducible builds.", tags: ["DevOps", "Microservices", "Deployment"] },
   { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API Framework", desc: "High-performance data delivery and REST API development.", tags: ["Async", "REST", "Endpoints"] },
   { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
-  { name: "Power BI", icon: "", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Power BI", icon: "https://cdn.simpleicons.org/powerbi/white", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React framework for building fast data applications.", tags: ["React", "SSR", "UI"] },
 ];
 

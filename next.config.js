@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
         protocol: 'https',
@@ -47,6 +50,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'img.icons8.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.simpleicons.org',
+      },
     ],
   },
   headers: async () => [
@@ -55,7 +62,7 @@ const nextConfig = {
       headers: [
         {
           key: 'Content-Security-Policy',
-          value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://images.unsplash.com https://picsum.photos https://opengraph.githubassets.com https://ghchart.rshah.org https://avatars.githubusercontent.com https://raw.githubusercontent.com https://dataden.vercel.app https://flagcdn.com https://cdn.jsdelivr.net https://upload.wikimedia.org https://img.icons8.com; connect-src 'self' https://api.github.com https://api.emailjs.com; frame-ancestors 'none';"
+          value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://images.unsplash.com https://picsum.photos https://opengraph.githubassets.com https://ghchart.rshah.org https://avatars.githubusercontent.com https://raw.githubusercontent.com https://dataden.vercel.app https://flagcdn.com https://cdn.jsdelivr.net https://upload.wikimedia.org https://img.icons8.com https://cdn.simpleicons.org; connect-src 'self' https://api.github.com https://api.emailjs.com; frame-ancestors 'none';"
         },
         { key: 'X-Frame-Options', value: 'DENY' },
         { key: 'X-Content-Type-Options', value: 'nosniff' },
