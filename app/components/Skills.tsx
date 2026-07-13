@@ -5,15 +5,16 @@ import {
   Layers, Database, Workflow, BarChart3, Code2, Server, Bot, ShieldCheck, Cloud, Check, Compass
 } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "../context/LanguageContext";
 
 const CORE_STACK = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primary Database", desc: "Relational data modeling, indexing, and robust ACID storage.", tags: ["ACID", "Relational", "JSONB"] },
-  { name: "Dagster", icon: "https://img.icons8.com/color/96/workflow.png", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Dagster", icon: Workflow, isLucide: true, role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
   { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerization", desc: "Consistent environments and reproducible builds.", tags: ["DevOps", "Microservices", "Deployment"] },
   { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API Framework", desc: "High-performance data delivery and REST API development.", tags: ["Async", "REST", "Endpoints"] },
   { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
-  { name: "Power BI", icon: "https://img.icons8.com/color/96/power-bi.png", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Power BI", icon: BarChart3, isLucide: true, role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React framework for building fast data applications.", tags: ["React", "SSR", "UI"] },
 ];
 
@@ -59,7 +60,61 @@ const CLOUD_PLATFORMS = [
   },
 ];
 
+const CORE_STACK_DE = [
+  { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Kernsprache", desc: "Datenverarbeitung, API-Entwicklung und Automatisierungsskripte.", tags: ["ETL", "Automatisierung", "APIs"] },
+  { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primäre Datenbank", desc: "Relationale Datenmodellierung, Indizierung und robuster ACID-Speicher.", tags: ["ACID", "Relational", "JSONB"] },
+  { name: "Dagster", icon: Workflow, isLucide: true, role: "Orchestrierung", desc: "Asset-basierte Datenpipeline-Orchestrierung und -Planung.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerisierung", desc: "Konsistente Umgebungen und reproduzierbare Builds.", tags: ["DevOps", "Microservices", "Deployment"] },
+  { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API-Framework", desc: "Hochleistungs-Datenbereitstellung und REST-API-Entwicklung.", tags: ["Async", "REST", "Endpoints"] },
+  { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first Datenmodellierung und -tests im Data Warehouse.", tags: ["ELT", "Testing", "Lineage"] },
+  { name: "Power BI", icon: BarChart3, isLucide: true, role: "Visualisierung", desc: "Interaktive Dashboards und Business-Intelligence-Reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React-Framework für den Bau schneller Datenanwendungen.", tags: ["React", "SSR", "UI"] },
+];
+
+const CLOUD_PLATFORMS_DE = [
+  {
+    name: "Amazon Web Services",
+    shortName: "AWS",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+    desc: "Cloud-Infrastruktur für skalierbare Datenpipelines und -speicher.",
+    status: "used" as const,
+    services: [
+      { name: "S3", desc: "Objektspeicher für Data Lakes" },
+      { name: "Glue", desc: "Verwalteter ETL-Dienst" },
+      { name: "RDS", desc: "Verwaltete relationale Datenbanken" },
+      { name: "Lambda", desc: "Serverloses Computing" },
+    ],
+  },
+  {
+    name: "Microsoft Azure",
+    shortName: "Azure",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg",
+    desc: "Enterprise-Cloud-Plattform für Datenintegration und Analyse.",
+    status: "exploring" as const,
+    services: [
+      { name: "Data Factory", desc: "Orchestrierung & Integration" },
+      { name: "Blob Storage", desc: "Skalierbarer Objektspeicher" },
+      { name: "Azure SQL", desc: "Verwaltete SQL-Datenbanken" },
+      { name: "Synapse", desc: "Vereinheitlichter Analyse-Arbeitsbereich" },
+    ],
+  },
+  {
+    name: "Google Cloud Platform",
+    shortName: "GCP",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+    desc: "Daten-zentrierte Cloud mit leistungsstarken Analyse- und ML-Funktionen.",
+    status: "exploring" as const,
+    services: [
+      { name: "BigQuery", desc: "Serverloses Data Warehouse" },
+      { name: "Cloud Storage", desc: "Einheitlicher Objektspeicher" },
+      { name: "Cloud Functions", desc: "Ereignisgesteuertes Computing" },
+      { name: "Dataflow", desc: "Stream- & Batch-Verarbeitung" },
+    ],
+  },
+];
+
 export default function Skills() {
+  const { language } = useLanguage();
   return (
     <section id="skills" className="w-full space-y-8" aria-label="Engineering Stack">
       
@@ -67,20 +122,20 @@ export default function Skills() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
-            My Recommended Final Stack
+            {language === "de" ? "Mein empfohlener End-Stack" : "My Recommended Final Stack"}
           </p>
           <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] leading-tight">
             Engineering Stack
           </h2>
         </div>
         <p className="text-[14px] text-[var(--text-secondary)] opacity-60 max-w-md leading-relaxed">
-          A cohesive, production-ready ecosystem of tools spanning the entire data lifecycle.
+          {language === "de" ? "Ein kohärentes, produktionsreifes Ökosystem von Tools, das den gesamten Datenlebenszyklus umfasst." : "A cohesive, production-ready ecosystem of tools spanning the entire data lifecycle."}
         </p>
       </div>
 
       {/* ── Core Stack (Bento Grid) ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {CORE_STACK.map((tech, i) => (
+        {(language === "de" ? CORE_STACK_DE : CORE_STACK).map((tech: any, i) => (
           <motion.div
             key={tech.name}
             initial={{ opacity: 0, y: 20 }}
@@ -93,15 +148,19 @@ export default function Skills() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(var(--accent-rgb),0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
             
             <div className="flex items-start justify-between mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500">
-                <Image 
-                  src={tech.icon} 
-                  alt={tech.name} 
-                  width={28} 
-                  height={28}
-                  unoptimized
-                  className="transition-all duration-500"
-                />
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500 text-[var(--text-secondary)] group-hover:text-[var(--accent)]">
+                {tech.isLucide ? (
+                  <tech.icon size={28} className="transition-all duration-500" />
+                ) : (
+                  <Image 
+                    src={tech.icon} 
+                    alt={tech.name} 
+                    width={28} 
+                    height={28}
+                    unoptimized
+                    className="transition-all duration-500 opacity-80 group-hover:opacity-100"
+                  />
+                )}
               </div>
               <span className="px-2.5 py-1 bg-white/[0.03] border border-[var(--border-subtle)] text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)] rounded-lg group-hover:text-[var(--text-primary)] transition-colors">
                 {tech.role}
@@ -116,7 +175,7 @@ export default function Skills() {
             </p>
 
             <div className="flex flex-wrap gap-2 mt-auto">
-              {tech.tags.map((tag) => (
+              {tech.tags.map((tag: string) => (
                 <span 
                   key={tag}
                   className="px-2 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[10px] font-bold text-[var(--text-secondary)] rounded-md group-hover:border-[var(--accent)]/20 transition-colors"
@@ -150,17 +209,17 @@ export default function Skills() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">Used in Projects</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">{language === "de" ? "In Projekten verwendet" : "Used in Projects"}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">Exploring</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">{language === "de" ? "Erkunden" : "Exploring"}</span>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {CLOUD_PLATFORMS.map((platform, i) => (
+          {(language === "de" ? CLOUD_PLATFORMS_DE : CLOUD_PLATFORMS).map((platform, i) => (
             <motion.div
               key={platform.shortName}
               initial={{ opacity: 0, y: 20 }}
@@ -181,7 +240,7 @@ export default function Skills() {
                     width={28}
                     height={28}
                     unoptimized
-                    className="transition-all duration-500"
+                    className="transition-all duration-500 opacity-80 group-hover:opacity-100"
                   />
                 </div>
                 <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 border ${
@@ -190,7 +249,7 @@ export default function Skills() {
                     : "bg-blue-400/10 border-blue-400/20 text-blue-400"
                 }`}>
                   {platform.status === "used" ? <Check size={10} /> : <Compass size={10} />}
-                  {platform.status === "used" ? "Used" : "Exploring"}
+                  {platform.status === "used" ? (language === "de" ? "Verwendet" : "Used") : (language === "de" ? "Erkunden" : "Exploring")}
                 </span>
               </div>
 

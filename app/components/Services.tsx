@@ -10,70 +10,35 @@ export default function Services() {
   const { language } = useLanguage();
   const t = translations[language].services;
   
-  const defaultServices = [
-    { 
-      id: 1, title: "Data Pipelines & Integration", icon: "Workflow", status: "Published",
-      summary: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation.",
-      deliverables: ["Custom Extract/Load connect", "dbt data transformations", "Airflow/Dagster automation"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 2, title: "Database Architecture", icon: "Database", status: "Published",
-      summary: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing.",
-      deliverables: ["Star/Snowflake Schemas", "Query Optimization", "Performance Indexing"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 3, title: "Data Quality & Validation", icon: "ShieldCheck", status: "Published",
-      summary: "Implement validation rules, schema checks, duplicate detection, missing value handling, and monitoring.",
-      deliverables: ["Automated schema checks", "Anomaly detection", "Data quality monitoring"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 4, title: "Data Governance", icon: "Network", status: "Published",
-      summary: "Design data systems with documentation, audit trails, access control, metadata management, and best practices.",
-      deliverables: ["Audit trails", "Role-Based Access", "Metadata management"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published",
-      summary: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting.",
-      deliverables: ["Dimensional modeling", "Dashboard ready datasets", "BI Integration"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 6, title: "Pipeline Reliability & Monitoring", icon: "Activity", status: "Published",
-      summary: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, testing, and CI/CD.",
-      deliverables: ["Error handling & retries", "CI/CD deployment", "DataOps practices"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 7, title: "API Development", icon: "Code2", status: "Published",
-      summary: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
-      deliverables: ["FastAPI microservices", "Secure data access", "Rate limiting & logging"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 8, title: "Web Scraping & Data Collection", icon: "Globe", status: "Published",
-      summary: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources.",
-      deliverables: ["Automated Scrapers", "API Integrations", "Data Parsing"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 9, title: "Performance Optimization", icon: "Zap", status: "Published",
-      summary: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability.",
-      deliverables: ["SQL tuning", "Pipeline scaling", "Storage efficiency"],
-      link: "Let's Connect", href: "#contact"
-    },
-    { 
-      id: 10, title: "Technical Documentation", icon: "BookOpen", status: "Published",
-      summary: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation.",
-      deliverables: ["Architecture diagrams", "Data dictionaries", "Pipeline documentation"],
-      link: "Let's Connect", href: "#contact"
-    },
-  ];
+  
+const defaultServices_EN = [
+    { id: 1, title: "Data Pipelines & Integration", icon: "Workflow", status: "Published", summary: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation.", deliverables: ["Custom Extract/Load connect", "dbt data transformations", "Airflow/Dagster automation"], link: "Let's Connect", href: "#contact" },
+    { id: 2, title: "Database Architecture", icon: "Database", status: "Published", summary: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing.", deliverables: ["Star/Snowflake Schemas", "Query Optimization", "Performance Indexing"], link: "Let's Connect", href: "#contact" },
+    { id: 3, title: "Data Quality & Validation", icon: "ShieldCheck", status: "Published", summary: "Implement validation rules, schema checks, duplicate detection, missing value handling, and monitoring.", deliverables: ["Automated schema checks", "Anomaly detection", "Data quality monitoring"], link: "Let's Connect", href: "#contact" },
+    { id: 4, title: "Data Governance", icon: "Network", status: "Published", summary: "Design data systems with documentation, audit trails, access control, metadata management, and best practices.", deliverables: ["Audit trails", "Role-Based Access", "Metadata management"], link: "Let's Connect", href: "#contact" },
+    { id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published", summary: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting.", deliverables: ["Dimensional modeling", "Dashboard ready datasets", "BI Integration"], link: "Let's Connect", href: "#contact" },
+    { id: 6, title: "Pipeline Reliability & Monitoring", icon: "Activity", status: "Published", summary: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, testing, and CI/CD.", deliverables: ["Error handling & retries", "CI/CD deployment", "DataOps practices"], link: "Let's Connect", href: "#contact" },
+    { id: 7, title: "API Development", icon: "Code2", status: "Published", summary: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.", deliverables: ["FastAPI microservices", "Secure data access", "Rate limiting & logging"], link: "Let's Connect", href: "#contact" },
+    { id: 8, title: "Web Scraping & Data Collection", icon: "Globe", status: "Published", summary: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources.", deliverables: ["Automated Scrapers", "API Integrations", "Data Parsing"], link: "Let's Connect", href: "#contact" },
+    { id: 9, title: "Performance Optimization", icon: "Zap", status: "Published", summary: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability.", deliverables: ["SQL tuning", "Pipeline scaling", "Storage efficiency"], link: "Let's Connect", href: "#contact" },
+    { id: 10, title: "Technical Documentation", icon: "BookOpen", status: "Published", summary: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation.", deliverables: ["Architecture diagrams", "Data dictionaries", "Pipeline documentation"], link: "Let's Connect", href: "#contact" },
+];
 
-  const [dynamicServices, setDynamicServices] = useState<any[]>(defaultServices);
+const defaultServices_DE = [
+    { id: 1, title: "Datenpipelines & Integration", icon: "Workflow", status: "Published", summary: "End-to-End ETL/ELT-Pipelines, Datenintegration aus APIs/Datenbanken/Dateien, Transformation und Workflow-Automatisierung.", deliverables: ["Benutzerdefinierte Extraktion/Laden", "dbt Daten-Transformationen", "Airflow/Dagster Automatisierung"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 2, title: "Datenbankarchitektur", icon: "Database", status: "Published", summary: "Entwurf skalierbarer relationaler Datenbanken mit Star-Schemas, dimensionaler Modellierung, effizienter Indizierung.", deliverables: ["Star/Snowflake Schemas", "Abfrageoptimierung", "Performance-Indizierung"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 3, title: "Datenqualität & Validierung", icon: "ShieldCheck", status: "Published", summary: "Implementierung von Validierungsregeln, Schema-Prüfungen, Duplikaterkennung und Überwachung.", deliverables: ["Automatisierte Schema-Prüfungen", "Anomalieerkennung", "Datenqualitätsüberwachung"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 4, title: "Data Governance", icon: "Network", status: "Published", summary: "Entwurf von Datensystemen mit Dokumentation, Audit-Trails, Zugriffskontrolle und Metadatenmanagement.", deliverables: ["Audit-Trails", "Rollenbasierter Zugriff", "Metadaten-Management"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published", summary: "Bereitstellung sauberer, strukturierter Datensätze für Dashboards, BI und analytisches Reporting.", deliverables: ["Dimensionale Modellierung", "Dashboard-fertige Daten", "BI-Integration"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 6, title: "Pipeline-Zuverlässigkeit & Monitoring", icon: "Activity", status: "Published", summary: "Aufbau überwachbarer, zuverlässiger Pipelines mit Protokollierung, Fehlerbehandlung, Warnungen und CI/CD.", deliverables: ["Fehlerbehandlung & Wiederholungen", "CI/CD-Bereitstellung", "DataOps-Praktiken"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 7, title: "API-Entwicklung", icon: "Code2", status: "Published", summary: "Aufbau von RESTful APIs mit FastAPI für Datenerfassung, Integration und sichere Datenzugriffsebenen.", deliverables: ["FastAPI Microservices", "Sicherer Datenzugriff", "Rate Limiting & Logging"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 8, title: "Web Scraping & Datenerfassung", icon: "Globe", status: "Published", summary: "Erfassung strukturierter Daten von Websites, öffentlichen Datensätzen, APIs, CSV, JSON, XML.", deliverables: ["Automatisierte Scraper", "API-Integrationen", "Daten-Parsing"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 9, title: "Leistungsoptimierung", icon: "Zap", status: "Published", summary: "Optimierung von SQL-Abfragen, Pipeline-Ausführung, Speichereffizienz und Systemskalierbarkeit.", deliverables: ["SQL-Tuning", "Pipeline-Skalierung", "Speichereffizienz"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 10, title: "Technische Dokumentation", icon: "BookOpen", status: "Published", summary: "Erstellung klarer technischer Dokumentationen, Architekturdiagramme und Datenwörterbücher.", deliverables: ["Architekturdiagramme", "Datenwörterbücher", "Pipeline-Dokumentation"], link: "Lass uns verbinden", href: "#contact" },
+];
+
+
+  const [dynamicServices, setDynamicServices] = useState<any[]>(language === "de" ? defaultServices_DE : defaultServices_EN);
 
   useEffect(() => {
     const handleStorage = () => {
@@ -85,7 +50,7 @@ export default function Services() {
             const mergedMap = new Map();
             
             // First add defaults
-            defaultServices.forEach(s => mergedMap.set(s.title, s));
+            (language === "de" ? defaultServices_DE : defaultServices_EN).forEach(s => mergedMap.set(s.title, s));
             
             // Then overwrite/append with admin panel data
             parsed.forEach(s => {
@@ -102,14 +67,16 @@ export default function Services() {
             setDynamicServices(Array.from(mergedMap.values()));
           }
         } catch {
-          // fallback
+          setDynamicServices(language === "de" ? defaultServices_DE : defaultServices_EN);
         }
+      } else {
+        setDynamicServices(language === "de" ? defaultServices_DE : defaultServices_EN);
       }
     };
     handleStorage();
     window.addEventListener("admin-updated", handleStorage);
     return () => window.removeEventListener("admin-updated", handleStorage);
-  }, []);
+  }, [language]);
 
   const publishedServices = dynamicServices.filter((service) => String(service?.status || "Published").toLowerCase() === "published");
 
@@ -192,7 +159,7 @@ export default function Services() {
                   rel={isExternal ? "noreferrer" : undefined}
                   className="inline-flex items-center gap-2 mt-auto text-[11px] font-black uppercase tracking-widest text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors"
                 >
-                  {t.cta}
+                  {t.cta || "Let's Build"}
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
@@ -200,7 +167,7 @@ export default function Services() {
           );
         }) : (
           <div className="md:col-span-2 rounded-3xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-primary)]/40 p-8 text-center text-[13px] text-[var(--text-secondary)] opacity-60">
-            Published services will appear here once they are added from the admin dashboard.
+            {language === "de" ? "Veröffentlichte Dienste werden hier angezeigt, sobald sie hinzugefügt wurden." : "Published services will appear here once they are added from the admin dashboard."}
           </div>
         )}
       </div>

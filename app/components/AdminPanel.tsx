@@ -303,6 +303,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const saveData = async (key: string, data: any) => {
     setIsSaving(true);
     try {
+      localStorage.setItem(key, JSON.stringify(data));
       const token = sessionStorage.getItem("aether-admin-session");
       await fetch("/api/data/admin", {
         method: "POST",
@@ -447,13 +448,52 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                            <h3 className="text-[12px] font-black text-[var(--accent)] uppercase tracking-[4px]">Work Portfolio</h3>
                            <p className="text-[14px] text-white/40 font-medium max-w-md">Manage your case studies and technological proof-of-concepts.</p>
                         </div>
-                        <button onClick={() => {
-                          const updated = [{ id: Date.now(), title: "New Evolution", description: "", status: "Draft", tag: categories.projects[0] || "Python", image: "" }, ...projects];
-                          setProjects(updated);
-                          saveData("admin-projects", updated);
-                        }} className="group flex items-center gap-3 px-8 py-4 bg-[var(--accent)] text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
-                          <Plus size={18} /> Spawn Project
-                        </button>
+                        <div className="flex gap-4">
+                           <button onClick={async () => {
+                             try {
+                               const res = await fetch("https://api.github.com/users/ijlalxansari1/repos?sort=updated&per_page=30");
+                               const data = await res.json();
+                               if (Array.isArray(data)) {
+                                  const normalizeTitle = (t: string) => (t || '').toLowerCase().replace(/[-_\s]/g, '');
+                                  const existingTitles = projects.map(p => normalizeTitle(p.title));
+                                  const newRepos = data
+                                    .filter((r: any) => !r.fork && !existingTitles.includes(normalizeTitle(r.name)))
+                                    .map((r: any) => ({
+                                      id: `gh-${r.id}-${Date.now()}`,
+                                      title: r.name.replace(/[-_]/g, ' '),
+                                      description: r.description || "Imported from GitHub",
+                                      status: "Draft",
+                                      tag: r.language || "GitHub",
+                                      githubUrl: r.html_url,
+                                      liveUrl: r.homepage || "",
+                                      image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800",
+                                      gallery: []
+                                    }));
+                                  
+                                  if (newRepos.length > 0) {
+                                     const updated = [...newRepos, ...projects];
+                                     setProjects(updated);
+                                     saveData("admin-projects", updated);
+                                     alert(`Synced ${newRepos.length} new repositories from GitHub as Drafts!`);
+                                  } else {
+                                     alert("All GitHub repositories are already synced.");
+                                  }
+                               }
+                             } catch(e) {
+                               console.error(e);
+                               alert("Failed to sync from GitHub.");
+                             }
+                          }} className="group flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 text-white rounded-3xl text-[11px] font-black uppercase tracking-widest hover:bg-white/10 transition-all shadow-xl">
+                            <Github size={18} /> Sync GitHub
+                          </button>
+                          <button onClick={() => {
+                            const updated = [{ id: Date.now(), title: "New Evolution", description: "", status: "Draft", tag: categories.projects[0] || "Python", image: "" }, ...projects];
+                            setProjects(updated);
+                            saveData("admin-projects", updated);
+                          }} className="group flex items-center gap-3 px-8 py-4 bg-[var(--accent)] text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                            <Plus size={18} /> Spawn Project
+                          </button>
+                        </div>
                      </div>
 
                      {/* Category Manager */}
@@ -1889,7 +1929,11 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              <h4 className="text-[13px] font-black text-red-400">Maintenance Mode</h4>
                              <p className="text-[11px] text-white/40">Disable public access to the portfolio.</p>
                            </div>
-                           <button onClick={() => setSiteConfig({ ...siteConfig, maintenanceMode: !siteConfig?.maintenanceMode })} className={`w-14 h-8 rounded-full transition-all relative ${siteConfig?.maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}>
+                           <button onClick={() => {
+                             const newConfig = { ...siteConfig, maintenanceMode: !siteConfig?.maintenanceMode };
+                             setSiteConfig(newConfig);
+                             saveData("admin-config", newConfig);
+                           }} className={`w-14 h-8 rounded-full transition-all relative ${siteConfig?.maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}>
                              <div className={`w-6 h-6 rounded-full bg-white absolute top-1 transition-all ${siteConfig?.maintenanceMode ? 'left-7' : 'left-1'}`} />
                            </button>
                          </div>

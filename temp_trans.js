@@ -1,4 +1,4 @@
-export const translations = {
+module.exports = {
   en: {
     hero: {
       label: "Data Ops Engineer",

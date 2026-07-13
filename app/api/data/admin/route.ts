@@ -1,49 +1,31 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { verifyAuth } from '../../../utils/auth';
-import fs from 'fs';
-import path from 'path';
-
-const STORE_FILE = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
-
-// Helper to get all data
-function getStoreData() {
-  try {
-    if (fs.existsSync(STORE_FILE)) {
-      const content = fs.readFileSync(STORE_FILE, 'utf8');
-      return JSON.parse(content);
-    }
-  } catch (error) {
-    console.error("Error reading admin store:", error);
-  }
-  return {};
-}
-
-// Helper to save data
-function saveStoreData(data: any) {
-  try {
-    const dir = path.dirname(STORE_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(STORE_FILE, JSON.stringify(data, null, 2));
-    return true;
-  } catch (error) {
-    console.error("Error writing admin store:", error);
-    return false;
-  }
-}
+import { sql } from '@vercel/postgres';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const key = searchParams.get('key');
   
-  const store = getStoreData();
-  
-  if (key) {
-    return NextResponse.json({ data: store[key] !== undefined ? store[key] : null });
+  try {
+    if (key) {
+      const { rows } = await sql`SELECT value FROM site_data WHERE key = ${key}`;
+      if (rows.length > 0) {
+        return NextResponse.json({ data: rows[0].value });
+      }
+      return NextResponse.json({ data: null });
+    }
+    
+    // Get all data
+    const { rows } = await sql`SELECT key, value FROM site_data`;
+    const store: any = {};
+    rows.forEach(r => {
+      store[r.key] = r.value;
+    });
+    return NextResponse.json({ data: store });
+  } catch (error) {
+    console.error("Error fetching site_data:", error);
+    return NextResponse.json({ data: {} });
   }
-  
-  return NextResponse.json({ data: store });
 }
 
 export async function POST(request: NextRequest) {
@@ -61,30 +43,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Missing key" }, { status: 400 });
     }
 
-    const store = getStoreData();
-    store[key] = data;
-    
-    if (saveStoreData(store)) {
-      // Also log the action
-      const logEntry = {
-        timestamp: new Date().toISOString(),
-        action: `Updated ${key}`,
-        type: 'mutation'
-      };
-      
-      const logsPath = path.join(process.cwd(), 'app', 'api', 'data', 'logs.json');
-      let logs = [];
-      try {
-        if (fs.existsSync(logsPath)) logs = JSON.parse(fs.readFileSync(logsPath, 'utf8'));
-      } catch (e) {}
-      logs.unshift(logEntry);
-      fs.writeFileSync(logsPath, JSON.stringify(logs.slice(0, 100), null, 2));
+    // Upsert the data in Postgres
+    await sql`
+      INSERT INTO site_data (key, value) 
+      VALUES (${key}, ${JSON.stringify(data)})
+      ON CONFLICT (key) 
+      DO UPDATE SET value = EXCLUDED.value, updated_at = CURRENT_TIMESTAMP
+    `;
 
-      return NextResponse.json({ success: true });
-    } else {
-      return NextResponse.json({ success: false, error: "Failed to save" }, { status: 500 });
-    }
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ success: false, error: "Invalid request" }, { status: 400 });
+    console.error("Error saving site_data:", error);
+    return NextResponse.json({ success: false, error: "Invalid request or DB error" }, { status: 500 });
   }
 }

@@ -37,12 +37,14 @@ const VoidBackground = dynamic(() => import("./components/VoidBackground"), { ss
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import LoadingScreen from "./components/LoadingScreen";
+import MaintenanceScreen from "./components/MaintenanceScreen";
 
 export default function Home() {
   const { isPlaying, togglePlay, nextTrack, currentTrack, tracks } = useAudio();
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
   const [bootDone, setBootDone] = useState(false);
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
@@ -88,7 +90,32 @@ export default function Home() {
   const scrollPanelRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
 
-  useEffect(() => { setIsMounted(true); }, []);
+  useEffect(() => { 
+    setIsMounted(true); 
+    const loadConfig = async () => {
+      try {
+        // Fast local check
+        const configStr = localStorage.getItem("admin-config");
+        if (configStr) {
+          const config = JSON.parse(configStr);
+          setIsMaintenanceMode(!!config.maintenanceMode);
+        }
+        
+        // Accurate server check
+        const res = await fetch("/api/data/admin");
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data["admin-config"]) {
+            setIsMaintenanceMode(!!data["admin-config"].maintenanceMode);
+            localStorage.setItem("admin-config", JSON.stringify(data["admin-config"]));
+          }
+        }
+      } catch (e) { console.error(e); }
+    };
+    loadConfig();
+    window.addEventListener("admin-updated", loadConfig);
+    return () => window.removeEventListener("admin-updated", loadConfig);
+  }, []);
 
   const scrollToSection = (id: string) => {
     if (theme === "loki" || theme === "tva") {
@@ -199,26 +226,30 @@ export default function Home() {
     <>
       <LoadingScreen onComplete={() => setBootDone(true)} />
 
-      {/* ── Dynamic Background Layer ── */}
-      {isMounted && (
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          {(!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
-          <AnimatePresence>
-            {theme === "loki" && <LokiMultiverseBackground />}
-            {theme === "tva" && <TvaBackground />}
-            {theme === "void" && <VoidBackground />}
-          </AnimatePresence>
-        </div>
-      )}
+      {isMaintenanceMode && !showAdmin ? (
+        <MaintenanceScreen />
+      ) : (
+        <>
+          {/* ── Dynamic Background Layer ── */}
+          {isMounted && (
+            <div className="fixed inset-0 z-0 pointer-events-none">
+              {(!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
+              <AnimatePresence>
+                {theme === "loki" && <LokiMultiverseBackground />}
+                {theme === "tva" && <TvaBackground />}
+                {theme === "void" && <VoidBackground />}
+              </AnimatePresence>
+            </div>
+          )}
 
-      <div
-        className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 w-full max-w-full transition-opacity duration-1000"
-        style={{ 
-          opacity: bootDone ? 1 : 0, 
-          visibility: bootDone ? "visible" : "hidden", 
-          perspective: (!isMobileView) ? "1500px" : "none" 
-        }}
-      >
+          <div
+            className="relative lg:fixed lg:inset-0 bg-transparent transition-all duration-400 min-h-screen lg:min-h-0 w-full max-w-full transition-opacity duration-1000"
+            style={{ 
+              opacity: bootDone ? 1 : 0, 
+              visibility: bootDone ? "visible" : "hidden", 
+              perspective: (!isMobileView) ? "1500px" : "none" 
+            }}
+          >
         <AnalyticsTracker />
         
         {/* Scroll Progress Bar */}
@@ -413,6 +444,8 @@ export default function Home() {
           </motion.div>
         </div>
       </div>
+        </>
+      )}
 
       <Terminal isOpen={showTerminal} onClose={() => setShowTerminal(false)} />
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onLoginSuccess={() => { setShowLogin(false); setShowAdmin(true); }} />

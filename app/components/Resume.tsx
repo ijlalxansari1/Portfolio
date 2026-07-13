@@ -6,7 +6,7 @@ import { Briefcase, GraduationCap } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 
-const defaultExperience = [
+const defaultExperience_EN = [
   { 
     company: "Google", 
     role: "Big Data Engineer", 
@@ -27,28 +27,61 @@ const defaultExperience = [
   }
 ];
 
-const defaultEducation = [
+const defaultExperience_DE = [
+  { 
+    company: "Google", 
+    role: "Big Data Engineer", 
+    location: "Los Angeles",
+    period: "2022 - Heute", 
+    desc: "3+ Jahre Erfahrung mit Big Data/Hadoop und Cloud-Technologien - Spark, Hive, Flink, Presto, Snowflake, Map Reduce, YARN, Amazon AWS.",
+    startYear: 2022,
+    endYear: 2026
+  },
+  { 
+    company: "Microsoft", 
+    role: "Data Warehouse Entwickler", 
+    location: "New York",
+    period: "2021 - 2022", 
+    desc: "Kontinuierliche Erweiterung und Entwicklung einer Lösung zur Aufdeckung und Verwaltung. Erstellt in AWS Cloud mit Tableau-Analysen.",
+    startYear: 2021,
+    endYear: 2022
+  }
+];
+
+const defaultEducation_EN = [
+  { school: "Karakoram International University", location: "Gilgit", degree: "BS - SOFTWARE ENGINEERING", period: "Sep 2021 - Sep 2025", link: "#", startYear: 2021, endYear: 2025 }
+];
+
+const defaultEducation_DE = [
   { school: "Karakoram International University", location: "Gilgit", degree: "BS - SOFTWARE ENGINEERING", period: "Sep 2021 - Sep 2025", link: "#", startYear: 2021, endYear: 2025 }
 ];
 
 export default function Resume() {
   const { language } = useLanguage();
   const t = translations[language].experience;
-  const [experience, setExperience] = useState(defaultExperience);
-  const [education, setEducation] = useState(defaultEducation);
+  const [experience, setExperience] = useState(language === "de" ? defaultExperience_DE : defaultExperience_EN);
+  const [education, setEducation] = useState(language === "de" ? defaultEducation_DE : defaultEducation_EN);
 
   useEffect(() => {
     const handleUpdate = () => {
       const exp = localStorage.getItem("admin-experience");
-      if (exp) setExperience(JSON.parse(exp));
+      if (exp && JSON.parse(exp).length > 0) {
+        setExperience(JSON.parse(exp));
+      } else {
+        setExperience(language === "de" ? defaultExperience_DE : defaultExperience_EN);
+      }
       
       const edu = localStorage.getItem("admin-education");
-      if (edu) setEducation(JSON.parse(edu));
+      if (edu && JSON.parse(edu).length > 0) {
+        setEducation(JSON.parse(edu));
+      } else {
+        setEducation(language === "de" ? defaultEducation_DE : defaultEducation_EN);
+      }
     };
     handleUpdate();
     window.addEventListener("admin-updated", handleUpdate);
     return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, []);
+  }, [language]);
 
   // Combine and sort timeline events
   const timelineEvents = [

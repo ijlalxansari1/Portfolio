@@ -2,17 +2,17 @@ import { NextResponse } from 'next/server';
 import { loginAdmin } from '../../utils/auth';
 
 export async function POST(request: Request) {
-  const { username, password } = await request.json();
+  const { pin } = await request.json();
 
-  if (!username || !password) {
-    return NextResponse.json({ success: false, error: "Username and password are required." }, { status: 400 });
+  if (!pin) {
+    return NextResponse.json({ success: false, error: "PIN code is required." }, { status: 400 });
   }
 
-  const token = await loginAdmin(username, password);
+  const token = await loginAdmin(pin);
 
   if (token) {
     return NextResponse.json({ success: true, token });
   }
 
-  return NextResponse.json({ success: false, error: "Invalid credentials" }, { status: 401 });
+  return NextResponse.json({ success: false, error: "Invalid PIN code" }, { status: 401 });
 }

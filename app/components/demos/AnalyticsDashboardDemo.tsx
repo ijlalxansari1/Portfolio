@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { BarChart3, TrendingUp, Filter, Calendar, Layers, MousePointer2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function AnalyticsDashboardDemo() {
+  const { language } = useLanguage();
   const [activeRange, setActiveRange] = useState("7D");
   const data = [40, 70, 45, 90, 65, 80, 55];
 
@@ -16,8 +18,8 @@ export default function AnalyticsDashboardDemo() {
             <BarChart3 size={20} />
           </div>
           <div>
-            <h3 className="text-[14px] font-black text-white uppercase tracking-wider">Analytics Dashboard</h3>
-            <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">DuckDB + OLAP Intelligence</p>
+            <h3 className="text-[14px] font-black text-white uppercase tracking-wider">{language === 'de' ? 'Analyse-Dashboard' : 'Analytics Dashboard'}</h3>
+            <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{language === 'de' ? 'DuckDB + OLAP-Intelligenz' : 'DuckDB + OLAP Intelligence'}</p>
           </div>
         </div>
         <div className="flex bg-white/5 p-1 rounded-lg border border-[var(--border)]">
@@ -27,7 +29,7 @@ export default function AnalyticsDashboardDemo() {
               onClick={() => setActiveRange(r)}
               className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${activeRange === r ? "bg-purple-500 text-white" : "text-[var(--text-secondary)] opacity-40"}`}
             >
-              {r}
+              {r === '7D' ? (language === 'de' ? '7T' : '7D') : r === '30D' ? (language === 'de' ? '30T' : '30D') : r === '1Y' ? (language === 'de' ? '1J' : '1Y') : r}
             </button>
           ))}
         </div>
@@ -36,26 +38,26 @@ export default function AnalyticsDashboardDemo() {
       <div className="grid grid-cols-2 gap-4 mb-8">
         <div className="p-4 bg-white/5 border border-[var(--border)] rounded-xl group hover:border-purple-500/30 transition-all cursor-default">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Total Events</span>
+            <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">{language === 'de' ? 'Gesamte Ereignisse' : 'Total Events'}</span>
             <TrendingUp size={12} className="text-purple-500" />
           </div>
           <p className="text-[24px] font-black text-white">128.4K</p>
-          <p className="text-[9px] text-green-400 font-bold uppercase tracking-tight mt-1">+12.5% from last period</p>
+          <p className="text-[9px] text-green-400 font-bold uppercase tracking-tight mt-1">{language === 'de' ? '+12,5% seit letzter Periode' : '+12.5% from last period'}</p>
         </div>
         <div className="p-4 bg-white/5 border border-[var(--border)] rounded-xl group hover:border-purple-500/30 transition-all cursor-default">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">Query Speed</span>
+            <span className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest">{language === 'de' ? 'Abfragegeschwindigkeit' : 'Query Speed'}</span>
             <MousePointer2 size={12} className="text-purple-500" />
           </div>
           <p className="text-[24px] font-black text-white">18ms</p>
-          <p className="text-[9px] text-purple-400 font-bold uppercase tracking-tight mt-1">Powered by DuckDB</p>
+          <p className="text-[9px] text-purple-400 font-bold uppercase tracking-tight mt-1">{language === 'de' ? 'Unterstützt von DuckDB' : 'Powered by DuckDB'}</p>
         </div>
       </div>
 
       <div className="flex-1 bg-white/5 border border-[var(--border)] rounded-2xl p-6 relative">
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <Filter size={14} className="text-[var(--text-secondary)] opacity-30" />
-          <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-30">Interactive Chart</span>
+          <span className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-30">{language === 'de' ? 'Interaktives Diagramm' : 'Interactive Chart'}</span>
         </div>
 
         <div className="h-full flex items-end justify-between gap-3 pt-6">
@@ -72,7 +74,7 @@ export default function AnalyticsDashboardDemo() {
                   {val}k
                 </div>
               </div>
-              <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">Day {i + 1}</span>
+              <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">{language === 'de' ? 'Tag' : 'Day'} {i + 1}</span>
             </div>
           ))}
         </div>
@@ -81,11 +83,11 @@ export default function AnalyticsDashboardDemo() {
       <div className="mt-8 flex items-center gap-6">
         <div className="flex items-center gap-2">
           <Calendar size={14} className="text-purple-500" />
-          <span className="text-[10px] font-bold text-white uppercase tracking-wider">Real-time Feed</span>
+          <span className="text-[10px] font-bold text-white uppercase tracking-wider">{language === 'de' ? 'Echtzeit-Feed' : 'Real-time Feed'}</span>
         </div>
         <div className="flex items-center gap-2">
           <Layers size={14} className="text-purple-500" />
-          <span className="text-[10px] font-bold text-white uppercase tracking-wider">OLAP Engine Active</span>
+          <span className="text-[10px] font-bold text-white uppercase tracking-wider">{language === 'de' ? 'OLAP-Engine Aktiv' : 'OLAP Engine Active'}</span>
         </div>
       </div>
     </div>

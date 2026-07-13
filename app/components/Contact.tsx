@@ -21,6 +21,25 @@ export default function Contact() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isPruning, setIsPruning] = useState(false);
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
+  const [dynamicOptions, setDynamicOptions] = useState<string[]>([]);
+
+  // Load admin services to populate the subject dropdown
+  useEffect(() => {
+    const loadServices = () => {
+      const data = localStorage.getItem("admin-services");
+      const opts = new Set<string>();
+      if (data) {
+        try {
+          const parsed = JSON.parse(data);
+          parsed.forEach((s: any) => {
+            if (s.title || s.name) opts.add(s.title || s.name);
+          });
+        } catch {}
+      }
+      setDynamicOptions(Array.from(opts));
+    };
+    loadServices();
+  }, []);
 
   const handleCopy = (value: string, label: string) => {
     navigator.clipboard.writeText(value);
@@ -136,19 +155,29 @@ export default function Contact() {
             
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.subject}</label>
-              <select 
-                name="subject"
-                value={formData.subject}
-                onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all appearance-none cursor-pointer"
-              >
-                <option value="" disabled>{t.subject_placeholder}</option>
-                <option value="Data Infrastructure">{language === 'en' ? "Data Infrastructure" : "Dateninfrastruktur"}</option>
-                <option value="AI/ML Research">{language === 'en' ? "AI/ML Research" : "KI/ML-Forschung"}</option>
-                <option value="Technical Consultation">{language === 'en' ? "Technical Consultation" : "Technische Beratung"}</option>
-                <option value="Freelance Project">{language === 'en' ? "Freelance Project" : "Freiberufliches Projekt"}</option>
-                <option value="Other">{language === 'en' ? "Other" : "Sonstiges"}</option>
-              </select>
+              <div className="relative group">
+                <select 
+                  name="subject"
+                  value={formData.subject}
+                  onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all appearance-none cursor-pointer"
+                >
+                  <option value="" disabled>{t.subject_placeholder}</option>
+                  <option value="Data Infrastructure">{language === 'en' ? "Data Infrastructure" : "Dateninfrastruktur"}</option>
+                  <option value="AI/ML Research">{language === 'en' ? "AI/ML Research" : "KI/ML-Forschung"}</option>
+                  <option value="Technical Consultation">{language === 'en' ? "Technical Consultation" : "Technische Beratung"}</option>
+                  <option value="Freelance Project">{language === 'en' ? "Freelance Project" : "Freiberufliches Projekt"}</option>
+                  {dynamicOptions.map(opt => (
+                    <option key={opt} value={opt}>✨ {opt}</option>
+                  ))}
+                  <option value="Other">{language === 'en' ? "Other" : "Sonstiges"}</option>
+                </select>
+                
+                {/* Custom dropdown arrow */}
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">

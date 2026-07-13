@@ -4,42 +4,35 @@ import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 
 // Validate credentials and return a secure session token
-export async function loginAdmin(username: string, passwordHashAttempt: string): Promise<string | null> {
-  const normalizedUsername = username.trim().toLowerCase();
-  const trimmedPassword = passwordHashAttempt.trim();
+export async function loginAdmin(pinAttempt: string): Promise<string | null> {
+  const trimmedPin = pinAttempt.trim();
 
   try {
+    // We assume there's one primary admin account, typically named 'admin'
     const { rows } = await sql`
       SELECT id, password_hash FROM admins
-      WHERE LOWER(username) = ${normalizedUsername}
+      ORDER BY created_at ASC LIMIT 1
     `;
 
     if (rows.length === 0) {
-      const existingAdmins = await sql`SELECT 1 FROM admins LIMIT 1`;
-      if (existingAdmins.rows.length === 0) {
-        const defaultUser = process.env.ADMIN_USER?.trim();
-        const defaultPassword = process.env.ADMIN_SECRET?.trim();
+      const defaultUser = process.env.ADMIN_USER?.trim() || 'admin';
+      const defaultPin = process.env.ADMIN_SECRET?.trim() || '123456';
 
-        if (!defaultUser || !defaultPassword) {
-          console.error("ADMIN_USER or ADMIN_SECRET is not set. Cannot initialize admin account securely.");
-          return null;
-        }
-        const hash = await bcrypt.hash(defaultPassword, 10);
+      const hash = await bcrypt.hash(defaultPin, 10);
 
-        await sql`
-          INSERT INTO admins (username, password_hash)
-          VALUES (${defaultUser}, ${hash})
-        `;
+      await sql`
+        INSERT INTO admins (username, password_hash)
+        VALUES (${defaultUser}, ${hash})
+      `;
 
-        if (defaultUser.toLowerCase() === normalizedUsername && defaultPassword === trimmedPassword) {
-          return await loginAdmin(defaultUser, trimmedPassword);
-        }
+      if (defaultPin === trimmedPin) {
+        return await loginAdmin(trimmedPin);
       }
       return null;
     }
 
     const admin = rows[0];
-    const isMatch = await bcrypt.compare(trimmedPassword, admin.password_hash);
+    const isMatch = await bcrypt.compare(trimmedPin, admin.password_hash);
     if (!isMatch) return null;
 
     const token = uuidv4();

@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Play, Database, Network, Table as TableIcon, FileCode, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function ETLPipelineDemo() {
+  const { language } = useLanguage();
   const [sql, setSql] = useState("SELECT \n  user_id,\n  COUNT(order_id) as total_orders,\n  SUM(amount) as total_revenue\nFROM raw.orders\nGROUP BY 1");
   const [isRunning, setIsRunning] = useState(false);
   const [view, setView] = useState<"sql" | "lineage" | "output">("sql");
@@ -25,14 +27,14 @@ export default function ETLPipelineDemo() {
             <Database size={20} />
           </div>
           <div>
-            <h3 className="text-[14px] font-black text-white uppercase tracking-wider">ELT Pipeline Simulator</h3>
-            <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">dbt + Dagster Infrastructure</p>
+            <h3 className="text-[14px] font-black text-white uppercase tracking-wider">{language === 'de' ? 'ELT Pipeline-Simulator' : 'ELT Pipeline Simulator'}</h3>
+            <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{language === 'de' ? 'dbt + Dagster Infrastruktur' : 'dbt + Dagster Infrastructure'}</p>
           </div>
         </div>
         <div className="flex bg-white/5 p-1 rounded-lg border border-[var(--border)]">
           <button onClick={() => setView("sql")} className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${view === "sql" ? "bg-white/10 text-white" : "text-[var(--text-secondary)] opacity-40 hover:opacity-100"}`}>SQL</button>
-          <button onClick={() => setView("lineage")} className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${view === "lineage" ? "bg-white/10 text-white" : "text-[var(--text-secondary)] opacity-40 hover:opacity-100"}`}>Lineage</button>
-          <button onClick={() => setView("output")} className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${view === "output" ? "bg-white/10 text-white" : "text-[var(--text-secondary)] opacity-40 hover:opacity-100"}`}>Output</button>
+          <button onClick={() => setView("lineage")} className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${view === "lineage" ? "bg-white/10 text-white" : "text-[var(--text-secondary)] opacity-40 hover:opacity-100"}`}>{language === 'de' ? 'Abstammung' : 'Lineage'}</button>
+          <button onClick={() => setView("output")} className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${view === "output" ? "bg-white/10 text-white" : "text-[var(--text-secondary)] opacity-40 hover:opacity-100"}`}>{language === 'de' ? 'Ausgabe' : 'Output'}</button>
         </div>
       </div>
 
@@ -54,7 +56,7 @@ export default function ETLPipelineDemo() {
               className="w-full py-4 bg-blue-500 text-white font-black uppercase tracking-[0.2em] text-[12px] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_30px_rgba(59,130,246,0.2)]"
             >
               {isRunning ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}><Play size={18} /></motion.div> : <Play size={18} />}
-              {isRunning ? "Transforming with dbt..." : "Execute Pipeline"}
+              {isRunning ? (language === 'de' ? "Transformiere mit dbt..." : "Transforming with dbt...") : (language === 'de' ? "Pipeline Ausführen" : "Execute Pipeline")}
             </button>
           </div>
         )}
@@ -91,7 +93,7 @@ export default function ETLPipelineDemo() {
                 <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] opacity-50">reporting_view</span>
               </div>
             </div>
-            <p className="mt-12 text-[10px] font-black text-blue-500 uppercase tracking-[3px] animate-pulse">DAG Orchestrated by Dagster ✓</p>
+            <p className="mt-12 text-[10px] font-black text-blue-500 uppercase tracking-[3px] animate-pulse">{language === 'de' ? 'DAG Orchestriert von Dagster ✓' : 'DAG Orchestrated by Dagster ✓'}</p>
           </div>
         )}
 
@@ -113,7 +115,7 @@ export default function ETLPipelineDemo() {
               </tbody>
             </table>
             <div className="p-4 bg-white/5 flex items-center justify-center gap-2 text-[11px] font-bold text-green-400">
-              <CheckCircle2 size={14} /> Schema Validation Passed
+              <CheckCircle2 size={14} /> {language === 'de' ? 'Schema-Validierung Bestanden' : 'Schema Validation Passed'}
             </div>
           </div>
         )}

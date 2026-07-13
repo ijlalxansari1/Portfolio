@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 interface TerminalProps {
   isOpen: boolean;
@@ -17,15 +19,12 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
   const [isBooting, setIsBooting] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  
+  const { language } = useLanguage();
+  const t = translations[language].terminal;
 
   useEffect(() => {
-    const bootText = [
-      "Initializing LOKI Protocol terminal v1.0...",
-      "Loading profile: Ijlal Ansari...",
-      "Status: Available for hire ✓",
-      "",
-      "Type 'help' to see available commands.",
-    ];
+    const bootText = t.bootText;
 
     if (isOpen) {
       setIsBooting(true);
@@ -63,23 +62,13 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
       case "help":
         setOutput((prev) => [
           ...prev,
-          "COMMAND        DESCRIPTION",
-          "-------        -----------",
-          "about          Prints full bio paragraph",
-          "skills         Prints ASCII bar chart of skills",
-          "projects       Lists all 6 projects",
-          "contact        Shows social links",
-          "loki           Special protocol info",
-          "hire           Go to contact section",
-          "clear          Clears terminal",
-          "exit           Closes terminal",
+          ...t.helpText
         ]);
         break;
       case "about":
         setOutput((prev) => [
           ...prev,
-          "Senior Data Engineer & AI Researcher specializing in ethical data intelligence.",
-          "Building the LOKI Protocol for glorious purpose, free will, and better data systems across the sacred timeline.",
+          ...t.aboutText
         ]);
         break;
       case "skills":
@@ -98,13 +87,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
       case "projects":
         setOutput((prev) => [
           ...prev,
-          "1. LOKI Protocol - Temporal Data Intelligence",
-          "2. Data Engineering Tracker - Learning Path",
-          "3. ETL Pipeline - dbt + Dagster",
-          "4. Bias Audit System - ML Fairness",
-          "5. FastAPI Data Gateway - Secure Access",
-          "6. Analytics Dashboard - DuckDB Backed",
-          "Type 1-6 to learn more (Coming Soon).",
+          ...t.projectsText
         ]);
         break;
       case "contact":
@@ -116,17 +99,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
         ]);
         break;
       case "loki":
-        const lines = [
-          "> LOKI — Temporal Data Analysis Protocol. For all time. Always.",
-          "> Loading pipeline modules...",
-          "> [████████████████████] 100%",
-          "> Bias detection: ACTIVE",
-          "> Fairlearn integration: ONLINE",
-          "> SHAP explainability: ONLINE",
-          "> Audit log: APPEND-ONLY ✓",
-          "> RBAC matrix: 24 permissions loaded",
-          "> Status: All systems operational.",
-        ];
+        const lines = t.lokiText;
         let i = 0;
         const interval = setInterval(() => {
           if (i < lines.length) {
@@ -153,7 +126,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
         onClose();
         break;
       default:
-        setOutput((prev) => [...prev, `Command not found: ${cmd}. Type 'help' for commands.`]);
+        setOutput((prev) => [...prev, t.notFound.replace("{cmd}", cmd)]);
     }
     setInput("");
   };

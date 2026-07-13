@@ -11,6 +11,7 @@ import BiasAuditDemo from "./demos/BiasAuditDemo";
 import FastAPIGatewayDemo from "./demos/FastAPIGatewayDemo";
 import AnalyticsDashboardDemo from "./demos/AnalyticsDashboardDemo";
 import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
+import { useLanguage } from "../context/LanguageContext";
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -157,6 +158,7 @@ const caseStudies: Record<number | string, any> = {
 };
 
 export default function ProjectModal({ isOpen, onClose, project: selectedProject, onNext }: ProjectModalProps) {
+  const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState<"overview" | "case" | "demo" | "overview">("case");
 
   useEffect(() => {
@@ -205,9 +207,9 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
   };
 
   const tabs = [
-    { id: "case", label: "Case Study", icon: <BookOpen size={14} /> },
-    { id: "demo", label: "Try It Live", icon: <Play size={14} />, hidden: !project.demo },
-    { id: "overview", label: "Architecture", icon: <Info size={14} /> },
+    { id: "case", label: language === 'de' ? "Fallstudie" : "Case Study", icon: <BookOpen size={14} /> },
+    { id: "demo", label: language === 'de' ? "Live Ausprobieren" : "Try It Live", icon: <Play size={14} />, hidden: !project.demo },
+    { id: "overview", label: language === 'de' ? "Architektur" : "Architecture", icon: <Info size={14} /> },
   ].filter(t => !t.hidden);
 
   return (
@@ -227,7 +229,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
             <div className="pt-8 px-8 pb-4 border-b border-white/5">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">Project #{selectedProject.id}</span>
+                  <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">{language === 'de' ? 'Projekt #' : 'Project #'}{selectedProject.id}</span>
                   <h2 className="text-xl font-black text-white">{project.title}</h2>
                 </div>
                 <button onClick={onClose} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-[var(--accent)] hover:text-black transition-all">
@@ -256,12 +258,12 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                 {activeTab === "case" && (
                   <motion.div key="case" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="px-8 py-10 space-y-12">
                     <section>
-                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">01 — Problem</p>
+                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">01 — {language === 'de' ? 'Problem' : 'Problem'}</p>
                       <p className="text-[16px] text-[var(--text-secondary)] leading-[1.8] font-medium">{project.problem}</p>
                     </section>
 
                     <section>
-                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">02 — Approach</p>
+                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">02 — {language === 'de' ? 'Ansatz' : 'Approach'}</p>
                       <p className="text-[16px] text-[var(--text-secondary)] leading-[1.8] font-medium">{project.approach}</p>
                     </section>
 
@@ -275,7 +277,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                     </div>
 
                     <section>
-                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">03 — Lessons</p>
+                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">03 — {language === 'de' ? 'Lektionen' : 'Lessons'}</p>
                       <ul className="space-y-4">
                         {project.lessons.map((l: string, i: number) => (
                           <li key={i} className="flex gap-4 items-start">
@@ -288,7 +290,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
 
                     {project.gallery && project.gallery.length > 0 && (
                       <section>
-                        <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">04 — Gallery</p>
+                        <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">04 — {language === 'de' ? 'Galerie' : 'Gallery'}</p>
                         <div className="grid grid-cols-2 gap-4">
                            {project.gallery.map((img: string, idx: number) => (
                               <div key={idx} className={`relative rounded-2xl overflow-hidden border border-white/5 ${idx % 3 === 0 ? 'col-span-2 aspect-[21/9]' : 'aspect-square'}`}>
@@ -304,7 +306,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                 {activeTab === "overview" && (
                   <motion.div key="overview" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="px-8 py-10 space-y-12">
                     <section>
-                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">Pipeline Logic</p>
+                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">{language === 'de' ? 'Pipeline-Logik' : 'Pipeline Logic'}</p>
                       <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-8 overflow-x-auto">
                         <div className="flex flex-wrap items-center justify-center gap-y-12 gap-x-4 w-full max-w-full">
                           {project.architecture.map((box: string, i: number) => (
@@ -324,7 +326,7 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                     </section>
 
                     <section>
-                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">Technical Decisions</p>
+                      <p className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[3px] mb-4">{language === 'de' ? 'Technische Entscheidungen' : 'Technical Decisions'}</p>
                       <div className="grid grid-cols-1 gap-4">
                         {project.tech.map((t: any, i: number) => (
                           <div key={i} className="p-5 bg-white/5 border border-white/5 rounded-2xl">
@@ -344,13 +346,13 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
                   <motion.div key="demo" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="px-6 py-8">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse shadow-[0_0_8px_var(--accent)]" />
-                      <span className="text-[10px] font-black text-white uppercase tracking-[3px]">Live Interactive Simulation</span>
+                      <span className="text-[10px] font-black text-white uppercase tracking-[3px]">{language === 'de' ? 'Live Interaktive Simulation' : 'Live Interactive Simulation'}</span>
                     </div>
                     <div className="bg-black/40 rounded-[32px] overflow-hidden border border-white/5 shadow-inner">
                       {project.demo}
                     </div>
                     <p className="mt-6 text-center text-[11px] text-[var(--text-secondary)] opacity-30 italic">
-                      &quot;This simulation demonstrates core architectural logic and data flow.&quot;
+                      {language === 'de' ? '"Diese Simulation zeigt die grundlegende Architekturlogik und den Datenfluss."' : '"This simulation demonstrates core architectural logic and data flow."'}
                     </p>
                   </motion.div>
                 )}
@@ -362,17 +364,17 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
               <div className="flex items-center gap-6">
                 {project.github && (
                   <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
-                    <Github size={18} /> Source Code
+                    <Github size={18} /> {language === 'de' ? 'Quellcode' : 'Source Code'}
                   </a>
                 )}
                 {project.liveUrl && (
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
-                    <ExternalLink size={18} /> Live Demo
+                    <ExternalLink size={18} /> {language === 'de' ? 'Live Demo' : 'Live Demo'}
                   </a>
                 )}
               </div>
               <button onClick={onNext} className="flex items-center gap-3 px-8 py-3.5 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[2px] rounded-full hover:scale-105 transition-all shadow-xl font-black">
-                Next Case Study <ArrowRight size={18} />
+                {language === 'de' ? 'Nächste Fallstudie' : 'Next Case Study'} <ArrowRight size={18} />
               </button>
             </div>
           </motion.div>

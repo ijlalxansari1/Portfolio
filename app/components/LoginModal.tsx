@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Lock } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -11,27 +13,32 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginModalProps) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [pin, setPin] = useState<string[]>(Array(6).fill(""));
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  
+  const { language } = useLanguage();
+  const t = translations[language].loginModal;
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    const trimmedUsername = username.trim();
-    const trimmedPassword = password.trim();
-
-    if (!trimmedUsername || !trimmedPassword) {
-      setError("Please enter both username and password.");
-      return;
+  useEffect(() => {
+    if (isOpen) {
+      setPin(Array(6).fill(""));
+      setError("");
+      // Focus first input
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
     }
+  }, [isOpen]);
+
+  const handleLogin = async (pinStr: string) => {
+    setIsSubmitting(true);
+    setError("");
 
     try {
       const response = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword }),
+        body: JSON.stringify({ pin: pinStr }),
       });
 
       const data = await response.json();
@@ -39,13 +46,58 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
       if (data.success) {
         sessionStorage.setItem("aether-admin-session", data.token);
         onLoginSuccess();
-        setUsername("");
-        setPassword("");
       } else {
-        setError(data.error || "Invalid credentials. Access denied.");
+        setError(data.error || "Access Denied");
+        setPin(Array(6).fill(""));
+        inputRefs.current[0]?.focus();
       }
     } catch (err) {
-      setError("Authentication server unreachable.");
+      setError("Server Unreachable");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^[0-9]*$/.test(value)) return;
+    
+    const newPin = [...pin];
+    newPin[index] = value;
+    setPin(newPin);
+
+    // Auto focus next
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    // Auto submit
+    if (newPin.every(digit => digit !== "")) {
+      handleLogin(newPin.join(""));
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !pin[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 6);
+    if (!pastedData) return;
+
+    const newPin = [...pin];
+    for (let i = 0; i < pastedData.length; i++) {
+      newPin[i] = pastedData[i];
+    }
+    setPin(newPin);
+
+    if (pastedData.length === 6) {
+      inputRefs.current[5]?.focus();
+      handleLogin(newPin.join(""));
+    } else {
+      inputRefs.current[pastedData.length]?.focus();
     }
   };
 
@@ -71,55 +123,53 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-[#141414] border border-white/10 rounded-2xl p-8 max-w-[400px] w-full shadow-2xl"
+            className="bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 max-w-[420px] w-full shadow-2xl relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-3 text-white">
-                <div className="w-10 h-10 bg-[var(--accent)]/10 rounded-lg flex items-center justify-center text-[var(--accent)]">
-                  <Lock size={20} />
+            {/* Ambient Background Glow */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[var(--accent)]/10 to-transparent opacity-20 pointer-events-none" />
+            
+            <div className="flex justify-between items-center mb-10 relative z-10">
+              <div className="flex flex-col gap-1 text-white">
+                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-[var(--accent)] mb-4 border border-white/10">
+                  <Lock size={24} />
                 </div>
-                <h2 className="text-xl font-black uppercase tracking-widest">Admin Login</h2>
+                <h2 className="text-2xl font-black uppercase tracking-widest">{t.adminLogin}</h2>
+                <p className="text-xs text-white/40 uppercase tracking-[0.2em]">Enter Access Code</p>
               </div>
-              <button onClick={onClose} className="text-white/30 hover:text-white transition-all">
-                <X size={24} />
+              <button onClick={onClose} className="absolute top-0 right-0 text-white/30 hover:text-white transition-all p-2 bg-white/5 rounded-full">
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div>
-                <label className="block text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 px-1">Username</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-white/5 rounded-xl px-5 py-4 text-white text-[14px] outline-none focus:border-[var(--accent)]/50 transition-all placeholder:text-white/20"
-                  placeholder="Enter username"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-2 px-1">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-white/5 rounded-xl px-5 py-4 text-white text-[14px] outline-none focus:border-[var(--accent)]/50 transition-all placeholder:text-white/20"
-                  placeholder="Enter password"
-                />
+            <div className="space-y-8 relative z-10">
+              <div className="flex gap-3 justify-between" onPaste={handlePaste}>
+                {pin.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => { inputRefs.current[index] = el; }}
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)}
+                    disabled={isSubmitting}
+                    className="w-12 h-14 bg-white/5 border border-white/10 rounded-xl text-center text-white text-2xl font-black outline-none focus:border-[var(--accent)] focus:bg-[var(--accent)]/10 transition-all"
+                  />
+                ))}
               </div>
 
               {error && (
-                <p className="text-[#e24b4a] text-[12px] font-bold text-center animate-pulse">{error}</p>
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-[#e24b4a] text-xs font-bold text-center uppercase tracking-widest bg-[#e24b4a]/10 py-3 rounded-lg border border-[#e24b4a]/20"
+                >
+                  {error}
+                </motion.p>
               )}
-
-              <button
-                type="submit"
-                className="w-full py-4 bg-[var(--accent)] text-black font-black uppercase tracking-[0.15em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_8px_24px_rgba(var(--accent-rgb),0.2)]"
-              >
-                Login to Panel
-              </button>
-            </form>
+            </div>
           </motion.div>
         </motion.div>
       )}

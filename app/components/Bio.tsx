@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 export default function Bio() {
   const { language } = useLanguage();
   const t = translations[language].story;
+  const tBio = translations[language].bioSection;
 
   const [paragraphs, setParagraphs] = useState<string[]>([]);
   const storyParagraphs = paragraphs.length > 0 ? paragraphs : t.paragraphs;
@@ -38,7 +39,7 @@ export default function Bio() {
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-              Data Engineering Consultant
+              {tBio.role}
             </motion.div>
             <motion.h2 
               initial={{ opacity: 0, y: 10 }}
@@ -76,7 +77,7 @@ export default function Bio() {
               }}
               className="group flex items-center gap-2 px-6 py-3.5 bg-[var(--accent)] text-black rounded-xl text-[12px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)] hover:shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)]"
             >
-              Explore Projects
+              {tBio.exploreProjects}
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
             <button 
@@ -86,7 +87,7 @@ export default function Bio() {
               className="group flex items-center gap-2 px-6 py-3.5 bg-transparent border border-white/20 text-white rounded-xl text-[12px] font-black uppercase tracking-widest hover:bg-white/5 hover:border-white/40 active:scale-95 transition-all"
             >
               <Terminal size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-              Contact Me
+              {tBio.contactMe}
             </button>
           </motion.div>
         </div>
@@ -112,9 +113,9 @@ export default function Bio() {
           <div className="absolute bottom-6 left-6 z-20 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-xl transform group-hover:-translate-y-2 transition-transform duration-500">
              <div className="flex items-center gap-3 mb-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Pipeline Active</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/70">{tBio.pipelineActive}</span>
              </div>
-             <div className="text-xl font-black text-white tracking-tight">1.2M <span className="text-[12px] text-white/50 uppercase tracking-widest font-bold">Rows / sec</span></div>
+             <div className="text-xl font-black text-white tracking-tight">1.2M <span className="text-[12px] text-white/50 uppercase tracking-widest font-bold">{tBio.rowsPerSec}</span></div>
           </div>
           
           <div className="absolute top-6 right-6 z-20 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-xl transform group-hover:translate-y-2 transition-transform duration-500">

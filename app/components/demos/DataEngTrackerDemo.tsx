@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { GraduationCap, CheckCircle2, Circle, Trophy, BookOpen, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function DataEngTrackerDemo() {
+  const { language } = useLanguage();
   const [tasks, setTasks] = useState([
-    { id: 1, title: "Data Modeling Fundamentals", done: true, time: "2h" },
-    { id: 2, title: "SQL for Data Engineers", done: true, time: "4h" },
-    { id: 3, title: "ETL vs ELT Architecture", done: false, time: "3h" },
-    { id: 4, title: "Modern Data Stack (dbt + Snowflake)", done: false, time: "5h" },
-    { id: 5, title: "Orchestration with Dagster", done: false, time: "4h" },
-    { id: 6, title: "Data Governance & Ethics", done: false, time: "2h" },
+    { id: 1, title: language === 'de' ? "Datenmodellierung Grundlagen" : "Data Modeling Fundamentals", done: true, time: "2h" },
+    { id: 2, title: language === 'de' ? "SQL für Data Engineers" : "SQL for Data Engineers", done: true, time: "4h" },
+    { id: 3, title: language === 'de' ? "ETL vs ELT Architektur" : "ETL vs ELT Architecture", done: false, time: "3h" },
+    { id: 4, title: language === 'de' ? "Moderner Data Stack (dbt + Snowflake)" : "Modern Data Stack (dbt + Snowflake)", done: false, time: "5h" },
+    { id: 5, title: language === 'de' ? "Orchestrierung mit Dagster" : "Orchestration with Dagster", done: false, time: "4h" },
+    { id: 6, title: language === 'de' ? "Data Governance & Ethik" : "Data Governance & Ethics", done: false, time: "2h" },
   ]);
 
   const toggleTask = (id: number) => {
@@ -29,19 +31,19 @@ export default function DataEngTrackerDemo() {
             <GraduationCap size={20} />
           </div>
           <div>
-            <h3 className="text-[14px] font-black text-white uppercase tracking-wider">Data Eng Tracker</h3>
-            <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">80/20 Curriculum Manager</p>
+            <h3 className="text-[14px] font-black text-white uppercase tracking-wider">{language === 'de' ? 'Data Eng Tracker' : 'Data Eng Tracker'}</h3>
+            <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{language === 'de' ? '80/20 Lehrplan-Manager' : '80/20 Curriculum Manager'}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 rounded-full border border-yellow-500/20">
           <Trophy size={14} className="text-yellow-500" />
-          <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">{completedCount}/{tasks.length} Done</span>
+          <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">{completedCount}/{tasks.length} {language === 'de' ? 'Erledigt' : 'Done'}</span>
         </div>
       </div>
 
       <div className="mb-8 space-y-3">
         <div className="flex justify-between items-end">
-          <p className="text-[11px] font-black text-white uppercase tracking-widest">Course Progress</p>
+          <p className="text-[11px] font-black text-white uppercase tracking-widest">{language === 'de' ? 'Kursfortschritt' : 'Course Progress'}</p>
           <p className="text-[18px] font-black text-yellow-500">{Math.round(progress)}%</p>
         </div>
         <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
@@ -65,7 +67,7 @@ export default function DataEngTrackerDemo() {
               <div>
                 <p className={`text-[12px] font-bold ${task.done ? 'line-through opacity-50' : ''}`}>{task.title}</p>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest opacity-50"><BookOpen size={10} /> Module {task.id}</span>
+                  <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest opacity-50"><BookOpen size={10} /> {language === 'de' ? 'Modul' : 'Module'} {task.id}</span>
                   <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest opacity-50"><Clock size={10} /> {task.time}</span>
                 </div>
               </div>
@@ -77,17 +79,17 @@ export default function DataEngTrackerDemo() {
       <div className="mt-8 pt-4 border-t border-[var(--border)] flex items-center justify-center gap-8">
         <div className="text-center">
           <p className="text-[14px] font-black text-white">20h</p>
-          <p className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-40">Total Time</p>
+          <p className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-40">{language === 'de' ? 'Gesamtzeit' : 'Total Time'}</p>
         </div>
         <div className="w-px h-6 bg-[var(--border)]" />
         <div className="text-center">
           <p className="text-[14px] font-black text-white">4</p>
-          <p className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-40">Projects</p>
+          <p className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-40">{language === 'de' ? 'Projekte' : 'Projects'}</p>
         </div>
         <div className="w-px h-6 bg-[var(--border)]" />
         <div className="text-center">
           <p className="text-[14px] font-black text-white">6</p>
-          <p className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-40">Certificates</p>
+          <p className="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest opacity-40">{language === 'de' ? 'Zertifikate' : 'Certificates'}</p>
         </div>
       </div>
     </div>

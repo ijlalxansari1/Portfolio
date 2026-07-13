@@ -30,13 +30,13 @@ const PRINCIPLES = [
 ];
 
 const DATAOPS_LIFECYCLE = [
-  { iconUrl: "https://img.icons8.com/color/96/database.png", stepKey: "sources", descKey: "sources_desc" },
-  { iconUrl: "https://img.icons8.com/color/96/data-transfer.png", stepKey: "ingestion", descKey: "ingestion_desc" },
-  { iconUrl: "https://img.icons8.com/color/96/server.png", stepKey: "storage", descKey: "storage_desc" },
-  { iconUrl: "https://img.icons8.com/color/96/inspection.png", stepKey: "validation", descKey: "validation_desc" },
-  { iconUrl: "https://img.icons8.com/color/96/module.png", stepKey: "modeling", descKey: "modeling_desc" },
-  { iconUrl: "https://img.icons8.com/color/96/workflow.png", stepKey: "orchestration", descKey: "orchestration_desc" },
-  { iconUrl: "https://img.icons8.com/color/96/api-settings.png", stepKey: "serving", descKey: "serving_desc" }
+  { icon: Database, stepKey: "sources", descKey: "sources_desc" },
+  { icon: ArrowRightLeft, stepKey: "ingestion", descKey: "ingestion_desc" },
+  { icon: HardDrive, stepKey: "storage", descKey: "storage_desc" },
+  { icon: ShieldCheck, stepKey: "validation", descKey: "validation_desc" },
+  { icon: Layers, stepKey: "modeling", descKey: "modeling_desc" },
+  { icon: Workflow, stepKey: "orchestration", descKey: "orchestration_desc" },
+  { icon: Zap, stepKey: "serving", descKey: "serving_desc" }
 ];
 
 const SERVING_BRANCHES = [
@@ -379,8 +379,8 @@ export default function About() {
             {DATAOPS_LIFECYCLE.map((step, i) => (
               <div key={i} className="flex items-center">
                 <div className="flex flex-col items-center gap-3 w-32 group">
-                  <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-sm group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/10 transition-all">
-                    <Image src={step.iconUrl} alt={tAbout.dataops[step.stepKey as keyof typeof tAbout.dataops] as string} width={24} height={24} unoptimized className="group-hover:scale-110 transition-transform duration-300" />
+                  <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-sm group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/10 transition-all text-[var(--text-secondary)] group-hover:text-[var(--accent)]">
+                    <step.icon size={22} className="group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <div className="text-center">
                     <div className="text-[11px] font-black uppercase tracking-widest text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent)] transition-colors">{tAbout.dataops[step.stepKey as keyof typeof tAbout.dataops] as string}</div>

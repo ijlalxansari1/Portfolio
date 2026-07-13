@@ -10,44 +10,79 @@ import ArchitectureModal from "./ArchitectureModal";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 
-/* Extended project metadata for the redesigned cards */
-const PROJECT_META: Record<number, { problem: string; outcome: string; github?: string; demo?: string; featured?: boolean; tech?: string[] }> = {
+const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean; tech?: string[] }> = {
   1: {
-    problem: "Reliable data pipelines with clear lineage and auditability",
-    outcome: "A traceable architecture designed for production and trust",
+    problem: {
+      en: "Reliable data pipelines with clear lineage and auditability",
+      de: "Zuverlässige Datenpipelines mit klarer Lineage und Nachvollziehbarkeit"
+    },
+    outcome: {
+      en: "A traceable architecture designed for production and trust",
+      de: "Eine nachvollziehbare Architektur, entwickelt für Produktion und Vertrauen"
+    },
     github: "https://github.com/ijlalxansari1",
     featured: true,
     tech: ["Python", "FastAPI", "SQL", "Docker", "ETL", "Automation"]
   },
   2: {
-    problem: "No structured path for self-taught data engineering practice",
-    outcome: "Interactive 20-hr curriculum on 80/20 principle, tracked live",
+    problem: {
+      en: "No structured path for self-taught data engineering practice",
+      de: "Kein strukturierter Weg für autodidaktische Data-Engineering-Praxis"
+    },
+    outcome: {
+      en: "Interactive 20-hr curriculum on 80/20 principle, tracked live",
+      de: "Interaktives 20-Stunden-Curriculum nach dem 80/20-Prinzip, live verfolgt"
+    },
     demo: "https://dataden.vercel.app",
     featured: true,
     tech: ["Next.js", "Dashboards"]
   },
   3: {
-    problem: "ETL pipelines lacking automated testing and lineage docs",
-    outcome: "Production-grade ELT — every model tested, every transform documented",
+    problem: {
+      en: "ETL pipelines lacking automated testing and lineage docs",
+      de: "ETL-Pipelines ohne automatisierte Tests und Lineage-Dokumentation"
+    },
+    outcome: {
+      en: "Production-grade ELT — every model tested, every transform documented",
+      de: "Produktionsreife ELT — jedes Modell getestet, jede Transformation dokumentiert"
+    },
     github: "https://github.com/ijlalxansari1",
     tech: ["SQL", "ETL", "Python", "Automation", "Docker"]
   },
   4: {
-    problem: "ML models shipped without fairness or demographic audits",
-    outcome: "Automated Fairlearn + SHAP reports exportable to PDF",
+    problem: {
+      en: "ML models shipped without fairness or demographic audits",
+      de: "ML-Modelle ohne Fairness- oder demografische Audits ausgeliefert"
+    },
+    outcome: {
+      en: "Automated Fairlearn + SHAP reports exportable to PDF",
+      de: "Automatisierte Fairlearn + SHAP Berichte, exportierbar als PDF"
+    },
     github: "https://github.com/ijlalxansari1",
     featured: true,
     tech: ["Python", "Automation", "Dashboards"]
   },
   5: {
-    problem: "Multi-tenant APIs with poor auth and no structured logging",
-    outcome: "JWT + RBAC + rate-limiting + structured logs from day one",
+    problem: {
+      en: "Multi-tenant APIs with poor auth and no structured logging",
+      de: "Mandantenfähige APIs mit schlechter Auth und ohne strukturierte Protokollierung"
+    },
+    outcome: {
+      en: "JWT + RBAC + rate-limiting + structured logs from day one",
+      de: "JWT + RBAC + Rate-Limiting + strukturierte Protokolle von Tag eins an"
+    },
     github: "https://github.com/ijlalxansari1",
     tech: ["FastAPI", "APIs", "Python", "Docker"]
   },
   6: {
-    problem: "Analytics dashboards needing sub-second OLAP on large datasets",
-    outcome: "Self-hosted DuckDB in-process OLAP on million-row data — no cloud cost",
+    problem: {
+      en: "Analytics dashboards needing sub-second OLAP on large datasets",
+      de: "Analyse-Dashboards, die Sub-Sekunden-OLAP für große Datensätze benötigen"
+    },
+    outcome: {
+      en: "Self-hosted DuckDB in-process OLAP on million-row data — no cloud cost",
+      de: "Selbstgehostetes DuckDB In-Process OLAP für Millionen-Zeilen-Daten — keine Cloud-Kosten"
+    },
     github: "https://github.com/ijlalxansari1",
     tech: ["Next.js", "Dashboards", "SQL"]
   },
@@ -120,39 +155,8 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [archProject, setArchProject] = useState<any>(null);
   const [projects, setProjects] = useState<any[]>(defaultProjects);
-  const [githubRepos, setGithubRepos] = useState<any[]>([]);
 
   useEffect(() => {
-    // 1. Fetch GitHub Repositories
-    const fetchGitHubProjects = async () => {
-      try {
-        const savedUsername = localStorage.getItem("admin-github-username") || "ijlalxansari1";
-        const repoRes = await fetch(`https://api.github.com/users/${savedUsername}/repos?sort=updated&per_page=10`);
-        if (repoRes.ok) {
-          const repoData = await repoRes.json();
-          const ghProjects = repoData
-            .filter((r: any) => !r.fork)
-            .map((r: any) => ({
-              id: `gh-${r.id}`,
-              title: r.name,
-              tag: r.language || "GitHub",
-              image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800",
-              description: r.description || "Open-source GitHub repository",
-              alt: r.name,
-              link: r.html_url,
-              githubUrl: r.html_url,
-              liveUrl: r.homepage || "",
-              status: "Active"
-            }));
-          setGithubRepos(ghProjects);
-        }
-      } catch (error) {
-        console.error("Failed to fetch GitHub projects", error);
-      }
-    };
-    
-    fetchGitHubProjects();
-
     const loadLocalProjects = () => {
       const adminData = localStorage.getItem("admin-projects");
       if (adminData) {
@@ -174,12 +178,8 @@ export default function Projects() {
     return () => window.removeEventListener("admin-updated", handleUpdate);
   }, [defaultProjects]);
 
-  // Combine Admin/Local projects with GitHub projects
-  const allProjects = useMemo(() => {
-    const existingTitles = new Set(projects.map(p => p.title.toLowerCase()));
-    const uniqueGithubRepos = githubRepos.filter(gh => !existingTitles.has(gh.title.toLowerCase()));
-    return [...projects, ...uniqueGithubRepos];
-  }, [projects, githubRepos]);
+  // Use Admin projects exclusively
+  const allProjects = projects;
 
   const filtered = activeFilter === t.filter_all
     ? allProjects
@@ -354,19 +354,20 @@ function ProjectCard({
   project, meta, featured, index, onOpen, onOpenArch, viewLabel,
 }: {
   project: any;
-  meta?: { problem: string; outcome: string; github?: string; demo?: string; featured?: boolean };
+  meta?: { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean };
   featured: boolean;
   index: number;
   onOpen: () => void;
   onOpenArch: () => void;
   viewLabel: string;
 }) {
+  const { language } = useLanguage();
   return (
     <motion.article
-      layout
       initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
+      viewport={{ once: true, margin: "-50px" }}
       transition={{ delay: index * 0.07, duration: 0.3 }}
       className={`group relative flex flex-col rounded-2xl overflow-hidden bg-[var(--bg-secondary)] border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
         featured
@@ -377,8 +378,8 @@ function ProjectCard({
       {/* Thumbnail */}
       <div className="relative w-full aspect-[16/9] overflow-hidden shrink-0">
         <Image
-          src={project.image}
-          alt={project.alt || project.title}
+          src={project.image || "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800"}
+          alt={project.alt || project.title || "Project"}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-[1.04] grayscale-[0.2]"
@@ -437,18 +438,18 @@ function ProjectCard({
           <div className="space-y-2.5">
             <div className="flex gap-2.5">
               <span className="text-[9px] font-black uppercase tracking-wider text-[var(--text-muted)] w-14 shrink-0 pt-0.5">
-                Problem
+                {language === "de" ? "Problem" : "Problem"}
               </span>
               <span className="text-[11px] text-[var(--text-secondary)] opacity-60 leading-relaxed">
-                {meta.problem}
+                {meta.problem[language as 'en'|'de'] || meta.problem.en}
               </span>
             </div>
             <div className="flex gap-2.5">
               <span className="text-[9px] font-black uppercase tracking-wider text-[var(--accent)] w-14 shrink-0 pt-0.5">
-                Result
+                {language === "de" ? "Resultat" : "Result"}
               </span>
               <span className="text-[11px] text-[var(--text-secondary)] opacity-70 leading-relaxed">
-                {meta.outcome}
+                {meta.outcome[language as 'en'|'de'] || meta.outcome.en}
               </span>
             </div>
           </div>
@@ -505,25 +506,26 @@ function HeroProjectCard({
   project, meta, onOpen, onOpenArch, viewLabel,
 }: {
   project: any;
-  meta?: { problem: string; outcome: string; github?: string; demo?: string; featured?: boolean };
+  meta?: { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean };
   onOpen: () => void;
   onOpenArch: () => void;
   viewLabel: string;
 }) {
+  const { language } = useLanguage();
   return (
     <motion.article
-      layout
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.4 }}
       className="group relative flex flex-col lg:flex-row rounded-3xl overflow-hidden bg-[var(--bg-secondary)] border border-[var(--accent)]/30 hover:border-[var(--accent)]/70 transition-all duration-500 hover:shadow-[0_12px_40px_rgba(var(--accent-rgb),0.15)] hover:-translate-y-1"
     >
       {/* Thumbnail (Left side on large screens) */}
       <div className="relative w-full lg:w-[55%] aspect-video lg:aspect-auto overflow-hidden shrink-0">
         <Image
-          src={project.image}
-          alt={project.alt || project.title}
+          src={project.image || "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800"}
+          alt={project.alt || project.title || "Project"}
           fill
           sizes="(max-width: 1024px) 100vw, 55vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-luminosity hover:mix-blend-normal"
@@ -563,19 +565,19 @@ function HeroProjectCard({
         {meta && (
           <div className="space-y-5 mb-8">
             <div>
-              <span className="block text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-1">
-                The Challenge
-              </span>
-              <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed">
-                {meta.problem}
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] mb-1">
+                {language === "de" ? "Die Herausforderung" : "The Challenge"}
+              </h4>
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+                {meta.problem[language as 'en'|'de'] || meta.problem.en}
               </p>
             </div>
             <div>
-              <span className="block text-[10px] font-black uppercase tracking-widest text-[var(--accent)] mb-1">
-                The Solution
-              </span>
-              <p className="text-[14px] text-white/90 leading-relaxed font-medium">
-                {meta.outcome}
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-1">
+                {language === "de" ? "Das Ergebnis" : "The Outcome"}
+              </h4>
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+                {meta.outcome[language as 'en'|'de'] || meta.outcome.en}
               </p>
             </div>
             

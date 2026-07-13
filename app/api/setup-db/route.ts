@@ -2,8 +2,14 @@ import { NextResponse } from 'next/server';
 import { sql } from '@vercel/postgres';
 import bcrypt from 'bcryptjs';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    if (searchParams.get('reset') === 'true') {
+      await sql`DELETE FROM admin_sessions`;
+      await sql`DELETE FROM admins`;
+    }
+
     // Create admins table
     await sql`
       CREATE TABLE IF NOT EXISTS admins (
@@ -24,6 +30,15 @@ export async function GET() {
         token VARCHAR(255) UNIQUE NOT NULL,
         expires_at TIMESTAMP NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    // Create site_data table for Vercel storage
+    await sql`
+      CREATE TABLE IF NOT EXISTS site_data (
+        key VARCHAR(255) PRIMARY KEY,
+        value JSONB NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
 

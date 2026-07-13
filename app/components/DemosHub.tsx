@@ -14,20 +14,20 @@ import FastAPIGatewayDemo from "./demos/FastAPIGatewayDemo";
 import AnalyticsDashboardDemo from "./demos/AnalyticsDashboardDemo";
 import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
 
-const demoList = [
-  { id: 1, title: "TraceFlow", tag: "Python", icon: <FlaskConical size={24} />, description: "Explore a traceable data workflow with lineage, auditability, and practical controls.", component: <AetherDemo /> },
-  { id: 2, title: "Data Eng Tracker", tag: "Next.js", icon: <GraduationCap size={24} />, description: "Interactive curriculum manager with real-time progress tracking.", component: <DataEngTrackerDemo /> },
-  { id: 3, title: "ETL Pipeline", tag: "SQL", icon: <Database size={24} />, description: "Design SQL transformations and view automated dbt lineage.", component: <ETLPipelineDemo /> },
-  { id: 4, title: "Bias Audit System", tag: "Python", icon: <ShieldCheck size={24} />, description: "Execute automated fairness audits using disparate impact metrics.", component: <BiasAuditDemo /> },
-  { id: 5, title: "FastAPI Gateway", tag: "FastAPI", icon: <Zap size={24} />, description: "Live REST API builder with JWT security and latency tests.", component: <FastAPIGatewayDemo /> },
-  { id: 6, title: "Analytics Dashboard", tag: "Next.js", icon: <BarChart3 size={24} />, description: "Interactive OLAP dashboard powered by DuckDB architecture.", component: <AnalyticsDashboardDemo /> },
+const getDemoList = (language: string) => [
+  { id: 1, title: "TraceFlow", tag: "Python", icon: <FlaskConical size={24} />, description: language === 'de' ? "Erkunden Sie einen nachvollziehbaren Daten-Workflow mit Lineage, Überprüfbarkeit und praktischen Kontrollen." : "Explore a traceable data workflow with lineage, auditability, and practical controls.", component: <AetherDemo /> },
+  { id: 2, title: "Data Eng Tracker", tag: "Next.js", icon: <GraduationCap size={24} />, description: language === 'de' ? "Interaktiver Lehrplan-Manager mit Echtzeit-Fortschrittsverfolgung." : "Interactive curriculum manager with real-time progress tracking.", component: <DataEngTrackerDemo /> },
+  { id: 3, title: "ETL Pipeline", tag: "SQL", icon: <Database size={24} />, description: language === 'de' ? "Entwerfen Sie SQL-Transformationen und zeigen Sie automatische dbt-Lineage an." : "Design SQL transformations and view automated dbt lineage.", component: <ETLPipelineDemo /> },
+  { id: 4, title: "Bias Audit System", tag: "Python", icon: <ShieldCheck size={24} />, description: language === 'de' ? "Führen Sie automatisierte Fairness-Audits mithilfe von Disparate-Impact-Metriken durch." : "Execute automated fairness audits using disparate impact metrics.", component: <BiasAuditDemo /> },
+  { id: 5, title: "FastAPI Gateway", tag: "FastAPI", icon: <Zap size={24} />, description: language === 'de' ? "Live REST API Builder mit JWT-Sicherheit und Latenztests." : "Live REST API builder with JWT security and latency tests.", component: <FastAPIGatewayDemo /> },
+  { id: 6, title: "Analytics Dashboard", tag: "Next.js", icon: <BarChart3 size={24} />, description: language === 'de' ? "Interaktives OLAP-Dashboard, unterstützt durch DuckDB-Architektur." : "Interactive OLAP dashboard powered by DuckDB architecture.", component: <AnalyticsDashboardDemo /> },
 ];
 
 export default function DemosHub() {
   const { language } = useLanguage();
   const t = translations[language].demosHub;
   const [activeDemo, setActiveDemo] = useState<number | null>(null);
-  const [demos, setDemos] = useState<any[]>(demoList);
+  const [demos, setDemos] = useState<any[]>(getDemoList(language));
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -35,9 +35,9 @@ export default function DemosHub() {
       if (adminData) {
         const parsed = JSON.parse(adminData);
         if (parsed.length > 0) {
-          // Merge with static components since components can't be stored in localStorage
+          const currentDemoList = getDemoList(language);
           const merged = parsed.filter((d: any) => d.status !== 'Draft').map((d: any) => {
-            const staticMatch = demoList.find(s => s.title === d.title || s.id === d.id);
+            const staticMatch = currentDemoList.find(s => s.title === d.title || s.id === d.id);
             return {
               ...d,
               icon: d.iconUrl ? <img src={d.iconUrl} alt="icon" className="w-full h-full object-cover rounded-2xl" /> : (staticMatch?.icon || <FlaskConical size={24} />),
@@ -46,14 +46,14 @@ export default function DemosHub() {
           });
           setDemos(merged);
         } else {
-          setDemos(demoList);
+          setDemos(getDemoList(language));
         }
       }
     };
     handleUpdate();
     window.addEventListener("admin-updated", handleUpdate);
     return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, []);
+  }, [language]);
 
   const currentDemo = demos.find(d => d.id === activeDemo);
 
@@ -134,16 +134,16 @@ export default function DemosHub() {
                 ) : (
                   <div className="p-2">
                     {currentDemo.component ? React.cloneElement(currentDemo.component as any, { config: currentDemo.config }) : (
-                      <div className="p-20 text-center text-white/20 font-mono">Simulation Engine Pending...<br/><span className="text-[10px] opacity-50">Please assign an Iframe URL or link a local component.</span></div>
+                      <div className="p-20 text-center text-white/20 font-mono">{language === "de" ? "Simulations-Engine ausstehend..." : "Simulation Engine Pending..."}<br/><span className="text-[10px] opacity-50">{language === "de" ? "Bitte weisen Sie eine Iframe-URL zu oder verlinken Sie eine lokale Komponente." : "Please assign an Iframe URL or link a local component."}</span></div>
                     )}
                   </div>
                 )}
               </div>
 
               <div className="mt-6 flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-[3px] text-[var(--text-secondary)] opacity-40">
-                <span className="flex items-center gap-2"><FlaskConical size={12} /> Sandbox Mode</span>
+                <span className="flex items-center gap-2"><FlaskConical size={12} /> {language === "de" ? "Sandbox-Modus" : "Sandbox Mode"}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                <span>Isolated Environment</span>
+                <span>{language === "de" ? "Isolierte Umgebung" : "Isolated Environment"}</span>
               </div>
             </motion.div>
           </div>

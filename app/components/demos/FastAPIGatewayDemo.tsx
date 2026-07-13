@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Globe, Send, Shield, Zap, Lock, Code } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function FastAPIGatewayDemo() {
+  const { language } = useLanguage();
   const [method, setMethod] = useState("GET");
   const [endpoint, setEndpoint] = useState("/v1/analytics/bias-report");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,8 +41,8 @@ export default function FastAPIGatewayDemo() {
           <Zap size={20} />
         </div>
         <div>
-          <h3 className="text-[14px] font-black text-white uppercase tracking-wider">FastAPI Data Gateway</h3>
-          <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">Secure REST Infrastructure</p>
+          <h3 className="text-[14px] font-black text-white uppercase tracking-wider">{language === 'de' ? 'FastAPI Daten-Gateway' : 'FastAPI Data Gateway'}</h3>
+          <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{language === 'de' ? 'Sichere REST-Infrastruktur' : 'Secure REST Infrastructure'}</p>
         </div>
       </div>
 
@@ -69,14 +71,14 @@ export default function FastAPIGatewayDemo() {
             className="px-6 bg-emerald-500 text-black rounded-xl font-black uppercase tracking-widest text-[11px] flex items-center gap-2 hover:scale-[1.05] active:scale-[0.95] transition-all disabled:opacity-50"
           >
             {isLoading ? <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" /> : <Send size={14} />}
-            Send
+            {language === 'de' ? 'Senden' : 'Send'}
           </button>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           {[
-            { icon: <Lock size={14} />, label: "Auth", value: "JWT (Active)" },
-            { icon: <Shield size={14} />, label: "Security", value: "RBAC Enabled" },
+            { icon: <Lock size={14} />, label: "Auth", value: language === 'de' ? "JWT (Aktiv)" : "JWT (Active)" },
+            { icon: <Shield size={14} />, label: language === 'de' ? "Sicherheit" : "Security", value: language === 'de' ? "RBAC Aktiviert" : "RBAC Enabled" },
             { icon: <Globe size={14} />, label: "Rate Limit", value: "500 req/min" },
           ].map((item, i) => (
             <div key={i} className="p-3 bg-white/5 border border-[var(--border)] rounded-xl">
@@ -94,7 +96,7 @@ export default function FastAPIGatewayDemo() {
             <div className="w-2 h-2 rounded-full bg-yellow-500" />
             <div className="w-2 h-2 rounded-full bg-green-500" />
           </div>
-          <p className="text-[10px] text-emerald-500/50 mb-3 uppercase tracking-widest">{'// Response Header'}</p>
+          <p className="text-[10px] text-emerald-500/50 mb-3 uppercase tracking-widest">{language === 'de' ? '// Antwort Header' : '// Response Header'}</p>
           
           {isLoading ? (
             <div className="flex flex-col gap-2">
@@ -105,14 +107,14 @@ export default function FastAPIGatewayDemo() {
           ) : response ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[12px] space-y-1">
               <p className="text-emerald-400">HTTP/1.1 {response.status} OK</p>
-              <p className="text-white/40">Latency: {response.latency}</p>
+              <p className="text-white/40">{language === 'de' ? 'Latenz' : 'Latency'}: {response.latency}</p>
               <pre className="text-white/70 mt-4 leading-relaxed">
                 {JSON.stringify(response.data, null, 2)}
               </pre>
             </motion.div>
           ) : (
             <p className="text-white/20 italic text-[12px] flex items-center gap-2 h-full justify-center">
-              <Code size={16} /> Waiting for request...
+              <Code size={16} /> {language === 'de' ? 'Warten auf Anfrage...' : 'Waiting for request...'}
             </p>
           )}
         </div>

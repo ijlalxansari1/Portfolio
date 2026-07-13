@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../context/translations";
 
 const accents = [
   { name: "green",  color: "#00e87a" },
@@ -65,10 +66,11 @@ function PanelContent({ theme, accent, language, onThemeChange, onAccentChange, 
   onAccentChange: (a: string) => void;
   onLanguageChange: (l: string) => void;
 }) {
+  const t = (translations as any)[language]?.settings || translations.en.settings;
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">Modes</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">{t.title}</p>
         <div className="grid grid-cols-3 gap-2">
           {themes.map((t) => (
             <ThemeButton key={t.id} themeId={t.id} label={t.label} icon={t.icon}
@@ -81,7 +83,7 @@ function PanelContent({ theme, accent, language, onThemeChange, onAccentChange, 
       </div>
 
       <div>
-        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">Accents</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">{t.accents}</p>
         <div className="flex flex-wrap gap-2.5">
           {accents.map((acc) => (
             <button
@@ -102,7 +104,7 @@ function PanelContent({ theme, accent, language, onThemeChange, onAccentChange, 
       </div>
 
       <div className="pt-4 border-t border-[var(--border-subtle)]">
-        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">Language</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">{t.languages}</p>
         <div className="grid grid-cols-2 gap-2">
           {[{ id: "en", label: "English" }, { id: "de", label: "Deutsch" }].map((lang) => (
             <button

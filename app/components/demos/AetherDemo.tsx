@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Upload, Play, CheckCircle2, AlertCircle, BarChart3, PieChart, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function AetherDemo() {
   const [file, setFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const { language } = useLanguage();
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) setFile(e.target.files[0]);
@@ -50,8 +52,8 @@ export default function AetherDemo() {
           <BarChart3 size={20} />
         </div>
         <div>
-          <h3 className="text-[14px] font-black text-white uppercase tracking-wider">TraceFlow Variance Analysis</h3>
-          <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">Ethical AI Pipeline Simulator</p>
+          <h3 className="text-[14px] font-black text-white uppercase tracking-wider">{language === 'de' ? 'TraceFlow Varianzanalyse' : 'TraceFlow Variance Analysis'}</h3>
+          <p className="text-[10px] text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{language === 'de' ? 'Ethischer KI-Pipeline-Simulator' : 'Ethical AI Pipeline Simulator'}</p>
         </div>
       </div>
 
@@ -62,9 +64,9 @@ export default function AetherDemo() {
             <label htmlFor="aether-upload" className="cursor-pointer flex flex-col items-center">
               <Upload className={`mb-4 transition-all ${file ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] opacity-30 group-hover:opacity-100'}`} size={32} />
               <p className="text-[13px] font-bold text-white mb-1">
-                {file ? file.name : "Drop your dataset (CSV) here"}
+                {file ? file.name : (language === 'de' ? "Ziehen Sie Ihren Datensatz (CSV) hierher" : "Drop your dataset (CSV) here")}
               </p>
-              <p className="text-[11px] text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">or click to browse files</p>
+              <p className="text-[11px] text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">{language === 'de' ? "oder klicken, um Dateien zu durchsuchen" : "or click to browse files"}</p>
             </label>
           </div>
 
@@ -78,7 +80,7 @@ export default function AetherDemo() {
             {isAnalyzing ? (
               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}><Play size={18} /></motion.div>
             ) : <Play size={18} />}
-            {isAnalyzing ? "Processing 10-Stage Pipeline..." : "Execute Ethical Analysis"}
+            {isAnalyzing ? (language === 'de' ? "Verarbeite 10-Stufen-Pipeline..." : "Processing 10-Stage Pipeline...") : (language === 'de' ? "Ethische Analyse ausführen" : "Execute Ethical Analysis")}
           </button>
 
           {isAnalyzing && (
@@ -91,7 +93,7 @@ export default function AetherDemo() {
                   className="h-full bg-[var(--accent)] shadow-[0_0_10px_var(--accent)]" 
                 />
               </div>
-              <p className="text-[10px] text-[var(--accent)] font-bold uppercase tracking-widest text-center animate-pulse">Initializing Fairlearn Engine...</p>
+              <p className="text-[10px] text-[var(--accent)] font-bold uppercase tracking-widest text-center animate-pulse">{language === 'de' ? 'Initialisiere Fairlearn Engine...' : 'Initializing Fairlearn Engine...'}</p>
             </div>
           )}
         </div>
@@ -99,15 +101,15 @@ export default function AetherDemo() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/5 border border-[var(--border)] rounded-xl p-4">
-              <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-1">Demographic Parity</p>
+              <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-1">{language === 'de' ? 'Demografische Parität' : 'Demographic Parity'}</p>
               <p className="text-[24px] font-black text-[var(--accent)]">0.92</p>
               <div className="flex items-center gap-1 text-[9px] text-[var(--accent)] font-bold uppercase tracking-tight mt-1">
                 <CheckCircle2 size={10} /> Excellent Fairness
               </div>
             </div>
             <div className="bg-white/5 border border-[var(--border)] rounded-xl p-4">
-              <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-1">SHAP Max Influence</p>
-              <p className="text-[24px] font-black text-white">Age</p>
+              <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-1">{language === 'de' ? 'SHAP Max Einfluss' : 'SHAP Max Influence'}</p>
+              <p className="text-[24px] font-black text-white">{language === 'de' ? 'Alter' : 'Age'}</p>
               <div className="flex items-center gap-1 text-[9px] text-orange-400 font-bold uppercase tracking-tight mt-1">
                 <Info size={10} /> High Weight Feature
               </div>
@@ -115,13 +117,13 @@ export default function AetherDemo() {
           </div>
 
           <div className="bg-white/5 border border-[var(--border)] rounded-xl p-5">
-            <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-4">Feature Impact Analysis (SHAP)</p>
+            <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-4">{language === 'de' ? 'Feature-Einfluss-Analyse (SHAP)' : 'Feature Impact Analysis (SHAP)'}</p>
             <div className="space-y-4">
               {results.shapValues.map((s: any, i: number) => (
                 <div key={i} className="space-y-1.5">
                   <div className="flex justify-between text-[11px] font-bold uppercase tracking-wider">
                     <span className="text-white">{s.feature}</span>
-                    <span className="text-[var(--text-secondary)] opacity-50">{Math.round(s.impact * 100)}% impact</span>
+                    <span className="text-[var(--text-secondary)] opacity-50">{Math.round(s.impact * 100)}% {language === 'de' ? 'einfluss' : 'impact'}</span>
                   </div>
                   <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
@@ -147,7 +149,7 @@ export default function AetherDemo() {
             onClick={() => { setResults(null); setFile(null); }}
             className="w-full py-3 border border-[var(--border)] rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] hover:bg-white/5 transition-all"
           >
-            Reset Analysis
+            {language === 'de' ? 'Analyse zurücksetzen' : 'Reset Analysis'}
           </button>
         </motion.div>
       )}

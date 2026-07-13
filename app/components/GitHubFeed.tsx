@@ -38,6 +38,7 @@ const fallbackRepos = [
 export default function GitHubFeed() {
   const { language } = useLanguage();
   const t = translations[language].githubFeed;
+  const tFeed = translations[language].githubFeedExtras;
   const [events, setEvents] = useState<any[]>([]);
   const [repos, setRepos] = useState<any[]>([]);
   const [stats, setStats] = useState({ repos: 12, stars: 8, followers: 24, contributions: 0 });
@@ -143,21 +144,21 @@ export default function GitHubFeed() {
               <Package size={14} className="text-[var(--accent)]" />
               <div className="flex flex-col">
                  <span className="text-[14px] font-black text-[var(--text-primary)] leading-none">{stats.repos}</span>
-                 <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-40">Repos</span>
+                 <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-40">{tFeed.repos}</span>
               </div>
            </div>
            <div className="px-4 py-2 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl flex items-center gap-3">
               <Star size={14} className="text-[var(--accent)]" />
               <div className="flex flex-col">
                  <span className="text-[14px] font-black text-[var(--text-primary)] leading-none">{stats.stars}</span>
-                 <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-40">Stars</span>
+                 <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-40">{tFeed.stars}</span>
               </div>
            </div>
            <div className="px-4 py-2 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl flex items-center gap-3">
               <Users size={14} className="text-[var(--accent)]" />
               <div className="flex flex-col">
                  <span className="text-[14px] font-black text-[var(--text-primary)] leading-none">{stats.followers}</span>
-                 <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-40">Followers</span>
+                 <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-secondary)] opacity-40">{tFeed.followers}</span>
               </div>
            </div>
         </div>
@@ -285,15 +286,15 @@ export default function GitHubFeed() {
 
 
       <div className="mt-12 p-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
-         <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">Live GitHub data from public repositories</p>
+         <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">{tFeed.liveData}</p>
          <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
                <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-               <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">Push Events</span>
+               <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">{tFeed.pushEvents}</span>
             </div>
             <div className="flex items-center gap-2">
                <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-               <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">Metadata Sync</span>
+               <span className="text-[9px] font-black text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">{tFeed.metadataSync}</span>
             </div>
          </div>
       </div>
