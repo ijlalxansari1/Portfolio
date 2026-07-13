@@ -24,12 +24,28 @@ export default function LanguageSkills() {
   const [duoLoading, setDuoLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const updateAdminData = () => {
-      const storedLangs = localStorage.getItem("admin-languages");
-      if (storedLangs) setAdminLangs(JSON.parse(storedLangs));
+    const updateAdminData = async () => {
+      try {
+        const resLangs = await fetch("/api/data/admin?key=admin-languages");
+        if (resLangs.ok) {
+          const { data } = await resLangs.json();
+          if (data && data.length > 0) setAdminLangs(data);
+        }
+      } catch (err) {
+        const storedLangs = localStorage.getItem("admin-languages");
+        if (storedLangs) setAdminLangs(JSON.parse(storedLangs));
+      }
 
-      const storedPractices = localStorage.getItem("admin-practices");
-      if (storedPractices) setPractices(JSON.parse(storedPractices));
+      try {
+        const resPrac = await fetch("/api/data/admin?key=admin-practices");
+        if (resPrac.ok) {
+          const { data } = await resPrac.json();
+          if (data && data.length > 0) setPractices(data);
+        }
+      } catch (err) {
+        const storedPractices = localStorage.getItem("admin-practices");
+        if (storedPractices) setPractices(JSON.parse(storedPractices));
+      }
     };
 
     updateAdminData();

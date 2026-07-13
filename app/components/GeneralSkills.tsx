@@ -67,29 +67,61 @@ export default function GeneralSkills() {
   }, [language]);
 
   useEffect(() => {
-    const handleUpdate = () => {
-      const adminGroups = localStorage.getItem("admin-skills-groups");
-      if (adminGroups) {
-          const parsed = JSON.parse(adminGroups);
-          parsed.forEach((group: any) => {
-              if (group.title === "Data Core") group.icon = <Database size={18} className="text-blue-400" />;
-              if (group.title === "Linguistic") group.icon = <Globe size={18} className="text-[var(--accent)]" />;
-          });
-          setGroups(parsed);
+    const handleUpdate = async () => {
+      try {
+        const resGroups = await fetch("/api/data/admin?key=admin-skills-groups");
+        if (resGroups.ok) {
+            const { data } = await resGroups.json();
+            if (data && data.length > 0) {
+              data.forEach((group: any) => {
+                  if (group.title === "Data Core") group.icon = <Database size={18} className="text-blue-400" />;
+                  if (group.title === "Linguistic") group.icon = <Globe size={18} className="text-[var(--accent)]" />;
+              });
+              setGroups(data);
+            }
+        }
+      } catch (err) {
+        const adminGroups = localStorage.getItem("admin-skills-groups");
+        if (adminGroups) {
+            const parsed = JSON.parse(adminGroups);
+            parsed.forEach((group: any) => {
+                if (group.title === "Data Core") group.icon = <Database size={18} className="text-blue-400" />;
+                if (group.title === "Linguistic") group.icon = <Globe size={18} className="text-[var(--accent)]" />;
+            });
+            setGroups(parsed);
+        }
       }
       
-      const adminPractices = localStorage.getItem("admin-skills-practices");
-      if (adminPractices) {
-          const parsed = JSON.parse(adminPractices);
-          parsed.forEach((p: any) => {
-              if (p.title === "Pipeline Design") p.icon = <Zap size={16} className="text-yellow-400" />;
-              if (p.title === "Bias Auditing") p.icon = <ShieldCheck size={16} className="text-blue-400" />;
-              if (p.title === "Audit Logging") p.icon = <Activity size={16} className="text-red-400" />;
-              if (p.title === "XAI / SHAP") p.icon = <Search size={16} className="text-emerald-400" />;
-              if (p.title === "API Gateway") p.icon = <Lock size={16} className="text-purple-400" />;
-              if (p.title === "Data Quality") p.icon = <CheckCircle2 size={16} className="text-[var(--accent)]" />;
-          });
-          setPracticeList(parsed);
+      try {
+        const resPractices = await fetch("/api/data/admin?key=admin-skills-practices");
+        if (resPractices.ok) {
+            const { data } = await resPractices.json();
+            if (data && data.length > 0) {
+              data.forEach((p: any) => {
+                  if (p.title === "Pipeline Design") p.icon = <Zap size={16} className="text-yellow-400" />;
+                  if (p.title === "Bias Auditing") p.icon = <ShieldCheck size={16} className="text-blue-400" />;
+                  if (p.title === "Audit Logging") p.icon = <Activity size={16} className="text-red-400" />;
+                  if (p.title === "XAI / SHAP") p.icon = <Search size={16} className="text-emerald-400" />;
+                  if (p.title === "API Gateway") p.icon = <Lock size={16} className="text-purple-400" />;
+                  if (p.title === "Data Quality") p.icon = <CheckCircle2 size={16} className="text-[var(--accent)]" />;
+              });
+              setPracticeList(data);
+            }
+        }
+      } catch (err) {
+        const adminPractices = localStorage.getItem("admin-skills-practices");
+        if (adminPractices) {
+            const parsed = JSON.parse(adminPractices);
+            parsed.forEach((p: any) => {
+                if (p.title === "Pipeline Design") p.icon = <Zap size={16} className="text-yellow-400" />;
+                if (p.title === "Bias Auditing") p.icon = <ShieldCheck size={16} className="text-blue-400" />;
+                if (p.title === "Audit Logging") p.icon = <Activity size={16} className="text-red-400" />;
+                if (p.title === "XAI / SHAP") p.icon = <Search size={16} className="text-emerald-400" />;
+                if (p.title === "API Gateway") p.icon = <Lock size={16} className="text-purple-400" />;
+                if (p.title === "Data Quality") p.icon = <CheckCircle2 size={16} className="text-[var(--accent)]" />;
+            });
+            setPracticeList(parsed);
+        }
       }
     };
     handleUpdate();

@@ -31,26 +31,40 @@ export default function ToolStack() {
   const [tools, setTools] = useState(language === "de" ? defaultTools_DE : defaultTools_EN);
 
   useEffect(() => {
-    const handleUpdate = () => {
-      const adminData = localStorage.getItem("admin-skills");
-      if (adminData) {
-        const parsed = JSON.parse(adminData);
-        if (parsed.tools && parsed.tools.length > 0) {
-          const mapped = parsed.tools.map((t: any) => {
-             const fallbackMockups = [
-               "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800",
-               "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
-             ];
-             return {
-               ...t,
-               level: t.progress > 90 ? "Expert" : t.progress > 80 ? "Professional" : "Advanced",
-               desc: t.desc || "Custom tool entry from admin",
-               mockup: t.mockup || fallbackMockups[Math.floor(Math.random()*fallbackMockups.length)],
-               link: t.link || "#"
-             };
-          });
-          setTools(mapped);
+    const handleUpdate = async () => {
+      let toolsData = null;
+      try {
+        const res = await fetch("/api/data/admin?key=admin-skills");
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data.tools && data.tools.length > 0) {
+            toolsData = data;
+          }
         }
+      } catch (err) {
+        console.error("Failed to fetch tools from DB");
+      }
+
+      if (!toolsData) {
+        const adminData = localStorage.getItem("admin-skills");
+        if (adminData) toolsData = JSON.parse(adminData);
+      }
+
+      if (toolsData && toolsData.tools && toolsData.tools.length > 0) {
+        const mapped = toolsData.tools.map((t: any) => {
+           const fallbackMockups = [
+             "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800",
+             "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+           ];
+           return {
+             ...t,
+             level: t.progress > 90 ? "Expert" : t.progress > 80 ? "Professional" : "Advanced",
+             desc: t.desc || "Custom tool entry from admin",
+             mockup: t.mockup || fallbackMockups[Math.floor(Math.random()*fallbackMockups.length)],
+             link: t.link || "#"
+           };
+        });
+        setTools(mapped);
       }
     };
     handleUpdate();
