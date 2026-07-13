@@ -1987,7 +1987,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                          </div>
                        </div>
                      </div>
-                   </motion.div>
+                   </div>
+                 </motion.div>
                 )}
 
                 {/* ── TESTIMONIALS TAB ── */}
