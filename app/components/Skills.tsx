@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "../context/LanguageContext";
+import { useState, useEffect } from "react";
 
 const CORE_STACK = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
@@ -115,6 +116,39 @@ const CLOUD_PLATFORMS_DE = [
 
 export default function Skills() {
   const { language } = useLanguage();
+  
+  const [dynamicCoreStack, setDynamicCoreStack] = useState<any[] | null>(null);
+  const [dynamicCloudPlatforms, setDynamicCloudPlatforms] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    const loadDynamic = async () => {
+      try {
+        const res = await fetch('/api/data/admin?key=admin-core-stack');
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data.length > 0) setDynamicCoreStack(data);
+        }
+      } catch (e) {
+        const stored = localStorage.getItem('admin-core-stack');
+        if (stored) setDynamicCoreStack(JSON.parse(stored));
+      }
+
+      try {
+        const res = await fetch('/api/data/admin?key=admin-cloud-platforms');
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data.length > 0) setDynamicCloudPlatforms(data);
+        }
+      } catch (e) {
+        const stored = localStorage.getItem('admin-cloud-platforms');
+        if (stored) setDynamicCloudPlatforms(JSON.parse(stored));
+      }
+    };
+    loadDynamic();
+    window.addEventListener("admin-updated", loadDynamic);
+    return () => window.removeEventListener("admin-updated", loadDynamic);
+  }, []);
+
   return (
     <section id="skills" className="w-full space-y-8" aria-label="Engineering Stack">
       
@@ -133,9 +167,9 @@ export default function Skills() {
         </p>
       </div>
 
-      {/* ── Core Stack (Bento Grid) ── */}
+      {/* ⚡ Core Stack (Bento Grid) ⚡ */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {(language === "de" ? CORE_STACK_DE : CORE_STACK).map((tech: any, i) => (
+        {(dynamicCoreStack || (language === "de" ? CORE_STACK_DE : CORE_STACK)).map((tech: any, i: number) => (
           <motion.div
             key={tech.name}
             initial={{ opacity: 0, y: 20 }}
@@ -219,7 +253,7 @@ export default function Skills() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {(language === "de" ? CLOUD_PLATFORMS_DE : CLOUD_PLATFORMS).map((platform, i) => (
+          {(dynamicCloudPlatforms || (language === "de" ? CLOUD_PLATFORMS_DE : CLOUD_PLATFORMS)).map((platform: any, i: number) => (
             <motion.div
               key={platform.shortName}
               initial={{ opacity: 0, y: 20 }}

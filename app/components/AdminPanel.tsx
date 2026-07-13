@@ -37,8 +37,35 @@ const defaultCategories = {
 };
 
 const defaultTestimonials = [
-  { id: 1, name: "Dr. Sarah Chen", role: "AI Research Lead", company: "DataTalks.Club", quote: "Ijlal's work on ethical data systems is truly impressive. His LOKI protocol sets a new standard.", avatar: "", status: "Published" },
-  { id: 2, name: "Marcus Weber", role: "Senior Data Engineer", company: "Freelance Client", quote: "Exceptional data pipeline architecture. Delivered ahead of schedule with production-grade quality.", avatar: "", status: "Published" }
+  { name: "Sarah Jenkins", role: "VP of Engineering", company: "TechFlow Solutions", text: "Ijlal architected our entire data pipeline from scratch. The performance gains were immediate, and the cost reduction was a massive bonus.", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200", rating: 5 },
+  { name: "Marcus Chen", role: "Lead Data Scientist", company: "NeuroAnalytics", text: "Finally, a data engineer who actually understands what data scientists need. The clean, documented assets he delivered accelerated our modeling by weeks.", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200", rating: 5 },
+  { name: "Elena Rodriguez", role: "CTO", company: "FinEdge", text: "The compliance and audit logging frameworks he built into our DWH saved us during our ISO certification. Absolute professional.", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200", rating: 5 }
+];
+
+const defaultCoreStack = [
+  { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
+  { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primary Database", desc: "Relational data modeling, indexing, and robust ACID storage.", tags: ["ACID", "Relational", "JSONB"] },
+  { name: "Dagster", icon: "", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
+  { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerization", desc: "Consistent environments and reproducible builds.", tags: ["DevOps", "Microservices", "Deployment"] },
+  { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API Framework", desc: "High-performance data delivery and REST API development.", tags: ["Async", "REST", "Endpoints"] },
+  { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
+  { name: "Power BI", icon: "", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
+  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React framework for building fast data applications.", tags: ["React", "SSR", "UI"] },
+];
+
+const defaultCloudPlatforms = [
+  {
+    name: "Amazon Web Services", shortName: "AWS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg", desc: "Cloud infrastructure for scalable data pipelines and storage.", status: "used",
+    services: [{ name: "S3", desc: "Object storage for data lakes" }, { name: "Glue", desc: "Managed ETL service" }, { name: "RDS", desc: "Managed relational databases" }, { name: "Lambda", desc: "Serverless compute" }]
+  },
+  {
+    name: "Microsoft Azure", shortName: "Azure", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg", desc: "Enterprise cloud platform for data integration and analytics.", status: "exploring",
+    services: [{ name: "Data Factory", desc: "Orchestration & integration" }, { name: "Blob Storage", desc: "Scalable object storage" }, { name: "Azure SQL", desc: "Managed SQL databases" }, { name: "Synapse", desc: "Unified analytics workspace" }]
+  },
+  {
+    name: "Google Cloud Platform", shortName: "GCP", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg", desc: "Data-first cloud with powerful analytics and ML capabilities.", status: "exploring",
+    services: [{ name: "BigQuery", desc: "Serverless data warehouse" }, { name: "Cloud Storage", desc: "Unified object storage" }, { name: "Cloud Functions", desc: "Event-driven compute" }, { name: "Dataflow", desc: "Stream & batch processing" }]
+  }
 ];
 
 const defaultLanguages = [
@@ -112,6 +139,13 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
   const [keystats, setKeystats] = useState<any>({ projects: 6, hours: 1000, taught: 100 });
   const [bgMusic, setBgMusic] = useState<any[]>([]);
+  
+  const [coreStack, setCoreStack] = useState<any[]>(defaultCoreStack);
+  const [cloudPlatforms, setCloudPlatforms] = useState<any[]>(defaultCloudPlatforms);
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -127,6 +161,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setSubmissions(get("admin-submissions", []));
           setRadarSkills(get("admin-skills-radar", defaultRadar));
           setToolSkills(get("admin-skills", { tools: defaultTools }).tools);
+          setCoreStack(get("admin-core-stack", defaultCoreStack));
+          setCloudPlatforms(get("admin-cloud-platforms", defaultCloudPlatforms));
           setKnowledge(get("admin-knowledge", [
             "Distributed Systems", "Cloud Data Warehousing", "Machine Learning Ops",
             "Real-time Data Streaming", "ETL/ELT Architecture", "Data Governance",
@@ -1822,28 +1858,74 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                          </div>
                        </div>
 
-                       {/* Engineering Practices Column */}
-                       <div className="space-y-8">
-                         <div className="flex justify-between items-center">
-                           <h3 className="text-[12px] font-black text-blue-400 uppercase tracking-[4px]">Practices</h3>
-                           <button onClick={() => {
-                             const updated = [...practices, "New Practice"];
-                             setPractices(updated);
-                             saveData("admin-practices", updated);
-                           }} className="w-10 h-10 bg-blue-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
+                       {/* Engineering Practices Column & Core/Cloud Logos */}
+                       <div className="space-y-12">
+                         <div className="space-y-8">
+                           <div className="flex justify-between items-center">
+                             <h3 className="text-[12px] font-black text-blue-400 uppercase tracking-[4px]">Practices</h3>
+                             <button onClick={() => {
+                               const updated = [...practices, "New Practice"];
+                               setPractices(updated);
+                               saveData("admin-practices", updated);
+                             }} className="w-10 h-10 bg-blue-500 text-black rounded-xl flex items-center justify-center hover:scale-110 transition-all"><Plus size={20} /></button>
+                           </div>
+                           <div className="space-y-4">
+                             {practices.map((p, i) => (
+                               <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl group">
+                                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                                 <input type="text" value={p} onChange={e => { const n = [...practices]; n[i] = e.target.value; setPractices(n); }} onBlur={() => saveData("admin-practices", practices)} className="bg-transparent text-white font-medium text-[13px] outline-none flex-1" />
+                                 <button onClick={() => {
+                                   const updated = practices.filter((_, idx) => idx !== i);
+                                   setPractices(updated);
+                                   saveData("admin-practices", updated);
+                                 }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={16} /></button>
+                               </div>
+                             ))}
+                           </div>
                          </div>
-                         <div className="space-y-4">
-                           {practices.map((p, i) => (
-                             <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl group">
-                               <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                               <input type="text" value={p} onChange={e => { const n = [...practices]; n[i] = e.target.value; setPractices(n); }} onBlur={() => saveData("admin-practices", practices)} className="bg-transparent text-white font-medium text-[13px] outline-none flex-1" />
-                               <button onClick={() => {
-                                 const updated = practices.filter((_, idx) => idx !== i);
-                                 setPractices(updated);
-                                 saveData("admin-practices", updated);
-                               }} className="text-red-400 opacity-0 group-hover:opacity-100 transition-all shrink-0"><Trash size={14} /></button>
-                             </div>
-                           ))}
+
+                         {/* Core Stack (Engineering Stack) Logos */}
+                         <div className="space-y-8">
+                           <div className="flex justify-between items-center">
+                             <h3 className="text-[12px] font-black text-purple-400 uppercase tracking-[4px]">Engineering Stack Logos</h3>
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                             {coreStack.map((stack, i) => (
+                               <div key={i} className="flex flex-col items-center gap-2 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                 <span className="text-[11px] font-bold text-white/70">{stack.name}</span>
+                                 <div className="w-12 h-12">
+                                   <ImageUpload 
+                                      onUpload={(url) => { const n = [...coreStack]; n[i].icon = url; setCoreStack(n); saveData("admin-core-stack", n); }} 
+                                      defaultImage={stack.icon}
+                                      className="h-full w-full !p-1"
+                                      iconOnly={true}
+                                   />
+                                 </div>
+                               </div>
+                             ))}
+                           </div>
+                         </div>
+
+                         {/* Cloud Platforms (Infrastructure Layer) Logos */}
+                         <div className="space-y-8">
+                           <div className="flex justify-between items-center">
+                             <h3 className="text-[12px] font-black text-orange-400 uppercase tracking-[4px]">Infrastructure Layer Logos</h3>
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                             {cloudPlatforms.map((platform, i) => (
+                               <div key={i} className="flex flex-col items-center gap-2 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                 <span className="text-[11px] font-bold text-white/70 text-center">{platform.name}</span>
+                                 <div className="w-12 h-12">
+                                   <ImageUpload 
+                                      onUpload={(url) => { const n = [...cloudPlatforms]; n[i].icon = url; setCloudPlatforms(n); saveData("admin-cloud-platforms", n); }} 
+                                      defaultImage={platform.icon}
+                                      className="h-full w-full !p-1"
+                                      iconOnly={true}
+                                   />
+                                 </div>
+                               </div>
+                             ))}
+                           </div>
                          </div>
                        </div>
                      </div>
