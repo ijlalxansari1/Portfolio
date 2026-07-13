@@ -302,7 +302,7 @@ export default function Skills() {
                   Core Services
                 </span>
                 <div className="grid grid-cols-2 gap-2">
-                  {platform.services.map((svc) => (
+                  {platform.services.map((svc: any) => (
                     <div
                       key={svc.name}
                       className="px-2.5 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-lg group-hover:border-[var(--accent)]/15 transition-colors"
