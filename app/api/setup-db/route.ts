@@ -44,7 +44,7 @@ export async function GET(request: Request) {
 
     // Create default admin user if it doesn't exist
     const adminUser = process.env.ADMIN_USER || 'admin';
-    const adminPassword = process.env.ADMIN_SECRET || 'changeme123';
+    const adminPassword = process.env.ADMIN_SECRET || '123456';
 
     const { rowCount } = await sql`SELECT 1 FROM admins WHERE username = ${adminUser}`;
 
