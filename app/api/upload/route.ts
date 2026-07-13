@@ -38,6 +38,17 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // FIX for Vercel ephemeral filesystem: 
+    // Convert images under 10MB to Base64 so they can be saved to the database natively
+    if (file.type.startsWith("image/") && file.size < 10 * 1024 * 1024) {
+      const base64Str = `data:${file.type};base64,${buffer.toString("base64")}`;
+      return NextResponse.json({ 
+        success: true, 
+        url: base64Str,
+        filename: file.name 
+      });
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");

@@ -13,78 +13,66 @@ import { translations } from "../context/translations";
 const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean; tech?: string[] }> = {
   1: {
     problem: {
-      en: "Reliable data pipelines with clear lineage and auditability",
-      de: "Zuverlässige Datenpipelines mit klarer Lineage und Nachvollziehbarkeit"
+      en: "Need a robust ETL pipeline to extract and transform UEFA Champions League data",
+      de: "Bedarf an einer robusten ETL-Pipeline zum Extrahieren und Transformieren von UEFA Champions League-Daten"
     },
     outcome: {
-      en: "A traceable architecture designed for production and trust",
-      de: "Eine nachvollziehbare Architektur, entwickelt für Produktion und Vertrauen"
+      en: "Automated data pipeline with clear lineage and transformation steps",
+      de: "Automatisierte Datenpipeline mit klarer Lineage und Transformationsschritten"
     },
-    github: "https://github.com/ijlalxansari1",
+    github: "https://github.com/ijlalxansari1/ucl-etl-pipeline",
     featured: true,
-    tech: ["Python", "FastAPI", "SQL", "Docker", "ETL", "Automation"]
+    tech: ["Python", "SQL", "ETL", "Docker"]
   },
   2: {
     problem: {
-      en: "No structured path for self-taught data engineering practice",
-      de: "Kein strukturierter Weg für autodidaktische Data-Engineering-Praxis"
+      en: "Customer churn predicting required high-accuracy models to reduce attrition",
+      de: "Die Vorhersage der Kundenabwanderung erforderte hochgenaue Modelle, um die Fluktuation zu reduzieren"
     },
     outcome: {
-      en: "Interactive 20-hr curriculum on 80/20 principle, tracked live",
-      de: "Interaktives 20-Stunden-Curriculum nach dem 80/20-Prinzip, live verfolgt"
+      en: "Predictive ML & DL models accurately identifying at-risk customers",
+      de: "Prädiktive ML- und DL-Modelle zur genauen Identifizierung gefährdeter Kunden"
     },
-    demo: "https://dataden.vercel.app",
+    github: "https://github.com/ijlalxansari1/Predicting-Churn-using-ML-and-DL",
     featured: true,
-    tech: ["Next.js", "Dashboards"]
+    tech: ["Python", "Machine Learning", "Deep Learning"]
   },
   3: {
     problem: {
-      en: "ETL pipelines lacking automated testing and lineage docs",
-      de: "ETL-Pipelines ohne automatisierte Tests und Lineage-Dokumentation"
+      en: "Processing and normalizing raw banking datasets efficiently",
+      de: "Effiziente Verarbeitung und Normalisierung von Rohdaten aus dem Bankwesen"
     },
     outcome: {
-      en: "Production-grade ELT — every model tested, every transform documented",
-      de: "Produktionsreife ELT — jedes Modell getestet, jede Transformation dokumentiert"
+      en: "Reliable ETL processes tailored for banking data structures",
+      de: "Zuverlässige ETL-Prozesse, zugeschnitten auf Bankdatenstrukturen"
     },
-    github: "https://github.com/ijlalxansari1",
-    tech: ["SQL", "ETL", "Python", "Automation", "Docker"]
+    github: "https://github.com/ijlalxansari1/Bank_ETL",
+    tech: ["Python", "SQL", "ETL", "Automation"]
   },
   4: {
     problem: {
-      en: "ML models shipped without fairness or demographic audits",
-      de: "ML-Modelle ohne Fairness- oder demografische Audits ausgeliefert"
+      en: "Lack of structured, open-domain JSON data for World Cup matches",
+      de: "Mangel an strukturierten, quelloffenen JSON-Daten für WM-Spiele"
     },
     outcome: {
-      en: "Automated Fairlearn + SHAP reports exportable to PDF",
-      de: "Automatisierte Fairlearn + SHAP Berichte, exportierbar als PDF"
+      en: "Free, open public domain football data covering multiple world cups in JSON",
+      de: "Kostenlose, öffentliche Fußballdaten für mehrere Weltmeisterschaften als JSON"
     },
-    github: "https://github.com/ijlalxansari1",
+    github: "https://github.com/ijlalxansari1/worldcup.json",
     featured: true,
-    tech: ["Python", "Automation", "Dashboards"]
+    tech: ["JSON", "Open Data", "API"]
   },
   5: {
     problem: {
-      en: "Multi-tenant APIs with poor auth and no structured logging",
-      de: "Mandantenfähige APIs mit schlechter Auth und ohne strukturierte Protokollierung"
+      en: "Tracking and organizing a comprehensive data engineering learning path",
+      de: "Verfolgung und Organisation eines umfassenden Lernpfads für Data Engineering"
     },
     outcome: {
-      en: "JWT + RBAC + rate-limiting + structured logs from day one",
-      de: "JWT + RBAC + Rate-Limiting + strukturierte Protokolle von Tag eins an"
+      en: "A structured journey focusing on core data engineering principles",
+      de: "Eine strukturierte Reise mit Fokus auf zentrale Data-Engineering-Prinzipien"
     },
-    github: "https://github.com/ijlalxansari1",
-    tech: ["FastAPI", "APIs", "Python", "Docker"]
-  },
-  6: {
-    problem: {
-      en: "Analytics dashboards needing sub-second OLAP on large datasets",
-      de: "Analyse-Dashboards, die Sub-Sekunden-OLAP für große Datensätze benötigen"
-    },
-    outcome: {
-      en: "Self-hosted DuckDB in-process OLAP on million-row data — no cloud cost",
-      de: "Selbstgehostetes DuckDB In-Process OLAP für Millionen-Zeilen-Daten — keine Cloud-Kosten"
-    },
-    github: "https://github.com/ijlalxansari1",
-    tech: ["Next.js", "Dashboards", "SQL"]
+    github: "https://github.com/ijlalxansari1/Data-engineering-journey",
+    tech: ["Data Engineering", "Roadmap", "Python"]
   },
 };
 
@@ -94,60 +82,55 @@ export default function Projects() {
 
   const defaultProjects = useMemo(() => [
     {
-      id: 1, title: language === "en" ? "TraceFlow" : "TraceFlow",
-      tag: "Python",
-      tech: ["Python", "FastAPI", "SQL", "Docker", "ETL", "Automation"],
-      image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-      description: language === "en"
-        ? "A traceable data system focused on lineage, governance, and reliable decision support."
-        : "Ein nachvollziehbares Datensystem mit Fokus auf Lineage, Governance und zuverlässige Entscheidungsunterstützung.",
-      alt: "TraceFlow - traceable data architecture by Ijlal Ansari",
-    },
-    {
-      id: 2, title: "Data Engineering Tracker", tag: "Next.js",
-      tech: ["Next.js", "Dashboards"],
-      image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800",
-      description: language === "en"
-        ? "Interactive 20-hour curriculum tracker built on the 80/20 learning principle"
-        : "Interaktiver Tracker für ein 20-stündiges Curriculum.",
-      alt: "Data Engineering Curriculum Tracker",
-    },
-    {
-      id: 3, title: "ETL Pipeline — dbt + Dagster", tag: "SQL",
-      tech: ["SQL", "ETL", "Python", "Automation", "Docker"],
+      id: 1, title: "ucl-etl-pipeline",
+      tag: "ETL",
+      tech: ["Python", "SQL", "Docker", "ETL"],
       image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800",
       description: language === "en"
-        ? "Production-grade ELT pipeline with automated testing and lineage documentation"
-        : "End-to-End ELT-Pipeline mit dbt Core und Dagster.",
-      alt: "ETL Pipeline with dbt and Dagster",
+        ? "ETL Pipeline to process UEFA Champions League data."
+        : "ETL-Pipeline zur Verarbeitung von UEFA Champions League-Daten.",
+      alt: "ucl-etl-pipeline",
     },
     {
-      id: 4, title: "Bias Audit System", tag: "Python",
-      tech: ["Python", "Automation", "Dashboards"],
+      id: 2, title: "Predicting Churn using ML and DL", 
+      tag: "Machine Learning",
+      tech: ["Python", "Machine Learning", "Deep Learning"],
       image: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&q=80&w=800",
       description: language === "en"
-        ? "Automated ML fairness auditing using Fairlearn and SHAP with PDF report export"
-        : "Automatisiertes Fairness-Audit-Modul mit Fairlearn und SHAP.",
-      alt: "Bias Audit System using Fairlearn and SHAP",
+        ? "Predicting customer churn using Machine Learning and Deep Learning techniques."
+        : "Vorhersage der Kundenabwanderung mit maschinellem Lernen und Deep Learning.",
+      alt: "Predicting Churn using ML and DL",
     },
     {
-      id: 5, title: "FastAPI Data Gateway", tag: "FastAPI",
-      tech: ["FastAPI", "APIs", "Python", "Docker"],
+      id: 3, title: "Bank ETL", 
+      tag: "ETL",
+      tech: ["Python", "SQL", "ETL"],
       image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800",
       description: language === "en"
-        ? "Secure multi-tenant API with JWT auth, RBAC, rate limiting, and structured logging"
-        : "Sicheres REST-API-Gateway mit JWT-Authentifizierung.",
-      alt: "FastAPI Data Gateway",
+        ? "Data pipeline for extracting and loading banking data."
+        : "Datenpipeline zum Extrahieren und Laden von Bankdaten.",
+      alt: "Bank ETL",
     },
     {
-      id: 6, title: "Analytics Dashboard", tag: "Next.js",
-      tech: ["Next.js", "Dashboards", "SQL"],
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      id: 4, title: "worldcup.json", 
+      tag: "Open Data",
+      tech: ["JSON", "Open Data", "API"],
+      image: "https://images.unsplash.com/photo-1518605368461-1e125222048e?auto=format&fit=crop&q=80&w=800",
       description: language === "en"
-        ? "Self-hosted analytics backed by DuckDB for in-process OLAP on million-row datasets"
-        : "Echtzeit-Analyse-Dashboard mit DuckDB.",
-      alt: "Analytics Dashboard powered by DuckDB",
+        ? "Free open public domain football data for the world cups in JSON."
+        : "Kostenlose öffentliche Fußballdaten für die Weltmeisterschaften als JSON.",
+      alt: "worldcup.json",
     },
+    {
+      id: 5, title: "Data Engineering Journey", 
+      tag: "Education",
+      tech: ["Data Engineering", "Roadmap", "Python"],
+      image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800",
+      description: language === "en"
+        ? "Repo focusing on data engineering learning path."
+        : "Repository mit Fokus auf den Data-Engineering-Lernpfad.",
+      alt: "Data Engineering Journey",
+    }
   ], [language]);
 
   const filters = [t.filter_all, "ETL", "Automation", "Dashboards", "APIs", "Python", "SQL", "Docker"];
