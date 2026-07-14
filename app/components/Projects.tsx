@@ -340,7 +340,7 @@ function ProjectCard({
   project, meta, featured, index, onOpen, onOpenArch, viewLabel,
 }: {
   project: any;
-  meta?: { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean };
+  meta?: { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean; metric?: string };
   featured: boolean;
   index: number;
   onOpen: () => void;
@@ -500,7 +500,7 @@ function HeroProjectCard({
   project, meta, onOpen, onOpenArch, viewLabel,
 }: {
   project: any;
-  meta?: { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean };
+  meta?: { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean; metric?: string };
   onOpen: () => void;
   onOpenArch: () => void;
   viewLabel: string;
