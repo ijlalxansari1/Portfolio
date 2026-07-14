@@ -16,9 +16,9 @@ import ImageUpload from "./ImageUpload";
 
 // ── DEFAULT DATA CONSTANTS ──
 const defaultProjects = [
-  { id: 1, title: "DataDen Platform", tag: "Python", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800", description: "Open-source ethical data analysis platform with a 10-stage analytical pipeline.", status: "Active" },
-  { id: 2, title: "Data Engineering Tracker", tag: "Next.js", image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800", description: "Interactive 20-hour data engineering curriculum tracker built on the 80/20 principle.", status: "Active" },
-  { id: 3, title: "ETL Pipeline — dbt + Dagster", tag: "SQL", image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", description: "End-to-end ELT pipeline using dbt Core and Dagster for orchestration.", status: "Active" }
+  { id: 1, title: "DataDen Platform", tag: "Python", image: "/data_pipeline_arch.png", description: "Open-source ethical data analysis platform with a 10-stage analytical pipeline.", status: "Active" },
+  { id: 2, title: "Data Engineering Tracker", tag: "Next.js", image: "/cloud_analytics_arch.png", description: "Interactive 20-hour data engineering curriculum tracker built on the 80/20 principle.", status: "Active" },
+  { id: 3, title: "ETL Pipeline — dbt + Dagster", tag: "SQL", image: "/ml_system_arch.png", description: "End-to-end ELT pipeline using dbt Core and Dagster for orchestration.", status: "Active" }
 ];
 
 const defaultPosts = [

@@ -116,19 +116,19 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
               <div className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ backgroundColor: getStatusColor() }} />
             )}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)]">
-            {getStatusLabel()}
+          <span className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)]">
+            {availability.status.toLowerCase().includes('available') ? "OPEN TO DATA ENGINEERING ROLES" : getStatusLabel()}
           </span>
         </div>
 
         <div className="flex gap-2.5 lg:gap-3 mb-6">
           {[
-            { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
-            { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
-            { Icon: Github, href: "https://github.com/ijlalxansari1" },
-            { Icon: WhatsappIcon, href: "https://wa.me/93711880807" }
-          ].map(({ Icon, href }, i) => (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 hover:scale-110 transition-all shadow-md">
+            { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0", name: "LinkedIn" },
+            { Icon: Mail, href: "mailto:ansariijlal90@gmail.com", name: "Email" },
+            { Icon: Github, href: "https://github.com/ijlalxansari1", name: "GitHub" },
+            { Icon: WhatsappIcon, href: "https://wa.me/93711880807", name: "WhatsApp" }
+          ].map(({ Icon, href, name }, i) => (
+            <a key={i} href={href} aria-label={name} target="_blank" rel="noopener noreferrer" className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 hover:scale-110 transition-all shadow-md">
               <Icon size={16} />
             </a>
           ))}

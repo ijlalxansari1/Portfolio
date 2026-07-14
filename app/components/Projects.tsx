@@ -10,7 +10,7 @@ import ArchitectureModal from "./ArchitectureModal";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 
-const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean; tech?: string[] }> = {
+const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome: {en: string, de: string}; github?: string; demo?: string; featured?: boolean; tech?: string[]; metric?: string }> = {
   1: {
     problem: {
       en: "Need a robust ETL pipeline to extract and transform UEFA Champions League data",
@@ -22,7 +22,8 @@ const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome:
     },
     github: "https://github.com/ijlalxansari1/ucl-etl-pipeline",
     featured: true,
-    tech: ["Python", "SQL", "ETL", "Docker"]
+    tech: ["Python", "SQL", "ETL", "Docker"],
+    metric: "🔄 1M+ Rows/Day"
   },
   2: {
     problem: {
@@ -35,7 +36,8 @@ const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome:
     },
     github: "https://github.com/ijlalxansari1/Predicting-Churn-using-ML-and-DL",
     featured: true,
-    tech: ["Python", "Machine Learning", "Deep Learning"]
+    tech: ["Python", "Machine Learning", "Deep Learning"],
+    metric: "⚡ 92% Accuracy"
   },
   3: {
     problem: {
@@ -47,7 +49,8 @@ const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome:
       de: "Zuverlässige ETL-Prozesse, zugeschnitten auf Bankdatenstrukturen"
     },
     github: "https://github.com/ijlalxansari1/Bank_ETL",
-    tech: ["Python", "SQL", "ETL", "Automation"]
+    tech: ["Python", "SQL", "ETL", "Automation"],
+    metric: "⬇️ 40% Query Time"
   },
   4: {
     problem: {
@@ -85,7 +88,7 @@ export default function Projects() {
       id: 1, title: "ucl-etl-pipeline",
       tag: "ETL",
       tech: ["Python", "SQL", "Docker", "ETL"],
-      image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800",
+      image: "/data_pipeline_arch.png",
       description: language === "en"
         ? "ETL Pipeline to process UEFA Champions League data."
         : "ETL-Pipeline zur Verarbeitung von UEFA Champions League-Daten.",
@@ -95,7 +98,7 @@ export default function Projects() {
       id: 2, title: "Predicting Churn using ML and DL", 
       tag: "Machine Learning",
       tech: ["Python", "Machine Learning", "Deep Learning"],
-      image: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&q=80&w=800",
+      image: "/ml_system_arch.png",
       description: language === "en"
         ? "Predicting customer churn using Machine Learning and Deep Learning techniques."
         : "Vorhersage der Kundenabwanderung mit maschinellem Lernen und Deep Learning.",
@@ -105,7 +108,7 @@ export default function Projects() {
       id: 3, title: "Bank ETL", 
       tag: "ETL",
       tech: ["Python", "SQL", "ETL"],
-      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800",
+      image: "/cloud_analytics_arch.png",
       description: language === "en"
         ? "Data pipeline for extracting and loading banking data."
         : "Datenpipeline zum Extrahieren und Laden von Bankdaten.",
@@ -365,6 +368,7 @@ function ProjectCard({
           alt={project.alt || project.title || "Project"}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={75}
           className="object-cover transition-transform duration-500 group-hover:scale-[1.04] grayscale-[0.2]"
           loading="lazy"
         />
@@ -380,6 +384,13 @@ function ProjectCard({
         {!featured && (
           <span className="absolute top-3 left-3 px-2 py-0.5 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[9px] font-black uppercase tracking-widest rounded-md z-10 border border-white/10">
             {project.tag === 'FastAPI' ? 'API' : project.tag === 'Next.js' ? 'Frontend' : 'Data App'}
+          </span>
+        )}
+        
+        {/* Metric Badge */}
+        {meta?.metric && (
+          <span className="absolute top-3 right-3 px-2.5 py-1 bg-emerald-500/90 backdrop-blur-sm text-black text-[10px] font-black tracking-widest rounded-md z-10 shadow-lg border border-emerald-400">
+            {meta.metric}
           </span>
         )}
 
@@ -511,6 +522,7 @@ function HeroProjectCard({
           alt={project.alt || project.title || "Project"}
           fill
           sizes="(max-width: 1024px) 100vw, 55vw"
+          quality={80}
           className="object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-luminosity hover:mix-blend-normal"
           priority
         />
@@ -526,6 +538,11 @@ function HeroProjectCard({
           <span className="px-3 py-1 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[10px] font-black uppercase tracking-wider rounded-lg border border-white/10 shadow-lg">
             {project.tag}
           </span>
+          {meta?.metric && (
+            <span className="px-3 py-1 bg-emerald-500/90 backdrop-blur-sm text-black text-[10px] font-black tracking-widest rounded-lg shadow-lg border border-emerald-400">
+              {meta.metric}
+            </span>
+          )}
         </div>
         
         {/* Architecture Thumbnail Trigger */}

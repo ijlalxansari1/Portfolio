@@ -135,18 +135,21 @@ export default function Contact() {
             {status === "success" ? (
               <motion.div 
                 key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="flex flex-col items-center justify-center text-center py-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex flex-col items-center justify-center text-center p-10 md:p-14 bg-[var(--bg-secondary)] border border-[var(--accent)]/30 rounded-3xl shadow-[0_0_50px_rgba(var(--accent-rgb),0.1)] relative overflow-hidden"
               >
-                <div className="w-24 h-24 bg-[var(--accent)]/10 rounded-full flex items-center justify-center mb-6 border border-[var(--accent)]/20 shadow-[0_0_30px_rgba(var(--accent-rgb),0.2)]">
+                {/* Subtle background glow */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)]/10 to-transparent pointer-events-none" />
+                
+                <div className="w-24 h-24 bg-[var(--accent)]/10 rounded-full flex items-center justify-center mb-6 border border-[var(--accent)]/30 shadow-[0_0_30px_rgba(var(--accent-rgb),0.3)] relative z-10">
                   <CheckCircle2 size={48} className="text-[var(--accent)]" />
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] mb-4 tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] mb-4 tracking-tight relative z-10">
                   {language === 'en' ? "Message Sent Successfully!" : "Nachricht erfolgreich gesendet!"}
                 </h3>
-                <p className="text-[15px] text-[var(--text-secondary)] mb-10 max-w-md leading-relaxed">
+                <p className="text-[15px] text-[var(--text-secondary)] mb-10 max-w-md leading-relaxed relative z-10">
                   {language === 'en' 
                     ? `Thank you for reaching out, ${formData.name || "friend"}. I've received your message and will get back to you as soon as possible.` 
                     : `Vielen Dank für Ihre Nachricht, ${formData.name || "Freund"}. Ich habe Ihr Anliegen erhalten und werde mich so schnell wie möglich bei Ihnen melden.`}
@@ -157,7 +160,7 @@ export default function Contact() {
                     setStatus("idle");
                     setFormData({ name: "", email: "", subject: "", message: "" });
                   }}
-                  className="px-8 py-4 bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--accent)]/50 text-[var(--text-primary)] hover:text-[var(--accent)] font-black uppercase tracking-[0.2em] rounded-xl transition-all shadow-xl text-[12px]"
+                  className="px-8 py-4 bg-[var(--accent)] text-black hover:bg-[var(--accent)]/90 font-black uppercase tracking-[0.2em] rounded-xl transition-all shadow-xl text-[12px] hover:scale-105 hover:-translate-y-1 relative z-10"
                 >
                   {language === 'en' ? "Send Another Message" : "Neue Nachricht senden"}
                 </button>
@@ -174,8 +177,9 @@ export default function Contact() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.name}</label>
+                    <label htmlFor="user_name" className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.name}</label>
                     <input 
+                       id="user_name"
                        type="text" 
                        name="user_name"
                        placeholder="John Doe" 
@@ -185,8 +189,9 @@ export default function Contact() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.email}</label>
+                    <label htmlFor="user_email" className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.email}</label>
                     <input 
+                       id="user_email"
                        type="email" 
                        name="user_email"
                        placeholder="john@example.com" 
@@ -198,9 +203,10 @@ export default function Contact() {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.subject}</label>
+                  <label htmlFor="subject" className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.subject}</label>
                   <div className="relative group">
                     <select 
+                      id="subject"
                       name="subject"
                       value={formData.subject}
                       onChange={e => setFormData({ ...formData, subject: e.target.value })}
@@ -225,8 +231,9 @@ export default function Contact() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.message}</label>
+                  <label htmlFor="message" className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.message}</label>
                   <textarea 
+                    id="message"
                     name="message"
                     rows={6} 
                     placeholder={t.message_placeholder} 

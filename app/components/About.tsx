@@ -161,6 +161,40 @@ export default function About() {
               )}
             </AnimatePresence>
           </motion.div>
+
+          {/* Recruiter-Optimized TL;DR Tech Stack Ribbon */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            className="mt-8 relative flex overflow-hidden w-full max-w-[600px] border border-white/5 bg-white/[0.02] rounded-xl py-3 mask-image-fade"
+            style={{ WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}
+          >
+            <div className="flex w-max animate-marquee space-x-12 px-6">
+              {[
+                { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+                { name: "PostgreSQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
+                { name: "dbt", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg" },
+                { name: "Snowflake", src: "https://cdn.simpleicons.org/snowflake/white" },
+                { name: "Airflow", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg" },
+                { name: "FastAPI", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+                { name: "Next.js", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+                // Duplicate for infinite scroll
+                { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+                { name: "PostgreSQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
+                { name: "dbt", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg" },
+                { name: "Snowflake", src: "https://cdn.simpleicons.org/snowflake/white" },
+                { name: "Airflow", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg" },
+                { name: "FastAPI", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+                { name: "Next.js", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" }
+              ].map((tech, i) => (
+                <div key={i} className="flex items-center gap-2 shrink-0 filter grayscale hover:grayscale-0 transition-all duration-300">
+                  <Image src={tech.src} alt={tech.name} width={16} height={16} unoptimized className="object-contain" />
+                  <span className="text-[11px] font-black uppercase tracking-widest text-white/50">{tech.name}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
         {/* Visual Storytelling Section */}

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import {
   User, Dumbbell, Wrench, Briefcase, Landmark, Award,
   Newspaper, Send, ArrowUp, FlaskConical, Github, Linkedin, Terminal as TerminalIcon,
-  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code, SkipForward, Globe2, MonitorPlay
+  Quote, Mail, MessageSquare, Menu, X, Volume2, VolumeX, Code, SkipForward, Globe2, MonitorPlay, Download
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
@@ -115,6 +115,15 @@ export default function Home() {
     window.addEventListener("admin-updated", loadConfig);
     return () => window.removeEventListener("admin-updated", loadConfig);
   }, []);
+
+  const downloadResume = () => {
+    const link = document.createElement("a");
+    link.href = "/ijlalansari.pdf";
+    link.download = "ijlalansari.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const scrollToSection = (id: string) => {
     if (theme === "loki" || theme === "tva") {
@@ -374,7 +383,7 @@ export default function Home() {
             </div>
 
             <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={!isMobileView ? { transform: "translateZ(20px)" } : {}}>
-              <div ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
+              <main ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
                 <style dangerouslySetInnerHTML={{__html: `
                   @keyframes time-slip {
                     0%   { transform: scaleX(1) skewX(0); filter: hue-rotate(0deg) contrast(1); }
@@ -455,12 +464,12 @@ export default function Home() {
                     </div>
                     <div className="flex items-center gap-4">
                       {[
-                        { icon: <Github size={18} />,      href: "https://github.com/ijlalxansari1",                      color: "text-white hover:bg-white/10"       },
-                        { icon: <Linkedin size={18} />,    href: "https://linkedin.com/in/ijlal-ansari-56b0371b0",         color: "text-[#0077B5] hover:bg-[#0077B5]/10"},
-                        { icon: <MessageSquare size={18}/>,href: "https://wa.me/923371880807",                             color: "text-[#25D366] hover:bg-[#25D366]/10"},
-                        { icon: <Mail size={18} />,        href: "mailto:ansariijlal90@gmail.com",                         color: "text-[#EA4335] hover:bg-[#EA4335]/10"},
+                        { name: "GitHub",   icon: <Github size={18} />,      href: "https://github.com/ijlalxansari1",                      color: "text-white hover:bg-white/10"       },
+                        { name: "LinkedIn", icon: <Linkedin size={18} />,    href: "https://linkedin.com/in/ijlal-ansari-56b0371b0",         color: "text-[#0077B5] hover:bg-[#0077B5]/10"},
+                        { name: "WhatsApp", icon: <MessageSquare size={18}/>,href: "https://wa.me/923371880807",                             color: "text-[#25D366] hover:bg-[#25D366]/10"},
+                        { name: "Email",    icon: <Mail size={18} />,        href: "mailto:ansariijlal90@gmail.com",                         color: "text-[#EA4335] hover:bg-[#EA4335]/10"},
                       ].map((s, i) => (
-                        <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" className={`group w-11 h-11 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all duration-500 ${s.color} hover:scale-110 hover:border-white/10`}>
+                        <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name} className={`group w-11 h-11 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all duration-500 ${s.color} hover:scale-110 hover:border-white/10`}>
                           <div className="opacity-50 group-hover:opacity-100 transition-opacity">{s.icon}</div>
                         </a>
                       ))}
@@ -468,7 +477,7 @@ export default function Home() {
                   </div>
 
                 </div>
-              </div>
+              </main>
             </div>
           </motion.div>
         </div>
