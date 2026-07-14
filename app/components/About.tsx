@@ -172,21 +172,21 @@ export default function About() {
           >
             <div className="flex w-max animate-marquee space-x-12 px-6">
               {[
-                { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-                { name: "PostgreSQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
-                { name: "dbt", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg" },
+                { name: "Python", src: "https://cdn.simpleicons.org/python/white" },
+                { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql/white" },
+                { name: "dbt", src: "https://cdn.simpleicons.org/dbt/white" },
                 { name: "Snowflake", src: "https://cdn.simpleicons.org/snowflake/white" },
-                { name: "Airflow", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg" },
-                { name: "FastAPI", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
-                { name: "Next.js", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+                { name: "Airflow", src: "https://cdn.simpleicons.org/apacheairflow/white" },
+                { name: "FastAPI", src: "https://cdn.simpleicons.org/fastapi/white" },
+                { name: "Next.js", src: "https://cdn.simpleicons.org/nextdotjs/white" },
                 // Duplicate for infinite scroll
-                { name: "Python", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-                { name: "PostgreSQL", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
-                { name: "dbt", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg" },
+                { name: "Python", src: "https://cdn.simpleicons.org/python/white" },
+                { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql/white" },
+                { name: "dbt", src: "https://cdn.simpleicons.org/dbt/white" },
                 { name: "Snowflake", src: "https://cdn.simpleicons.org/snowflake/white" },
-                { name: "Airflow", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg" },
-                { name: "FastAPI", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
-                { name: "Next.js", src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" }
+                { name: "Airflow", src: "https://cdn.simpleicons.org/apacheairflow/white" },
+                { name: "FastAPI", src: "https://cdn.simpleicons.org/fastapi/white" },
+                { name: "Next.js", src: "https://cdn.simpleicons.org/nextdotjs/white" }
               ].map((tech, i) => (
                 <div key={i} className="flex items-center gap-2 shrink-0 filter grayscale hover:grayscale-0 transition-all duration-300">
                   <Image src={tech.src} alt={tech.name} width={16} height={16} unoptimized className="object-contain" />
