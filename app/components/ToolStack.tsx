@@ -9,20 +9,20 @@ import { useLanguage } from "../context/LanguageContext";
 
 const defaultTools_EN = [
   { name: "dbt Core", level: "Production", desc: "SQL transformations & lineage", icon: null, badge: "dbt", color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
-  { name: "Dagster", level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.simpleicons.org/dagster/white", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
-  { name: "Apache Airflow", level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.simpleicons.org/apacheairflow/white", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
+  { name: "Dagster", level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.simpleicons.org/dagster/white.svg", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
+  { name: "Apache Airflow", level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.simpleicons.org/apacheairflow/white.svg", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
   { name: "DuckDB", level: "Expert", desc: "Fast analytical SQL processing", icon: null, badge: "🦆", color: "text-[#FFF000]", mockup: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "https://duckdb.org/" },
-  { name: "FastAPI", level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.simpleicons.org/fastapi/white", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
-  { name: "Docker", level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.simpleicons.org/docker/white", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
+  { name: "FastAPI", level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.simpleicons.org/fastapi/white.svg", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
+  { name: "Docker", level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.simpleicons.org/docker/white.svg", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
 ];
 
 const defaultTools_DE = [
   { name: "dbt Core", level: "Produktion", desc: "SQL-Transformationen & Lineage", icon: null, badge: "dbt", color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
-  { name: "Dagster", level: "Professionell", desc: "Asset-basierte Orchestrierung", icon: "https://cdn.simpleicons.org/dagster/white", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
-  { name: "Apache Airflow", level: "Fortgeschritten", desc: "Workflow-Automatisierung (DAGs)", icon: "https://cdn.simpleicons.org/apacheairflow/white", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
+  { name: "Dagster", level: "Professionell", desc: "Asset-basierte Orchestrierung", icon: "https://cdn.simpleicons.org/dagster/white.svg", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
+  { name: "Apache Airflow", level: "Fortgeschritten", desc: "Workflow-Automatisierung (DAGs)", icon: "https://cdn.simpleicons.org/apacheairflow/white.svg", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
   { name: "DuckDB", level: "Experte", desc: "Schnelle analytische SQL-Verarbeitung", icon: null, badge: "🦆", color: "text-[#FFF000]", mockup: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "https://duckdb.org/" },
-  { name: "FastAPI", level: "Professionell", desc: "Hochleistungs-Python-APIs", icon: "https://cdn.simpleicons.org/fastapi/white", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
-  { name: "Docker", level: "Mittel", desc: "Containerisierte Umgebungen", icon: "https://cdn.simpleicons.org/docker/white", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
+  { name: "FastAPI", level: "Professionell", desc: "Hochleistungs-Python-APIs", icon: "https://cdn.simpleicons.org/fastapi/white.svg", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
+  { name: "Docker", level: "Mittel", desc: "Containerisierte Umgebungen", icon: "https://cdn.simpleicons.org/docker/white.svg", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
 ];
 
 
