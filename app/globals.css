@@ -388,3 +388,7 @@ button:focus:not(:focus-visible),
 a:focus:not(:focus-visible) {
   outline: none;
 }
+
+.modal-open {
+  overflow: hidden;
+}

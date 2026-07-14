@@ -25,21 +25,13 @@ export default function LokiMultiverseBackground({
   }, []);
   
   const slides = [
-    '/tva/tva1.png', // Void Lantern
-    '/loki/slide1.png', // The Void
-    '/tva/tva14.png', // Void Ruined Ship
-    '/tva/tva13.png', // Citadel Void Green Skies
-    '/loki/slide4.png', // Citadel Window
-    '/images/loki-slide6.png', // Citadel inside looking up (NEW)
-    '/images/loki-slide8.png', // Citadel outside green aura (NEW)
-    '/images/loki-slide1.png', // He Who Remains
-    '/images/loki-slide4.png', // Alioth Diorama
-    '/images/loki-slide7.png', // Void landscape (gloomy) (NEW)
-    '/images/loki-slide2.png', // Sylvie Magic
-    '/images/loki-slide3.png', // Loki & Sylvie
-    '/images/loki-slide5.png', // Loki Flaming Sword
-    '/tva/tva8.png', // Loki God of Stories
-    '/loki/slide6.png', // Yggdrasil Tree
+    '/loki/slide1.png',
+    '/loki/slide2.png',
+    '/loki/slide3.png',
+    '/loki/slide4.png',
+    '/loki/slide5.png',
+    '/loki/slide6.png',
+    '/loki/yggdrasil.png',
   ];
 
   // Scroll tracking to change slides

@@ -9,6 +9,13 @@ import { translations } from "../context/translations";
 import { trackEvent } from "./AnalyticsTracker";
 import { storage } from "../utils/storage";
 
+const WhatsappIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.062-.301-.15-1.267-.464-2.411-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.098-.202.049-.39-.029-.54-.075-.15-.673-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.246-.705.246-1.29.173-1.41-.074-.119-.273-.194-.571-.344z"/>
+    <path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.178-1.248-6.165-3.48-8.45zM12.046 21.756c-1.785 0-3.535-.48-5.064-1.383l-.36-.214-3.766.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.452-4.437 9.889-9.885 9.889z"/>
+  </svg>
+);
+
 interface LeftSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -119,7 +126,7 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
             { Icon: Linkedin, href: "https://linkedin.com/in/ijlal-ansari-56b0371b0" },
             { Icon: Mail, href: "mailto:ansariijlal90@gmail.com" },
             { Icon: Github, href: "https://github.com/ijlalxansari1" },
-            { Icon: MessageSquare, href: "https://wa.me/93711880807" }
+            { Icon: WhatsappIcon, href: "https://wa.me/93711880807" }
           ].map(({ Icon, href }, i) => (
             <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 hover:scale-110 transition-all shadow-md">
               <Icon size={16} />

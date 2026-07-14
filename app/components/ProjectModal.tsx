@@ -43,7 +43,18 @@ const caseStudies: Record<number | string, any> = {
     ],
     lessons: ["Governance must be structural", "DuckDB is faster for local OLAP", "RBAC needs paper-prototyping"],
     github: "https://github.com/ijlalxansari1",
-    demo: <AetherDemo />
+    liveUrl: "https://aether-blond-nine.vercel.app/",
+    demo: (
+      <div className="w-full h-[65vh] bg-black flex flex-col relative">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/5 px-4 sm:px-6 py-3 border-b border-white/10 shrink-0 gap-2 sm:gap-0">
+          <span className="text-[10px] sm:text-xs text-white/50">Is the content blocked?</span>
+          <a href="https://aether-blond-nine.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[10px] sm:text-xs text-[var(--accent)] hover:underline flex items-center gap-1.5 font-bold tracking-wide">
+            Open in new tab <ExternalLink size={14} />
+          </a>
+        </div>
+        <iframe src="https://aether-blond-nine.vercel.app/" className="w-full flex-1 border-0" title="Aether Demo" />
+      </div>
+    )
   },
   2: {
     title: "Data Engineering Tracker",
@@ -227,22 +238,22 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
           >
             {/* Header / Tabs */}
             <div className="pt-8 px-8 pb-4 border-b border-white/5">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">{language === 'de' ? 'Projekt #' : 'Project #'}{selectedProject.id}</span>
-                  <h2 className="text-xl font-black text-white">{project.title}</h2>
+              <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <span className="self-start px-2 sm:px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[9px] sm:text-[10px] font-black uppercase tracking-widest rounded-full">{language === 'de' ? 'Projekt #' : 'Project #'}{selectedProject.id}</span>
+                  <h2 className="text-lg sm:text-xl font-black text-white leading-tight">{project.title}</h2>
                 </div>
-                <button onClick={onClose} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-[var(--accent)] hover:text-black transition-all">
-                  <X size={20} />
+                <button onClick={onClose} className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-[var(--accent)] hover:text-black transition-all">
+                  <X size={18} className="sm:w-5 sm:h-5" />
                 </button>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 overflow-x-auto no-scrollbar pb-1">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                       activeTab === tab.id ? "bg-white text-black" : "bg-white/5 text-[var(--text-secondary)] hover:text-white border border-white/5"
                     }`}
                   >
@@ -360,20 +371,20 @@ export default function ProjectModal({ isOpen, onClose, project: selectedProject
             </div>
 
             {/* Footer */}
-            <div className="p-8 border-t border-white/5 bg-[#0d0d0d] flex items-center justify-between">
-              <div className="flex items-center gap-6">
+            <div className="p-6 sm:p-8 border-t border-white/5 bg-[#0d0d0d] flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-0">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6">
                 {project.github && (
-                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
-                    <Github size={18} /> {language === 'de' ? 'Quellcode' : 'Source Code'}
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
+                    <Github size={16} /> {language === 'de' ? 'Quellcode' : 'Source Code'}
                   </a>
                 )}
                 {project.liveUrl && (
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
-                    <ExternalLink size={18} /> {language === 'de' ? 'Live Demo' : 'Live Demo'}
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-black uppercase tracking-[2px] text-white hover:text-[var(--accent)] transition-all">
+                    <ExternalLink size={16} /> {language === 'de' ? 'Live Demo' : 'Live Demo'}
                   </a>
                 )}
               </div>
-              <button onClick={onNext} className="flex items-center gap-3 px-8 py-3.5 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[2px] rounded-full hover:scale-105 transition-all shadow-xl font-black">
+              <button onClick={onNext} className="w-full sm:w-auto justify-center flex items-center gap-3 px-6 sm:px-8 py-3.5 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[2px] rounded-full hover:scale-105 transition-all shadow-xl font-black shrink-0">
                 {language === 'de' ? 'Nächste Fallstudie' : 'Next Case Study'} <ArrowRight size={18} />
               </button>
             </div>

@@ -19,12 +19,12 @@ export default function VoidBackground() {
   }, []);
   
   const slides = [
-    '/tva/tva1.png',
-    '/loki/slide1.png',
-    '/tva/tva14.png',
-    '/tva/tva13.png',
-    '/images/loki-slide7.png',
-    '/images/loki-slide8.png',
+    '/tva/tva5.png',
+    '/tva/tva7.png',
+    '/tva/tva8.png',
+    '/loki/yggdrasil.png',
+    '/loki/slide4.png',
+    '/loki/slide6.png',
   ];
 
   // Scroll tracking to change slides

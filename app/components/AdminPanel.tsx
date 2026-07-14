@@ -42,6 +42,14 @@ const defaultTestimonials = [
   { name: "Elena Rodriguez", role: "CTO", company: "FinEdge", text: "The compliance and audit logging frameworks he built into our DWH saved us during our ISO certification. Absolute professional.", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200", rating: 5 }
 ];
 
+const defaultMilestones = [
+  { year: "2021", title: "Started Degree", desc: "Karakoram International University" },
+  { year: "Sep 2024 - Jan 2025", title: "Business Intelligence Analyst Intern", desc: "Precise Tech" },
+  { year: "Jul - Aug 2025", title: "Data Management Intern", desc: "Living Path" },
+  { year: "2025", title: "Graduated", desc: "BS Software Engineering" },
+  { year: "2026", title: "AI & Data", desc: "Scaling LLMs & Data Platforms | Looking for opportunities" }
+];
+
 const defaultCoreStack = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", role: "Primary Database", desc: "Relational data modeling, indexing, and robust ACID storage.", tags: ["ACID", "Relational", "JSONB"] },
@@ -134,7 +142,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [clientEvents, setClientEvents] = useState<any[]>([]);
   const [inboxMessages, setInboxMessages] = useState<any[]>([]);
   const [readMessages, setReadMessages] = useState<string[]>([]);
-  const [heroConfig, setHeroConfig] = useState<any>({ label: "Data Ops Engineer", titles: ["Data Ops Engineer", "Data Engineer", "Pipeline Builder", "Platform Builder"], techTags: ["Python", "SQL", "Apache Spark", "Airflow", "dbt", "ETL/ELT", "AWS", "Data Engineering"] });
+  const [heroConfig, setHeroConfig] = useState<any>({ label: "Data Ops Engineer", titles: ["Data Ops Engineer", "Data Engineer", "Pipeline Builder", "Platform Builder"], techTags: ["Python", "SQL", "Dagster", "dbt", "DuckDB", "ETL/ELT", "Data Engineering"] });
   const [manifesto, setManifesto] = useState<any>(null);
   const [experience, setExperience] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
@@ -146,6 +154,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [bgMusic, setBgMusic] = useState<any[]>([]);
   
   const [coreStack, setCoreStack] = useState<any[]>(defaultCoreStack);
+  const [milestones, setMilestones] = useState<any[]>(defaultMilestones);
   const [cloudPlatforms, setCloudPlatforms] = useState<any[]>(defaultCloudPlatforms);
 
   // Loading State
@@ -167,6 +176,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setRadarSkills(get("admin-skills-radar", defaultRadar));
           setToolSkills(get("admin-skills", { tools: defaultTools }).tools);
           setCoreStack(get("admin-core-stack", defaultCoreStack));
+          setMilestones(get("admin-milestones", defaultMilestones));
           setCloudPlatforms(get("admin-cloud-platforms", defaultCloudPlatforms));
           setKnowledge(get("admin-knowledge", [
             "Distributed Systems", "Cloud Data Warehousing", "Machine Learning Ops",
@@ -331,7 +341,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setHeroConfig(get("admin-hero", {
             label: "Data Ops Engineer",
             titles: ["Data Ops Engineer", "Data Engineer", "Pipeline Builder", "Platform Builder"],
-            techTags: ["Python", "SQL", "Apache Spark", "Airflow", "dbt", "ETL/ELT", "AWS", "Data Engineering"]
+            techTags: ["Python", "SQL", "Dagster", "dbt", "DuckDB", "ETL/ELT", "Data Engineering"]
           }));
         } catch (e) {
           console.error("Failed to load admin data from API", e);
@@ -407,7 +417,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 </div>
               </div>
             </div>
-            <div className="space-y-1 flex-1 min-h-0 overflow-y-auto custom-scrollbar-hidden">
+            <div className="space-y-1 flex-1 min-h-0 overflow-y-auto pr-2">
               <h4 className="text-[10px] font-black uppercase text-white/30 tracking-widest px-4 mb-3">Portfolio Modules</h4>
               {[
                 { id: "Analytics", icon: <BarChart3 size={16} />, color: "text-blue-400", badge: 0 },
@@ -422,6 +432,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 { id: "Manifesto", icon: <Bold size={16} />, color: "text-[var(--accent)]", badge: 0 },
                 { id: "Activity Log", icon: <Zap size={16} />, color: "text-yellow-400", badge: 0 },
                 { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
+                { id: "Milestones", icon: <Briefcase size={16} />, color: "text-amber-400", badge: milestones.length },
                 { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: certs.length },
                 { id: "Music", icon: <Music size={16} />, color: "text-pink-400", badge: bgMusic.length },
                 { id: "Site Config", icon: <Globe size={16} />, color: "text-cyan-400", badge: 0 }
@@ -479,7 +490,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               </button>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar-hidden">
+            <div className="flex-1 overflow-y-auto p-12">
               <AnimatePresence mode="wait">
                 {/* ── PROJECTS TAB ── */}
                 {activeTab === "Projects" && (
@@ -926,7 +937,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                               onChange={e => setHeroConfig({ ...heroConfig, techTags: e.target.value.split(",").map(tag => tag.trim()).filter(Boolean) })} 
                               onBlur={() => saveData("admin-hero", heroConfig)}
                               className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-[14px] outline-none focus:border-[var(--accent)] min-h-[80px] resize-none transition-all"
-                              placeholder="Python, SQL, Apache Spark, Airflow, dbt, ETL/ELT, AWS, Data Engineering"
+                              placeholder="Python, SQL, Dagster, dbt, DuckDB, ETL/ELT, Data Engineering"
                             />
                          </div>
                          <div className="space-y-2">
@@ -1239,6 +1250,68 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                        </div>
                     </motion.div>
                   )}
+
+                {/* 🎯 MILESTONES TAB 🎯 */}
+                {activeTab === "Milestones" && (
+                  <motion.div key="milestones" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                     <div className="flex justify-between items-end">
+                       <div className="space-y-2">
+                          <h3 className="text-[12px] font-black text-amber-400 uppercase tracking-[4px]">Timeline & Milestones</h3>
+                          <p className="text-[14px] text-white/40 font-medium max-w-md">Manage your journey and milestones displayed in the About section.</p>
+                       </div>
+                       <button onClick={() => {
+                         const updated = [{ year: new Date().getFullYear().toString(), title: "New Milestone", desc: "Description of the milestone" }, ...milestones];
+                         setMilestones(updated);
+                         saveData("admin-milestones", updated);
+                       }} className="group flex items-center gap-3 px-8 py-4 bg-amber-400 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                         <Plus size={18} /> Add Milestone
+                       </button>
+                     </div>
+
+                     <div className="grid grid-cols-1 gap-6">
+                       {milestones.map((m, i) => (
+                         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-white/5 border border-white/10 rounded-3xl p-6 relative group overflow-hidden">
+                            <button onClick={() => {
+                              const updated = milestones.filter((_, idx) => idx !== i);
+                              setMilestones(updated);
+                              saveData("admin-milestones", updated);
+                            }} className="absolute top-6 right-6 w-10 h-10 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white">
+                              <Trash2 size={16} />
+                            </button>
+                            
+                            <div className="space-y-4 max-w-3xl">
+                              <div className="flex gap-4">
+                                <div className="w-1/4">
+                                  <label className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-2 block">Year</label>
+                                  <input type="text" value={m.year} onChange={e => {
+                                    const updated = [...milestones];
+                                    updated[i].year = e.target.value;
+                                    setMilestones(updated);
+                                  }} onBlur={() => saveData("admin-milestones", milestones)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-[14px] outline-none focus:border-amber-400 transition-all" />
+                                </div>
+                                <div className="w-3/4">
+                                  <label className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-2 block">Title</label>
+                                  <input type="text" value={m.title} onChange={e => {
+                                    const updated = [...milestones];
+                                    updated[i].title = e.target.value;
+                                    setMilestones(updated);
+                                  }} onBlur={() => saveData("admin-milestones", milestones)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-[14px] outline-none focus:border-amber-400 transition-all" />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-[10px] font-black uppercase text-white/40 tracking-widest mb-2 block">Description</label>
+                                <textarea value={m.desc} onChange={e => {
+                                  const updated = [...milestones];
+                                  updated[i].desc = e.target.value;
+                                  setMilestones(updated);
+                                }} onBlur={() => saveData("admin-milestones", milestones)} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-[14px] outline-none focus:border-amber-400 transition-all resize-none min-h-[80px]" />
+                              </div>
+                            </div>
+                         </motion.div>
+                       ))}
+                     </div>
+                  </motion.div>
+                )}
 
                 {/* ── CERTIFICATIONS TAB ── */}
                 {activeTab === "Certifications" && (
@@ -1731,7 +1804,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              <Clock size={16} className="text-emerald-400" />
                              <h4 className="text-[11px] font-black text-white uppercase tracking-widest">Live Activity</h4>
                            </div>
-                           <div className="space-y-2 max-h-[200px] overflow-y-auto custom-scrollbar-hidden">
+                           <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
                              {clientEvents.slice(0, 12).map((evt: any, i: number) => (
                                <div key={i} className="flex items-center gap-3 px-4 py-2.5 bg-white/[0.02] rounded-xl text-[10px]">
                                  <div className={`w-2 h-2 rounded-full shrink-0 ${evt.type === "page_view" ? "bg-blue-400" : evt.type === "section_view" ? "bg-emerald-400" : "bg-orange-400"}`} />
@@ -2167,7 +2240,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
                            </div>
                          </div>
-                         <div className="h-[250px] overflow-y-auto space-y-2 text-[11px] custom-scrollbar-hidden">
+                         <div className="h-[250px] overflow-y-auto space-y-2 text-[11px] pr-2">
                            {systemLogs.length === 0 ? (
                              <div className="text-white/20">No system events recorded yet...</div>
                            ) : (

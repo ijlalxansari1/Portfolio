@@ -150,74 +150,50 @@ export default function LanguageSkills() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-5 bg-gradient-to-r from-[var(--bg-primary)] to-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl relative overflow-hidden mt-6 hover:border-[#58cc02]/30 transition-colors group"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-5 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl relative overflow-hidden mt-6 hover:border-[#58cc02]/40 transition-all group"
         >
-          {/* Background Duolingo logo watermark */}
-          <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
-            <Image src="https://cdn.simpleicons.org/duolingo/white" alt="Duolingo" width={100} height={100} unoptimized />
+          {/* Authentic Duolingo Owl Watermark */}
+          <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none text-[#58cc02]">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="140" height="140">
+              <path d="M12.005 0a8.04 8.04 0 0 0-4.048.975A6.096 6.096 0 0 0 6.64 0a6.046 6.046 0 0 0-6.042 6.047 6.075 6.075 0 0 0 1.252 3.693c-.496 1.4-.737 2.87-.737 4.364 0 3.738 1.765 6.837 4.475 8.441a5.617 5.617 0 0 0 1.984.77v.64c0 .888.646 1.624 1.503 1.76l2.916.488a1.76 1.76 0 0 0 2.03-1.737v-1.121a10.662 10.662 0 0 0 2.03.111 10.378 10.378 0 0 0 1.94-.108v1.121c0 1.05.908 1.868 1.948 1.732l3-.497c.866-.144 1.516-.885 1.516-1.78v-.643a5.6 5.6 0 0 0 1.964-.785C23.11 20.916 24 17.82 24 14.104c0-1.508-.246-2.983-.75-4.385a6.07 6.07 0 0 0 1.254-3.672 6.046 6.046 0 0 0-6.046-6.047 6.097 6.097 0 0 0-1.32.146 8.053 8.053 0 0 0-5.133-1.12zm-3.11 7.234a2.222 2.222 0 0 1 2.213 2.226 2.222 2.222 0 0 1-2.213 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zm6.22 0a2.222 2.222 0 0 1 2.214 2.226 2.222 2.222 0 0 1-2.214 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zM12 17.29c1.69 0 3.012-.662 4.148-1.517.29-.22.695-.145.894.167l.487.766a.653.653 0 0 1-.16.924C16.035 18.665 14.343 19.5 12 19.5c-2.342 0-4.035-.835-5.369-1.87a.655.655 0 0 1-.16-.924l.487-.766a.656.656 0 0 1 .894-.167C9.01 16.634 10.334 17.29 12 17.29z" />
+            </svg>
           </div>
           
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="w-12 h-12 rounded-xl bg-[#58cc02]/10 text-[#58cc02] flex items-center justify-center border border-[#58cc02]/30 shadow-[0_0_15px_rgba(88,204,2,0.15)] group-hover:scale-105 transition-transform">
+          <div className="flex items-center gap-5 relative z-10">
+            <div className="w-[52px] h-[52px] rounded-2xl bg-[#ff9600]/10 text-[#ff9600] flex items-center justify-center border border-[#ff9600]/30 shadow-[0_0_20px_rgba(255,150,0,0.15)] group-hover:scale-105 transition-transform">
               {duoLoading ? (
-                <div className="w-5 h-5 border-2 border-[#58cc02]/30 border-t-[#58cc02] rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-[#ff9600]/30 border-t-[#ff9600] rounded-full animate-spin"></div>
               ) : (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" fill="currentColor" fillOpacity="0.2"/>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.66 22.88c5.12 0 9.14-3.9 9.14-8.91 0-2.51-1.21-5.11-2.81-6.93-.66-.75-1.84-.57-2.07.41-.43 1.95-1.8 3.25-3.6 3.59-.84.22-1.63-.5-1.42-1.37.75-2.71.3-5.6-1.42-8.02-.51-.76-1.75-.75-2.22.04-2.48 3.8-4.09 6.94-4.09 10.08 0 1.28.32 2.53.86 3.6-1.5-.96-2.38-2.57-2.38-4.32 0-.85-.98-1.34-1.62-.77-3.08 2.66-3.51 4.74-3.51 6.69 0 3.9 3.14 7.02 7.18 7.02 1.63 0 3.03-.53 4.23-1.5 1.07-1 2.39-1.5 3.68-1.5z" />
                 </svg>
               )}
             </div>
             <div>
-              <h4 className="text-[14px] font-black text-[var(--text-primary)] flex items-center gap-2">
+              <h4 className="text-[16px] font-black text-[var(--text-primary)] flex items-center gap-2">
                 {duoStreak !== null ? `${duoStreak}` : "600+"} {t.duolingoStreak}
               </h4>
-              <p className="text-[11px] text-[var(--text-secondary)] font-medium">
+              <p className="text-[12px] text-[var(--text-secondary)] font-medium mt-0.5">
                 {t.learningJourney}
               </p>
             </div>
           </div>
           
-          <div className="relative z-10 flex flex-col sm:items-end gap-1.5 mt-2 sm:mt-0">
-            <span className="w-fit text-[10px] font-black uppercase tracking-widest text-[#58cc02] bg-[#58cc02]/10 px-3 py-1 rounded-full border border-[#58cc02]/20 shadow-[0_0_10px_rgba(88,204,2,0.1)]">
+          <div className="relative z-10 flex flex-col sm:items-end gap-2 mt-4 sm:mt-0">
+            <span className="w-fit text-[11px] font-black uppercase tracking-[0.15em] text-[#58cc02] bg-[#58cc02]/10 px-4 py-1.5 rounded-xl border border-[#58cc02]/20 shadow-[0_0_15px_rgba(88,204,2,0.1)] flex items-center gap-1.5">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                <path d="M12.005 0a8.04 8.04 0 0 0-4.048.975A6.096 6.096 0 0 0 6.64 0a6.046 6.046 0 0 0-6.042 6.047 6.075 6.075 0 0 0 1.252 3.693c-.496 1.4-.737 2.87-.737 4.364 0 3.738 1.765 6.837 4.475 8.441a5.617 5.617 0 0 0 1.984.77v.64c0 .888.646 1.624 1.503 1.76l2.916.488a1.76 1.76 0 0 0 2.03-1.737v-1.121a10.662 10.662 0 0 0 2.03.111 10.378 10.378 0 0 0 1.94-.108v1.121c0 1.05.908 1.868 1.948 1.732l3-.497c.866-.144 1.516-.885 1.516-1.78v-.643a5.6 5.6 0 0 0 1.964-.785C23.11 20.916 24 17.82 24 14.104c0-1.508-.246-2.983-.75-4.385a6.07 6.07 0 0 0 1.254-3.672 6.046 6.046 0 0 0-6.046-6.047 6.097 6.097 0 0 0-1.32.146 8.053 8.053 0 0 0-5.133-1.12zm-3.11 7.234a2.222 2.222 0 0 1 2.213 2.226 2.222 2.222 0 0 1-2.213 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zm6.22 0a2.222 2.222 0 0 1 2.214 2.226 2.222 2.222 0 0 1-2.214 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zM12 17.29c1.69 0 3.012-.662 4.148-1.517.29-.22.695-.145.894.167l.487.766a.653.653 0 0 1-.16.924C16.035 18.665 14.343 19.5 12 19.5c-2.342 0-4.035-.835-5.369-1.87a.655.655 0 0 1-.16-.924l.487-.766a.656.656 0 0 1 .894-.167C9.01 16.634 10.334 17.29 12 17.29z" />
+              </svg>
               Duolingo
             </span>
-            <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
               {duoStreak !== null ? `Total XP: ${duoTotalXp}` : t.nextMilestone}
             </span>
           </div>
         </motion.div>
       </div>
 
-      {/* Engineering Practices Section */}
-      <div className="w-full space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/20">
-            <ListChecks size={18} />
-          </div>
-          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[var(--text-primary)] px-4 py-1.5 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-full">
-            Engineering Practices
-          </span>
-        </div>
 
-        <div className="space-y-3">
-          {practices.map((practice, idx) => (
-            <motion.div 
-              key={practice}
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: idx * 0.04 }}
-              className="flex items-center gap-3 p-3 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl hover:border-[var(--accent)]/30 transition-all"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e87a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span className="text-[13px] font-bold text-[var(--text-primary)]">
-                {practice}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

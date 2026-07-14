@@ -68,17 +68,7 @@ export default function Contact() {
     setStatus("sending");
 
     try {
-      // EmailJS Integration
-      if (formRef.current) {
-        await emailjs.sendForm(
-          'YOUR_SERVICE_ID', 
-          'YOUR_TEMPLATE_ID', 
-          formRef.current, 
-          'YOUR_PUBLIC_KEY'
-        );
-      }
-
-      // Sync to Postgres Backend
+      // 1. Sync to Postgres Backend First
       try {
         await fetch("/api/data/emails", {
           method: "POST",
@@ -92,15 +82,29 @@ export default function Contact() {
         });
       } catch (err) {
         console.error("Failed to sync to database", err);
+        throw new Error("Database sync failed");
+      }
+
+      // 2. Try EmailJS (Non-blocking if it fails)
+      try {
+        if (formRef.current) {
+          await emailjs.sendForm(
+            'YOUR_SERVICE_ID', 
+            'YOUR_TEMPLATE_ID', 
+            formRef.current, 
+            'YOUR_PUBLIC_KEY'
+          );
+        }
+      } catch (err) {
+        console.warn("EmailJS Not Configured or Failed:", err);
+        // We do NOT throw here so the form still succeeds for the database
       }
 
       trackEvent("form_submit", { name: formData.name });
 
       setStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      setTimeout(() => setStatus("idle"), 5000);
     } catch (err) {
-      console.error("EmailJS Error:", err);
+      console.error("Form Submission Error:", err);
       setStatus("error");
       setErrorMessage(language === 'en' ? "Failed to send message. Please try again." : "Nachricht konnte nicht gesendet werden.");
     }
@@ -127,91 +131,132 @@ export default function Contact() {
               animation: prune 1s ease-out forwards;
             }
           `}} />
-          <form ref={formRef} onSubmit={handleSubmit} className={`space-y-6 ${isPruning ? 'prune-anim pointer-events-none' : ''}`}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.name}</label>
-                <input 
-                   type="text" 
-                   name="user_name"
-                   placeholder="John Doe" 
-                   value={formData.name}
-                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                   className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.email}</label>
-                <input 
-                   type="email" 
-                   name="user_email"
-                   placeholder="john@example.com" 
-                   value={formData.email}
-                   onChange={e => setFormData({ ...formData, email: e.target.value })}
-                   className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.subject}</label>
-              <div className="relative group">
-                <select 
-                  name="subject"
-                  value={formData.subject}
-                  onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all appearance-none cursor-pointer"
-                >
-                  <option value="" disabled>{t.subject_placeholder}</option>
-                  <option value="Data Infrastructure">{language === 'en' ? "Data Infrastructure" : "Dateninfrastruktur"}</option>
-                  <option value="AI/ML Research">{language === 'en' ? "AI/ML Research" : "KI/ML-Forschung"}</option>
-                  <option value="Technical Consultation">{language === 'en' ? "Technical Consultation" : "Technische Beratung"}</option>
-                  <option value="Freelance Project">{language === 'en' ? "Freelance Project" : "Freiberufliches Projekt"}</option>
-                  {dynamicOptions.map(opt => (
-                    <option key={opt} value={opt}>✨ {opt}</option>
-                  ))}
-                  <option value="Other">{language === 'en' ? "Other" : "Sonstiges"}</option>
-                </select>
-                
-                {/* Custom dropdown arrow */}
-                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <AnimatePresence mode="wait">
+            {status === "success" ? (
+              <motion.div 
+                key="success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="flex flex-col items-center justify-center text-center py-10"
+              >
+                <div className="w-24 h-24 bg-[var(--accent)]/10 rounded-full flex items-center justify-center mb-6 border border-[var(--accent)]/20 shadow-[0_0_30px_rgba(var(--accent-rgb),0.2)]">
+                  <CheckCircle2 size={48} className="text-[var(--accent)]" />
                 </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.message}</label>
-              <textarea 
-                name="message"
-                rows={6} 
-                placeholder={t.message_placeholder} 
-                value={formData.message}
-                onChange={e => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20 resize-none"
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <button 
-                type="button" 
-                onClick={handleClearPrune}
-                className="px-6 py-5 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[#ff8c00] hover:border-[#ff8c00]/50 font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center transition-all disabled:opacity-50"
+                <h3 className="text-2xl md:text-3xl font-black text-[var(--text-primary)] mb-4 tracking-tight">
+                  {language === 'en' ? "Message Sent Successfully!" : "Nachricht erfolgreich gesendet!"}
+                </h3>
+                <p className="text-[15px] text-[var(--text-secondary)] mb-10 max-w-md leading-relaxed">
+                  {language === 'en' 
+                    ? `Thank you for reaching out, ${formData.name || "friend"}. I've received your message and will get back to you as soon as possible.` 
+                    : `Vielen Dank für Ihre Nachricht, ${formData.name || "Freund"}. Ich habe Ihr Anliegen erhalten und werde mich so schnell wie möglich bei Ihnen melden.`}
+                </p>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setStatus("idle");
+                    setFormData({ name: "", email: "", subject: "", message: "" });
+                  }}
+                  className="px-8 py-4 bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--accent)]/50 text-[var(--text-primary)] hover:text-[var(--accent)] font-black uppercase tracking-[0.2em] rounded-xl transition-all shadow-xl text-[12px]"
+                >
+                  {language === 'en' ? "Send Another Message" : "Neue Nachricht senden"}
+                </button>
+              </motion.div>
+            ) : (
+              <motion.form 
+                key="form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                ref={formRef} 
+                onSubmit={handleSubmit} 
+                className={`space-y-6 ${isPruning ? 'prune-anim pointer-events-none' : ''}`}
               >
-                Clear
-              </button>
-              <button 
-                type="submit" 
-                disabled={status === "sending" || isPruning}
-                className="flex-1 py-5 bg-[var(--accent)] text-[var(--bg-primary)] font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {status === "sending" ? <><Loader2 size={20} className="animate-spin" /> {language === 'en' ? "Sending..." : "Senden..."}</> : 
-                 status === "success" ? <><CheckCircle2 size={20} /> {t.submit_success}</> : 
-                 <><Send size={20} /> {t.submit_idle}</>}
-              </button>
-            </div>
-            {status === "error" && <p className="text-red-400 text-[12px] font-bold text-center">{errorMessage}</p>}
-          </form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.name}</label>
+                    <input 
+                       type="text" 
+                       name="user_name"
+                       placeholder="John Doe" 
+                       value={formData.name}
+                       onChange={e => setFormData({ ...formData, name: e.target.value })}
+                       className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.email}</label>
+                    <input 
+                       type="email" 
+                       name="user_email"
+                       placeholder="john@example.com" 
+                       value={formData.email}
+                       onChange={e => setFormData({ ...formData, email: e.target.value })}
+                       className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.subject}</label>
+                  <div className="relative group">
+                    <select 
+                      name="subject"
+                      value={formData.subject}
+                      onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>{t.subject_placeholder}</option>
+                      <option value="Data Infrastructure">{language === 'en' ? "Data Infrastructure" : "Dateninfrastruktur"}</option>
+                      <option value="AI/ML Research">{language === 'en' ? "AI/ML Research" : "KI/ML-Forschung"}</option>
+                      <option value="Technical Consultation">{language === 'en' ? "Technical Consultation" : "Technische Beratung"}</option>
+                      <option value="Freelance Project">{language === 'en' ? "Freelance Project" : "Freiberufliches Projekt"}</option>
+                      {dynamicOptions.map(opt => (
+                        <option key={opt} value={opt}>✨ {opt}</option>
+                      ))}
+                      <option value="Other">{language === 'en' ? "Other" : "Sonstiges"}</option>
+                    </select>
+                    
+                    {/* Custom dropdown arrow */}
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] ml-1">{t.message}</label>
+                  <textarea 
+                    name="message"
+                    rows={6} 
+                    placeholder={t.message_placeholder} 
+                    value={formData.message}
+                    onChange={e => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-[14px] outline-none focus:border-[var(--accent)] transition-all placeholder:text-[var(--text-secondary)]/20 resize-none"
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button 
+                    type="button" 
+                    onClick={handleClearPrune}
+                    className="px-6 py-5 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[#ff8c00] hover:border-[#ff8c00]/50 font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center transition-all disabled:opacity-50"
+                  >
+                    Clear
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={status === "sending" || isPruning}
+                    className="flex-1 py-5 bg-[var(--accent)] text-[var(--bg-primary)] font-black uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(var(--accent-rgb),0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {status === "sending" ? <><Loader2 size={20} className="animate-spin" /> {language === 'en' ? "Sending..." : "Senden..."}</> : 
+                     <><Send size={20} /> {t.submit_idle}</>}
+                  </button>
+                </div>
+                {status === "error" && <p className="text-red-400 text-[12px] font-bold text-center">{errorMessage}</p>}
+              </motion.form>
+            )}
+          </AnimatePresence>
           
           {/* Background Decorative */}
           <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#00e87a]/5 rounded-full blur-[100px] pointer-events-none" />

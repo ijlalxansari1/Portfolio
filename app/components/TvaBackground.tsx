@@ -19,17 +19,13 @@ export default function TvaBackground() {
   }, []);
   
     const slides = [
-    '/tva/tva2.png',
-    '/tva/tva3.png',
-    '/tva/tva4.png',
-    '/tva/tva5.png',
-    '/tva/tva6.png',
-    '/tva/tva7.png',
-    '/tva/tva9.png',
-    '/tva/tva10.png',
-    '/tva/tva11.png',
-    '/tva/tva12.png',
-  ];
+      '/tva/tva13.png',
+      '/tva/tva14.png',
+      '/tva/tva1.png',
+      '/tva/tva10.png',
+      '/tva/tva11.png',
+      '/tva/tva12.png',
+    ];
 
   // Scroll tracking to change slides
   useEffect(() => {

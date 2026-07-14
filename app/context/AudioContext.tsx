@@ -10,6 +10,8 @@ interface AudioContextType {
   nextTrack: () => void;
   currentTrack: any | null;
   tracks: any[];
+  volume: number;
+  setVolume: (v: number) => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -18,9 +20,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [tracks, setTracks] = useState<any[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [volume, setVolumeState] = useState(0.25);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isFirstLoad = useRef(true);
   const { theme } = useTheme();
+
+  const setVolume = (v: number) => {
+    setVolumeState(v);
+    if (audioRef.current) {
+      audioRef.current.volume = v;
+    }
+  };
 
   useEffect(() => {
     const loadTracks = () => {
@@ -53,7 +63,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     if (!audioRef.current) {
       audioRef.current = new Audio();
-      audioRef.current.volume = 0.25;
+      audioRef.current.volume = volume;
       audioRef.current.preload = "auto";
     }
 
@@ -185,7 +195,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const currentTrack = tracks.length > 0 ? tracks[currentTrackIndex] : null;
 
   return (
-    <AudioContext.Provider value={{ isPlaying, togglePlay, nextTrack, currentTrack, tracks }}>
+    <AudioContext.Provider value={{ isPlaying, togglePlay, nextTrack, currentTrack, tracks, volume, setVolume }}>
       {children}
     </AudioContext.Provider>
   );

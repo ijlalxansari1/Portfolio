@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap } from "lucide-react";
+import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -15,7 +15,7 @@ import AnalyticsDashboardDemo from "./demos/AnalyticsDashboardDemo";
 import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
 
 const getDemoList = (language: string) => [
-  { id: 1, title: "TraceFlow", tag: "Python", icon: <FlaskConical size={24} />, description: language === 'de' ? "Erkunden Sie einen nachvollziehbaren Daten-Workflow mit Lineage, Überprüfbarkeit und praktischen Kontrollen." : "Explore a traceable data workflow with lineage, auditability, and practical controls.", component: <AetherDemo /> },
+  { id: 1, title: "TraceFlow", tag: "Python", icon: <FlaskConical size={24} />, description: language === 'de' ? "Erkunden Sie einen nachvollziehbaren Daten-Workflow mit Lineage, Überprüfbarkeit und praktischen Kontrollen." : "Explore a traceable data workflow with lineage, auditability, and practical controls.", iframeUrl: "https://aether-blond-nine.vercel.app/" },
   { id: 2, title: "Data Eng Tracker", tag: "Next.js", icon: <GraduationCap size={24} />, description: language === 'de' ? "Interaktiver Lehrplan-Manager mit Echtzeit-Fortschrittsverfolgung." : "Interactive curriculum manager with real-time progress tracking.", component: <DataEngTrackerDemo /> },
   { id: 3, title: "ETL Pipeline", tag: "SQL", icon: <Database size={24} />, description: language === 'de' ? "Entwerfen Sie SQL-Transformationen und zeigen Sie automatische dbt-Lineage an." : "Design SQL transformations and view automated dbt lineage.", component: <ETLPipelineDemo /> },
   { id: 4, title: "Bias Audit System", tag: "Python", icon: <ShieldCheck size={24} />, description: language === 'de' ? "Führen Sie automatisierte Fairness-Audits mithilfe von Disparate-Impact-Metriken durch." : "Execute automated fairness audits using disparate impact metrics.", component: <BiasAuditDemo /> },
@@ -56,6 +56,19 @@ export default function DemosHub() {
   }, [language]);
 
   const currentDemo = demos.find(d => d.id === activeDemo);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const handleNext = () => setCurrentIndex((prev) => (demos.length > 0 ? (prev + 1) % demos.length : 0));
+  const handlePrev = () => setCurrentIndex((prev) => (demos.length > 0 ? (prev - 1 + demos.length) % demos.length : 0));
+
+  useEffect(() => {
+    if (isPaused || demos.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (demos.length > 0 ? (prev + 1) % demos.length : 0));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isPaused, demos.length]);
 
   return (
     <div className="w-full">
@@ -64,40 +77,74 @@ export default function DemosHub() {
           <div className="section-pill"><FlaskConical size={14} /> {t.label}</div>
           <h2 className="section-heading text-[32px] font-black text-white">{t.title}</h2>
         </div>
-        <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed">
-          {t.desc}
-        </p>
+        <div className="flex items-center gap-4">
+          <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-sm leading-relaxed hidden md:block">
+            {t.desc}
+          </p>
+          <div className="flex gap-2 shrink-0 z-20">
+            <button onClick={handlePrev} className="w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--bg-secondary)] flex items-center justify-center hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/30 hover:text-[var(--accent)] transition-all">
+              <ChevronLeft size={18} />
+            </button>
+            <button onClick={handleNext} className="w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--bg-secondary)] flex items-center justify-center hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/30 hover:text-[var(--accent)] transition-all">
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {demos.map((demo) => (
-          <div 
-            key={demo.id} 
-            className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 hover:border-[var(--accent)]/30 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full"
-            onClick={() => setActiveDemo(demo.id)}
-          >
-            <div className="relative z-10 flex flex-col h-full">
-              <div className="w-14 h-14 bg-[var(--bg-card)] rounded-2xl flex items-center justify-center text-[var(--accent)] border border-[var(--border)] mb-6 group-hover:scale-110 transition-all duration-500 shrink-0">
-                {demo.icon}
+      <div 
+        className="relative w-full overflow-hidden py-4"
+        onMouseEnter={() => setIsPaused(true)} 
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <AnimatePresence mode="wait">
+          {demos.length > 0 && demos[currentIndex] && (
+            <motion.div
+              key={demos[currentIndex].id}
+              initial={{ opacity: 0, x: 20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, x: -20, filter: 'blur(10px)' }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-3xl mx-auto bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] p-8 md:p-12 cursor-pointer flex flex-col group relative overflow-hidden hover:border-[var(--accent)]/50 transition-colors"
+              onClick={() => setActiveDemo(demos[currentIndex].id)}
+            >
+              <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10 h-full pointer-events-none text-center md:text-left">
+                <div className="w-24 h-24 rounded-[32px] flex items-center justify-center bg-[var(--bg-card)] border border-[var(--border)] text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-black group-hover:shadow-[0_0_40px_rgba(var(--accent-rgb),0.3)] transition-all duration-500 shrink-0">
+                  {/* Using a clone to increase icon size slightly for this large card */}
+                  {React.isValidElement(demos[currentIndex].icon) ? React.cloneElement(demos[currentIndex].icon as React.ReactElement<any>, { size: 40 }) : demos[currentIndex].icon}
+                </div>
+                
+                <div className="flex-1 flex flex-col items-center md:items-start">
+                  <div className="space-y-2 mb-4">
+                    <span className="inline-block px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-md">{demos[currentIndex].tag}</span>
+                    <h3 className="text-[28px] md:text-[32px] font-black text-white">{demos[currentIndex].title}</h3>
+                  </div>
+                  
+                  <p className="text-[14px] md:text-[15px] text-[var(--text-secondary)] opacity-70 leading-relaxed mb-8 max-w-lg">
+                    {demos[currentIndex].description}
+                  </p>
+                  
+                  <div className="flex items-center gap-3 text-[12px] font-black uppercase tracking-[2px] transition-all text-[var(--accent)] mt-auto group-hover:gap-5">
+                    {t.launch} <Play size={16} fill="currentColor" />
+                  </div>
+                </div>
               </div>
-              
-              <div className="space-y-1 mb-4 shrink-0">
-                <span className="px-2 py-0.5 bg-[var(--accent)]/10 text-[var(--accent)] text-[9px] font-black uppercase tracking-widest rounded">{demo.tag}</span>
-                <h3 className="text-[18px] font-black text-white">{demo.title}</h3>
-              </div>
-              
-              <p className="text-[13px] text-[var(--text-secondary)] opacity-50 leading-relaxed mb-8 flex-1">
-                {demo.description}
-              </p>
-              
-              <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[2px] text-[var(--accent)] group-hover:gap-4 transition-all shrink-0 mt-auto">
-                {t.launch} <Play size={14} fill="currentColor" />
-              </button>
-            </div>
 
-            {/* Background Decorative */}
-            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--accent)]/5 rounded-full blur-[60px] pointer-events-none group-hover:bg-[var(--accent)]/10 transition-all" />
-          </div>
+              {/* Background Decorative */}
+              <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-[var(--accent)]/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-[var(--accent)]/20 transition-all duration-700" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      
+      {/* Pagination Dots */}
+      <div className="flex justify-center gap-2 mt-4">
+        {demos.map((_, idx) => (
+          <button 
+            key={idx}
+            onClick={() => setCurrentIndex(idx)}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === idx ? 'bg-[var(--accent)] w-6' : 'bg-white/20 hover:bg-white/40'}`}
+          />
         ))}
       </div>
 
@@ -128,8 +175,19 @@ export default function DemosHub() {
 
               <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-[40px] shadow-2xl overflow-hidden relative">
                 {currentDemo.iframeUrl ? (
-                  <div className="w-full h-[65vh] bg-black">
-                    <iframe src={currentDemo.iframeUrl} className="w-full h-full border-0" title={currentDemo.title} />
+                  <div className="w-full h-[65vh] bg-black flex flex-col">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/5 px-4 sm:px-6 py-3 border-b border-white/10 shrink-0 gap-2 sm:gap-0">
+                      <span className="text-[10px] sm:text-xs text-white/50">{language === 'de' ? 'Wird der Inhalt blockiert?' : 'Is the content blocked?'}</span>
+                      <a 
+                        href={currentDemo.iframeUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-[10px] sm:text-xs text-[var(--accent)] hover:underline flex items-center gap-1.5 font-bold tracking-wide"
+                      >
+                        {language === 'de' ? 'In neuem Tab öffnen' : 'Open in new tab'} <ExternalLink size={14} />
+                      </a>
+                    </div>
+                    <iframe src={currentDemo.iframeUrl} className="w-full flex-1 border-0" title={currentDemo.title} />
                   </div>
                 ) : (
                   <div className="p-2">

@@ -12,8 +12,8 @@ import { translations } from "../context/translations";
 import { storage } from "../utils/storage";
 
 const TECH_TAGS = [
-  "Python", "SQL", "Apache Spark", "Airflow",
-  "dbt", "ETL/ELT", "AWS", "Data Engineering",
+  "Python", "SQL", "Dagster", "dbt",
+  "DuckDB", "ETL/ELT", "Data Engineering",
 ];
 
 const TIMELINE = [
@@ -29,24 +29,6 @@ const PRINCIPLES = [
   { title: "Transparent Lineage", icon: Layers, desc: "Data is useless if it cannot be trusted. Every transformation is documented, version-controlled, and traceable." }
 ];
 
-const DATAOPS_LIFECYCLE = [
-  { icon: Database, stepKey: "sources", descKey: "sources_desc" },
-  { icon: ArrowRightLeft, stepKey: "ingestion", descKey: "ingestion_desc" },
-  { icon: HardDrive, stepKey: "storage", descKey: "storage_desc" },
-  { icon: ShieldCheck, stepKey: "validation", descKey: "validation_desc" },
-  { icon: Layers, stepKey: "modeling", descKey: "modeling_desc" },
-  { icon: Workflow, stepKey: "orchestration", descKey: "orchestration_desc" },
-  { icon: Zap, stepKey: "serving", descKey: "serving_desc" }
-];
-
-const SERVING_BRANCHES = [
-  "Business Intelligence",
-  "Machine Learning",
-  "AI Applications",
-  "Data APIs",
-  "Operational Systems"
-];
-
 export default function About() {
   const { language } = useLanguage();
   const heroText = translations[language].hero;
@@ -59,6 +41,7 @@ export default function About() {
     titles: heroText.titles,
     techTags: TECH_TAGS,
   });
+  const [milestones, setMilestones] = useState<any[]>(tAbout.timeline);
 
   const [titleIndex, setTitleIndex] = useState(0);
 
@@ -78,11 +61,17 @@ export default function About() {
         titles: heroText.titles,
         techTags: TECH_TAGS,
       }));
+      const adminMilestones = storage.get("admin-milestones", null);
+      if (adminMilestones) {
+         setMilestones(adminMilestones);
+      } else {
+         setMilestones(translations[language].about.timeline);
+      }
     };
     loadData();
     window.addEventListener("admin-updated", loadData);
     return () => window.removeEventListener("admin-updated", loadData);
-  }, [heroText]);
+  }, [heroText, language]);
 
   const statItems = [
     {
@@ -209,22 +198,22 @@ export default function About() {
                  <Briefcase size={20} className="text-[var(--accent)]" />
                  {tAbout.milestones}
               </h3>
-              <div className="space-y-0 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent hidden sm:block">
+              <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent hidden sm:block max-h-[250px] overflow-y-auto custom-scrollbar pr-2 pb-4">
                  {/* Timeline Layout */}
-                 {tAbout.timeline.map((item, idx) => {
-                    const icons = [GraduationCap, Award, Zap];
+               {milestones.map((item, idx) => {
+                  const icons = [GraduationCap, Briefcase, Database, Award, Zap];
                     const Icon = icons[idx] || Zap;
                     return (
                       <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                         <div className="flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-secondary)] text-[var(--accent)] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform">
                            <Icon size={16} />
                         </div>
-                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm group-hover:border-[var(--accent)]/30 group-hover:shadow-md transition-all">
-                           <div className="flex items-center justify-between mb-1">
-                              <span className="font-black text-sm text-[var(--text-primary)]">{item.title}</span>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-3 md:p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-sm group-hover:border-[var(--accent)]/30 group-hover:shadow-md transition-all">
+                           <div className="flex flex-col mb-1 gap-0.5">
+                              <span className="font-black text-xs text-[var(--text-primary)] leading-tight">{item.title}</span>
                               <span className="text-[10px] font-bold text-[var(--accent)]">{item.year}</span>
                            </div>
-                           <div className="text-[12px] text-[var(--text-secondary)] opacity-70">{item.desc}</div>
+                           <div className="text-[11px] text-[var(--text-secondary)] opacity-75 leading-tight">{item.desc}</div>
                         </div>
                       </div>
                     );
@@ -319,102 +308,7 @@ export default function About() {
           </motion.div>
         ))}
       </motion.div>
-      {/* Engineering Principles */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="mt-20 pt-16 border-t border-[var(--border-subtle)]"
-      >
-        <div className="mb-8">
-          <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2 mb-2">
-            <Zap size={20} className="text-[var(--accent)]" />
-            {tAbout.principles_title}
-          </h3>
-          <p className="text-[13px] text-[var(--text-secondary)] opacity-80 max-w-lg">
-            {tAbout.principles_desc}
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {tAbout.principles.map((principle: any, i: number) => {
-            const icons = [ShieldCheck, Bot, BarChart3, Layers];
-            const Icon = icons[i] || ShieldCheck;
-            return (
-            <div key={i} className="p-6 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 transition-colors group">
-              <div className="w-10 h-10 rounded-xl bg-[var(--bg-primary)] flex items-center justify-center text-[var(--accent)] mb-4 border border-[var(--border-subtle)] group-hover:scale-110 transition-transform">
-                <Icon size={18} />
-              </div>
-              <h4 className="text-[14px] font-black text-[var(--text-primary)] mb-2">{principle.title}</h4>
-              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed opacity-80">
-                {principle.desc}
-              </p>
-            </div>
-            );
-          })}
-        </div>
-      </motion.div>
 
-      {/* DataOps Lifecycle */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="mt-16 pb-10"
-      >
-        <div className="mb-8">
-          <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2 mb-2">
-            <Workflow size={20} className="text-[var(--accent)]" />
-            {tAbout.dataops.title}
-          </h3>
-          <p className="text-[13px] text-[var(--text-secondary)] opacity-80 max-w-lg">
-            {tAbout.dataops.subtitle}
-          </p>
-        </div>
-
-        <div className="w-full overflow-x-auto custom-scrollbar pb-6">
-          <div className="flex items-center min-w-max">
-            {DATAOPS_LIFECYCLE.map((step, i) => (
-              <div key={i} className="flex items-center">
-                <div className="flex flex-col items-center gap-3 w-32 group">
-                  <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center shadow-sm group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/10 transition-all text-[var(--text-secondary)] group-hover:text-[var(--accent)]">
-                    <step.icon size={22} className="group-hover:scale-110 transition-transform duration-300" />
-                  </div>
-                  <div className="text-center">
-                    <div className="text-[11px] font-black uppercase tracking-widest text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent)] transition-colors">{tAbout.dataops[step.stepKey as keyof typeof tAbout.dataops] as string}</div>
-                    <div className="text-[10px] text-[var(--text-secondary)] opacity-70 leading-tight px-2">{tAbout.dataops[step.descKey as keyof typeof tAbout.dataops] as string}</div>
-                  </div>
-                </div>
-                
-                {i < DATAOPS_LIFECYCLE.length - 1 ? (
-                  <div className="w-12 flex items-center justify-center mb-8 relative">
-                    <div className="w-full h-[2px] bg-gradient-to-r from-[var(--border-subtle)] to-[var(--accent)]/50 rounded-full" />
-                    <ChevronRight size={16} className="text-[var(--accent)] absolute -right-2 bg-[var(--bg-card)]" />
-                  </div>
-                ) : (
-                  <div className="flex items-center ml-2 mb-8 relative">
-                    <div className="w-8 h-[2px] bg-[var(--border-subtle)] relative">
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--border-subtle)]" />
-                    </div>
-                    <div className="flex flex-col gap-2 py-4 pl-4 border-l-2 border-[var(--border-subtle)] relative">
-                      {tAbout.serving_branches.map((branch: string, j: number) => (
-                        <div key={j} className="flex items-center gap-2 group/branch">
-                          <div className="w-3 h-px bg-[var(--border-subtle)] group-hover/branch:bg-[var(--accent)]/50 transition-colors" />
-                          <span className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-md group-hover/branch:border-[var(--accent)]/30 group-hover/branch:text-[var(--text-primary)] transition-colors cursor-default whitespace-nowrap">
-                            {branch}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </div>
+      </div>
   );
 }

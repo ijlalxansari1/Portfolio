@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, X, Clock, BookOpen, ArrowLeft, Heart, Share2, MessageSquare } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { ArrowRight, X, Clock, BookOpen, ArrowLeft, Heart, Share2, MessageSquare, Volume2, VolumeX, Play, Square, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -11,7 +11,7 @@ const articles = [
   {
     id: 1,
     author: "Ijlal ansari",
-    image: "https://picsum.photos/400/240?random=10",
+    image: "https://picsum.photos/800/400?random=10",
     date: "January 2025",
     category: "Platform Design",
     title: "Building TraceFlow: A Practical Framework for Trustworthy Data Systems",
@@ -45,7 +45,6 @@ const articles = [
   },
   {
     id: 3,
-    
     author: "Ijlal ansari",
     image: "https://picsum.photos/400/240?random=12",
     date: "March 2025",
@@ -63,13 +62,12 @@ const articles = [
   },
   {
     id: 4,
-    
     author: "Ijlal ansari",
     image: "https://picsum.photos/400/240?random=13",
     date: "April 2025",
     category: "Data Engineering",
     title: "The 80/20 Data Engineering Curriculum That Actually Works",
-    excerpt: "How I designed a 20-hour curriculum covering only the skills that appear in 80% of data engineering roles — and built a tracker to stay accountable.",
+    excerpt: "How I designed a 20-hour curriculum covering only the skills that appear in 80% of data engineering roles.",
     readTime: "7 min read",
     content: [
       "After analyzing 200+ data engineering job postings, I noticed a clear pattern: about 20% of skills appeared in 80% of listings. SQL, Python, ETL fundamentals, and basic cloud concepts dominated.",
@@ -81,11 +79,109 @@ const articles = [
   },
 ];
 
+// Helper to generate a deterministic random color/shape based on a name string
+const generateAvatar = (name: string) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash % 360);
+  const color1 = `hsl(${hue}, 80%, 60%)`;
+  const color2 = `hsl(${(hue + 40) % 360}, 90%, 40%)`;
+  const size = 40;
+  const cx = 20;
+  const cy = 20;
+  const r = 10 + (Math.abs(hash) % 8);
+
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="rounded-full shadow-lg">
+      <defs>
+        <linearGradient id={`grad-${hash}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={color1} />
+          <stop offset="100%" stopColor={color2} />
+        </linearGradient>
+      </defs>
+      <rect width={size} height={size} fill={`url(#grad-${hash})`} />
+      <circle cx={cx} cy={cy} r={r} fill="#ffffff33" />
+      <path d={`M 0 ${size} Q ${cx} ${size-r} ${size} ${size}`} fill="#ffffff22" />
+    </svg>
+  );
+};
+
+// 3D Tilt Card Component
+function TiltCard({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["100%", "0%"]);
+  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["100%", "0%"]);
+  const glareOpacity = useTransform(mouseXSpring, [-0.5, 0, 0.5], [0, 0.2, 0]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+      className={`relative cursor-pointer overflow-hidden transform-gpu ${className}`}
+    >
+      {children}
+      {/* Glare Effect */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-20"
+        style={{
+          background: `radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+          opacity: glareOpacity,
+          left: glareX,
+          top: glareY,
+          transform: "translate(-50%, -50%)",
+          width: "200%",
+          height: "200%",
+        }}
+      />
+    </motion.div>
+  );
+}
+
+
 export default function Blog() {
   const { language } = useLanguage();
   const t = translations[language].blog;
   const [posts, setPosts] = useState(articles);
   const [selectedArticle, setSelectedArticle] = useState<number | null>(null);
+
+  // Reader Scroll Tracking
+  const readerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ container: readerRef });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  // TTS State
+  const [isReading, setIsReading] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -102,12 +198,9 @@ export default function Blog() {
     handleUpdate();
     window.addEventListener("admin-updated", handleUpdate);
     
-    // Deep-linking: Open article from URL param
     const params = new URLSearchParams(window.location.search);
     const articleId = params.get("article");
-    if (articleId) {
-      setSelectedArticle(parseInt(articleId));
-    }
+    if (articleId) setSelectedArticle(parseInt(articleId));
 
     return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);
@@ -130,7 +223,6 @@ export default function Blog() {
   const handleShare = (article: any) => {
     const url = `${window.location.origin}${window.location.pathname}?article=${article.id}`;
     navigator.clipboard.writeText(url).then(() => {
-      // If toast is available in context, use it, otherwise alert
       alert(`Link to "${article.title}" copied to clipboard!`);
     });
   };
@@ -142,25 +234,77 @@ export default function Blog() {
       const adjs = ["Agile", "Distributed", "Parallel", "Atomic", "Recursive", "Encrypted", "Buffered", "Stateless", "Optimized", "Reactive"];
       const nouns = ["Node", "Pipeline", "Schema", "Query", "Cluster", "Stream", "Log", "Metric", "Bit", "Validator"];
       setCurrentUserName(`${adjs[Math.floor(Math.random() * adjs.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`);
+    } else {
+      // Cancel TTS if closed
+      if (synth) synth.cancel();
+      setIsReading(false);
+      setIsPaused(false);
     }
-  }, [selectedArticle]);
+  }, [selectedArticle, synth]);
 
   const addComment = (id: number) => {
     if (!commentText.trim()) return;
-    const newComment = { 
-      name: currentUserName, 
-      text: commentText, 
-      date: "Just now" 
-    };
+    const newComment = { name: currentUserName, text: commentText, date: "Just now" };
     setArticleComments(prev => ({ ...prev, [id]: [newComment, ...(prev[id] || [])] }));
     setCommentText("");
     
-    // Refresh name for next comment
     const adjs = ["Agile", "Distributed", "Parallel", "Atomic", "Recursive", "Encrypted", "Buffered", "Stateless", "Optimized", "Reactive"];
     const nouns = ["Node", "Pipeline", "Schema", "Query", "Cluster", "Stream", "Log", "Metric", "Bit", "Validator"];
     setCurrentUserName(`${adjs[Math.floor(Math.random() * adjs.length)]} ${nouns[Math.floor(Math.random() * nouns.length)]}`);
   };
 
+  // TTS Logic
+  const handleTTS = () => {
+    if (!synth || !activeArticle) return;
+    
+    if (isReading) {
+      if (isPaused) {
+        synth.resume();
+        setIsPaused(false);
+      } else {
+        synth.pause();
+        setIsPaused(true);
+      }
+      return;
+    }
+
+    const fullText = `${activeArticle.title}. ${activeArticle.excerpt}. ${(activeArticle.content || []).join(". ")}`;
+    const utterance = new SpeechSynthesisUtterance(fullText);
+    
+    // Choose a good English voice if available
+    const voices = synth.getVoices();
+    const preferredVoice = voices.find(v => v.lang.includes('en-') && v.name.includes('Google')) || voices.find(v => v.lang.includes('en-'));
+    if (preferredVoice) utterance.voice = preferredVoice;
+    
+    utterance.rate = 1.05;
+    utterance.pitch = 1;
+
+    utterance.onend = () => {
+      setIsReading(false);
+      setIsPaused(false);
+    };
+    
+    utterance.onerror = () => {
+      setIsReading(false);
+      setIsPaused(false);
+    };
+
+    synth.speak(utterance);
+    setIsReading(true);
+    setIsPaused(false);
+  };
+
+  const stopTTS = () => {
+    if (synth) {
+      synth.cancel();
+      setIsReading(false);
+      setIsPaused(false);
+    }
+  };
+
+
+  const featuredPost = posts[0];
+  const regularPosts = posts.slice(1);
 
   return (
     <div className="w-full">
@@ -168,194 +312,189 @@ export default function Blog() {
       <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.title}</h2>
       <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.desc}</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {posts.map((article, i) => (
-          <motion.div
-            key={article.id}
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            onClick={() => setSelectedArticle(article.id)}
-            className="blog-card group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--accent)] hover:translate-y-[-4px] transition-all cursor-pointer"
-          >
-            <div className="relative overflow-hidden aspect-[16/9]">
-               <Image 
-                  src={article.image} 
-                  alt={article.title} 
-                  fill 
-                  className="object-cover transition-transform duration-700 group-hover:scale-105" 
-               />
-               <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-full">
-                    {article.category}
-                  </span>
-               </div>
-            </div>
-            
-            <div className="p-6 space-y-4">
-               <div className="flex items-center justify-between">
-                  <p className="text-[11px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">{article.date}</p>
-                  <div className="flex items-center gap-2 text-[10px] text-[var(--text-secondary)] opacity-40">
-                     <Heart size={10} className="text-[var(--accent)]" /> {likes[article.id] || 0}
+      {/* MAGAZINE LAYOUT */}
+      <div className="flex flex-col gap-6">
+        {/* Featured Post (Full Width) */}
+        {featuredPost && (
+          <TiltCard onClick={() => setSelectedArticle(featuredPost.id)} className="w-full group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] overflow-hidden hover:border-[var(--accent)] transition-colors shadow-xl">
+            <div className="relative aspect-[21/9] md:aspect-[21/7] overflow-hidden w-full">
+               <Image src={featuredPost.image} alt={featuredPost.title} fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+               <div className="absolute inset-0 bg-gradient-to-t from-[#000000e6] via-[#00000080] to-transparent" />
+               <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-end">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-3 py-1 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                      {featuredPost.category}
+                    </span>
+                    <span className="text-[11px] font-bold text-white/70 uppercase tracking-widest bg-black/20 backdrop-blur-md px-3 py-1 rounded-full">{featuredPost.date}</span>
                   </div>
-               </div>
-               <h3 className="text-[16px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-all leading-tight">
-                  {article.title}
-               </h3>
-               <p className="text-[12px] text-[var(--text-secondary)] opacity-50 leading-relaxed line-clamp-2">
-                  {article.excerpt}
-               </p>
-               <div className="pt-2">
-                  <span className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[var(--accent)]">
-                    {t.read} <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
-                  </span>
+                  <h3 className="text-2xl md:text-4xl font-black text-white leading-tight mb-3 drop-shadow-lg max-w-3xl">
+                    {featuredPost.title}
+                  </h3>
+                  <p className="text-sm md:text-base text-white/80 line-clamp-2 max-w-2xl font-medium">
+                    {featuredPost.excerpt}
+                  </p>
                </div>
             </div>
-          </motion.div>
-        ))}
+          </TiltCard>
+        )}
+
+        {/* Regular Posts Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {regularPosts.map((article, i) => (
+            <TiltCard key={article.id} onClick={() => setSelectedArticle(article.id)} className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl overflow-hidden hover:border-[var(--accent)] transition-all shadow-lg flex flex-col h-full">
+              <div className="relative aspect-[16/10] w-full overflow-hidden">
+                 <Image src={article.image} alt={article.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                 <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-[var(--bg-card)]/80 backdrop-blur-md text-[var(--accent)] text-[9px] font-black uppercase tracking-widest rounded-full border border-[var(--border-subtle)]">
+                      {article.category}
+                    </span>
+                 </div>
+              </div>
+              <div className="p-6 flex flex-col flex-1">
+                 <div className="flex items-center justify-between mb-3">
+                    <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{article.date}</p>
+                    <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-secondary)] opacity-60">
+                       <Heart size={10} className="text-[var(--accent)]" /> {likes[article.id] || 0}
+                    </div>
+                 </div>
+                 <h3 className="text-[16px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-snug mb-3 flex-1">
+                    {article.title}
+                 </h3>
+                 <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
+                   {t.read} <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                 </div>
+              </div>
+            </TiltCard>
+          ))}
+        </div>
       </div>
 
       {/* Full Page Article Reader */}
       <AnimatePresence>
         {selectedArticle !== null && activeArticle && (
-          <div className="fixed inset-0 z-[4000] overflow-y-auto bg-[var(--bg-primary)]">
+          <div className="fixed inset-0 z-[5000] bg-[var(--bg-primary)] overflow-hidden">
             <motion.div
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              className="min-h-screen flex flex-col"
+              initial={{ opacity: 0, y: 50, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="h-full flex flex-col relative"
             >
-              {/* Top Navigation Bar */}
-              <div className="sticky top-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-xl border-b border-[var(--border-subtle)]">
-                <div className="max-w-4xl mx-auto px-6 h-20 flex items-center justify-between">
-                  <button 
-                    onClick={() => setSelectedArticle(null)}
-                    className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[3px] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-all"
-                  >
+              {/* Progress Bar */}
+              <motion.div className="absolute top-0 left-0 right-0 h-1.5 bg-[var(--accent)] origin-left z-[5010]" style={{ scaleX }} />
+
+              {/* Reader Header */}
+              <div className="sticky top-0 z-[5005] bg-[var(--bg-primary)]/80 backdrop-blur-2xl border-b border-[var(--border-subtle)]">
+                <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+                  <button onClick={() => setSelectedArticle(null)} className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[3px] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-all">
                     <ArrowLeft size={16} /> {t.back}
                   </button>
-                  <div className="flex items-center gap-4">
-                    <button 
-                      onClick={() => handleShare(activeArticle)}
-                      className="p-3 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
-                    >
-                      <Share2 size={18} />
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => handleShare(activeArticle)} className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
+                      <Share2 size={16} />
                     </button>
-                    <button 
-                      onClick={() => setSelectedArticle(null)}
-                      className="p-3 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all"
-                    >
-                      <X size={18} />
+                    <button onClick={() => setSelectedArticle(null)} className="p-2 bg-[var(--bg-secondary)] rounded-full text-[var(--text-secondary)] hover:text-white hover:bg-white/10 transition-colors">
+                      <X size={16} />
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Main Content Area */}
-              <div className="flex-1 max-w-3xl mx-auto px-6 py-12 lg:py-20">
-                <header className="mb-12 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">
-                      {activeArticle.category}
-                    </span>
-                    <span className="flex items-center gap-2 text-[10px] text-[var(--text-secondary)] font-bold opacity-40 uppercase tracking-widest">
-                      <Clock size={12} /> {activeArticle.readTime}
-                    </span>
-                  </div>
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-[var(--text-primary)] leading-[1.1] tracking-tight">
-                    {activeArticle.title}
-                  </h1>
-                  <p className="text-[11px] font-black text-[var(--accent)] uppercase tracking-[0.3em] opacity-60">
-                    {activeArticle.author ? `BY ${activeArticle.author} • ` : ''} {t.published} {activeArticle.date}
-                  </p>
-                </header>
-
-                <div className="relative w-full aspect-video rounded-[32px] overflow-hidden mb-16 shadow-2xl">
-                  <Image src={activeArticle.image} alt={activeArticle.title} fill className="object-cover" />
-                </div>
-
-                <div className="prose prose-invert max-w-none space-y-8 mb-20">
-                  {activeArticle.content ? (
-                    activeArticle.content.map((para: string, i: number) => (
-                      <p key={i} className="text-[18px] lg:text-[20px] text-[var(--text-primary)] opacity-80 leading-[1.8] font-medium font-serif">
-                        {para}
-                      </p>
-                    ))
-                  ) : (
-                    <p className="text-[18px] lg:text-[20px] text-[var(--text-primary)] opacity-80 leading-[1.8] font-medium font-serif">
-                      {activeArticle.excerpt}
-                    </p>
-                  )}
-                </div>
-
-                {/* Key Points */}
-                {activeArticle.keyPoints && (
-                  <div className="p-8 md:p-12 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-[32px] mb-20 relative overflow-hidden group">
-                    <div className="flex items-center gap-3 text-[12px] font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-8">
-                      <BookOpen size={16} /> {t.key_takeaways}
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto overflow-x-hidden" ref={readerRef}>
+                <div className="max-w-3xl mx-auto px-6 py-12 lg:py-20 pb-40">
+                  <header className="mb-12 space-y-6">
+                    <div className="flex items-center gap-3">
+                      <span className="px-3 py-1 bg-[var(--accent)]/10 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-full">
+                        {activeArticle.category}
+                      </span>
+                      <span className="flex items-center gap-2 text-[10px] text-[var(--text-secondary)] font-bold opacity-60 uppercase tracking-widest">
+                        <Clock size={12} /> {activeArticle.readTime}
+                      </span>
                     </div>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {activeArticle.keyPoints.map((point: string, i: number) => (
-                        <li key={i} className="space-y-2">
-                          <span className="text-[10px] font-black text-[var(--accent)] opacity-40">0{i+1}</span>
-                          <p className="text-[15px] text-[var(--text-primary)] font-bold leading-relaxed">{point}</p>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)]/5 blur-[60px] rounded-full" />
-                  </div>
-                )}
-
-                {/* Engagement Section */}
-                <div className="border-t border-[var(--border-subtle)] pt-12">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-16">
-                    <div className="flex items-center gap-6">
-                      <button 
-                        onClick={() => toggleLike(activeArticle.id)}
-                        className={`flex items-center gap-3 px-6 py-3 rounded-full border transition-all ${
-                          hasLiked[activeArticle.id] 
-                            ? "bg-[var(--accent)] border-[var(--accent)] text-black" 
-                            : "bg-[var(--bg-secondary)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--accent)]/50"
-                        }`}
-                      >
-                        <Heart size={20} fill={hasLiked[activeArticle.id] ? "currentColor" : "none"} />
-                        <span className="text-[14px] font-black">{likes[activeArticle.id]} {t.likes}</span>
-                      </button>
-                      <div className="flex items-center gap-3 text-[var(--text-secondary)]">
-                        <MessageSquare size={20} />
-                        <span className="text-[14px] font-bold">{(articleComments[activeArticle.id] || []).length} {t.comments}</span>
+                    <h1 className="text-4xl md:text-5xl lg:text-[56px] font-black text-[var(--text-primary)] leading-[1.1] tracking-tight">
+                      {activeArticle.title}
+                    </h1>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-black text-[var(--accent)] uppercase tracking-[0.3em] opacity-80">
+                        {activeArticle.author ? `BY ${activeArticle.author} • ` : ''} {activeArticle.date}
+                      </p>
+                      
+                      {/* TTS Controls Inside Header */}
+                      <div className="flex items-center gap-2 bg-[var(--bg-secondary)] p-1 rounded-full border border-[var(--border-subtle)]">
+                        <button onClick={handleTTS} className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isReading && !isPaused ? 'bg-[var(--accent)] text-black' : 'text-[var(--text-secondary)] hover:text-[var(--accent)]'}`}>
+                          {isReading && !isPaused ? <Volume2 size={12} className="animate-pulse" /> : <Play size={12} />}
+                          {isReading && !isPaused ? "Playing" : isPaused ? "Resume" : "Listen"}
+                        </button>
+                        {(isReading || isPaused) && (
+                          <button onClick={stopTTS} className="p-1.5 text-red-400 hover:bg-red-400/10 rounded-full transition-colors mr-1">
+                            <Square size={12} fill="currentColor" />
+                          </button>
+                        )}
                       </div>
                     </div>
-                    <button 
-                      onClick={() => handleShare(activeArticle)}
-                      className="flex items-center gap-3 px-6 py-3 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-full text-[var(--text-primary)] hover:border-[var(--accent)]/50 transition-all"
-                    >
-                      <Share2 size={20} />
-                      <span className="text-[14px] font-bold">{t.share}</span>
-                    </button>
+                  </header>
+
+                  <div className="relative w-full aspect-[21/10] rounded-[32px] overflow-hidden mb-16 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+                    <Image src={activeArticle.image} alt={activeArticle.title} fill className="object-cover" />
                   </div>
 
-                  {/* Comments Area */}
-                  <div className="space-y-12">
-                    <h3 className="text-[18px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em]">{t.discussion}</h3>
+                  <div className="prose prose-invert max-w-none space-y-8 mb-20">
+                    {activeArticle.content ? (
+                      activeArticle.content.map((para: string, i: number) => (
+                        <p key={i} className="text-[18px] lg:text-[20px] text-[var(--text-primary)] opacity-[0.85] leading-[1.8] font-medium font-serif selection:bg-[var(--accent)] selection:text-black">
+                          {para}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="text-[18px] lg:text-[20px] text-[var(--text-primary)] opacity-[0.85] leading-[1.8] font-medium font-serif">
+                        {activeArticle.excerpt}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Key Points */}
+                  {activeArticle.keyPoints && (
+                    <div className="p-8 md:p-12 bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-[32px] mb-20 relative overflow-hidden shadow-2xl">
+                      <div className="flex items-center gap-3 text-[12px] font-black uppercase tracking-[0.2em] text-[var(--accent)] mb-8">
+                        <BookOpen size={16} /> {t.key_takeaways}
+                      </div>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {activeArticle.keyPoints.map((point: string, i: number) => (
+                          <li key={i} className="space-y-3">
+                            <span className="inline-block px-2 py-0.5 bg-[var(--accent)]/10 rounded text-[10px] font-black text-[var(--accent)] tracking-widest">0{i+1}</span>
+                            <p className="text-[15px] text-[var(--text-primary)] font-bold leading-relaxed">{point}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Discussion Section */}
+                  <div className="border-t border-[var(--border-subtle)] pt-16">
+                    <h3 className="text-[20px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em] mb-12 flex items-center gap-3">
+                      <MessageSquare size={20} className="text-[var(--accent)]" /> {t.discussion} ({(articleComments[activeArticle.id] || []).length})
+                    </h3>
                     
                     {/* Comment Input */}
-                    <div className="p-6 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-2xl space-y-4">
+                    <div className="p-6 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-[24px] space-y-4 mb-12 shadow-inner focus-within:border-[var(--accent)]/50 transition-colors">
                       <textarea 
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         placeholder={t.add_thought}
-                        className="w-full bg-transparent border-none text-[var(--text-primary)] focus:ring-0 placeholder:text-[var(--text-secondary)]/30 resize-none min-h-[100px] text-[15px]"
+                        className="w-full bg-transparent border-none text-[var(--text-primary)] focus:ring-0 placeholder:text-[var(--text-secondary)]/30 resize-none min-h-[100px] text-[16px] outline-none"
                       />
-                      <div className="flex items-center justify-between">
-                        <div className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] opacity-40">
-                          {t.posting_as} <span className="text-[var(--accent)]">{currentUserName}</span>
+                      <div className="flex items-center justify-between border-t border-[var(--border-subtle)] pt-4 mt-2">
+                        <div className="flex items-center gap-3">
+                          {generateAvatar(currentUserName)}
+                          <div className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] opacity-60">
+                            {t.posting_as} <span className="text-[var(--text-primary)]">{currentUserName}</span>
+                          </div>
                         </div>
                         <button 
                           onClick={() => addComment(activeArticle.id)}
                           disabled={!commentText.trim()}
-                          className="px-6 py-2 bg-[var(--accent)] text-black rounded-xl text-[12px] font-black uppercase tracking-widest disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
+                          className="px-6 py-2.5 bg-[var(--accent)] text-black rounded-xl text-[11px] font-black uppercase tracking-widest disabled:opacity-30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]"
                         >
                           {t.post_comment}
                         </button>
@@ -365,28 +504,63 @@ export default function Blog() {
                     {/* Comment List */}
                     <div className="space-y-8">
                       {(articleComments[activeArticle.id] || []).map((comment, i) => (
-                        <div key={i} className="flex gap-4">
-                          <div className="w-10 h-10 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] font-black text-[10px] shrink-0">
-                            {comment.name.charAt(0)}
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} key={i} className="flex gap-5">
+                          <div className="shrink-0 pt-1">
+                            {generateAvatar(comment.name)}
                           </div>
-                          <div className="space-y-1">
+                          <div className="space-y-1 flex-1">
                             <div className="flex items-center gap-3">
                               <span className="text-[14px] font-black text-[var(--text-primary)]">{comment.name}</span>
-                              <span className="text-[10px] font-bold text-[var(--text-secondary)] opacity-30 uppercase tracking-widest">{comment.date}</span>
+                              <span className="text-[10px] font-bold text-[var(--text-secondary)] opacity-40 uppercase tracking-widest">{comment.date}</span>
                             </div>
-                            <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed">
+                            <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed bg-[var(--bg-card)] p-4 rounded-2xl rounded-tl-none border border-[var(--border-subtle)] inline-block mt-2">
                               {comment.text}
                             </p>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Footer Spacer */}
-              <div className="h-20" />
+              {/* FLOATING ACTION DOCK */}
+              <motion.div 
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[5020] flex items-center gap-2 p-2 bg-[var(--bg-primary)]/80 backdrop-blur-2xl border border-[var(--border-subtle)] rounded-full shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              >
+                <button 
+                  onClick={() => toggleLike(activeArticle.id)}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all ${
+                    hasLiked[activeArticle.id] 
+                      ? "bg-[var(--accent)] text-black font-black" 
+                      : "hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-white font-bold"
+                  }`}
+                >
+                  <Heart size={18} fill={hasLiked[activeArticle.id] ? "currentColor" : "none"} className={hasLiked[activeArticle.id] ? "scale-110" : ""} />
+                  <span className="text-[12px]">{likes[activeArticle.id]}</span>
+                </button>
+                <div className="w-px h-6 bg-[var(--border-subtle)]" />
+                <button 
+                  onClick={() => {
+                    const el = document.getElementById("discussion");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="flex items-center gap-2 px-5 py-3 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-white font-bold transition-all"
+                >
+                  <MessageSquare size={18} />
+                  <span className="text-[12px]">{(articleComments[activeArticle.id] || []).length}</span>
+                </button>
+                <div className="w-px h-6 bg-[var(--border-subtle)]" />
+                <button 
+                  onClick={() => handleShare(activeArticle)}
+                  className="flex items-center gap-2 px-5 py-3 rounded-full hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-white font-bold transition-all"
+                >
+                  <Share2 size={18} />
+                </button>
+              </motion.div>
             </motion.div>
           </div>
         )}
@@ -394,4 +568,3 @@ export default function Blog() {
     </div>
   );
 }
-

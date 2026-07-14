@@ -220,8 +220,10 @@ export const translations = {
       milestones: "Milestones",
       timeline: [
         { year: "2021", title: "Started Degree", desc: "Karakoram International University" },
-        { year: "2025", title: "Graduated", desc: "BS - SOFTWARE ENGINEERING" },
-        { year: "2026", title: "AI & Data", desc: "Scaling LLMs & Data Platforms" }
+        { year: "Sep 2024 - Jan 2025", title: "Business Intelligence Analyst Intern", desc: "Precise Tech" },
+        { year: "Jul - Aug 2025", title: "Data Management Intern", desc: "Living Path" },
+        { year: "2025", title: "Graduated", desc: "BS Software Engineering" },
+        { year: "2026", title: "AI & Data", desc: "Scaling LLMs & Data Platforms | Looking for opportunities" }
       ],
       dataops: {
         title: "DataOps Lifecycle",
@@ -551,8 +553,10 @@ export const translations = {
       milestones: "Meilensteine",
       timeline: [
         { year: "2021", title: "Studienbeginn", desc: "Karakoram International University" },
-        { year: "2025", title: "Abschluss", desc: "BS - SOFTWARE ENGINEERING" },
-        { year: "2026", title: "KI & Daten", desc: "Skalierung von LLMs & Datenplattformen" }
+        { year: "Sep 2024 - Jan 2025", title: "Business Intelligence Analyst Intern", desc: "Precise Tech" },
+        { year: "Jul - Aug 2025", title: "Data Management Intern", desc: "Living Path" },
+        { year: "2025", title: "Abschluss", desc: "BS Software Engineering" },
+        { year: "2026", title: "KI & Daten", desc: "Skalierung von LLMs & Datenplattformen | Auf der Suche nach Möglichkeiten" }
       ],
       dataops: {
         title: "DataOps Lebenszyklus",

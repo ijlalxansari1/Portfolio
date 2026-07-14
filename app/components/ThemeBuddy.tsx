@@ -30,6 +30,7 @@ const themes: Array<{
   { id: "dark",      label: "Dark",     icon: <Moon size={14} /> },
   { id: "midnight",  label: "Midnight", dot: "#0a0b1e" },
   { id: "tva",       label: "TVA",      dot: "#1c140d", dotBorder: "#ff8c00", labelClass: "text-orange-400" },
+  { id: "loki",      label: "Loki",     dot: "#020604", dotBorder: "#10a34a", labelClass: "text-green-500" },
   { id: "slate",     label: "Slate",    dot: "#1a1d23" },
   { id: "bordeaux",  label: "Bordeaux", dot: "#1a0a0a" },
   { id: "void",      label: "Void",     dot: "#0a0216", dotBorder: "#9333ea", labelClass: "text-purple-400" },

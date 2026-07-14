@@ -119,6 +119,7 @@ export default function Skills() {
   
   const [dynamicCoreStack, setDynamicCoreStack] = useState<any[] | null>(null);
   const [dynamicCloudPlatforms, setDynamicCloudPlatforms] = useState<any[] | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'All' | 'Engineering' | 'Infrastructure'>('All');
 
   useEffect(() => {
     const loadDynamic = async () => {
@@ -149,26 +150,108 @@ export default function Skills() {
     return () => window.removeEventListener("admin-updated", loadDynamic);
   }, []);
 
+  const getServiceIcon = (name: string) => {
+    switch (name) {
+      case "S3":
+      case "Blob Storage":
+      case "Cloud Storage": return <Database size={14} />;
+      case "Glue":
+      case "Data Factory":
+      case "Dataflow": return <Workflow size={14} />;
+      case "RDS":
+      case "Azure SQL":
+      case "BigQuery": return <Server size={14} />;
+      case "Lambda":
+      case "Cloud Functions": return <Code2 size={14} />;
+      case "Synapse": return <Layers size={14} />;
+      default: return <Cloud size={14} />;
+    }
+  };
+
+  const getTagIcon = (tag: string) => {
+    switch (tag.toLowerCase()) {
+      case "etl":
+      case "elt":
+      case "pipelines":
+      case "dataops": return <Workflow size={10} />;
+      case "acid":
+      case "relational":
+      case "jsonb":
+      case "assets": return <Database size={10} />;
+      case "apis":
+      case "async":
+      case "rest":
+      case "endpoints":
+      case "react":
+      case "ssr":
+      case "ui": return <Code2 size={10} />;
+      case "devops":
+      case "microservices":
+      case "deployment": return <Layers size={10} />;
+      case "testing":
+      case "lineage": return <ShieldCheck size={10} />;
+      case "analytics":
+      case "dashboards":
+      case "dax": return <BarChart3 size={10} />;
+      case "automation":
+      case "automatisierung": return <Bot size={10} />;
+      default: return <Check size={10} />;
+    }
+  };
+
   return (
-    <section id="skills" className="w-full space-y-8" aria-label="Engineering Stack">
+    <section id="skills" className="w-full space-y-8" aria-label="Tools and Infrastructure">
       
-      {/* ── Section Header ── */}
+      {/* 🚀 Section Header 🚀 */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
-            {language === "de" ? "Mein empfohlener End-Stack" : "My Recommended Final Stack"}
+            {language === "de" ? "Von der Datenaufnahme bis zur Erkenntnis" : "From Ingestion to Insight"}
           </p>
           <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] leading-tight">
-            Engineering Stack
+            Tools of the Trade
           </h2>
         </div>
         <p className="text-[14px] text-[var(--text-secondary)] opacity-60 max-w-md leading-relaxed">
-          {language === "de" ? "Ein kohärentes, produktionsreifes Ökosystem von Tools, das den gesamten Datenlebenszyklus umfasst." : "A cohesive, production-ready ecosystem of tools spanning the entire data lifecycle."}
+          {language === "de" ? "Die Sprachen, Frameworks und Infrastrukturen, nach denen ich täglich greife – keine Wunschliste, sondern ein Arbeitsset." : "The languages, frameworks, and infrastructure I reach for daily — not a wishlist, a working set."}
         </p>
       </div>
 
-      {/* ⚡ Core Stack (Bento Grid) ⚡ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Filter Buttons */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        {['All', 'Engineering', 'Infrastructure'].map((filterItem) => (
+          <button
+            key={filterItem}
+            onClick={() => setActiveFilter(filterItem as any)}
+            className={`px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-wider transition-all ${
+              activeFilter === filterItem
+                ? "bg-[var(--accent)] text-black shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]"
+                : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/50 hover:text-[var(--text-primary)]"
+            }`}
+          >
+            {filterItem === 'All' && (language === "de" ? 'Alle' : 'All')}
+            {filterItem === 'Engineering' && (language === "de" ? 'Technik-Stack' : 'Engineering Stack')}
+            {filterItem === 'Infrastructure' && (language === "de" ? 'Infrastruktur' : 'Infrastructure Layer')}
+          </button>
+        ))}
+      </div>
+
+      {/* 🚀 Core Stack (Bento Grid) 🚀 */}
+      {(activeFilter === 'All' || activeFilter === 'Engineering') && (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 mt-4">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3 flex items-center gap-2">
+              <Code2 size={12} />
+              {language === "de" ? "Mein empfohlener End-Stack" : "My Recommended Final Stack"}
+            </p>
+            <h3 className="text-[24px] md:text-[28px] font-black text-[var(--text-primary)] leading-tight">
+              Engineering Stack
+            </h3>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {(dynamicCoreStack || (language === "de" ? CORE_STACK_DE : CORE_STACK)).map((tech: any, i: number) => (
           <motion.div
             key={tech.name}
@@ -206,22 +289,26 @@ export default function Skills() {
             <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed opacity-70 mb-6 min-h-[40px]">
               {tech.desc}
             </p>
-
-            <div className="flex flex-wrap gap-2 mt-auto">
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-[var(--border-subtle)]">
               {tech.tags.map((tag: string) => (
                 <span 
                   key={tag}
-                  className="px-2 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[10px] font-bold text-[var(--text-secondary)] rounded-md group-hover:border-[var(--accent)]/20 transition-colors"
+                  className="px-2 py-1 bg-[var(--bg-primary)] border border-[var(--border-subtle)] text-[10px] font-bold text-[var(--text-secondary)] rounded-md group-hover:border-[var(--accent)]/20 transition-colors flex items-center gap-1.5"
                 >
+                  <span className="text-[var(--accent)]">{getTagIcon(tag)}</span>
                   {tag}
                 </span>
               ))}
             </div>
           </motion.div>
         ))}
-      </div>
+        </div>
+      </motion.div>
+      )}
 
-      {/* ── Cloud & Platform Engineering ── */}
+      {/* ☁️ Cloud & Platform Engineering ☁️ */}
+      {(activeFilter === 'All' || activeFilter === 'Infrastructure') && (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -287,7 +374,7 @@ export default function Skills() {
               </div>
 
               {/* Name & Description */}
-              <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-1">
+              <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-1 mt-4">
                 {platform.shortName}
               </h4>
               <p className="text-[11px] text-[var(--text-muted)] font-bold mb-1">{platform.name}</p>
@@ -304,9 +391,10 @@ export default function Skills() {
                   {platform.services.map((svc: any) => (
                     <div
                       key={svc.name}
-                      className="px-2.5 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-lg group-hover:border-[var(--accent)]/15 transition-colors"
+                      className="px-2.5 py-2 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-lg group-hover:border-[var(--accent)]/15 transition-colors flex flex-col gap-1.5"
                     >
-                      <span className="text-[11px] font-black text-[var(--text-primary)] block leading-tight">
+                      <span className="text-[11px] font-black text-[var(--text-primary)] flex items-center gap-1.5 group-hover:text-[var(--accent)] transition-colors">
+                        <span className="text-[var(--accent)]">{getServiceIcon(svc.name)}</span>
                         {svc.name}
                       </span>
                       <span className="text-[9px] text-[var(--text-muted)] leading-tight">
@@ -320,6 +408,7 @@ export default function Skills() {
           ))}
         </div>
       </motion.div>
+      )}
     </section>
   );
 }
