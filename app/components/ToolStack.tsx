@@ -3,26 +3,26 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Wrench, ArrowRight, ArrowUpRight } from "lucide-react";
+import { Wrench, ArrowRight, ArrowUpRight, Workflow, Database, Server, Code2, Box } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
 
 const defaultTools_EN = [
-  { name: "dbt Core", level: "Production", desc: "SQL transformations & lineage", icon: null, badge: "dbt", color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
-  { name: "Dagster", level: "Professional", desc: "Asset-based orchestration", icon: "https://cdn.simpleicons.org/dagster/white.svg", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
-  { name: "Apache Airflow", level: "Advanced", desc: "Workflow automation (DAGs)", icon: "https://cdn.simpleicons.org/apacheairflow/white.svg", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
+  { name: "dbt Core", level: "Production", desc: "SQL transformations & lineage", icon: <Workflow size={24} />, color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
+  { name: "Dagster", level: "Professional", desc: "Asset-based orchestration", icon: <Database size={24} />, mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
+  { name: "Apache Airflow", level: "Advanced", desc: "Workflow automation (DAGs)", icon: <Server size={24} />, mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
   { name: "DuckDB", level: "Expert", desc: "Fast analytical SQL processing", icon: null, badge: "🦆", color: "text-[#FFF000]", mockup: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "https://duckdb.org/" },
-  { name: "FastAPI", level: "Professional", desc: "High-performance Python APIs", icon: "https://cdn.simpleicons.org/fastapi/white.svg", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
-  { name: "Docker", level: "Intermediate", desc: "Containerized environments", icon: "https://cdn.simpleicons.org/docker/white.svg", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
+  { name: "FastAPI", level: "Professional", desc: "High-performance Python APIs", icon: <Code2 size={24} />, mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
+  { name: "Docker", level: "Intermediate", desc: "Containerized environments", icon: <Box size={24} />, mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
 ];
 
 const defaultTools_DE = [
-  { name: "dbt Core", level: "Produktion", desc: "SQL-Transformationen & Lineage", icon: null, badge: "dbt", color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
-  { name: "Dagster", level: "Professionell", desc: "Asset-basierte Orchestrierung", icon: "https://cdn.simpleicons.org/dagster/white.svg", mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
-  { name: "Apache Airflow", level: "Fortgeschritten", desc: "Workflow-Automatisierung (DAGs)", icon: "https://cdn.simpleicons.org/apacheairflow/white.svg", mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
+  { name: "dbt Core", level: "Produktion", desc: "SQL-Transformationen & Lineage", icon: <Workflow size={24} />, color: "text-[#FF694B]", mockup: "https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800", link: "https://www.getdbt.com/" },
+  { name: "Dagster", level: "Professionell", desc: "Asset-basierte Orchestrierung", icon: <Database size={24} />, mockup: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&q=80&w=800", link: "https://dagster.io/" },
+  { name: "Apache Airflow", level: "Fortgeschritten", desc: "Workflow-Automatisierung (DAGs)", icon: <Server size={24} />, mockup: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800", link: "https://airflow.apache.org/" },
   { name: "DuckDB", level: "Experte", desc: "Schnelle analytische SQL-Verarbeitung", icon: null, badge: "🦆", color: "text-[#FFF000]", mockup: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", link: "https://duckdb.org/" },
-  { name: "FastAPI", level: "Professionell", desc: "Hochleistungs-Python-APIs", icon: "https://cdn.simpleicons.org/fastapi/white.svg", mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
-  { name: "Docker", level: "Mittel", desc: "Containerisierte Umgebungen", icon: "https://cdn.simpleicons.org/docker/white.svg", mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
+  { name: "FastAPI", level: "Professionell", desc: "Hochleistungs-Python-APIs", icon: <Code2 size={24} />, mockup: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800", link: "https://fastapi.tiangolo.com/" },
+  { name: "Docker", level: "Mittel", desc: "Containerisierte Umgebungen", icon: <Box size={24} />, mockup: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800", link: "https://www.docker.com/" },
 ];
 
 
@@ -105,14 +105,9 @@ export default function ToolStack() {
               {/* Floating Icon Over Mockup */}
               <div className="absolute bottom-4 left-6 w-12 h-12 bg-black/60 backdrop-blur-md border border-white/10 rounded-xl flex items-center justify-center shadow-lg group-hover:-translate-y-2 group-hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)] transition-all duration-500">
                 {tool.icon ? (
-                  <Image 
-                    src={tool.icon} 
-                    alt={tool.name} 
-                    width={24} 
-                    height={24}
-                    unoptimized
-                    className="shrink-0 transition-all filter grayscale group-hover:grayscale-0"
-                  />
+                  <div className="shrink-0 transition-all text-white/50 group-hover:text-white">
+                    {tool.icon}
+                  </div>
                 ) : (
                   <span className={`shrink-0 text-[18px] font-black ${tool.color || 'text-[var(--accent)]'}`}>
                     {tool.badge || tool.name[0]}

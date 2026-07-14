@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import {
-  Download, Send, Github, Linkedin, Database, Zap, Clock, Award, ChevronRight, UserCircle2, Briefcase, GraduationCap, ShieldCheck, Bot, BarChart3, Layers, FileText, Workflow, HardDrive, ArrowRightLeft
+  Download, Send, Github, Linkedin, Database, Zap, Clock, Award, ChevronRight, UserCircle2, Briefcase, GraduationCap, ShieldCheck, Bot, BarChart3, Layers, FileText, Workflow, HardDrive, ArrowRightLeft, Code2, Server, Box
 } from "lucide-react";
 import Magnetic from "./Magnetic";
 import { useLanguage } from "../context/LanguageContext";
@@ -172,25 +172,25 @@ export default function About() {
           >
             <div className="flex w-max animate-marquee space-x-12 px-6">
               {[
-                { name: "Python", src: "https://cdn.simpleicons.org/python/white.svg" },
-                { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql/white.svg" },
-                { name: "dbt", src: "https://cdn.simpleicons.org/dbt/white.svg" },
-                { name: "Snowflake", src: "https://cdn.simpleicons.org/snowflake/white.svg" },
-                { name: "Airflow", src: "https://cdn.simpleicons.org/apacheairflow/white.svg" },
-                { name: "FastAPI", src: "https://cdn.simpleicons.org/fastapi/white.svg" },
-                { name: "Next.js", src: "https://cdn.simpleicons.org/nextdotjs/white.svg" },
+                { name: "Python", icon: <Code2 size={16} /> },
+                { name: "PostgreSQL", icon: <Database size={16} /> },
+                { name: "dbt", icon: <Workflow size={16} /> },
+                { name: "Snowflake", icon: <Database size={16} /> },
+                { name: "Airflow", icon: <Server size={16} /> },
+                { name: "FastAPI", icon: <Code2 size={16} /> },
+                { name: "Next.js", icon: <Box size={16} /> },
                 // Duplicate for infinite scroll
-                { name: "Python", src: "https://cdn.simpleicons.org/python/white.svg" },
-                { name: "PostgreSQL", src: "https://cdn.simpleicons.org/postgresql/white.svg" },
-                { name: "dbt", src: "https://cdn.simpleicons.org/dbt/white.svg" },
-                { name: "Snowflake", src: "https://cdn.simpleicons.org/snowflake/white.svg" },
-                { name: "Airflow", src: "https://cdn.simpleicons.org/apacheairflow/white.svg" },
-                { name: "FastAPI", src: "https://cdn.simpleicons.org/fastapi/white.svg" },
-                { name: "Next.js", src: "https://cdn.simpleicons.org/nextdotjs/white.svg" }
+                { name: "Python", icon: <Code2 size={16} /> },
+                { name: "PostgreSQL", icon: <Database size={16} /> },
+                { name: "dbt", icon: <Workflow size={16} /> },
+                { name: "Snowflake", icon: <Database size={16} /> },
+                { name: "Airflow", icon: <Server size={16} /> },
+                { name: "FastAPI", icon: <Code2 size={16} /> },
+                { name: "Next.js", icon: <Box size={16} /> }
               ].map((tech, i) => (
-                <div key={i} className="flex items-center gap-2 shrink-0 filter grayscale hover:grayscale-0 transition-all duration-300">
-                  <Image src={tech.src} alt={tech.name} width={16} height={16} unoptimized className="object-contain" />
-                  <span className="text-[11px] font-black uppercase tracking-widest text-white/50">{tech.name}</span>
+                <div key={i} className="flex items-center gap-2 shrink-0 text-white/50 hover:text-white transition-all duration-300">
+                  {tech.icon}
+                  <span className="text-[11px] font-black uppercase tracking-widest">{tech.name}</span>
                 </div>
               ))}
             </div>
