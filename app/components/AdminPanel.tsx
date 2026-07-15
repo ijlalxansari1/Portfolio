@@ -165,7 +165,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     if (isOpen) {
       const loadData = async () => {
         try {
-          const res = await fetch("/api/data/admin");
+          const res = await fetch("/api/data/admin?all=true");
           const contentType = res.headers.get("content-type");
           if (!res.ok || !contentType || contentType.indexOf("application/json") === -1) {
              throw new Error("Failed to fetch admin data or invalid JSON");

@@ -95,12 +95,12 @@ export default function Home() {
         }
         
         // Accurate server check
-        const res = await fetch("/api/data/admin");
+        const res = await fetch("/api/data/admin?key=admin-config");
         if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
           const { data } = await res.json();
-          if (data && data["admin-config"]) {
-            setIsMaintenanceMode(!!data["admin-config"].maintenanceMode);
-            localStorage.setItem("admin-config", JSON.stringify(data["admin-config"]));
+          if (data) {
+            setIsMaintenanceMode(!!data.maintenanceMode);
+            localStorage.setItem("admin-config", JSON.stringify(data));
           }
         }
       } catch (e) { console.error(e); }

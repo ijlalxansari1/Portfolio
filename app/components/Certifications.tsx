@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { X, Award, Calendar, ExternalLink } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
@@ -25,7 +25,22 @@ export default function Certifications() {
   const [loading, setLoading] = useState(true);
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
+    // Delay fetching by 2 seconds to ensure it doesn't block the initial LCP
+    // but without relying on IntersectionObserver which fails in nested scroll containers
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    
     const fetchCerts = async () => {
       try {
         const res = await fetch("/api/data/admin?key=admin-certs");
@@ -75,19 +90,19 @@ export default function Certifications() {
     const handleUpdate = () => fetchCerts();
     window.addEventListener("admin-updated", handleUpdate);
     return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, []);
-
-  if (loading) return <div className="text-center py-20 text-gray-400 text-sm">{t.loading}</div>;
+  }, [isVisible]);
 
   return (
-    <section id="certifications" className="w-full">
+    <section id="certifications" className="w-full" ref={sectionRef}>
       <div className="mb-12">
         <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">{t.label}</p>
         <h2 className="text-4xl font-bold text-[var(--text-primary)]">{t.title}</h2>
         <div className="w-16 h-1 mt-4 bg-neon-mint rounded-full" />
       </div>
 
-      {certifications.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-20 text-gray-400 text-sm">{t.loading}</div>
+      ) : certifications.length === 0 ? (
         <div className="text-center py-20 text-[var(--text-muted)] text-sm font-medium">{t.empty}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -44,7 +44,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ data: store[key] !== undefined ? store[key] : null });
   }
   
-  return NextResponse.json({ data: store });
+  // Omit massive payloads from the default full fetch to save bandwidth
+  const lightweightStore = { ...store };
+  delete lightweightStore['admin-certs'];
+  
+  return NextResponse.json({ data: lightweightStore });
 }
 
 export async function POST(request: NextRequest) {
