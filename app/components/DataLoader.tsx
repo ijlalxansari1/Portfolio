@@ -28,10 +28,12 @@ export default function DataLoader() {
         console.error("Failed to hydrate local storage from API", e);
       }
     };
-    
-    // Initial hydration only to prevent crashing the server with massive payloads
-    hydrateData();
-    // Removed the 60-second polling to prevent server and DB lockups
+    // Delay hydration to allow initial page animations (fade-in) to complete smoothly
+    const timer = setTimeout(() => {
+      hydrateData();
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
   
   return null;

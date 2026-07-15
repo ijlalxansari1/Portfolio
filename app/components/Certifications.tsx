@@ -110,7 +110,8 @@ export default function Certifications() {
             <motion.div
               key={cert.id}
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: i * 0.08 }}
               whileHover={{ y: -8 }}
               onClick={() => setSelectedCert(cert)}

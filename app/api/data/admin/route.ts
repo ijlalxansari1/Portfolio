@@ -6,12 +6,21 @@ import path from 'path';
 
 const STORE_FILE = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
 
+let memoryStore: any = null;
+let lastModified: number = 0;
+
 // Helper to get all data
 function getStoreData() {
   try {
     if (fs.existsSync(STORE_FILE)) {
+      const stats = fs.statSync(STORE_FILE);
+      if (memoryStore && lastModified === stats.mtimeMs) {
+        return memoryStore;
+      }
       const content = fs.readFileSync(STORE_FILE, 'utf8');
-      return JSON.parse(content);
+      memoryStore = JSON.parse(content);
+      lastModified = stats.mtimeMs;
+      return memoryStore;
     }
   } catch (error) {
     console.error("Error reading admin store:", error);
@@ -40,13 +49,17 @@ export async function GET(request: NextRequest) {
   
   const store = getStoreData();
   
+  const all = searchParams.get('all') === 'true';
+  
   if (key) {
     return NextResponse.json({ data: store[key] !== undefined ? store[key] : null });
   }
   
   // Omit massive payloads from the default full fetch to save bandwidth
   const lightweightStore = { ...store };
-  delete lightweightStore['admin-certs'];
+  if (!all) {
+    delete lightweightStore['admin-certs'];
+  }
   
   return NextResponse.json({ data: lightweightStore });
 }

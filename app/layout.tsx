@@ -34,13 +34,23 @@ import fs from 'fs/promises';
 import path from 'path';
 import { existsSync } from 'fs';
 
+let cachedConfig: any = null;
+let lastModified: number = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
   let config: any = {};
   try {
     const storePath = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
     if (existsSync(storePath)) {
-      const data = await fs.readFile(storePath, 'utf8');
-      config = JSON.parse(data)['admin-config'] || {};
+      const stats = await fs.stat(storePath);
+      if (cachedConfig && lastModified === stats.mtimeMs) {
+        config = cachedConfig;
+      } else {
+        const data = await fs.readFile(storePath, 'utf8');
+        cachedConfig = JSON.parse(data)['admin-config'] || {};
+        lastModified = stats.mtimeMs;
+        config = cachedConfig;
+      }
     }
   } catch (e) {
     console.error("Failed to read SEO config", e);
