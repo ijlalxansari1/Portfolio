@@ -16,6 +16,7 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const moveCursor = (e: MouseEvent) => {
+      if (window.innerWidth < 1024) return;
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
 
@@ -31,7 +32,9 @@ export default function CustomCursor() {
       setIsPointer(isPointerElement);
     };
 
-    window.addEventListener("mousemove", moveCursor);
+    if (window.innerWidth >= 1024) {
+      window.addEventListener("mousemove", moveCursor);
+    }
     return () => window.removeEventListener("mousemove", moveCursor);
   }, [cursorX, cursorY]);
 

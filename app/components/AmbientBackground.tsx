@@ -15,7 +15,7 @@ export default function AmbientBackground() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || window.innerWidth < 1024) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;

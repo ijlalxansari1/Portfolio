@@ -3,11 +3,12 @@ import { Poppins, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "./components/Toast";
 import { ThemeProvider } from "./components/ThemeProvider";
-import CustomCursor from "./components/CustomCursor";
-import { LanguageProvider } from "./context/LanguageContext";
+import dynamic from "next/dynamic";
 import Script from "next/script";
-import DataLoader from "./components/DataLoader";
-import TemporalRadiation from "./components/TemporalRadiation";
+import { LanguageProvider } from "./context/LanguageContext";
+const CustomCursor = dynamic(() => import("./components/CustomCursor"));
+const TemporalRadiation = dynamic(() => import("./components/TemporalRadiation"));
+const DataLoader = dynamic(() => import("./components/DataLoader"));
 import { AudioProvider } from "./context/AudioContext";
 
 const poppins = Poppins({ 

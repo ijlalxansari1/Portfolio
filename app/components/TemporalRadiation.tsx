@@ -22,6 +22,7 @@ export default function TemporalRadiation() {
     let ticking = false;
 
     const handleScroll = () => {
+      if (window.innerWidth <= 768) return;
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
@@ -44,6 +45,7 @@ export default function TemporalRadiation() {
     
     // Decay the distortion back to zero when not scrolling
     const decayInterval = setInterval(() => {
+      if (window.innerWidth <= 768) return;
       const current = distortion.get();
       if (current > 0) {
         distortion.set(Math.max(0, current - 0.1));
