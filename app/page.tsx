@@ -14,16 +14,16 @@ import { useAudio } from "./context/AudioContext";
 import dynamic from "next/dynamic";
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
-import Skills from "./components/Skills";
-import Services from "./components/Services";
-import LanguageSkills from "./components/LanguageSkills";
-import Projects from "./components/Projects";
-import Blog from "./components/Blog";
-import Contact from "./components/Contact";
-import AdminPanel from "./components/AdminPanel";
-import LoginModal from "./components/LoginModal";
-import Certifications from "./components/Certifications";
-import ThemeBuddy from "./components/ThemeBuddy";
+const Skills = dynamic(() => import("./components/Skills"));
+const Services = dynamic(() => import("./components/Services"));
+const LanguageSkills = dynamic(() => import("./components/LanguageSkills"));
+const Projects = dynamic(() => import("./components/Projects"));
+const Blog = dynamic(() => import("./components/Blog"));
+const Contact = dynamic(() => import("./components/Contact"));
+const AdminPanel = dynamic(() => import("./components/AdminPanel"), { ssr: false });
+const LoginModal = dynamic(() => import("./components/LoginModal"), { ssr: false });
+const Certifications = dynamic(() => import("./components/Certifications"));
+const ThemeBuddy = dynamic(() => import("./components/ThemeBuddy"), { ssr: false });
 
 const Terminal = dynamic(() => import("./components/Terminal"), { ssr: false });
 const DemosHub = dynamic(() => import("./components/DemosHub"), { ssr: false });
@@ -34,14 +34,13 @@ const TvaBackground = dynamic(() => import("./components/TvaBackground"), { ssr:
 const VoidBackground = dynamic(() => import("./components/VoidBackground"), { ssr: false });
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
-import LoadingScreen from "./components/LoadingScreen";
 import MaintenanceScreen from "./components/MaintenanceScreen";
 
 export default function Home() {
   const { isPlaying, togglePlay, nextTrack, currentTrack, tracks, volume, setVolume } = useAudio();
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
-  const [bootDone, setBootDone] = useState(false);
+  const [bootDone, setBootDone] = useState(true);
   const [isMaintenanceMode, setIsMaintenanceMode] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -232,7 +231,6 @@ export default function Home() {
 
   return (
     <>
-      <LoadingScreen onComplete={() => setBootDone(true)} />
 
       {isMaintenanceMode && !showAdmin ? (
         <MaintenanceScreen />
