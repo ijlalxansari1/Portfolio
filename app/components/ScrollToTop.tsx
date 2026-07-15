@@ -10,10 +10,20 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollPercentage = (scrollY / (documentHeight - windowHeight)) * 100;
+      let scrollY = 0;
+      let windowHeight = 1;
+      let documentHeight = 1;
+
+      const scrollPanel = document.getElementById('content-scroll-panel');
+      if (window.innerWidth >= 1024 && scrollPanel) {
+        scrollY = scrollPanel.scrollTop;
+        windowHeight = scrollPanel.clientHeight;
+        documentHeight = scrollPanel.scrollHeight;
+      } else {
+        scrollY = window.scrollY;
+        windowHeight = window.innerHeight;
+        documentHeight = document.documentElement.scrollHeight;
+      }
 
       // Show top button when scrolled down more than 300px
       setShowTopButton(scrollY > 300);
@@ -25,27 +35,34 @@ export default function ScrollToTop() {
     // Check on mount
     toggleVisibility();
 
+    const scrollPanel = document.getElementById('content-scroll-panel');
+    if (scrollPanel) scrollPanel.addEventListener("scroll", toggleVisibility);
     window.addEventListener("scroll", toggleVisibility);
     window.addEventListener("resize", toggleVisibility);
     
     return () => {
+      if (scrollPanel) scrollPanel.removeEventListener("scroll", toggleVisibility);
       window.removeEventListener("scroll", toggleVisibility);
       window.removeEventListener("resize", toggleVisibility);
     };
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    const scrollPanel = document.getElementById('content-scroll-panel');
+    if (window.innerWidth >= 1024 && scrollPanel) {
+      scrollPanel.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    });
+    const scrollPanel = document.getElementById('content-scroll-panel');
+    if (window.innerWidth >= 1024 && scrollPanel) {
+      scrollPanel.scrollTo({ top: scrollPanel.scrollHeight, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+    }
   };
 
   return (

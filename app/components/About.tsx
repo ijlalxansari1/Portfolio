@@ -94,7 +94,7 @@ export default function About() {
   const scrollTo = (id: string) => {
     const panel = document.getElementById("content-scroll-panel");
     const target = document.getElementById(id);
-    if (panel && target) panel.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+    if (window.innerWidth >= 1024 && panel && target) panel.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
     else if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
   };
 

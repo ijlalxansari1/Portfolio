@@ -67,7 +67,8 @@ export default function TemporalRadiation() {
       const saturate = 100 + (latest * 100); // Max 200% saturation
       
       // We only apply this heavy filter if distortion is noticeable to save performance
-      if (latest > 0.05) {
+      // Disabled on mobile devices (width <= 768px) to prevent blurry scrolling and lag
+      if (latest > 0.05 && window.innerWidth > 768) {
         document.body.style.filter = `blur(${blurAmt}px) hue-rotate(${hueShift}deg) saturate(${saturate}%)`;
       } else {
         document.body.style.filter = "none";

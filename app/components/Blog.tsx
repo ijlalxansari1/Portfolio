@@ -471,7 +471,7 @@ export default function Blog() {
                   )}
 
                   {/* Discussion Section */}
-                  <div className="border-t border-[var(--border-subtle)] pt-16">
+                  <div id="discussion" className="border-t border-[var(--border-subtle)] pt-16">
                     <h3 className="text-[20px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em] mb-12 flex items-center gap-3">
                       <MessageSquare size={20} className="text-[var(--accent)]" /> {t.discussion} ({(articleComments[activeArticle.id] || []).length})
                     </h3>

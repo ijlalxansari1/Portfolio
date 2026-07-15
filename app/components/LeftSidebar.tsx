@@ -147,7 +147,11 @@ export default function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps
           onClick={() => {
             const panel = document.getElementById("content-scroll-panel");
             const target = document.getElementById("contact");
-            if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+            if (window.innerWidth >= 1024 && panel && target) {
+              panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+            } else if (target) {
+              window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+            }
           }}
           className="flex-1 flex items-center justify-center gap-2 text-[10px] font-black text-[var(--accent)] hover:bg-[var(--accent)]/10 tracking-[0.15em] uppercase transition-all"
         >

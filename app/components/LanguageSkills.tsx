@@ -112,23 +112,23 @@ export default function LanguageSkills() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.05 }}
-                className="flex items-center justify-between gap-6 p-4 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/30 transition-all"
+                className="flex items-center justify-between gap-3 sm:gap-6 p-3 sm:p-4 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/30 transition-all"
               >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="w-16 h-12 rounded-lg overflow-hidden border border-[var(--border-subtle)] shrink-0 flex items-center justify-center bg-[var(--bg-secondary)]">
+                <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                  <div className="w-12 h-9 sm:w-16 sm:h-12 rounded-lg overflow-hidden border border-[var(--border-subtle)] shrink-0 flex items-center justify-center bg-[var(--bg-secondary)]">
                     <img src={flagUrl} alt={lang.name} className="w-full h-full object-cover" />
                   </div>
-                  <span className="text-[14px] font-bold text-[var(--text-primary)] min-w-[80px]">
+                  <span className="text-[13px] sm:text-[14px] font-bold text-[var(--text-primary)] min-w-[60px] sm:min-w-[80px]">
                     {lang.name}
                   </span>
                 </div>
 
                 {/* Progress Dots */}
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                   {Array.from({ length: 10 }).map((_, i) => (
                     <div
                       key={i}
-                      className={`w-2 h-2 rounded-full transition-all ${
+                      className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
                         i < proficiency 
                           ? 'bg-[#00e87a]' 
                           : 'bg-white/20'
@@ -137,7 +137,7 @@ export default function LanguageSkills() {
                   ))}
                 </div>
 
-                <span className="text-[13px] font-black text-[var(--accent)] min-w-[45px] text-right">
+                <span className="text-[12px] sm:text-[13px] font-black text-[var(--accent)] w-[35px] sm:min-w-[45px] text-right shrink-0">
                   {lang.level || 0}%
                 </span>
               </motion.div>

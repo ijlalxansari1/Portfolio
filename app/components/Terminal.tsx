@@ -114,8 +114,11 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
         onClose();
         const contactSection = document.getElementById("contact");
         const panel = document.getElementById("content-scroll-panel");
-        if (contactSection && panel) {
-          panel.scrollTo({ top: contactSection.offsetTop, behavior: "smooth" });
+        const target = document.getElementById("contact");
+        if (window.innerWidth >= 1024 && panel && target) {
+          panel.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+        } else if (target) {
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
         }
         break;
       case "clear":

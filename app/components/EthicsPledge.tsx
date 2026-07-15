@@ -69,7 +69,11 @@ export default function EthicsPledge() {
                   onClick={() => {
                     const panel = document.getElementById("content-scroll-panel");
                     const target = document.getElementById("projects");
-                    if (panel && target) panel.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+                    if (window.innerWidth >= 1024 && panel && target) {
+                      panel.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+                    } else if (target) {
+                      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+                    }
                   }}
                   className="flex items-center gap-3 px-8 py-4 bg-[var(--accent)] text-black text-[12px] font-black uppercase tracking-[2px] rounded-full hover:scale-105 transition-all shadow-xl"
                 >
