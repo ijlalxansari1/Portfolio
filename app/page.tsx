@@ -10,7 +10,6 @@ import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { useLanguage } from "./context/LanguageContext";
 import { translations } from "./context/translations";
-import { useAudio } from "./context/AudioContext";
 import dynamic from "next/dynamic";
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
@@ -29,15 +28,11 @@ const Terminal = dynamic(() => import("./components/Terminal"), { ssr: false });
 const DemosHub = dynamic(() => import("./components/DemosHub"), { ssr: false });
 const DataOps = dynamic(() => import("./components/DataOps"), { ssr: false });
 const AmbientBackground = dynamic(() => import("./components/AmbientBackground"), { ssr: false });
-const LokiMultiverseBackground = dynamic(() => import("./components/LokiMultiverseBackground"), { ssr: false });
-const TvaBackground = dynamic(() => import("./components/TvaBackground"), { ssr: false });
-const VoidBackground = dynamic(() => import("./components/VoidBackground"), { ssr: false });
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import MaintenanceScreen from "./components/MaintenanceScreen";
 
 export default function Home() {
-  const { isPlaying, togglePlay, nextTrack, currentTrack, tracks, volume, setVolume } = useAudio();
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
   const [bootDone, setBootDone] = useState(true);
@@ -75,7 +70,7 @@ export default function Home() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const isNarrativeTheme = theme === "loki" || theme === "tva" || theme === "void";
+  const isNarrativeTheme = false;
 
   // Force-disable animations on mobile via Tailwind override class to prevent Framer Motion hydration bugs
   const mobileNoAnimClass = "max-lg:!opacity-100 max-lg:!transform-none";
@@ -101,7 +96,7 @@ export default function Home() {
         
         // Accurate server check
         const res = await fetch("/api/data/admin");
-        if (res.ok) {
+        if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
           const { data } = await res.json();
           if (data && data["admin-config"]) {
             setIsMaintenanceMode(!!data["admin-config"].maintenanceMode);
@@ -125,10 +120,6 @@ export default function Home() {
   };
 
   const scrollToSection = (id: string) => {
-    if (theme === "loki" || theme === "tva") {
-      setIsTimeSlipping(true);
-      setTimeout(() => setIsTimeSlipping(false), 600);
-    }
     const target = document.getElementById(id);
     if (target) {
       isScrollingRef.current = true; // Lock intersection observer
@@ -241,9 +232,6 @@ export default function Home() {
             <div className="fixed inset-0 z-0 pointer-events-none">
               {(!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
               <AnimatePresence>
-                {theme === "loki" && <LokiMultiverseBackground />}
-                {theme === "tva" && <TvaBackground />}
-                {theme === "void" && <VoidBackground />}
               </AnimatePresence>
             </div>
           )}
@@ -271,10 +259,6 @@ export default function Home() {
             <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">{translations[language].mobileHeader.role}</span>
           </div>
           <div className="flex items-center gap-3">
-            {/* Next Track button moved to mobile menu */}
-            <button onClick={togglePlay} className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all shadow-sm" aria-label="Toggle background music">
-              {isPlaying ? <Volume2 size={20} className="text-[var(--accent)] animate-pulse" /> : <VolumeX size={20} className="opacity-55" />}
-            </button>
             <div className="ml-1.5"><ThemeBuddy /></div>
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] shadow-sm">
               {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -303,29 +287,6 @@ export default function Home() {
                     </button>
                   ))}
                 </div>
-                <div className="w-full relative z-10 px-2 py-4 mb-2 mt-4 bg-[var(--bg-primary)]/50 rounded-2xl border border-[var(--border-subtle)]">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] flex items-center gap-2">
-                      <Volume2 size={12} className="text-[var(--accent)]" />
-                      Music Control
-                    </label>
-                    <span className="text-[10px] font-bold text-[var(--text-muted)]">{Math.round(volume * 100)}%</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {tracks?.length > 1 && (
-                      <button onClick={nextTrack} className="w-8 h-8 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all shrink-0" aria-label="Next background track">
-                        <SkipForward size={14} />
-                      </button>
-                    )}
-                    <input 
-                      type="range" 
-                      min="0" max="1" step="0.01" 
-                      value={volume} 
-                      onChange={(e) => setVolume(parseFloat(e.target.value))}
-                      className="w-full h-1.5 bg-[var(--border-subtle)] rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
-                    />
-                  </div>
-                </div>
                 <div className="mt-auto pt-4 border-t border-[var(--border-subtle)]"><ThemeBuddy /></div>
               </motion.div>
             </>
@@ -336,29 +297,6 @@ export default function Home() {
         <nav className="hidden md:flex fixed left-4 top-4 bottom-4 lg:w-[62px] lg:min-h-[calc(100dvh-2rem)] bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-4 rounded-[24px] flex-row md:flex-col items-center justify-between gap-4 md:gap-6 lg:gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
           <div className="flex flex-row md:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-3 overflow-x-auto md:overflow-x-visible custom-scrollbar-hidden w-full md:w-auto px-1 md:px-0">
             <div className="block lg:mb-2"><ThemeBuddy /></div>
-            {/* Next Track button moved inside music popover */}
-            <div className="group relative flex items-center">
-              <button onClick={togglePlay} className={`w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${isPlaying ? "bg-[var(--accent)]/15 text-[var(--accent)] shadow-[0_0_15px_rgba(var(--accent-rgb),0.15)]" : "text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)]"}`} aria-label="Toggle background music">
-                {isPlaying ? <Volume2 size={18} className="animate-pulse" /> : <VolumeX size={18} />}
-              </button>
-              <div className="hidden lg:flex pointer-events-none absolute left-[calc(100%+16px)] flex-row items-center gap-3 px-4 py-2.5 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-all -translate-x-2 group-hover:translate-x-0 z-[9999] shadow-2xl before:content-[''] before:absolute before:-left-4 before:top-0 before:w-4 before:h-full">
-                {tracks?.length > 1 && (
-                  <button onClick={nextTrack} className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--text-secondary)] bg-[var(--bg-primary)] border border-[var(--border-subtle)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all shrink-0" aria-label="Next track">
-                    <SkipForward size={12} />
-                  </button>
-                )}
-                <span className="text-[var(--accent)] text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap min-w-[100px] truncate max-w-[150px]">
-                  {isPlaying && currentTrack ? currentTrack.title : "Volume"}
-                </span>
-                <input 
-                  type="range" 
-                  min="0" max="1" step="0.01" 
-                  value={volume} 
-                  onChange={(e) => setVolume(parseFloat(e.target.value))}
-                  className="w-24 h-1 bg-[var(--border)] rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
-                />
-              </div>
-            </div>
             {navItems.map((item) => (
               <button key={item.id} onClick={() => scrollToSection(item.id)} className={`group relative min-w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${activeSection === item.id ? "bg-[var(--accent)]/15 text-[var(--accent)]" : "text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)]"}`}>
                 {item.icon}
@@ -382,17 +320,7 @@ export default function Home() {
 
             <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={!isMobileView ? { transform: "translateZ(20px)" } : {}}>
               <main ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
-                <style dangerouslySetInnerHTML={{__html: `
-                  @keyframes time-slip {
-                    0%   { transform: scaleX(1) skewX(0); filter: hue-rotate(0deg) contrast(1); }
-                    15%  { transform: scaleX(1.1) skewX(10deg) translateX(-10px); filter: hue-rotate(90deg) contrast(1.5) saturate(2); }
-                    30%  { transform: scaleX(0.8) skewX(-10deg) translateX(10px); filter: hue-rotate(-90deg) contrast(2) saturate(3); opacity: 0.8; }
-                    45%  { transform: scaleX(1.1) skewX(5deg) translateX(-5px); filter: hue-rotate(180deg) contrast(1.2); }
-                    100% { transform: scaleX(1) skewX(0) translateX(0); filter: hue-rotate(0deg) contrast(1) saturate(1); opacity: 1; }
-                  }
-                  .time-slip-anim { animation: time-slip 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-                `}} />
-                <div id="sections-container" className={`p-3 md:p-6 lg:p-8 space-y-3 lg:space-y-6 relative origin-center ${isTimeSlipping ? 'time-slip-anim pointer-events-none' : ''}`}>
+                <div id="sections-container" className={`p-3 md:p-6 lg:p-8 space-y-3 lg:space-y-6 relative origin-center`}>
 
                   {/* 1. Hero / About */}
                   <motion.section {...scrollAnim} className={`${mobileNoAnimClass} !pt-0`} id="about"><About /></motion.section>
@@ -509,3 +437,4 @@ export default function Home() {
     </>
   );
 }
+

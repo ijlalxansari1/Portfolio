@@ -6,10 +6,9 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import { LanguageProvider } from "./context/LanguageContext";
-const CustomCursor = dynamic(() => import("./components/CustomCursor"));
 const TemporalRadiation = dynamic(() => import("./components/TemporalRadiation"));
 const DataLoader = dynamic(() => import("./components/DataLoader"));
-import { AudioProvider } from "./context/AudioContext";
+const CustomCursor = dynamic(() => import("./components/CustomCursor"));
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -177,16 +176,14 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" strategy="lazyOnload" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'tva', 'slate', 'bordeaux', 'void']}>
+        <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'slate']}>
           <LanguageProvider>
-            <AudioProvider>
               <CustomCursor />
               <TemporalRadiation />
               <DataLoader />
               <ToastProvider>
                 {children}
               </ToastProvider>
-            </AudioProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

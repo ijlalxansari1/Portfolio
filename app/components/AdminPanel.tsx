@@ -166,6 +166,10 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
       const loadData = async () => {
         try {
           const res = await fetch("/api/data/admin");
+          const contentType = res.headers.get("content-type");
+          if (!res.ok || !contentType || contentType.indexOf("application/json") === -1) {
+             throw new Error("Failed to fetch admin data or invalid JSON");
+          }
           const { data } = await res.json();
           const get = (key: string, fallback: any) => (data && data[key] !== undefined) ? data[key] : fallback;
 
@@ -434,7 +438,6 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
                 { id: "Milestones", icon: <Briefcase size={16} />, color: "text-amber-400", badge: milestones.length },
                 { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: certs.length },
-                { id: "Music", icon: <Music size={16} />, color: "text-pink-400", badge: bgMusic.length },
                 { id: "Site Config", icon: <Globe size={16} />, color: "text-cyan-400", badge: 0 }
               ].map((tab) => (
                 <button
@@ -2131,6 +2134,157 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                        ))}
                      </div>
                    </motion.div>
+                )}
+
+                {/* ── SITE CONFIG TAB ── */}
+                {activeTab === "Site Config" && (
+                   <motion.div key="site-config" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                     <div className="flex justify-between items-end">
+                       <div className="space-y-2">
+                         <h3 className="text-[12px] font-black text-cyan-400 uppercase tracking-[4px]">Global Configuration</h3>
+                         <p className="text-[14px] text-white/40 font-medium max-w-md">Manage site-wide settings like SEO metadata and maintenance mode.</p>
+                       </div>
+                       <button onClick={() => saveData("admin-config", siteConfig)} className="flex items-center gap-2 px-6 py-3 bg-[var(--accent)] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">
+                         <Save size={14} /> Save Config
+                       </button>
+                     </div>
+
+                     <div className="space-y-6 max-w-3xl">
+                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-6">
+                         <div className="space-y-2">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">Site Title</label>
+                           <input type="text" value={siteConfig?.title || ""} onChange={(e) => setSiteConfig({ ...siteConfig, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold outline-none focus:border-[var(--accent)]" placeholder="e.g. John Doe - Data Engineer" />
+                         </div>
+                         <div className="space-y-2">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">SEO Description</label>
+                           <textarea value={siteConfig?.description || ""} onChange={(e) => setSiteConfig({ ...siteConfig, description: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-[13px] outline-none focus:border-[var(--accent)] min-h-[100px] resize-none" placeholder="Meta description for search engines..." />
+                         </div>
+                         <div className="space-y-2">
+                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">Keywords (comma separated)</label>
+                           <input type="text" value={siteConfig?.keywords || ""} onChange={(e) => setSiteConfig({ ...siteConfig, keywords: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-[13px] outline-none focus:border-[var(--accent)]" placeholder="data engineer, analytics, python..." />
+                         </div>
+                         <div className="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/10 rounded-2xl">
+                           <div>
+                             <h4 className="text-[13px] font-black text-red-400">Maintenance Mode</h4>
+                             <p className="text-[11px] text-white/40">Disable public access to the portfolio.</p>
+                           </div>
+                           <button onClick={() => {
+                             const newConfig = { ...siteConfig, maintenanceMode: !siteConfig?.maintenanceMode };
+                             setSiteConfig(newConfig);
+                             saveData("admin-config", newConfig);
+                           }} className={`w-14 h-8 rounded-full transition-all relative ${siteConfig?.maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}>
+                             <div className={`w-6 h-6 rounded-full bg-white absolute top-1 transition-all ${siteConfig?.maintenanceMode ? 'left-7' : 'left-1'}`} />
+                           </button>
+                         </div>
+                       </div>
+                     </div>
+                   </motion.div>
+                )}
+
+                {/* ── SETTINGS TAB ── */}
+                {activeTab === "Settings" && (
+                   <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-xl mx-auto space-y-12">
+                      <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-8">
+                         <div className="flex items-center gap-4">
+                            <Palette size={20} className="text-blue-400" />
+                            <h4 className="text-[14px] font-black text-white uppercase tracking-widest">Interface Theme</h4>
+                         </div>
+                         <div className="grid grid-cols-3 gap-4">
+                            {['Cyber', 'Classic', 'Aether'].map(t => (
+                               <button key={t} className={`py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${t === 'Aether' ? 'bg-[var(--accent)] text-black shadow-xl' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                                  {t} Mode
+                               </button>
+                            ))}
+                         </div>
+                      </div>
+                      <button onClick={() => {
+                         sessionStorage.removeItem("aether-admin-session");
+                         onClose();
+                         window.location.reload();
+                      }} className="w-full py-6 bg-red-500/10 text-red-400 border border-red-500/20 rounded-[32px] font-black uppercase text-[11px] tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-4">
+                         <LogOut size={20} /> Terminate Operational Session
+                      </button>
+                   </motion.div>
+                )}
+                {/* ── SECURITY TAB ── */}
+                {activeTab === "Security" && (
+                  <motion.div key="security" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
+                    <div className="space-y-2">
+                       <h3 className="text-[12px] font-black text-emerald-400 uppercase tracking-[4px]">Security & Architecture Audit</h3>
+                       <p className="text-[14px] text-white/40 font-medium max-w-md">System-wide check for data integrity and security measures.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                       <div className="lg:col-span-1 space-y-6">
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                            <div className="flex items-center gap-3 text-emerald-400/60 mb-2">
+                               <ShieldCheck size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Auth Status</span>
+                            </div>
+                            <div className="text-3xl font-black text-white">Active Token</div>
+                            <p className="text-[11px] text-white/30 leading-relaxed font-medium">Session cryptographically verified via server-side gateway.</p>
+                         </div>
+                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
+                            <div className="flex items-center gap-3 text-blue-400/60 mb-2">
+                               <BarChart3 size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Data Objects</span>
+                            </div>
+                            <div className="text-3xl font-black text-white">{systemAudit?.items || 0}</div>
+                            <p className="text-[11px] text-white/30 leading-relaxed font-medium">Total registered entities in remote cluster.</p>
+                         </div>
+                       </div>
+
+                       <div className="lg:col-span-2 p-8 bg-black border border-white/10 rounded-[32px] space-y-6 font-mono relative overflow-hidden group">
+                         <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                           <div className="flex items-center gap-3 text-emerald-400">
+                             <Cpu size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">System Audit Trail</span>
+                           </div>
+                           <div className="flex gap-1.5">
+                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
+                           </div>
+                         </div>
+                         <div className="h-[250px] overflow-y-auto space-y-2 text-[11px] pr-2">
+                           {systemLogs.length === 0 ? (
+                             <div className="text-white/20">No system events recorded yet...</div>
+                           ) : (
+                             systemLogs.map((log, i) => (
+                               <div key={i} className="flex gap-4 items-start">
+                                 <span className="text-emerald-500/50 shrink-0">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                                 <span className={log.type === 'error' ? 'text-red-400' : 'text-white/60'}>{log.action}</span>
+                               </div>
+                             ))
+                           )}
+                         </div>
+                         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-50" />
+                       </div>
+                    </div>
+
+                    <div className="p-10 bg-red-500/5 border border-red-500/10 rounded-[40px] space-y-6">
+                       <div className="flex items-center gap-4 text-red-400">
+                          <Zap size={20} />
+                          <h4 className="text-[14px] font-black uppercase tracking-widest">Destructive Actions</h4>
+                       </div>
+                       <p className="text-[12px] text-white/40 leading-relaxed max-w-2xl">
+                          Purging data will remove all configurations from the server. This action cannot be undone.
+                       </p>
+                       <div className="flex gap-4">
+                          <button 
+                            onClick={async () => {
+                               if (confirm("Initiate total system reset? This wipes ALL data.")) {
+                                  try {
+                                    const token = sessionStorage.getItem("aether-admin-session");
+                                    await fetch("/api/data/admin", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify({ key: "admin-projects", data: [] }) });
+                                    window.location.reload();
+                                  } catch (e) { console.error(e); }
+                               }
+                            }}
+                            className="px-8 py-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                          >
+                             Purge Database
+                          </button>
+                       </div>
+                    </div>
+                  </motion.div>
                 )}
 
                 {/* ── SITE CONFIG TAB ── */}

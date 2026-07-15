@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Wrench } from "lucide-react";
-import LokiMultiverseBackground from "./LokiMultiverseBackground";
+
 
 export default function MaintenanceScreen() {
   const [mounted, setMounted] = useState(false);
@@ -16,8 +16,7 @@ export default function MaintenanceScreen() {
 
   return (
     <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center text-white overflow-hidden bg-[#02040A]/80">
-      {/* Animated Vines Canvas Layer */}
-      <LokiMultiverseBackground forceRender={true} hideImages={true} />
+
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}

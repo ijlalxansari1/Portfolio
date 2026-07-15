@@ -29,12 +29,9 @@ export default function DataLoader() {
       }
     };
     
-    // Initial hydration
+    // Initial hydration only to prevent crashing the server with massive payloads
     hydrateData();
-    
-    // Poll every 60 seconds for live updates from admin changes
-    const interval = setInterval(hydrateData, 60000);
-    return () => clearInterval(interval);
+    // Removed the 60-second polling to prevent server and DB lockups
   }, []);
   
   return null;

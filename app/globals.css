@@ -18,97 +18,45 @@
   --border: #222222;
   --border-subtle: rgba(255, 255, 255, 0.05);
 }
-
-
-/* ── LOKI (GOD OF STORIES) THEME ── */
-html.loki {
-  --bg-primary: #02040a;
-  --bg-secondary: rgba(10, 15, 26, 0.5);
-  --bg-card: rgba(15, 20, 35, 0.5);
-  --foreground: #e2e8f0;
-  --accent: #fbbf24;
-  --accent-rgb: 251, 191, 36;
+/* ── MIDNIGHT THEME ── */
+html.midnight {
+  --bg-primary: #020617;
+  --bg-secondary: rgba(15, 23, 42, 0.5);
+  --bg-card: rgba(30, 41, 59, 0.5);
+  --foreground: #f8fafc;
+  --accent: #3b82f6;
+  --accent-rgb: 59, 130, 246;
   --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
+  --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --border: #1e293b;
-  --border-subtle: rgba(251, 191, 36, 0.15);
+  --border-subtle: rgba(59, 130, 246, 0.15);
 }
 
 /* ── MIDNIGHT THEME ── */
 html.midnight {
-  --bg-primary: #05060f;
-  --bg-secondary: rgba(10, 11, 30, 0.5);
-  --bg-card: rgba(15, 17, 42, 0.5);
-  --border: #1a1c3d;
-  --text-secondary: #8a8fb5;
-}
-
-/* ── TVA THEME ── */
-html.tva {
-  --bg-primary: #1c140d;
-  --bg-secondary: rgba(43, 26, 12, 0.5);
-  --bg-card: rgba(61, 35, 14, 0.5);
-  --foreground: #fde8d0;
-  --accent: #ff8c00;
-  --accent-rgb: 255, 140, 0;
-  --text-primary: #ffd6a5;
-  --text-secondary: #cfa881;
-  --text-muted: #8b6b4a;
-  --border: #4a2c11;
-  --border-subtle: rgba(255, 140, 0, 0.15);
-}
-
-/* ── VOID THEME ── */
-html.void {
-  --bg-primary: #121212;
-  --bg-secondary: rgba(28, 28, 28, 0.5);
-  --bg-card: rgba(40, 40, 40, 0.5);
-  --foreground: #e0e0e0;
-  --accent: #d4af37;
-  --accent-rgb: 212, 175, 55;
-  --text-primary: #f5f5f5;
-  --text-secondary: #c0c0c0;
-  --text-muted: #888888;
-  --border: #333333;
-  --border-subtle: rgba(212, 175, 55, 0.15);
+  --bg-primary: #020617;
+  --bg-secondary: rgba(15, 23, 42, 0.5);
+  --bg-card: rgba(30, 41, 59, 0.5);
+  --foreground: #f8fafc;
+  --accent: #3b82f6;
+  --accent-rgb: 59, 130, 246;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #1e293b;
+  --border-subtle: rgba(59, 130, 246, 0.15);
 }
 
 /* ── SLATE THEME ── */
 html.slate {
-  --bg-primary: #0f1115;
-  --bg-secondary: rgba(26, 29, 35, 0.5);
-  --bg-card: rgba(36, 41, 48, 0.5);
-  --border: #3d444d;
-  --text-secondary: #b5bdc8;
+  --bg-primary: #0f172a;
+  --bg-secondary: rgba(30, 41, 59, 0.5);
+  --bg-card: rgba(51, 65, 85, 0.5);
+  --border: #475569;
+  --text-secondary: #cbd5e1;
 }
 
-/* ── BORDEAUX THEME ── */
-html.bordeaux {
-  --bg-primary: #080404;
-  --bg-secondary: rgba(26, 10, 10, 0.5);
-  --bg-card: rgba(37, 15, 15, 0.5);
-  --border: #3d1a1a;
-  --text-secondary: #b58a8a;
-}
-
-/* ── SUNSET THEME ── */
-html.sunset {
-  --bg-primary: #180f12;
-  --bg-secondary: rgba(45, 18, 22, 0.5);
-  --bg-card: rgba(60, 24, 30, 0.5);
-  --text-primary: #fef2f2;
-  --text-secondary: #fca5a5;
-  --text-muted: #ef4444;
-  --accent: #f97316;
-  --accent-rgb: 249, 115, 22;
-  --border: #581c24;
-  --border-subtle: rgba(249, 115, 22, 0.15);
-}
-
-
-
-/* ── ACCENT COLOR VARIANTS ── */
 html[data-accent="blue"] { --accent: #3b82f6; --accent-rgb: 59, 130, 246; }
 html[data-accent="purple"] { --accent: #a855f7; --accent-rgb: 168, 85, 247; }
 html[data-accent="orange"] { --accent: #f97316; --accent-rgb: 249, 115, 22; }
