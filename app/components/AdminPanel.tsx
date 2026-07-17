@@ -198,83 +198,37 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setToolSkills(toolsData.tools || defaultTools);
           setBgMusic(get("admin-bg-music", []));
           setDemos(get("admin-demos", []));
-          const rawServices = get("admin-services", null);
+          const rawServices = get("admin-services-jr", null);
           const defaultAdminServices = [
             { 
-              id: 1, title: "Data Pipelines & Integration", icon: "Workflow", status: "Published", badge: "DataOps",
-              summary: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation.",
-              body: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation using Python, SQL, and orchestration tools.",
-              deliverables: ["Custom Extract/Load connect", "dbt data transformations", "Airflow/Dagster automation"],
+              id: 1, title: "ETL / ELT Pipelines", icon: "Workflow", status: "Published", badge: "DataOps",
+              summary: "Building and maintaining basic data pipelines to extract, transform, and load data.",
+              body: "Building and maintaining basic data pipelines to extract, transform, and load data using Python and SQL.",
               link: "Let's Connect", href: "#contact"
             },
             { 
-              id: 2, title: "Database Architecture", icon: "Database", status: "Published", badge: "Data Platforms",
-              summary: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing.",
-              body: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing, and query optimization.",
-              deliverables: ["Star/Snowflake Schemas", "Query Optimization", "Performance Indexing"],
+              id: 2, title: "SQL & Database Maintenance", icon: "Database", status: "Published", badge: "Data Platforms",
+              summary: "Writing efficient queries, managing tables, and assisting with database upkeep.",
+              body: "Writing efficient queries, managing tables, and assisting with database upkeep and performance indexing.",
               link: "Let's Connect", href: "#contact"
             },
             { 
-              id: 3, title: "Data Quality & Validation", icon: "ShieldCheck", status: "Published", badge: "Reliability",
-              summary: "Implement validation rules, schema checks, duplicate detection, missing value handling, and monitoring.",
-              body: "Implement validation rules, schema checks, duplicate detection, missing value handling, and comprehensive data quality monitoring.",
-              deliverables: ["Automated schema checks", "Anomaly detection", "Data quality monitoring"],
+              id: 3, title: "Data Cleaning & Prep", icon: "Globe", status: "Published", badge: "Analysis",
+              summary: "Scraping, cleaning, and formatting raw datasets for analysis or dashboards.",
+              body: "Scraping, cleaning, and formatting raw datasets from diverse sources for downstream analysis or dashboards.",
               link: "Let's Connect", href: "#contact"
             },
             { 
-              id: 4, title: "Data Governance", icon: "Network", status: "Published", badge: "Governance",
-              summary: "Design data systems with documentation, audit trails, access control, metadata management, and best practices.",
-              body: "Design data systems with documentation, audit trails, access control, metadata management, and governance best practices.",
-              deliverables: ["Audit trails", "Role-Based Access", "Metadata management"],
+              id: 4, title: "Documentation & Testing", icon: "BookOpen", status: "Published", badge: "Governance",
+              summary: "Writing clear technical docs and adding basic data quality tests to pipelines.",
+              body: "Writing clear technical docs, documenting pipelines, and adding basic data quality and validation tests.",
               link: "Let's Connect", href: "#contact"
-            },
-            { 
-              id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published", badge: "BI & Analytics",
-              summary: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting.",
-              body: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting, and data-driven insights.",
-              deliverables: ["Dimensional modeling", "Dashboard ready datasets", "BI Integration"],
-              link: "Let's Connect", href: "#contact"
-            },
-            { 
-              id: 6, title: "Pipeline Reliability & Monitoring", icon: "Activity", status: "Published", badge: "Ops",
-              summary: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, testing, and CI/CD.",
-              body: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, DataOps practices, testing, and CI/CD deployment.",
-              deliverables: ["Error handling & retries", "CI/CD deployment", "DataOps practices"],
-              link: "Let's Connect", href: "#contact"
-            },
-            { 
-              id: 7, title: "API Development", icon: "Code2", status: "Published", badge: "Integration",
-              summary: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
-              body: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.",
-              deliverables: ["FastAPI microservices", "Secure data access", "Rate limiting & logging"],
-              link: "Let's Connect", href: "#contact"
-            },
-            { 
-              id: 8, title: "Web Scraping & Data Collection", icon: "Globe", status: "Published", badge: "Data Collection",
-              summary: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources.",
-              body: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources, and third-party services for downstream processing.",
-              deliverables: ["Automated Scrapers", "API Integrations", "Data Parsing"],
-              link: "Let's Connect", href: "#contact"
-            },
-            { 
-              id: 9, title: "Performance Optimization", icon: "Zap", status: "Published", badge: "Scale",
-              summary: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability.",
-              body: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability for production performance.",
-              deliverables: ["SQL tuning", "Pipeline scaling", "Storage efficiency"],
-              link: "Let's Connect", href: "#contact"
-            },
-            { 
-              id: 10, title: "Technical Documentation", icon: "BookOpen", status: "Published", badge: "Documentation",
-              summary: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation.",
-              body: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation for maintainability and knowledge sharing.",
-              deliverables: ["Architecture diagrams", "Data dictionaries", "Pipeline documentation"],
-              link: "Let's Connect", href: "#contact"
-            },
+            }
           ];
           
-          if (!rawServices || rawServices.length < 5) {
+          if (!rawServices || rawServices.length < 4) {
             setServicesData(defaultAdminServices);
-            saveData("admin-services", defaultAdminServices);
+            saveData("admin-services-jr", defaultAdminServices);
           } else {
             const mergedMap = new Map();
             defaultAdminServices.forEach(s => mergedMap.set(s.title, s));
@@ -289,7 +243,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
             });
             const mergedArr = Array.from(mergedMap.values());
             setServicesData(mergedArr);
-            saveData("admin-services", mergedArr);
+            saveData("admin-services-jr", mergedArr);
           }
           setGithubRepos(get("admin-github-repos", defaultGithubRepos));
           setSiteConfig(get("admin-config", { title: "Portfolio", description: "Data Engineer Portfolio", maintenanceMode: false }));
@@ -434,7 +388,6 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                 { id: "Demos", icon: <FlaskConical size={16} />, color: "text-indigo-400", badge: 0 },
                 { id: "GitHub", icon: <Github size={16} />, color: "text-white", badge: 0 },
                 { id: "Manifesto", icon: <Bold size={16} />, color: "text-[var(--accent)]", badge: 0 },
-                { id: "Activity Log", icon: <Zap size={16} />, color: "text-yellow-400", badge: 0 },
                 { id: "Resume", icon: <Landmark size={16} /> as any, color: "text-orange-400", badge: 0 },
                 { id: "Milestones", icon: <Briefcase size={16} />, color: "text-amber-400", badge: milestones.length },
                 { id: "Certifications", icon: <Award size={16} />, color: "text-yellow-400", badge: certs.length },
@@ -845,7 +798,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                         <button onClick={() => {
                           const updated = [{ id: Date.now(), title: "New Service", badge: "Category", body: "Description of the service...", link: "See My Work", icon: "Activity", status: "Published" }, ...servicesData];
                           setServicesData(updated);
-                          saveData("admin-services", updated);
+                          saveData("admin-services-jr", updated);
                         }} className="group flex items-center gap-3 px-8 py-4 bg-amber-500 text-black rounded-3xl text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl">
                           <Plus size={18} /> Add Service
                         </button>
@@ -859,40 +812,40 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           >
                              <div className="flex justify-between gap-4">
                                 <div className="flex-1 space-y-4">
-                                   <input type="text" value={s.title} onChange={e => { const n = [...servicesData]; n[i].title = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-white font-black text-[22px] outline-none w-full" placeholder="Service Title" />
+                                   <input type="text" value={s.title} onChange={e => { const n = [...servicesData]; n[i].title = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services-jr", servicesData)} className="bg-transparent text-white font-black text-[22px] outline-none w-full" placeholder="Service Title" />
                                    <div className="flex items-center gap-3">
                                       <Tag size={12} className="text-amber-400" />
-                                      <input type="text" value={s.badge} onChange={e => { const n = [...servicesData]; n[i].badge = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-white/40 font-bold text-[10px] uppercase tracking-widest outline-none" placeholder="Badge/Category" />
+                                      <input type="text" value={s.badge} onChange={e => { const n = [...servicesData]; n[i].badge = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services-jr", servicesData)} className="bg-transparent text-white/40 font-bold text-[10px] uppercase tracking-widest outline-none" placeholder="Badge/Category" />
                                    </div>
                                 </div>
-                                <button onClick={() => { if(confirm("Delete this service?")) { const updated = servicesData.filter(x => x.id !== s.id); setServicesData(updated); saveData("admin-services", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
+                                <button onClick={() => { if(confirm("Delete this service?")) { const updated = servicesData.filter(x => x.id !== s.id); setServicesData(updated); saveData("admin-services-jr", updated); } }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 border border-red-500/10"><Trash2 size={16} /></button>
                              </div>
 
                              <div className="flex items-start gap-4">
                                <div className="w-20 h-20 shrink-0">
                                  <ImageUpload 
-                                    onUpload={(url) => { const n = [...servicesData]; n[i].iconUrl = url; setServicesData(n); saveData("admin-services", n); }} 
+                                    onUpload={(url) => { const n = [...servicesData]; n[i].iconUrl = url; setServicesData(n); saveData("admin-services-jr", n); }} 
                                     defaultImage={s.iconUrl}
                                     className="h-full w-full"
                                     iconOnly={true}
                                  />
                                </div>
-                               <textarea value={s.body} onChange={e => { const n = [...servicesData]; n[i].body = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Describe what you provide..." />
+                               <textarea value={s.body} onChange={e => { const n = [...servicesData]; n[i].body = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services-jr", servicesData)} className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] text-white/50 outline-none h-24 resize-none" placeholder="Describe what you provide..." />
                              </div>
 
                              <div className="space-y-3 pt-4 border-t border-white/5">
                                 <div className="flex flex-col sm:flex-row gap-3">
                                   <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex-1">
                                     <LinkIcon size={14} className="text-white/30" />
-                                    <input type="text" value={s.link || ""} onChange={e => { const n = [...servicesData]; n[i].link = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none flex-1" placeholder="Button Text" />
+                                    <input type="text" value={s.link || ""} onChange={e => { const n = [...servicesData]; n[i].link = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services-jr", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none flex-1" placeholder="Button Text" />
                                   </div>
                                   <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex-1">
                                     <LinkIcon size={14} className="text-white/30" />
-                                    <input type="text" value={s.href || ""} onChange={e => { const n = [...servicesData]; n[i].href = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none flex-1" placeholder="https://... or #section" />
+                                    <input type="text" value={s.href || ""} onChange={e => { const n = [...servicesData]; n[i].href = e.target.value; setServicesData(n); }} onBlur={() => saveData("admin-services-jr", servicesData)} className="bg-transparent text-[10px] font-black uppercase text-white outline-none flex-1" placeholder="https://... or #section" />
                                   </div>
                                 </div>
                                 <div className="flex justify-end">
-                                  <select value={s.status} onChange={e => { const n = [...servicesData]; n[i].status = e.target.value; setServicesData(n); saveData("admin-services", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
+                                  <select value={s.status} onChange={e => { const n = [...servicesData]; n[i].status = e.target.value; setServicesData(n); saveData("admin-services-jr", n); }} className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white/40 outline-none">
                                     <option value="Published">Published</option>
                                     <option value="Draft">Draft</option>
                                   </select>
@@ -987,66 +940,6 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                    </motion.div>
                  )}
 
-                {/* ── ACTIVITY LOG TAB ── */}
-                {activeTab === "Activity Log" && (
-                   <motion.div key="activity" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-12">
-                      <div className="space-y-2">
-                         <h3 className="text-[12px] font-black text-yellow-400 uppercase tracking-[4px]">Activity & Key Stats</h3>
-                         <p className="text-[14px] text-white/40 font-medium max-w-md">Update your live hero statistics and log recent activities.</p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                         {/* Projects Stat */}
-                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] flex flex-col items-center text-center space-y-4 relative">
-                            <Zap size={24} className="text-yellow-400" />
-                            <div className="space-y-1">
-                               <input type="number" value={keystats.projects} onChange={e => setKeystats({...keystats, projects: Number(e.target.value)})} onBlur={() => saveData("admin-keystats", keystats)} className="bg-transparent text-white font-black text-[32px] text-center outline-none w-24" />
-                               <span className="block text-[10px] font-black text-white/40 uppercase tracking-widest">Projects Built</span>
-                            </div>
-                            <div className="flex gap-2">
-                               <button onClick={() => { const n = {...keystats, projects: keystats.projects - 1}; setKeystats(n); saveData("admin-keystats", n); }} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">-</button>
-                               <button onClick={() => { const n = {...keystats, projects: keystats.projects + 1}; setKeystats(n); saveData("admin-keystats", n); }} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">+</button>
-                            </div>
-                         </div>
-
-                         {/* Hours Stat */}
-                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] flex flex-col items-center text-center space-y-4 relative">
-                            <Clock size={24} className="text-blue-400" />
-                            <div className="space-y-1">
-                               <input type="number" value={keystats.hours} onChange={e => setKeystats({...keystats, hours: Number(e.target.value)})} onBlur={() => saveData("admin-keystats", keystats)} className="bg-transparent text-white font-black text-[32px] text-center outline-none w-24" />
-                               <span className="block text-[10px] font-black text-white/40 uppercase tracking-widest">Hours Coded</span>
-                            </div>
-                            <div className="flex gap-2">
-                               <button onClick={() => { const n = {...keystats, hours: keystats.hours - 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">-10</button>
-                               <button onClick={() => { const n = {...keystats, hours: keystats.hours + 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">+10</button>
-                            </div>
-                         </div>
-
-                         {/* Taught Stat */}
-                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] flex flex-col items-center text-center space-y-4 relative">
-                            <Award size={24} className="text-emerald-400" />
-                            <div className="space-y-1">
-                               <input type="number" value={keystats.taught} onChange={e => setKeystats({...keystats, taught: Number(e.target.value)})} onBlur={() => saveData("admin-keystats", keystats)} className="bg-transparent text-white font-black text-[32px] text-center outline-none w-24" />
-                               <span className="block text-[10px] font-black text-white/40 uppercase tracking-widest">% Self Taught</span>
-                            </div>
-                            <div className="flex gap-2">
-                               <button onClick={() => { const n = {...keystats, taught: keystats.taught - 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">-10</button>
-                               <button onClick={() => { const n = {...keystats, taught: keystats.taught + 10}; setKeystats(n); saveData("admin-keystats", n); }} className="px-3 h-8 rounded-full bg-white/5 text-[10px] font-bold flex items-center justify-center hover:bg-white/10">+10</button>
-                            </div>
-                         </div>
-                      </div>
-
-                      <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-6">
-                         <h4 className="text-[12px] font-black text-white uppercase tracking-widest">Quick Log Activity</h4>
-                         <p className="text-[12px] text-white/40">Did you just complete a lesson? Log it below to increment your Hours Coded!</p>
-                         <div className="flex items-center gap-4">
-                            <button onClick={() => { const n = {...keystats, hours: keystats.hours + 0.5}; setKeystats(n); saveData("admin-keystats", n); }} className="flex-1 py-4 bg-blue-500/10 text-blue-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-blue-500/20 border border-blue-500/20 transition-all">+30 Min Lesson</button>
-                            <button onClick={() => { const n = {...keystats, hours: keystats.hours + 1}; setKeystats(n); saveData("admin-keystats", n); }} className="flex-1 py-4 bg-emerald-500/10 text-emerald-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-emerald-500/20 border border-emerald-500/20 transition-all">+1 Hr Coding Session</button>
-                            <button onClick={() => { const n = {...keystats, hours: keystats.hours + 3}; setKeystats(n); saveData("admin-keystats", n); }} className="flex-1 py-4 bg-purple-500/10 text-purple-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-purple-500/20 border border-purple-500/20 transition-all">+3 Hr Deep Work</button>
-                         </div>
-                      </div>
-                   </motion.div>
-                )}
 
                 {/* ── RESUME TAB ── */}
                 {activeTab === "Resume" && (
@@ -2134,157 +2027,6 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                        ))}
                      </div>
                    </motion.div>
-                )}
-
-                {/* ── SITE CONFIG TAB ── */}
-                {activeTab === "Site Config" && (
-                   <motion.div key="site-config" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
-                     <div className="flex justify-between items-end">
-                       <div className="space-y-2">
-                         <h3 className="text-[12px] font-black text-cyan-400 uppercase tracking-[4px]">Global Configuration</h3>
-                         <p className="text-[14px] text-white/40 font-medium max-w-md">Manage site-wide settings like SEO metadata and maintenance mode.</p>
-                       </div>
-                       <button onClick={() => saveData("admin-config", siteConfig)} className="flex items-center gap-2 px-6 py-3 bg-[var(--accent)] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">
-                         <Save size={14} /> Save Config
-                       </button>
-                     </div>
-
-                     <div className="space-y-6 max-w-3xl">
-                       <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-6">
-                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">Site Title</label>
-                           <input type="text" value={siteConfig?.title || ""} onChange={(e) => setSiteConfig({ ...siteConfig, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold outline-none focus:border-[var(--accent)]" placeholder="e.g. John Doe - Data Engineer" />
-                         </div>
-                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">SEO Description</label>
-                           <textarea value={siteConfig?.description || ""} onChange={(e) => setSiteConfig({ ...siteConfig, description: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-[13px] outline-none focus:border-[var(--accent)] min-h-[100px] resize-none" placeholder="Meta description for search engines..." />
-                         </div>
-                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-2">Keywords (comma separated)</label>
-                           <input type="text" value={siteConfig?.keywords || ""} onChange={(e) => setSiteConfig({ ...siteConfig, keywords: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-[13px] outline-none focus:border-[var(--accent)]" placeholder="data engineer, analytics, python..." />
-                         </div>
-                         <div className="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/10 rounded-2xl">
-                           <div>
-                             <h4 className="text-[13px] font-black text-red-400">Maintenance Mode</h4>
-                             <p className="text-[11px] text-white/40">Disable public access to the portfolio.</p>
-                           </div>
-                           <button onClick={() => {
-                             const newConfig = { ...siteConfig, maintenanceMode: !siteConfig?.maintenanceMode };
-                             setSiteConfig(newConfig);
-                             saveData("admin-config", newConfig);
-                           }} className={`w-14 h-8 rounded-full transition-all relative ${siteConfig?.maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}>
-                             <div className={`w-6 h-6 rounded-full bg-white absolute top-1 transition-all ${siteConfig?.maintenanceMode ? 'left-7' : 'left-1'}`} />
-                           </button>
-                         </div>
-                       </div>
-                     </div>
-                   </motion.div>
-                )}
-
-                {/* ── SETTINGS TAB ── */}
-                {activeTab === "Settings" && (
-                   <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-xl mx-auto space-y-12">
-                      <div className="p-10 bg-white/[0.02] border border-white/5 rounded-[40px] space-y-8">
-                         <div className="flex items-center gap-4">
-                            <Palette size={20} className="text-blue-400" />
-                            <h4 className="text-[14px] font-black text-white uppercase tracking-widest">Interface Theme</h4>
-                         </div>
-                         <div className="grid grid-cols-3 gap-4">
-                            {['Cyber', 'Classic', 'Aether'].map(t => (
-                               <button key={t} className={`py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${t === 'Aether' ? 'bg-[var(--accent)] text-black shadow-xl' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
-                                  {t} Mode
-                               </button>
-                            ))}
-                         </div>
-                      </div>
-                      <button onClick={() => {
-                         sessionStorage.removeItem("aether-admin-session");
-                         onClose();
-                         window.location.reload();
-                      }} className="w-full py-6 bg-red-500/10 text-red-400 border border-red-500/20 rounded-[32px] font-black uppercase text-[11px] tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-4">
-                         <LogOut size={20} /> Terminate Operational Session
-                      </button>
-                   </motion.div>
-                )}
-                {/* ── SECURITY TAB ── */}
-                {activeTab === "Security" && (
-                  <motion.div key="security" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
-                    <div className="space-y-2">
-                       <h3 className="text-[12px] font-black text-emerald-400 uppercase tracking-[4px]">Security & Architecture Audit</h3>
-                       <p className="text-[14px] text-white/40 font-medium max-w-md">System-wide check for data integrity and security measures.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                       <div className="lg:col-span-1 space-y-6">
-                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
-                            <div className="flex items-center gap-3 text-emerald-400/60 mb-2">
-                               <ShieldCheck size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Auth Status</span>
-                            </div>
-                            <div className="text-3xl font-black text-white">Active Token</div>
-                            <p className="text-[11px] text-white/30 leading-relaxed font-medium">Session cryptographically verified via server-side gateway.</p>
-                         </div>
-                         <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-4">
-                            <div className="flex items-center gap-3 text-blue-400/60 mb-2">
-                               <BarChart3 size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Data Objects</span>
-                            </div>
-                            <div className="text-3xl font-black text-white">{systemAudit?.items || 0}</div>
-                            <p className="text-[11px] text-white/30 leading-relaxed font-medium">Total registered entities in remote cluster.</p>
-                         </div>
-                       </div>
-
-                       <div className="lg:col-span-2 p-8 bg-black border border-white/10 rounded-[32px] space-y-6 font-mono relative overflow-hidden group">
-                         <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                           <div className="flex items-center gap-3 text-emerald-400">
-                             <Cpu size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">System Audit Trail</span>
-                           </div>
-                           <div className="flex gap-1.5">
-                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-                             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
-                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-                           </div>
-                         </div>
-                         <div className="h-[250px] overflow-y-auto space-y-2 text-[11px] pr-2">
-                           {systemLogs.length === 0 ? (
-                             <div className="text-white/20">No system events recorded yet...</div>
-                           ) : (
-                             systemLogs.map((log, i) => (
-                               <div key={i} className="flex gap-4 items-start">
-                                 <span className="text-emerald-500/50 shrink-0">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
-                                 <span className={log.type === 'error' ? 'text-red-400' : 'text-white/60'}>{log.action}</span>
-                               </div>
-                             ))
-                           )}
-                         </div>
-                         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent opacity-50" />
-                       </div>
-                    </div>
-
-                    <div className="p-10 bg-red-500/5 border border-red-500/10 rounded-[40px] space-y-6">
-                       <div className="flex items-center gap-4 text-red-400">
-                          <Zap size={20} />
-                          <h4 className="text-[14px] font-black uppercase tracking-widest">Destructive Actions</h4>
-                       </div>
-                       <p className="text-[12px] text-white/40 leading-relaxed max-w-2xl">
-                          Purging data will remove all configurations from the server. This action cannot be undone.
-                       </p>
-                       <div className="flex gap-4">
-                          <button 
-                            onClick={async () => {
-                               if (confirm("Initiate total system reset? This wipes ALL data.")) {
-                                  try {
-                                    const token = sessionStorage.getItem("aether-admin-session");
-                                    await fetch("/api/data/admin", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify({ key: "admin-projects", data: [] }) });
-                                    window.location.reload();
-                                  } catch (e) { console.error(e); }
-                               }
-                            }}
-                            className="px-8 py-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
-                          >
-                             Purge Database
-                          </button>
-                       </div>
-                    </div>
-                  </motion.div>
                 )}
 
                 {/* ── SITE CONFIG TAB ── */}

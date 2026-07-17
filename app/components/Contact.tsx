@@ -26,7 +26,7 @@ export default function Contact() {
   // Load admin services to populate the subject dropdown
   useEffect(() => {
     const loadServices = () => {
-      const data = localStorage.getItem("admin-services");
+      const data = localStorage.getItem("admin-services-jr");
       const opts = new Set<string>();
       if (data) {
         try {

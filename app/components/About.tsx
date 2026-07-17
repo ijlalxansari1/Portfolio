@@ -35,7 +35,6 @@ export default function About() {
   const tAbout = translations[language].about;
   const t = heroText;
 
-  const [stats, setStats] = useState({ projects: 6, hours: 1000, taught: 100 });
   const [heroConfig, setHeroConfig] = useState({
     label: heroText.label,
     titles: heroText.titles,
@@ -55,7 +54,6 @@ export default function About() {
 
   useEffect(() => {
     const loadData = () => {
-      setStats(storage.get("admin-keystats", { projects: 6, hours: 1000, taught: 100 }));
       setHeroConfig(storage.get("admin-hero", {
         label: heroText.label,
         titles: heroText.titles,
@@ -73,23 +71,6 @@ export default function About() {
     return () => window.removeEventListener("admin-updated", loadData);
   }, [heroText, language]);
 
-  const statItems = [
-    {
-      num: `${stats.projects}+`,
-      label: t.stats.projects_sub,
-      icon: <Zap size={18} className="text-[var(--accent)]" />,
-    },
-    {
-      num: `${stats.hours >= 1000 ? (stats.hours / 1000).toFixed(stats.hours % 1000 === 0 ? 0 : 1) + "K" : stats.hours}+`,
-      label: t.stats.hours_sub,
-      icon: <Clock size={18} className="text-[var(--accent)]" />,
-    },
-    {
-      num: `${stats.taught}%`,
-      label: t.stats.taught_sub,
-      icon: <Award size={18} className="text-[var(--accent)]" />,
-    },
-  ];
 
   const scrollTo = (id: string) => {
     const panel = document.getElementById("content-scroll-panel");
@@ -146,20 +127,9 @@ export default function About() {
             className="inline-flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl mt-4 overflow-hidden"
           >
             <Database size={14} className="text-[var(--accent)] shrink-0" />
-            <AnimatePresence mode="wait">
-              {heroConfig.titles && heroConfig.titles.length > 0 && (
-                <motion.span
-                  key={titleIndex}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="text-[11px] sm:text-[12px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] whitespace-nowrap block"
-                >
-                  {heroConfig.titles[titleIndex]}
-                </motion.span>
-              )}
-            </AnimatePresence>
+            <span className="text-[11px] sm:text-[12px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] whitespace-nowrap block">
+              Data Engineer Building Reliable Data Systems
+            </span>
           </motion.div>
 
           {/* Recruiter-Optimized TL;DR Tech Stack Ribbon */}
@@ -211,29 +181,48 @@ export default function About() {
                  {tAbout.about_me}
               </h3>
               <p className="text-[14px] text-[var(--text-secondary)] leading-[1.8] opacity-80">
-                {t.bio || "I build reliable data infrastructure. My focus is on turning chaotic datasets into clean, accessible, and automated pipelines that power intelligent business decisions."}
+                Data Engineer specializing in Python, SQL, ETL pipelines, PostgreSQL, and Business Intelligence. Experienced building end-to-end data systems, analytics dashboards, and workflow automation through internship experience and independent projects.
               </p>
-              {/* Tech tags */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                {heroConfig.techTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-secondary)]"
+              {/* Evidence Strip */}
+              <div className="flex flex-col gap-3 pt-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.div 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    className="p-4 rounded-xl bg-gradient-to-br from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/20 flex flex-col justify-center relative overflow-hidden group hover:shadow-[0_4px_20px_rgba(var(--accent-rgb),0.15)] hover:border-[var(--accent)]/40 transition-all duration-300 cursor-default"
                   >
-                    {tag}
-                  </span>
-                ))}
+                    <div className="absolute inset-0 bg-[var(--accent)]/5 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
+                    <span className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] relative z-10 group-hover:text-[var(--accent)] transition-colors duration-300">100K+</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mt-1 relative z-10 group-hover:text-[var(--text-secondary)] transition-colors duration-300">Records Processed</span>
+                  </motion.div>
+                  <motion.div 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex flex-col justify-center relative overflow-hidden group hover:shadow-[0_4px_20px_rgba(255,255,255,0.05)] hover:border-white/20 transition-all duration-300 cursor-default"
+                  >
+                    <span className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] relative z-10 group-hover:text-white transition-colors duration-300">2</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mt-1 relative z-10 group-hover:text-[var(--text-secondary)] transition-colors duration-300">Remote Internships</span>
+                  </motion.div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["Python", "SQL", "ETL", "Power BI", "PostgreSQL"].map((tech) => (
+                    <div key={tech} className="px-3 py-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center hover:border-[var(--accent)]/30 hover:bg-white/[0.02] transition-colors">
+                      <span className="text-[10px] font-black tracking-wider text-[var(--text-primary)]">{tech}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
            </article>
 
            {/* Right: Timeline */}
-           <div className="space-y-6">
-              <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2">
+           <div className="hidden md:flex flex-col space-y-6 md:border-l md:border-[var(--border-subtle)] md:pl-8">
+              <h3 className="text-xl font-black text-[var(--text-primary)] flex items-center gap-2 shrink-0">
                  <Briefcase size={20} className="text-[var(--accent)]" />
                  {tAbout.milestones}
               </h3>
-              <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent hidden sm:block max-h-[250px] overflow-y-auto custom-scrollbar pr-2 pb-4">
-                 {/* Timeline Layout */}
+              <div className="relative flex-1 hidden sm:block min-h-[280px]">
+                <div className="absolute inset-0 overflow-y-auto custom-scrollbar pr-2 pb-4 flex flex-col justify-between before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
+                  {/* Timeline Layout */}
                {milestones.map((item, idx) => {
                   const icons = [GraduationCap, Briefcase, Database, Award, Zap];
                     const Icon = icons[idx] || Zap;
@@ -252,97 +241,12 @@ export default function About() {
                       </div>
                     );
                  })}
+                </div>
               </div>
            </div>
         </motion.div>
 
-        {/* CTA buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex flex-wrap items-center gap-4 pt-6"
-        >
-          <Magnetic>
-            <button
-              onClick={() => scrollTo("contact")}
-              className="group px-8 py-4 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:scale-105 transition-all shadow-[0_10px_20px_rgba(var(--accent-rgb),0.15)]"
-            >
-              {t.cta_talk}
-              <Send size={15} />
-            </button>
-          </Magnetic>
-
-          <Magnetic>
-            <button
-              onClick={() => scrollTo("projects")}
-              className="group px-8 py-4 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-[var(--accent)]/5 hover:border-[var(--accent)]/30 transition-all"
-            >
-              {t.cta_work}
-              <ChevronRight size={15} className="group-hover:translate-x-1 transition-transform text-[var(--accent)]" />
-            </button>
-          </Magnetic>
-
-          <Magnetic>
-            <a
-              href="/ijlalansari.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              download
-              className="group px-8 py-4 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-[11px] font-black uppercase tracking-[0.2em] rounded-xl flex items-center gap-3 hover:bg-white/5 transition-all"
-            >
-              Download Resume
-              <Download size={15} className="group-hover:-translate-y-1 transition-transform opacity-70" />
-            </a>
-          </Magnetic>
-
-          <div className="flex items-center gap-3 ml-2">
-            {[
-              { href: "https://github.com/ijlalxansari1", icon: Github },
-              { href: "https://linkedin.com/in/ijlal-ansari-56b0371b0", icon: Linkedin }
-            ].map((link, i) => (
-               <a
-                  key={i}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 transition-all group hover:-translate-y-1"
-               >
-                 <link.icon size={18} className="opacity-70 group-hover:opacity-100 transition-opacity" />
-               </a>
-            ))}
-          </div>
-        </motion.div>
       </div>
-
-      {/* Stats row */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.65 }}
-        className="mt-16 pt-10 border-t border-[var(--border-subtle)] grid grid-cols-3 gap-6 max-w-[600px]"
-      >
-        {statItems.map((s, i) => (
-          <motion.div
-            key={i}
-            whileHover={{ y: -4 }}
-            className="flex flex-col gap-3 group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center group-hover:border-[var(--accent)]/30 transition-colors">
-                {s.icon}
-              </div>
-              <span className="text-[32px] font-black text-[var(--text-primary)]">
-                {s.num}
-              </span>
-            </div>
-            <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] group-hover:text-[var(--text-secondary)] transition-colors">
-              {s.label}
-            </span>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      </div>
+    </div>
   );
 }

@@ -12,29 +12,17 @@ export default function Services() {
   
   
 const defaultServices_EN = [
-    { id: 1, title: "Data Pipelines & Integration", icon: "Workflow", status: "Published", summary: "End-to-end ETL/ELT pipelines, data integration from APIs/databases/files, transformation, and workflow automation.", deliverables: ["Custom Extract/Load connect", "dbt data transformations", "Airflow/Dagster automation"], link: "Let's Connect", href: "#contact" },
-    { id: 2, title: "Database Architecture", icon: "Database", status: "Published", summary: "Design scalable relational databases with star schemas, dimensional modeling, warehousing, efficient indexing.", deliverables: ["Star/Snowflake Schemas", "Query Optimization", "Performance Indexing"], link: "Let's Connect", href: "#contact" },
-    { id: 3, title: "Data Quality & Validation", icon: "ShieldCheck", status: "Published", summary: "Implement validation rules, schema checks, duplicate detection, missing value handling, and monitoring.", deliverables: ["Automated schema checks", "Anomaly detection", "Data quality monitoring"], link: "Let's Connect", href: "#contact" },
-    { id: 4, title: "Data Governance", icon: "Network", status: "Published", summary: "Design data systems with documentation, audit trails, access control, metadata management, and best practices.", deliverables: ["Audit trails", "Role-Based Access", "Metadata management"], link: "Let's Connect", href: "#contact" },
-    { id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published", summary: "Prepare clean, well-structured datasets for dashboards, business intelligence, analytical reporting.", deliverables: ["Dimensional modeling", "Dashboard ready datasets", "BI Integration"], link: "Let's Connect", href: "#contact" },
-    { id: 6, title: "Pipeline Reliability & Monitoring", icon: "Activity", status: "Published", summary: "Build observable, reliable pipelines with logging, error handling, retry mechanisms, alerts, testing, and CI/CD.", deliverables: ["Error handling & retries", "CI/CD deployment", "DataOps practices"], link: "Let's Connect", href: "#contact" },
-    { id: 7, title: "API Development", icon: "Code2", status: "Published", summary: "Build RESTful APIs with FastAPI for data ingestion, processing, integration, and secure data access layers.", deliverables: ["FastAPI microservices", "Secure data access", "Rate limiting & logging"], link: "Let's Connect", href: "#contact" },
-    { id: 8, title: "Web Scraping & Data Collection", icon: "Globe", status: "Published", summary: "Collect structured data from websites, public datasets, APIs, CSV, JSON, XML sources.", deliverables: ["Automated Scrapers", "API Integrations", "Data Parsing"], link: "Let's Connect", href: "#contact" },
-    { id: 9, title: "Performance Optimization", icon: "Zap", status: "Published", summary: "Optimize SQL queries, pipeline execution, storage efficiency, data processing speed, and system scalability.", deliverables: ["SQL tuning", "Pipeline scaling", "Storage efficiency"], link: "Let's Connect", href: "#contact" },
-    { id: 10, title: "Technical Documentation", icon: "BookOpen", status: "Published", summary: "Produce clear technical documentation, architecture diagrams, data dictionaries, and pipeline documentation.", deliverables: ["Architecture diagrams", "Data dictionaries", "Pipeline documentation"], link: "Let's Connect", href: "#contact" },
+    { id: 1, title: "ETL / ELT Pipelines", icon: "Workflow", status: "Published", summary: "Building and maintaining basic data pipelines to extract, transform, and load data.", link: "Let's Connect", href: "#contact" },
+    { id: 2, title: "SQL & Database Maintenance", icon: "Database", status: "Published", summary: "Writing efficient queries, managing tables, and assisting with database upkeep.", link: "Let's Connect", href: "#contact" },
+    { id: 3, title: "Data Cleaning & Prep", icon: "Globe", status: "Published", summary: "Scraping, cleaning, and formatting raw datasets for analysis or dashboards.", link: "Let's Connect", href: "#contact" },
+    { id: 4, title: "Documentation & Testing", icon: "BookOpen", status: "Published", summary: "Writing clear technical docs and adding basic data quality tests to pipelines.", link: "Let's Connect", href: "#contact" },
 ];
 
 const defaultServices_DE = [
-    { id: 1, title: "Datenpipelines & Integration", icon: "Workflow", status: "Published", summary: "End-to-End ETL/ELT-Pipelines, Datenintegration aus APIs/Datenbanken/Dateien, Transformation und Workflow-Automatisierung.", deliverables: ["Benutzerdefinierte Extraktion/Laden", "dbt Daten-Transformationen", "Airflow/Dagster Automatisierung"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 2, title: "Datenbankarchitektur", icon: "Database", status: "Published", summary: "Entwurf skalierbarer relationaler Datenbanken mit Star-Schemas, dimensionaler Modellierung, effizienter Indizierung.", deliverables: ["Star/Snowflake Schemas", "Abfrageoptimierung", "Performance-Indizierung"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 3, title: "Datenqualität & Validierung", icon: "ShieldCheck", status: "Published", summary: "Implementierung von Validierungsregeln, Schema-Prüfungen, Duplikaterkennung und Überwachung.", deliverables: ["Automatisierte Schema-Prüfungen", "Anomalieerkennung", "Datenqualitätsüberwachung"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 4, title: "Data Governance", icon: "Network", status: "Published", summary: "Entwurf von Datensystemen mit Dokumentation, Audit-Trails, Zugriffskontrolle und Metadatenmanagement.", deliverables: ["Audit-Trails", "Rollenbasierter Zugriff", "Metadaten-Management"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 5, title: "Analytics Engineering", icon: "LineChart", status: "Published", summary: "Bereitstellung sauberer, strukturierter Datensätze für Dashboards, BI und analytisches Reporting.", deliverables: ["Dimensionale Modellierung", "Dashboard-fertige Daten", "BI-Integration"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 6, title: "Pipeline-Zuverlässigkeit & Monitoring", icon: "Activity", status: "Published", summary: "Aufbau überwachbarer, zuverlässiger Pipelines mit Protokollierung, Fehlerbehandlung, Warnungen und CI/CD.", deliverables: ["Fehlerbehandlung & Wiederholungen", "CI/CD-Bereitstellung", "DataOps-Praktiken"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 7, title: "API-Entwicklung", icon: "Code2", status: "Published", summary: "Aufbau von RESTful APIs mit FastAPI für Datenerfassung, Integration und sichere Datenzugriffsebenen.", deliverables: ["FastAPI Microservices", "Sicherer Datenzugriff", "Rate Limiting & Logging"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 8, title: "Web Scraping & Datenerfassung", icon: "Globe", status: "Published", summary: "Erfassung strukturierter Daten von Websites, öffentlichen Datensätzen, APIs, CSV, JSON, XML.", deliverables: ["Automatisierte Scraper", "API-Integrationen", "Daten-Parsing"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 9, title: "Leistungsoptimierung", icon: "Zap", status: "Published", summary: "Optimierung von SQL-Abfragen, Pipeline-Ausführung, Speichereffizienz und Systemskalierbarkeit.", deliverables: ["SQL-Tuning", "Pipeline-Skalierung", "Speichereffizienz"], link: "Lass uns verbinden", href: "#contact" },
-    { id: 10, title: "Technische Dokumentation", icon: "BookOpen", status: "Published", summary: "Erstellung klarer technischer Dokumentationen, Architekturdiagramme und Datenwörterbücher.", deliverables: ["Architekturdiagramme", "Datenwörterbücher", "Pipeline-Dokumentation"], link: "Lass uns verbinden", href: "#contact" },
+    { id: 1, title: "ETL / ELT Pipelines", icon: "Workflow", status: "Published", summary: "Aufbau und Pflege grundlegender Datenpipelines zum Extrahieren, Transformieren und Laden von Daten.", link: "Lass uns verbinden", href: "#contact" },
+    { id: 2, title: "SQL & Datenbankwartung", icon: "Database", status: "Published", summary: "Schreiben effizienter Abfragen, Verwalten von Tabellen und Unterstützung bei der Datenbankwartung.", link: "Lass uns verbinden", href: "#contact" },
+    { id: 3, title: "Datenbereinigung & Vorbereitung", icon: "Globe", status: "Published", summary: "Scraping, Bereinigung und Formatierung von Rohdaten für Analysen oder Dashboards.", link: "Lass uns verbinden", href: "#contact" },
+    { id: 4, title: "Dokumentation & Tests", icon: "BookOpen", status: "Published", summary: "Erstellen klarer technischer Dokumentationen und Hinzufügen grundlegender Datenqualitätstests.", link: "Lass uns verbinden", href: "#contact" },
 ];
 
 
@@ -42,7 +30,7 @@ const defaultServices_DE = [
 
   useEffect(() => {
     const handleStorage = () => {
-      const data = localStorage.getItem("admin-services");
+      const data = localStorage.getItem("admin-services-jr");
       if (data) {
         try {
           const parsed = JSON.parse(data);
@@ -135,22 +123,9 @@ const defaultServices_DE = [
                   <h3 className="text-xl font-black text-[var(--text-primary)] mb-2 group-hover:text-[var(--accent)] transition-colors">
                     {service.title || service.name}
                   </h3>
-                  <p className="text-[14px] text-[var(--text-secondary)] opacity-70 leading-relaxed min-h-[44px]">
-                    {service.summary || service.body}
-                  </p>
                 </div>
 
-                {/* Deliverables List */}
-                <div className="mt-auto pt-6 border-t border-[var(--border-subtle)] mb-8">
-                  <ul className="space-y-3">
-                    {(service.deliverables || []).slice(0,3).map((item: string, i: number) => (
-                      <li key={i} className="flex items-start gap-3 text-[13px] text-[var(--text-secondary)]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/50 mt-1.5 shrink-0" />
-                        <span className="opacity-90">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+
 
                 {/* Action */}
                 <a

@@ -13,6 +13,8 @@ import { translations } from "./context/translations";
 import dynamic from "next/dynamic";
 import ProfileSidebar from "./components/LeftSidebar";
 import About from "./components/About";
+import WhyHireMe from "./components/WhyHireMe";
+import { Target } from "lucide-react";
 const Skills = dynamic(() => import("./components/Skills"));
 const Services = dynamic(() => import("./components/Services"));
 const LanguageSkills = dynamic(() => import("./components/LanguageSkills"));
@@ -26,7 +28,7 @@ const ThemeBuddy = dynamic(() => import("./components/ThemeBuddy"), { ssr: false
 
 const Terminal = dynamic(() => import("./components/Terminal"), { ssr: false });
 const DemosHub = dynamic(() => import("./components/DemosHub"), { ssr: false });
-const DataOps = dynamic(() => import("./components/DataOps"), { ssr: false });
+
 const AmbientBackground = dynamic(() => import("./components/AmbientBackground"), { ssr: false });
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
@@ -50,6 +52,7 @@ export default function Home() {
   const nav = translations[language].nav;
   const navItems = useMemo(() => [
     { id: "about",         icon: <User size={18} />,         label: nav.about         },
+    { id: "whyhireme",     icon: <Target size={18} />,       label: "Why Hire Me"     },
     { id: "demo",          icon: <MonitorPlay size={18} />,  label: "Demos"           },
     { id: "skills",        icon: <Dumbbell size={18} />,     label: nav.skills        },
     { id: "projects",      icon: <Briefcase size={18} />,    label: nav.projects      },
@@ -326,13 +329,15 @@ export default function Home() {
                   <motion.section {...scrollAnim} className={`${mobileNoAnimClass} !pt-0`} id="about"><About /></motion.section>
                   <div className="h-px w-full bg-white/[0.04]" />
 
+                  {/* 1.2 Why Hire Me */}
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="whyhireme"><WhyHireMe /></motion.section>
+                  <div className="h-px w-full bg-white/[0.04]" />
+
                   {/* 1.5 Demos */}
                   <motion.section {...scrollAnim} className={`py-8 md:py-10 ${mobileNoAnimClass}`} id="demo"><DemosHub /></motion.section>
                   <div className="h-px w-full bg-white/[0.04]" />
 
-                  {/* 1.75 DataOps */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="dataops"><DataOps /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+
 
                   {/* 2. Skills */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="skills"><Skills /></motion.section>
