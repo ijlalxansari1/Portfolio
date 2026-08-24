@@ -93,9 +93,12 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
       case "contact":
         setOutput((prev) => [
           ...prev,
-          "Email: ijlalansari@email.com",
-          "GitHub: github.com/ijlalansari",
-          "LinkedIn: linkedin.com/in/ijlalansari",
+          "Email: ansariijlal90@gmail.com",
+          "GitHub: github.com/ijlalxansari1",
+          "LinkedIn: linkedin.com/in/ijlal-ansari-56b0371b0",
+          "Fiverr: fiverr.com/s/8xdmv6g",
+          "Spotify: open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615",
+          "SoundCloud: on.soundcloud.com/mLoNh7A9s8me4liNZ8"
         ]);
         break;
       case "loki":

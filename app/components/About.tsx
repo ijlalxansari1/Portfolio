@@ -124,10 +124,10 @@ export default function About() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="inline-flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl mt-4 overflow-hidden"
+            className="inline-flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl mt-4 max-w-full"
           >
             <Database size={14} className="text-[var(--accent)] shrink-0" />
-            <span className="text-[11px] sm:text-[12px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] whitespace-nowrap block">
+            <span className="text-[10px] sm:text-[12px] font-black uppercase tracking-[0.2em] text-[var(--text-secondary)] whitespace-normal sm:whitespace-nowrap block leading-relaxed">
               Data Engineer Building Reliable Data Systems
             </span>
           </motion.div>

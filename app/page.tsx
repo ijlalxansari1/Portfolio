@@ -34,6 +34,26 @@ const AmbientBackground = dynamic(() => import("./components/AmbientBackground")
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import MaintenanceScreen from "./components/MaintenanceScreen";
 
+const FiverrIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 508.02 508.02" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="254.01" cy="254.01" r="254.01" fill="#1DBF73"/>
+    <circle cx="315.97" cy="162.19" r="26.87" fill="#FFFFFF"/>
+    <path d="M345.87,207.66h-123V199.6c0-15.83,15.83-16.13,23.89-16.13,9.25,0,13.44.9,13.44.9v-43.6a155.21,155.21,0,0,0-19.71-1.19c-25.68,0-73.16,7.16-73.16,61.51V208h-22.4v40.31h22.4v85.1h-20.9v40.31H247.34V333.37H222.85v-85.1H290v85.1H269.13v40.31h97.65V333.37H345.87Z" fill="#FFFFFF" transform="translate(-1.83 -0.98)"/>
+  </svg>
+);
+
+const SpotifyIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.18-1.139-.66-.12-.48.18-1.02.66-1.139 4.32-1.32 9.78-.6 13.56 1.74.359.24.479.78.24 1.139zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.199-.12-1.379-.72-.18-.6.12-1.199.72-1.379 4.2-1.26 11.28-1.02 15.66 1.62.54.3 1.08.18 1.08.72 0 .6-.48 1.08-1.08 1.08z"/>
+  </svg>
+);
+
+const SoundCloudIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M23.999 14.165c-.052 1.796-1.612 3.169-3.4 3.169h-8.18a.68.68 0 0 1-.675-.683V7.862a.747.747 0 0 1 .452-.724s.75-.513 2.333-.513a5.364 5.364 0 0 1 2.763.755 5.433 5.433 0 0 1 2.57 3.54c.282-.08.574-.121.868-.12.884 0 1.73.358 2.347.992s.948 1.49.922 2.373ZM10.721 8.421c.247 2.98.427 5.697 0 8.672a.264.264 0 0 1-.53 0c-.395-2.946-.22-5.718 0-8.672a.264.264 0 0 1 .53 0ZM9.072 9.448c.285 2.659.37 4.986-.006 7.655a.277.277 0 0 1-.55 0c-.331-2.63-.256-5.02 0-7.655a.277.277 0 0 1 .556 0Zm-1.66.721c.27 2.453.308 4.606-.006 7.072a.274.274 0 0 1-.54 0c-.287-2.433-.245-4.57 0-7.072a.274.274 0 0 1 .546 0Zm-1.64.673c.278 2.278.293 4.256-.006 6.54a.274.274 0 0 1-.54 0c-.27-2.228-.21-4.22 0-6.54a.274.274 0 0 1 .546 0Zm-1.636.568c.224 2.128.27 3.992.006 6.136a.274.274 0 0 1-.54 0c-.233-2.096-.188-3.959 0-6.136a.274.274 0 0 1 .534 0Zm-1.64.717c.224 1.956.248 3.659.006 5.632a.27.27 0 0 1-.533 0c-.21-1.928-.157-3.626 0-5.632a.27.27 0 0 1 .527 0Zm-1.64.551c.21 1.838.225 3.393.006 5.25a.27.27 0 0 1-.533 0c-.187-1.808-.135-3.376 0-5.25a.27.27 0 0 1 .527 0Zm-1.64.526c.21 1.703.225 3.196.006 4.908a.267.267 0 0 1-.527 0c-.187-1.67-.142-3.158 0-4.908a.267.267 0 0 1-.521 0ZM.213 14.165a.267.267 0 0 1 .527 0c.165 1.543.142 2.91.006 4.453a.267.267 0 0 1-.527 0c-.113-1.501-.068-2.887-.006-4.453Z"/>
+  </svg>
+);
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState("about");
   const [isMounted, setIsMounted] = useState(false);
@@ -53,10 +73,10 @@ export default function Home() {
   const navItems = useMemo(() => [
     { id: "about",         icon: <User size={18} />,         label: nav.about         },
     { id: "whyhireme",     icon: <Target size={18} />,       label: "Why Hire Me"     },
+    { id: "services",      icon: <Wrench size={18} />,       label: nav.services      },
     { id: "demo",          icon: <MonitorPlay size={18} />,  label: "Demos"           },
     { id: "skills",        icon: <Dumbbell size={18} />,     label: nav.skills        },
     { id: "projects",      icon: <Briefcase size={18} />,    label: nav.projects      },
-    { id: "services",      icon: <Wrench size={18} />,       label: nav.services      },
     { id: "languages",     icon: <Globe2 size={18} />,       label: nav.languages || "Languages" },
     { id: "certifications",icon: <Award size={18} />,        label: nav.certifications},
     { id: "blog",          icon: <Newspaper size={18} />,    label: nav.blog || "Blog" },
@@ -333,11 +353,13 @@ export default function Home() {
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="whyhireme"><WhyHireMe /></motion.section>
                   <div className="h-px w-full bg-white/[0.04]" />
 
+                  {/* 4. Services */}
+                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="services"><Services /></motion.section>
+                  <div className="h-px w-full bg-white/[0.04]" />
+
                   {/* 1.5 Demos */}
                   <motion.section {...scrollAnim} className={`py-8 md:py-10 ${mobileNoAnimClass}`} id="demo"><DemosHub /></motion.section>
                   <div className="h-px w-full bg-white/[0.04]" />
-
-
 
                   {/* 2. Skills */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="skills"><Skills /></motion.section>
@@ -345,10 +367,6 @@ export default function Home() {
 
                   {/* 3. Featured Projects */}
                   <motion.section {...scrollAnim} className={mobileNoAnimClass} id="projects"><Projects /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
-
-                  {/* 4. Services */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="services"><Services /></motion.section>
                   <div className="h-px w-full bg-white/[0.04]" />
 
                   {/* 5. Languages */}
@@ -399,6 +417,9 @@ export default function Home() {
                         { name: "LinkedIn", icon: <Linkedin size={18} />,    href: "https://linkedin.com/in/ijlal-ansari-56b0371b0",         color: "text-[#0077B5] hover:bg-[#0077B5]/10"},
                         { name: "WhatsApp", icon: <MessageSquare size={18}/>,href: "https://wa.me/923371880807",                             color: "text-[#25D366] hover:bg-[#25D366]/10"},
                         { name: "Email",    icon: <Mail size={18} />,        href: "mailto:ansariijlal90@gmail.com",                         color: "text-[#EA4335] hover:bg-[#EA4335]/10"},
+                        { name: "Fiverr",   icon: <FiverrIcon size={18} />,  href: "https://www.fiverr.com/s/8xdmv6g",                      color: "text-[#1DBF73] hover:bg-[#1DBF73]/10"},
+                        { name: "Spotify",  icon: <SpotifyIcon size={18} />, href: "https://open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615", color: "text-[#1DB954] hover:bg-[#1DB954]/10"},
+                        { name: "SoundCloud", icon: <SoundCloudIcon size={18} />, href: "https://on.soundcloud.com/mLoNh7A9s8me4liNZ8", color: "text-[#FF5500] hover:bg-[#FF5500]/10"},
                       ].map((s, i) => (
                         <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name} className={`group w-11 h-11 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all duration-500 ${s.color} hover:scale-110 hover:border-white/10`}>
                           <div className="opacity-50 group-hover:opacity-100 transition-opacity">{s.icon}</div>

@@ -40,7 +40,7 @@ export default function DemosHub() {
             const staticMatch = currentDemoList.find(s => s.title === d.title || s.id === d.id);
             return {
               ...d,
-              icon: d.iconUrl ? <img src={d.iconUrl} alt="icon" className="w-full h-full object-cover rounded-2xl" /> : (staticMatch?.icon || <FlaskConical size={24} />),
+              icon: d.iconUrl ? <img src={d.iconUrl} alt={`${d.title || 'Demo'} icon`} className="w-full h-full object-cover rounded-2xl" /> : (staticMatch?.icon || <FlaskConical size={24} />),
               component: staticMatch?.component || null
             };
           });

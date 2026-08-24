@@ -33,7 +33,7 @@ export default function MaintenanceScreen() {
           Under Maintenance
         </h1>
         <p className="text-lg md:text-xl text-white/50 mb-12 font-medium max-w-md mx-auto">
-          The sacred timeline is currently being pruned and optimized. We'll be back shortly.
+          The sacred timeline is currently being pruned and optimized. We&apos;ll be back shortly.
         </p>
         
         <div className="text-[10px] uppercase tracking-[0.3em] font-black text-emerald-400/50 flex items-center gap-3">

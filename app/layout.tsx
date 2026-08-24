@@ -107,7 +107,7 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
     },
     verification: {
-      google: 'REPLACE_WITH_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN',
+      google: '5be1d19eb21097d3',
     },
   };
 }
@@ -144,7 +144,10 @@ const personSchema = {
   "sameAs": [
     "https://github.com/ijlalxansari1",
     "https://linkedin.com/in/ijlal-ansari-56b0371b0",
-    "https://dataden.vercel.app"
+    "https://dataden.vercel.app",
+    "https://www.fiverr.com/s/8xdmv6g",
+    "https://open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615",
+    "https://on.soundcloud.com/mLoNh7A9s8me4liNZ8"
   ],
   "alumniOf": {
     "@type": "EducationalOrganization",
