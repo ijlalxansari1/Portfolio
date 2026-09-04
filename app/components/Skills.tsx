@@ -14,7 +14,7 @@ const CORE_STACK = [
   { name: "Dagster", icon: "https://cdn.simpleicons.org/dagster/white", role: "Orchestration", desc: "Asset-based data pipeline orchestration and scheduling.", tags: ["DataOps", "Pipelines", "Assets"] },
   { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerization", desc: "Consistent environments and reproducible builds.", tags: ["DevOps", "Microservices", "Deployment"] },
   { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API Framework", desc: "High-performance data delivery and REST API development.", tags: ["Async", "REST", "Endpoints"] },
-  { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
+  { name: "dbt", icon: "https://cdn.simpleicons.org/dbt/white", role: "Transformation", desc: "SQL-first data modeling and testing in the warehouse.", tags: ["ELT", "Testing", "Lineage"] },
   { name: "Power BI", icon: "https://cdn.simpleicons.org/powerbi/white", role: "Visualization", desc: "Interactive dashboards and business intelligence reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React framework for building fast data applications.", tags: ["React", "SSR", "UI"] },
 ];
@@ -67,7 +67,7 @@ const CORE_STACK_DE = [
   { name: "Dagster", icon: "https://cdn.simpleicons.org/dagster/white", role: "Orchestrierung", desc: "Asset-basierte Datenpipeline-Orchestrierung und -Planung.", tags: ["DataOps", "Pipelines", "Assets"] },
   { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", role: "Containerisierung", desc: "Konsistente Umgebungen und reproduzierbare Builds.", tags: ["DevOps", "Microservices", "Deployment"] },
   { name: "FastAPI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg", role: "API-Framework", desc: "Hochleistungs-Datenbereitstellung und REST-API-Entwicklung.", tags: ["Async", "REST", "Endpoints"] },
-  { name: "dbt", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg", role: "Transformation", desc: "SQL-first Datenmodellierung und -tests im Data Warehouse.", tags: ["ELT", "Testing", "Lineage"] },
+  { name: "dbt", icon: "https://cdn.simpleicons.org/dbt/white", role: "Transformation", desc: "SQL-first Datenmodellierung und -tests im Data Warehouse.", tags: ["ELT", "Testing", "Lineage"] },
   { name: "Power BI", icon: "https://cdn.simpleicons.org/powerbi/white", role: "Visualisierung", desc: "Interaktive Dashboards und Business-Intelligence-Reporting.", tags: ["Analytics", "Dashboards", "DAX"] },
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", role: "Frontend", desc: "React-Framework für den Bau schneller Datenanwendungen.", tags: ["React", "SSR", "UI"] },
 ];
@@ -200,30 +200,30 @@ export default function Skills() {
   };
 
   return (
-    <section id="skills" className="w-full space-y-8" aria-label="Tools and Infrastructure">
+    <div className="w-full space-y-4" aria-label="Tools and Infrastructure">
       
       {/* 🚀 Section Header 🚀 */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-1">
             {language === "de" ? "Von der Datenaufnahme bis zur Erkenntnis" : "From Ingestion to Insight"}
           </p>
-          <h2 className="section-heading text-[32px] md:text-[42px] font-black text-[var(--text-primary)] leading-tight">
+          <h2 className="section-heading text-[26px] md:text-[34px] font-black text-[var(--text-primary)] leading-tight">
             Tools of the Trade
           </h2>
         </div>
-        <p className="text-[14px] text-[var(--text-secondary)] opacity-60 max-w-md leading-relaxed">
+        <p className="text-[12px] text-[var(--text-secondary)] opacity-60 max-w-md leading-relaxed hidden sm:block">
           {language === "de" ? "Die Sprachen, Frameworks und Infrastrukturen, nach denen ich täglich greife – keine Wunschliste, sondern ein Arbeitsset." : "The languages, frameworks, and infrastructure I reach for daily — not a wishlist, a working set."}
         </p>
       </div>
 
       {/* Filter Buttons */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div className="flex flex-wrap gap-2 mb-4">
         {['All', 'Engineering', 'Infrastructure'].map((filterItem) => (
           <button
             key={filterItem}
             onClick={() => setActiveFilter(filterItem as any)}
-            className={`px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-wider transition-all ${
+            className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all ${
               activeFilter === filterItem
                 ? "bg-[var(--accent)] text-black shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]"
                 : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/50 hover:text-[var(--text-primary)]"
@@ -239,53 +239,38 @@ export default function Skills() {
       {/* 🚀 Core Stack (Bento Grid) 🚀 */}
       {(activeFilter === 'All' || activeFilter === 'Engineering') && (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 mt-4">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3 flex items-center gap-2">
-              <Code2 size={12} />
-              {language === "de" ? "Mein empfohlener End-Stack" : "My Recommended Final Stack"}
-            </p>
-            <h3 className="text-[24px] md:text-[28px] font-black text-[var(--text-primary)] leading-tight">
-              Engineering Stack
-            </h3>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {(dynamicCoreStack || (language === "de" ? CORE_STACK_DE : CORE_STACK)).map((tech: any, i: number) => (
           <motion.div
             key={tech.name}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.1, duration: 0.5 }}
-            className="group relative p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl hover:border-[var(--accent)]/40 hover:bg-[var(--bg-secondary)] transition-all duration-500 overflow-hidden"
+            transition={{ delay: i * 0.05, duration: 0.3 }}
+            className="group relative p-3.5 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/40 hover:bg-[var(--bg-secondary)] transition-all duration-300 overflow-hidden flex flex-col justify-between"
           >
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(var(--accent-rgb),0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
-            
-            <div className="flex items-start justify-between mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500 text-[var(--text-secondary)] group-hover:text-[var(--accent)]">
+            <div className="flex items-start justify-between mb-2">
+              <div className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-md text-[var(--text-secondary)] group-hover:text-[var(--accent)]">
                 {tech.isLucide ? (
-                  <tech.icon size={28} className="transition-all duration-500" />
+                  <tech.icon size={18} />
                 ) : (
                   <Image 
                     src={tech.icon || "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png"} 
                     alt={tech.name} 
-                    width={28} 
-                    height={28}
-                    className="opacity-70 group-hover:opacity-100 transition-all duration-500 filter drop-shadow-md"
+                    width={18} 
+                    height={18}
+                    className="opacity-75 group-hover:opacity-100 transition-opacity"
                   />
                 )}
               </div>
-              <span className="px-2.5 py-1 bg-white/[0.03] border border-[var(--border-subtle)] text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)] rounded-lg group-hover:text-[var(--text-primary)] transition-colors">
+              <span className="px-2 py-0.5 bg-white/[0.03] border border-[var(--border-subtle)] text-[8px] font-black uppercase tracking-wider text-[var(--text-muted)] rounded">
                 {tech.role}
               </span>
             </div>
 
-            <h3 className="text-xl font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+            <h4 className="text-[13px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
               {tech.name}
-            </h3>
+            </h4>
           </motion.div>
         ))}
         </div>
@@ -295,71 +280,66 @@ export default function Skills() {
       {/* ☁️ Cloud & Platform Engineering ☁️ */}
       {(activeFilter === 'All' || activeFilter === 'Infrastructure') && (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="pt-10"
+        transition={{ duration: 0.4 }}
+        className="pt-4"
       >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-3">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3 flex items-center gap-2">
-              <Cloud size={12} />
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-1 flex items-center gap-1.5">
+              <Cloud size={11} />
               Cloud & Platform Engineering
             </p>
-            <h3 className="text-[24px] md:text-[28px] font-black text-[var(--text-primary)] leading-tight">
+            <h3 className="text-[18px] md:text-[20px] font-black text-[var(--text-primary)] leading-tight">
               Infrastructure Layer
             </h3>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
               <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">{language === "de" ? "In Projekten verwendet" : "Used in Projects"}</span>
+              <span className="text-[8px] font-black uppercase tracking-widest text-[var(--text-muted)]">{language === "de" ? "In Projekten verwendet" : "Used in Projects"}</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-muted)]">{language === "de" ? "Erkunden" : "Exploring"}</span>
+              <span className="text-[8px] font-black uppercase tracking-widest text-[var(--text-muted)]">{language === "de" ? "Erkunden" : "Exploring"}</span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {(dynamicCloudPlatforms || (language === "de" ? CLOUD_PLATFORMS_DE : CLOUD_PLATFORMS)).map((platform: any, i: number) => (
             <motion.div
               key={platform.shortName}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.5 }}
-              className="group relative p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl hover:border-[var(--accent)]/40 hover:bg-[var(--bg-secondary)] transition-all duration-500 overflow-hidden flex flex-col"
+              transition={{ delay: i * 0.08, duration: 0.3 }}
+              className="group relative p-3.5 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/40 hover:bg-[var(--bg-secondary)] transition-all duration-300 overflow-hidden flex flex-col"
             >
-              {/* Background Glow */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(var(--accent-rgb),0.05)_0%,transparent_50%)] opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
-
-              {/* Header */}
-              <div className="flex items-start justify-between mb-5">
-                <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-[var(--accent)]/20 transition-all duration-500">
+              <div className="flex items-start justify-between mb-2">
+                <div className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center shadow-md">
                   <Image
                     src={platform.icon || "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png"}
                     alt={platform.shortName}
-                    width={28}
-                    height={28}
+                    width={20}
+                    height={20}
                     unoptimized
-                    className="transition-all duration-500 opacity-80 group-hover:opacity-100"
+                    className="opacity-80 group-hover:opacity-100 transition-opacity"
                   />
                 </div>
-                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 border ${
+                <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider flex items-center gap-1 border ${
                   platform.status === "used"
                     ? "bg-[var(--accent)]/10 border-[var(--accent)]/20 text-[var(--accent)]"
                     : "bg-blue-400/10 border-blue-400/20 text-blue-400"
                 }`}>
-                  {platform.status === "used" ? <Check size={10} /> : <Compass size={10} />}
+                  {platform.status === "used" ? <Check size={8} /> : <Compass size={8} />}
                   {platform.status === "used" ? (language === "de" ? "Verwendet" : "Used") : (language === "de" ? "Erkunden" : "Exploring")}
                 </span>
               </div>
 
-              {/* Name & Description */}
-              <h4 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mt-4">
+              <h4 className="text-[13px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                 {platform.shortName}
               </h4>
             </motion.div>
@@ -367,6 +347,6 @@ export default function Skills() {
         </div>
       </motion.div>
       )}
-    </section>
+    </div>
   );
 }

@@ -134,6 +134,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [skillGroups, setSkillGroups] = useState<any[]>([]);
   const [practices, setPractices] = useState<any[]>([]);
   const [langSkills, setLangSkills] = useState<any[]>([]);
+  const [moviesJson, setMoviesJson] = useState<string>("[]");
+  const [booksJson, setBooksJson] = useState<string>("[]");
   const [categories, setCategories] = useState<any>(defaultCategories);
   const [isSaving, setIsSaving] = useState(false);
   const [systemAudit, setSystemAudit] = useState<any>(null);
@@ -190,6 +192,13 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
           setSkillGroups(get("admin-skills-groups", []));
           setPractices(get("admin-practices", defaultPractices));
           setLangSkills(get("admin-languages", defaultLanguages));
+          
+          const loadedMovies = get("admin-movies", []);
+          if (loadedMovies.length > 0) setMoviesJson(JSON.stringify(loadedMovies, null, 2));
+          
+          const loadedBooks = get("admin-books", []);
+          if (loadedBooks.length > 0) setBooksJson(JSON.stringify(loadedBooks, null, 2));
+          
           setCategories(get("admin-categories", defaultCategories));
           setTestimonials(get("admin-testimonials", defaultTestimonials));
           setReadMessages(get("admin-read-messages", []));
@@ -1957,7 +1966,48 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                        </div>
                      </div>
                    </div>
-                 </motion.div>
+                  {/* Beyond Code: JSON Editors */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-8 mt-12 border-t border-white/10">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-[12px] font-black text-amber-400 uppercase tracking-[4px]">Cinema (JSON)</h3>
+                      </div>
+                      <textarea
+                        value={moviesJson}
+                        onChange={(e) => setMoviesJson(e.target.value)}
+                        onBlur={() => {
+                          try {
+                            const parsed = JSON.parse(moviesJson);
+                            saveData("admin-movies", parsed);
+                          } catch (e) {
+                            alert("Invalid JSON format for Cinema");
+                          }
+                        }}
+                        className="w-full h-[400px] bg-white/[0.02] border border-white/10 rounded-2xl p-4 text-[11px] text-white/70 font-mono outline-none focus:border-amber-400/50 resize-none"
+                        placeholder="Enter array of movie objects..."
+                      />
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-[12px] font-black text-emerald-400 uppercase tracking-[4px]">Books (JSON)</h3>
+                      </div>
+                      <textarea
+                        value={booksJson}
+                        onChange={(e) => setBooksJson(e.target.value)}
+                        onBlur={() => {
+                          try {
+                            const parsed = JSON.parse(booksJson);
+                            saveData("admin-books", parsed);
+                          } catch (e) {
+                            alert("Invalid JSON format for Books");
+                          }
+                        }}
+                        className="w-full h-[400px] bg-white/[0.02] border border-white/10 rounded-2xl p-4 text-[11px] text-white/70 font-mono outline-none focus:border-emerald-400/50 resize-none"
+                        placeholder="Enter array of book objects..."
+                      />
+                    </div>
+                  </div>
+                </motion.div>
                 )}
 
                 {/* ── TESTIMONIALS TAB ── */}

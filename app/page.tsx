@@ -34,25 +34,7 @@ const AmbientBackground = dynamic(() => import("./components/AmbientBackground")
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import MaintenanceScreen from "./components/MaintenanceScreen";
 
-const FiverrIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 508.02 508.02" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="254.01" cy="254.01" r="254.01" fill="#1DBF73"/>
-    <circle cx="315.97" cy="162.19" r="26.87" fill="#FFFFFF"/>
-    <path d="M345.87,207.66h-123V199.6c0-15.83,15.83-16.13,23.89-16.13,9.25,0,13.44.9,13.44.9v-43.6a155.21,155.21,0,0,0-19.71-1.19c-25.68,0-73.16,7.16-73.16,61.51V208h-22.4v40.31h22.4v85.1h-20.9v40.31H247.34V333.37H222.85v-85.1H290v85.1H269.13v40.31h97.65V333.37H345.87Z" fill="#FFFFFF" transform="translate(-1.83 -0.98)"/>
-  </svg>
-);
-
-const SpotifyIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.18-1.139-.66-.12-.48.18-1.02.66-1.139 4.32-1.32 9.78-.6 13.56 1.74.359.24.479.78.24 1.139zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.199-.12-1.379-.72-.18-.6.12-1.199.72-1.379 4.2-1.26 11.28-1.02 15.66 1.62.54.3 1.08.18 1.08.72 0 .6-.48 1.08-1.08 1.08z"/>
-  </svg>
-);
-
-const SoundCloudIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M23.999 14.165c-.052 1.796-1.612 3.169-3.4 3.169h-8.18a.68.68 0 0 1-.675-.683V7.862a.747.747 0 0 1 .452-.724s.75-.513 2.333-.513a5.364 5.364 0 0 1 2.763.755 5.433 5.433 0 0 1 2.57 3.54c.282-.08.574-.121.868-.12.884 0 1.73.358 2.347.992s.948 1.49.922 2.373ZM10.721 8.421c.247 2.98.427 5.697 0 8.672a.264.264 0 0 1-.53 0c-.395-2.946-.22-5.718 0-8.672a.264.264 0 0 1 .53 0ZM9.072 9.448c.285 2.659.37 4.986-.006 7.655a.277.277 0 0 1-.55 0c-.331-2.63-.256-5.02 0-7.655a.277.277 0 0 1 .556 0Zm-1.66.721c.27 2.453.308 4.606-.006 7.072a.274.274 0 0 1-.54 0c-.287-2.433-.245-4.57 0-7.072a.274.274 0 0 1 .546 0Zm-1.64.673c.278 2.278.293 4.256-.006 6.54a.274.274 0 0 1-.54 0c-.27-2.228-.21-4.22 0-6.54a.274.274 0 0 1 .546 0Zm-1.636.568c.224 2.128.27 3.992.006 6.136a.274.274 0 0 1-.54 0c-.233-2.096-.188-3.959 0-6.136a.274.274 0 0 1 .534 0Zm-1.64.717c.224 1.956.248 3.659.006 5.632a.27.27 0 0 1-.533 0c-.21-1.928-.157-3.626 0-5.632a.27.27 0 0 1 .527 0Zm-1.64.551c.21 1.838.225 3.393.006 5.25a.27.27 0 0 1-.533 0c-.187-1.808-.135-3.376 0-5.25a.27.27 0 0 1 .527 0Zm-1.64.526c.21 1.703.225 3.196.006 4.908a.267.267 0 0 1-.527 0c-.187-1.67-.142-3.158 0-4.908a.267.267 0 0 1-.521 0ZM.213 14.165a.267.267 0 0 1 .527 0c.165 1.543.142 2.91.006 4.453a.267.267 0 0 1-.527 0c-.113-1.501-.068-2.887-.006-4.453Z"/>
-  </svg>
-);
+import { FiverrIcon, SpotifyIcon, SoundCloudIcon } from "./components/icons/SocialIcons";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("about");
@@ -77,11 +59,24 @@ export default function Home() {
     { id: "demo",          icon: <MonitorPlay size={18} />,  label: "Demos"           },
     { id: "skills",        icon: <Dumbbell size={18} />,     label: nav.skills        },
     { id: "projects",      icon: <Briefcase size={18} />,    label: nav.projects      },
-    { id: "languages",     icon: <Globe2 size={18} />,       label: nav.languages || "Languages" },
+    { id: "languages",     icon: <Globe2 size={18} />,       label: "Beyond Code" },
     { id: "certifications",icon: <Award size={18} />,        label: nav.certifications},
     { id: "blog",          icon: <Newspaper size={18} />,    label: nav.blog || "Blog" },
     { id: "contact",       icon: <Send size={18} />,         label: nav.contact       },
   ], [language, nav]);
+
+  const SECTION_IDS = useMemo(() => [
+    "about",
+    "whyhireme",
+    "services",
+    "demo",
+    "skills",
+    "projects",
+    "languages",
+    "certifications",
+    "blog",
+    "contact",
+  ], []);
 
   const [isTimeSlipping, setIsTimeSlipping] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
@@ -103,8 +98,10 @@ export default function Home() {
     : { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-100px" } };
 
   const activeSectionRef = useRef("about");
+  const currentIndexRef = useRef(0);
   const scrollPanelRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
+  const isAnimatingRef = useRef(false);
 
   useEffect(() => { 
     setIsMounted(true); 
@@ -142,26 +139,169 @@ export default function Home() {
     document.body.removeChild(link);
   };
 
-  const scrollToSection = (id: string) => {
-    const target = document.getElementById(id);
-    if (target) {
-      isScrollingRef.current = true; // Lock intersection observer
-      setActiveSection(id);
-      activeSectionRef.current = id;
-      
-      if (window.innerWidth >= 1024 && scrollPanelRef.current) {
-        scrollPanelRef.current.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
-      } else {
-        const y = target.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top: y, behavior: "smooth" });
-      }
-      
-      // Unlock after scrolling animation (approx 800ms)
-      setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 800);
+  const getTargetScrollTop = (target: HTMLElement, panel: HTMLElement | null, isMobile: boolean) => {
+    if (!isMobile && panel) {
+      const panelRect = panel.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      return panel.scrollTop + (targetRect.top - panelRect.top);
+    } else {
+      return target.getBoundingClientRect().top + window.scrollY - 76;
     }
   };
+
+  const scrollToSectionIndex = (index: number) => {
+    if (index < 0 || index >= SECTION_IDS.length) return;
+    const targetId = SECTION_IDS[index];
+    const target = document.getElementById(targetId);
+    const isMobile = window.innerWidth < 1024;
+    const panel = scrollPanelRef.current;
+
+    if (target) {
+      isAnimatingRef.current = true;
+      isScrollingRef.current = true;
+      currentIndexRef.current = index;
+      setActiveSection(targetId);
+      activeSectionRef.current = targetId;
+
+      if (!isMobile && panel) {
+        const top = getTargetScrollTop(target, panel, false);
+        panel.scrollTo({ top, behavior: "smooth" });
+      } else {
+        const top = getTargetScrollTop(target, null, true);
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      }
+
+      setTimeout(() => {
+        isAnimatingRef.current = false;
+        isScrollingRef.current = false;
+      }, 650);
+    }
+  };
+
+  const scrollToSection = (id: string) => {
+    let index = SECTION_IDS.indexOf(id);
+    if (index === -1) {
+      if (id === "bio") index = 0;
+      else index = 0;
+    }
+    scrollToSectionIndex(index);
+  };
+
+  /* ── FULL-PAGE SCROLL-SNAP GESTURE CONTROLLER ── */
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const isExcluded = (target: EventTarget | null) => {
+      if (!target || !(target instanceof HTMLElement)) return false;
+      return !!target.closest(
+        '[role="dialog"], .modal-container, input, textarea, select, pre, code, .terminal-window, #admin-panel, #login-modal, [data-prevent-scroll-snap="true"]'
+      );
+    };
+
+    let wheelAccumulator = 0;
+    let wheelResetTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // Window-level Wheel gesture listener (1 deliberate scroll = 1 section jump)
+    const handleWheel = (e: WheelEvent) => {
+      if (showLogin || showAdmin || showTerminal) return;
+      if (isExcluded(e.target)) return;
+
+      // Always prevent default free-scrolling so it locks directly into crisp section jumps
+      e.preventDefault();
+
+      if (isAnimatingRef.current) return;
+
+      wheelAccumulator += e.deltaY;
+      if (wheelResetTimer) clearTimeout(wheelResetTimer);
+      wheelResetTimer = setTimeout(() => {
+        wheelAccumulator = 0;
+      }, 180);
+
+      const THRESHOLD = 16;
+      if (wheelAccumulator > THRESHOLD) {
+        wheelAccumulator = 0;
+        if (currentIndexRef.current < SECTION_IDS.length - 1) {
+          scrollToSectionIndex(currentIndexRef.current + 1);
+        }
+      } else if (wheelAccumulator < -THRESHOLD) {
+        wheelAccumulator = 0;
+        if (currentIndexRef.current > 0) {
+          scrollToSectionIndex(currentIndexRef.current - 1);
+        }
+      }
+    };
+
+    // Touch swipe gesture listener for mobile (1 swipe = 1 section jump)
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isTouchSwiping = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      isTouchSwiping = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isTouchSwiping || e.touches.length !== 1) return;
+      if (showLogin || showAdmin || showTerminal) return;
+      if (isExcluded(e.target)) return;
+
+      const currentY = e.touches[0].clientY;
+      const currentX = e.touches[0].clientX;
+      const deltaY = touchStartY - currentY;
+      const deltaX = touchStartX - currentX;
+
+      // Prevent continuous native scroll jitter if it's a vertical swipe gesture
+      if (Math.abs(deltaY) > 20 && Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!isTouchSwiping) return;
+      isTouchSwiping = false;
+
+      if (showLogin || showAdmin || showTerminal) return;
+      if (isExcluded(e.target)) return;
+      if (e.changedTouches.length !== 1) return;
+
+      const touchEndY = e.changedTouches[0].clientY;
+      const touchEndX = e.changedTouches[0].clientX;
+      const deltaY = touchStartY - touchEndY;
+      const deltaX = touchStartX - touchEndX;
+
+      // Significant vertical swipe threshold
+      if (Math.abs(deltaY) > 35 && Math.abs(deltaY) > Math.abs(deltaX) * 1.1) {
+        if (isAnimatingRef.current) return;
+
+        if (deltaY > 0) {
+          if (currentIndexRef.current < SECTION_IDS.length - 1) {
+            scrollToSectionIndex(currentIndexRef.current + 1);
+          }
+        } else {
+          if (currentIndexRef.current > 0) {
+            scrollToSectionIndex(currentIndexRef.current - 1);
+          }
+        }
+      }
+    };
+
+    // Attach to window so anywhere the user scrolls (card, sidebar, background), it jumps cleanly
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      if (wheelResetTimer) clearTimeout(wheelResetTimer);
+    };
+  }, [isMounted, showLogin, showAdmin, showTerminal, SECTION_IDS]);
 
   useEffect(() => {
     const TARGET = "ijlal";
@@ -169,13 +309,41 @@ export default function Home() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === "A") { e.preventDefault(); setShowLogin(true); return; }
       if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA") { keyBuffer = ""; return; }
+      
+      // Keyboard section navigation (ArrowDown / ArrowUp / PageDown / PageUp)
+      if (!showLogin && !showAdmin && !showTerminal) {
+        if (e.key === "ArrowDown" || e.key === "PageDown") {
+          if (currentIndexRef.current < SECTION_IDS.length - 1) {
+            e.preventDefault();
+            scrollToSectionIndex(currentIndexRef.current + 1);
+            return;
+          }
+        } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+          if (currentIndexRef.current > 0) {
+            e.preventDefault();
+            scrollToSectionIndex(currentIndexRef.current - 1);
+            return;
+          }
+        }
+      }
+
       keyBuffer += e.key.toLowerCase();
       if (keyBuffer.length > TARGET.length) keyBuffer = keyBuffer.slice(-TARGET.length);
       if (keyBuffer === TARGET) { keyBuffer = ""; setShowTerminal(true); trackEvent("terminal_open"); }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [showLogin, showAdmin, showTerminal, SECTION_IDS]);
+
+  // Listen for navigateTo events dispatched by child components (e.g. WhyHireMe Hire Me button)
+  useEffect(() => {
+    const handleNavigateTo = (e: Event) => {
+      const id = (e as CustomEvent<{ id: string }>).detail?.id;
+      if (id) scrollToSection(id);
+    };
+    window.addEventListener("navigateTo", handleNavigateTo);
+    return () => window.removeEventListener("navigateTo", handleNavigateTo);
+  }, [SECTION_IDS]);
 
   useEffect(() => {
     if (!isMounted) return;
@@ -183,24 +351,35 @@ export default function Home() {
     const scrollPanel = scrollPanelRef.current;
     const options = {
       root: isMobile ? null : scrollPanel,
-      rootMargin: isMobile ? "-20% 0px -60% 0px" : "-20% 0px -70% 0px",
-      threshold: [0, 0.05, 0.1, 0.2]
+      threshold: [0.35, 0.6]
     };
     const observer = new IntersectionObserver((entries) => {
-      if (isScrollingRef.current) return; // Skip if currently smooth scrolling
+      if (isScrollingRef.current || isAnimatingRef.current) return;
       
+      let bestEntry: IntersectionObserverEntry | null = null;
       entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0) {
-          const id = entry.target.id;
-          let activeId = id;
-          if (id === "bio") activeId = "about";
-          if (navItems.some(item => item.id === activeId)) { setActiveSection(activeId); activeSectionRef.current = activeId; }
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+          if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+            bestEntry = entry;
+          }
         }
       });
+
+      if (bestEntry) {
+        const id = (bestEntry as IntersectionObserverEntry).target.id;
+        let activeId = id;
+        if (id === "bio") activeId = "about";
+        const index = SECTION_IDS.indexOf(activeId);
+        if (index !== -1) {
+          setActiveSection(activeId);
+          activeSectionRef.current = activeId;
+          currentIndexRef.current = index;
+        }
+      }
     }, options);
     document.querySelectorAll("section[id]").forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, [isMounted, navItems]);
+  }, [isMounted, SECTION_IDS]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -342,91 +521,68 @@ export default function Home() {
             </div>
 
             <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={!isMobileView ? { transform: "translateZ(20px)" } : {}}>
-              <main ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative" style={{ scrollbarWidth: "none" }}>
-                <div id="sections-container" className={`p-3 md:p-6 lg:p-8 space-y-3 lg:space-y-6 relative origin-center`}>
+              <main ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative scroll-snap-container" style={{ scrollbarWidth: "none" }}>
+                <div id="sections-container" className="px-3 md:px-6 lg:px-8 py-0 relative origin-center">
 
                   {/* 1. Hero / About */}
-                  <motion.section {...scrollAnim} className={`${mobileNoAnimClass} !pt-0`} id="about"><About /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="about"><About /></section>
 
                   {/* 1.2 Why Hire Me */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="whyhireme"><WhyHireMe /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="whyhireme"><WhyHireMe /></section>
 
                   {/* 4. Services */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="services"><Services /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="services"><Services /></section>
 
                   {/* 1.5 Demos */}
-                  <motion.section {...scrollAnim} className={`py-8 md:py-10 ${mobileNoAnimClass}`} id="demo"><DemosHub /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="demo"><DemosHub /></section>
 
                   {/* 2. Skills */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="skills"><Skills /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="skills"><Skills /></section>
 
                   {/* 3. Featured Projects */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="projects"><Projects /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="projects"><Projects /></section>
 
                   {/* 5. Languages */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="languages"><LanguageSkills /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="languages"><LanguageSkills /></section>
 
                   {/* 7. Certifications */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="certifications"><Certifications /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="certifications"><Certifications /></section>
 
                   {/* 8. Blog */}
-                  <motion.section {...scrollAnim} className={mobileNoAnimClass} id="blog"><Blog /></motion.section>
-                  <div className="h-px w-full bg-white/[0.04]" />
+                  <section className="scroll-snap-section" id="blog"><Blog /></section>
 
-                  {/* CTA Banner */}
-                  <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="p-8 md:p-10 bg-gradient-to-r from-[var(--accent)]/10 to-transparent border border-[var(--accent)]/20 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div>
-                      <h3 className="text-[24px] font-black text-[var(--text-primary)] mb-2">{translations[language].footer.cta_title}</h3>
-                      <p className="text-[14px] text-[var(--text-muted)]">{translations[language].footer.cta_desc}</p>
+                  {/* 9. Contact & Footer */}
+                  <section className="scroll-snap-section flex flex-col justify-between" id="contact">
+                    <div className="w-full flex-1 flex flex-col justify-center">
+                      <Contact />
                     </div>
-                    <button onClick={() => scrollToSection('contact')} className="px-8 py-4 bg-[var(--accent)] text-black font-black uppercase tracking-widest text-[12px] rounded-xl hover:scale-105 transition-all">
-                      {translations[language].footer.cta_button}
-                    </button>
-                  </motion.div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    id="contact"
-                    className="w-full"
-                  >
-                    <Contact />
-                  </motion.div>
-
-                  {/* Footer */}
-                  <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row gap-8 justify-between items-center">
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                      <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)]">{translations[language].footer.copy}</span>
-                      <button onClick={() => setShowTerminal(true)} className="group flex items-center gap-3 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all">
-                        <TerminalIcon size={14} className="text-[var(--accent)]" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-all">{translations[language].footer.launch}</span>
-                      </button>
+                    {/* Compact Integrated Footer */}
+                    <div className="pt-3 mt-2 border-t border-white/5 flex flex-col sm:flex-row gap-3 justify-between items-center shrink-0">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[9px] font-black uppercase tracking-[0.18em] text-[var(--text-muted)]">{translations[language].footer.copy}</span>
+                        <button onClick={() => setShowTerminal(true)} className="group flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.03] border border-white/5 rounded-lg hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all">
+                          <TerminalIcon size={11} className="text-[var(--accent)]" />
+                          <span className="text-[8px] font-black uppercase tracking-widest text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-all">{translations[language].footer.launch}</span>
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {[
+                          { name: "GitHub",   icon: <Github size={14} />,      href: "https://github.com/ijlalxansari1",                      color: "text-white hover:bg-white/10"       },
+                          { name: "LinkedIn", icon: <Linkedin size={14} />,    href: "https://linkedin.com/in/ijlal-ansari-56b0371b0",         color: "text-[#0077B5] hover:bg-[#0077B5]/10"},
+                          { name: "WhatsApp", icon: <MessageSquare size={14}/>,href: "https://wa.me/923371880807",                             color: "text-[#25D366] hover:bg-[#25D366]/10"},
+                          { name: "Email",    icon: <Mail size={14} />,        href: "mailto:ansariijlal90@gmail.com",                         color: "text-[#EA4335] hover:bg-[#EA4335]/10"},
+                          { name: "Fiverr",   icon: <FiverrIcon size={14} />,  href: "https://www.fiverr.com/s/8xdmv6g",                      color: "text-[#1DBF73] hover:bg-[#1DBF73]/10"},
+                          { name: "Spotify",  icon: <SpotifyIcon size={14} />, href: "https://open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615", color: "text-[#1DB954] hover:bg-[#1DB954]/10"},
+                          { name: "SoundCloud", icon: <SoundCloudIcon size={14} />, href: "https://on.soundcloud.com/mLoNh7A9s8me4liNZ8", color: "text-[#FF5500] hover:bg-[#FF5500]/10"},
+                        ].map((s, i) => (
+                          <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name} className={`group w-7 h-7 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all duration-300 ${s.color} hover:scale-110 hover:border-white/10`}>
+                            <div className="opacity-50 group-hover:opacity-100 transition-opacity">{s.icon}</div>
+                          </a>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      {[
-                        { name: "GitHub",   icon: <Github size={18} />,      href: "https://github.com/ijlalxansari1",                      color: "text-white hover:bg-white/10"       },
-                        { name: "LinkedIn", icon: <Linkedin size={18} />,    href: "https://linkedin.com/in/ijlal-ansari-56b0371b0",         color: "text-[#0077B5] hover:bg-[#0077B5]/10"},
-                        { name: "WhatsApp", icon: <MessageSquare size={18}/>,href: "https://wa.me/923371880807",                             color: "text-[#25D366] hover:bg-[#25D366]/10"},
-                        { name: "Email",    icon: <Mail size={18} />,        href: "mailto:ansariijlal90@gmail.com",                         color: "text-[#EA4335] hover:bg-[#EA4335]/10"},
-                        { name: "Fiverr",   icon: <FiverrIcon size={18} />,  href: "https://www.fiverr.com/s/8xdmv6g",                      color: "text-[#1DBF73] hover:bg-[#1DBF73]/10"},
-                        { name: "Spotify",  icon: <SpotifyIcon size={18} />, href: "https://open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615", color: "text-[#1DB954] hover:bg-[#1DB954]/10"},
-                        { name: "SoundCloud", icon: <SoundCloudIcon size={18} />, href: "https://on.soundcloud.com/mLoNh7A9s8me4liNZ8", color: "text-[#FF5500] hover:bg-[#FF5500]/10"},
-                      ].map((s, i) => (
-                        <a key={i} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name} className={`group w-11 h-11 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all duration-500 ${s.color} hover:scale-110 hover:border-white/10`}>
-                          <div className="opacity-50 group-hover:opacity-100 transition-opacity">{s.icon}</div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
+                  </section>
 
                 </div>
               </main>

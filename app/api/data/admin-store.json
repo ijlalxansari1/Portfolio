@@ -735,7 +735,12 @@
       "summary": "Building and maintaining basic data pipelines to extract, transform, and load data.",
       "body": "Building and maintaining basic data pipelines to extract, transform, and load data using Python and SQL.",
       "link": "Let's Connect",
-      "href": "#contact"
+      "href": "#contact",
+      "deliverables": [
+        "Requirement gathering",
+        "Custom Implementation",
+        "Testing & CI/CD"
+      ]
     },
     {
       "id": 2,
@@ -746,7 +751,12 @@
       "summary": "Writing efficient queries, managing tables, and assisting with database upkeep.",
       "body": "Writing efficient queries, managing tables, and assisting with database upkeep and performance indexing.",
       "link": "Let's Connect",
-      "href": "#contact"
+      "href": "#contact",
+      "deliverables": [
+        "Requirement gathering",
+        "Custom Implementation",
+        "Testing & CI/CD"
+      ]
     },
     {
       "id": 3,
@@ -757,7 +767,12 @@
       "summary": "Scraping, cleaning, and formatting raw datasets for analysis or dashboards.",
       "body": "Scraping, cleaning, and formatting raw datasets from diverse sources for downstream analysis or dashboards.",
       "link": "Let's Connect",
-      "href": "#contact"
+      "href": "#contact",
+      "deliverables": [
+        "Requirement gathering",
+        "Custom Implementation",
+        "Testing & CI/CD"
+      ]
     },
     {
       "id": 4,
@@ -768,7 +783,12 @@
       "summary": "Writing clear technical docs and adding basic data quality tests to pipelines.",
       "body": "Writing clear technical docs, documenting pipelines, and adding basic data quality and validation tests.",
       "link": "Let's Connect",
-      "href": "#contact"
+      "href": "#contact",
+      "deliverables": [
+        "Requirement gathering",
+        "Custom Implementation",
+        "Testing & CI/CD"
+      ]
     }
   ]
 }

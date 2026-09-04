@@ -307,66 +307,57 @@ export default function Blog() {
   const regularPosts = posts.slice(1);
 
   return (
-    <div className="w-full">
-      <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[11px] font-bold mb-2">{t.label}</p>
-      <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-4">{t.title}</h2>
-      <p className="text-[14px] text-[var(--text-secondary)] opacity-50 mb-10">{t.desc}</p>
+    <div className="w-full space-y-3" aria-label="Blog and Articles">
+      <div className="mb-2">
+        <p className="section-label text-[var(--accent)] uppercase tracking-[3px] text-[10px] font-bold mb-0.5">{t.label}</p>
+        <h2 className="section-heading text-[22px] md:text-[26px] font-black text-[var(--text-primary)] mb-0.5">{t.title}</h2>
+        <p className="text-[11px] text-[var(--text-secondary)] opacity-60">{t.desc}</p>
+      </div>
 
-      {/* MAGAZINE LAYOUT */}
-      <div className="flex flex-col gap-6">
-        {/* Featured Post (Full Width) */}
-        {featuredPost && (
-          <TiltCard onClick={() => setSelectedArticle(featuredPost.id)} className="w-full group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-[32px] overflow-hidden hover:border-[var(--accent)] transition-colors shadow-xl">
-            <div className="relative aspect-[21/9] md:aspect-[21/7] overflow-hidden w-full">
-               <Image src={featuredPost.image} alt={featuredPost.title} fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
-               <div className="absolute inset-0 bg-gradient-to-t from-[#000000e6] via-[#00000080] to-transparent" />
-               <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-end">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="px-3 py-1 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
-                      {featuredPost.category}
+      {/* Clean 3-Column Magazine Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {posts.slice(0, 3).map((article, i) => (
+          <TiltCard 
+            key={article.id} 
+            onClick={() => setSelectedArticle(article.id)} 
+            className={`group bg-[var(--bg-secondary)] border rounded-xl overflow-hidden hover:border-[var(--accent)] transition-all shadow-md flex flex-col ${
+              i === 0 ? "border-[var(--accent)]/40 bg-gradient-to-b from-[var(--accent)]/5 to-[var(--bg-secondary)]" : "border-[var(--border)]"
+            }`}
+          >
+            <div className="relative aspect-[16/9] w-full overflow-hidden">
+               <Image src={article.image} alt={article.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+               <div className="absolute top-2.5 left-2.5 flex gap-1.5">
+                  {i === 0 && (
+                    <span className="px-2 py-0.5 bg-[var(--accent)] text-black text-[8px] font-black uppercase tracking-widest rounded-full shadow">
+                      Featured
                     </span>
-                    <span className="text-[11px] font-bold text-white/70 uppercase tracking-widest bg-black/20 backdrop-blur-md px-3 py-1 rounded-full">{featuredPost.date}</span>
-                  </div>
-                  <h3 className="text-2xl md:text-4xl font-black text-white leading-tight mb-3 drop-shadow-lg max-w-3xl">
-                    {featuredPost.title}
-                  </h3>
-                  <p className="text-sm md:text-base text-white/80 line-clamp-2 max-w-2xl font-medium">
-                    {featuredPost.excerpt}
-                  </p>
+                  )}
+                  <span className="px-2 py-0.5 bg-[var(--bg-card)]/80 backdrop-blur-md text-[var(--accent)] text-[8px] font-black uppercase tracking-widest rounded-full border border-[var(--border-subtle)]">
+                    {article.category}
+                  </span>
+               </div>
+            </div>
+            <div className="p-3.5 flex flex-col flex-1 justify-between gap-2">
+               <div>
+                 <div className="flex items-center justify-between mb-1.5">
+                    <p className="text-[9px] font-bold text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{article.date}</p>
+                    <div className="flex items-center gap-1 text-[9px] text-[var(--text-secondary)] opacity-60">
+                       <Heart size={9} className="text-[var(--accent)]" /> {likes[article.id] || 0}
+                    </div>
+                 </div>
+                 <h3 className="text-[13px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-snug line-clamp-2">
+                    {article.title}
+                 </h3>
+                 <p className="text-[11px] text-[var(--text-secondary)] opacity-70 line-clamp-2 mt-1 leading-relaxed">
+                   {article.excerpt}
+                 </p>
+               </div>
+               <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors pt-1 border-t border-white/5">
+                 {t.read} <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
                </div>
             </div>
           </TiltCard>
-        )}
-
-        {/* Regular Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {regularPosts.map((article, i) => (
-            <TiltCard key={article.id} onClick={() => setSelectedArticle(article.id)} className="group bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl overflow-hidden hover:border-[var(--accent)] transition-all shadow-lg flex flex-col h-full">
-              <div className="relative aspect-[16/10] w-full overflow-hidden">
-                 <Image src={article.image} alt={article.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                 <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-[var(--bg-card)]/80 backdrop-blur-md text-[var(--accent)] text-[9px] font-black uppercase tracking-widest rounded-full border border-[var(--border-subtle)]">
-                      {article.category}
-                    </span>
-                 </div>
-              </div>
-              <div className="p-6 flex flex-col flex-1">
-                 <div className="flex items-center justify-between mb-3">
-                    <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-50 uppercase tracking-widest">{article.date}</p>
-                    <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-secondary)] opacity-60">
-                       <Heart size={10} className="text-[var(--accent)]" /> {likes[article.id] || 0}
-                    </div>
-                 </div>
-                 <h3 className="text-[16px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-snug mb-3 flex-1">
-                    {article.title}
-                 </h3>
-                 <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
-                   {t.read} <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
-                 </div>
-              </div>
-            </TiltCard>
-          ))}
-        </div>
+        ))}
       </div>
 
       {/* Full Page Article Reader */}

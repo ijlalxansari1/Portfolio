@@ -26,7 +26,7 @@ export default function Certifications() {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
   const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Delay fetching by 2 seconds to ensure it doesn't block the initial LCP
@@ -93,46 +93,46 @@ export default function Certifications() {
   }, [isVisible]);
 
   return (
-    <section id="certifications" className="w-full" ref={sectionRef}>
-      <div className="mb-12">
-        <p className="text-[var(--text-muted)] text-sm font-semibold uppercase tracking-wider mb-2">{t.label}</p>
-        <h2 className="text-4xl font-bold text-[var(--text-primary)]">{t.title}</h2>
-        <div className="w-16 h-1 mt-4 bg-neon-mint rounded-full" />
+    <div className="w-full" ref={sectionRef}>
+      <div className="mb-4">
+        <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider mb-1">{t.label}</p>
+        <h2 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">{t.title}</h2>
+        <div className="w-10 h-0.5 mt-1.5 bg-neon-mint rounded-full" />
       </div>
 
       {loading ? (
-        <div className="text-center py-20 text-gray-400 text-sm">{t.loading}</div>
+        <div className="text-center py-10 text-gray-400 text-xs">{t.loading}</div>
       ) : certifications.length === 0 ? (
-        <div className="text-center py-20 text-[var(--text-muted)] text-sm font-medium">{t.empty}</div>
+        <div className="text-center py-10 text-[var(--text-muted)] text-xs font-medium">{t.empty}</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {certifications.map((cert, i) => (
             <motion.div
               key={cert.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.08 }}
-              whileHover={{ y: -8 }}
+              viewport={{ once: true, margin: "-20px" }}
+              transition={{ delay: i * 0.05 }}
+              whileHover={{ y: -4 }}
               onClick={() => setSelectedCert(cert)}
-              className="rc-card overflow-hidden cursor-pointer group transition-all duration-500 shadow-sm hover:shadow-xl"
+              className="rc-card overflow-hidden cursor-pointer group transition-all duration-300 shadow-sm hover:shadow-lg rounded-2xl border border-[var(--border-subtle)]"
             >
-              <div className="relative h-44 bg-[var(--border-color)] overflow-hidden">
+              <div className="relative h-28 bg-[var(--border-color)] overflow-hidden">
                 {cert.image ? (
-                  <Image src={cert.image} alt={cert.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <Image src={cert.image} alt={cert.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-[var(--bg-sidebar)]">
-                    <Award size={48} className="text-neon-mint/20" />
+                    <Award size={32} className="text-neon-mint/20" />
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-card)]/80 to-transparent" />
               </div>
-              <div className="p-8">
-                <p className="text-neon-mint text-[10px] font-black uppercase tracking-widest mb-2">{cert.issuer}</p>
-                <h3 className="text-[var(--text-primary)] font-bold text-base mb-4 line-clamp-2 group-hover:text-neon-mint transition-colors">{cert.title}</h3>
-                <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] font-bold uppercase tracking-wider">
-                  <Calendar size={12} className="text-neon-mint" />
-                  <span>{cert.date ? new Date(cert.date).toLocaleDateString("en-US", { year: "numeric", month: "long" }) : "N/A"}</span>
+              <div className="p-3.5">
+                <p className="text-neon-mint text-[9px] font-black uppercase tracking-widest mb-1">{cert.issuer}</p>
+                <h3 className="text-[var(--text-primary)] font-bold text-xs sm:text-sm mb-2 line-clamp-2 group-hover:text-neon-mint transition-colors">{cert.title}</h3>
+                <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider">
+                  <Calendar size={11} className="text-neon-mint" />
+                  <span>{cert.date ? new Date(cert.date).toLocaleDateString("en-US", { year: "numeric", month: "short" }) : "N/A"}</span>
                 </div>
               </div>
             </motion.div>
@@ -199,6 +199,6 @@ export default function Certifications() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </div>
   );
 }

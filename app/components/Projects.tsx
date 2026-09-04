@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Github, ExternalLink, Star, Layers } from "lucide-react";
 import Image from "next/image";
@@ -65,19 +65,8 @@ const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome:
     featured: true,
     tech: ["JSON", "Open Data", "API"]
   },
-  5: {
-    problem: {
-      en: "Tracking and organizing a comprehensive data engineering learning path",
-      de: "Verfolgung und Organisation eines umfassenden Lernpfads für Data Engineering"
-    },
-    outcome: {
-      en: "A structured journey focusing on core data engineering principles",
-      de: "Eine strukturierte Reise mit Fokus auf zentrale Data-Engineering-Prinzipien"
-    },
-    github: "https://github.com/ijlalxansari1/Data-engineering-journey",
-    tech: ["Data Engineering", "Roadmap", "Python"]
-  },
 };
+
 
 export default function Projects() {
   const { language } = useLanguage();
@@ -124,17 +113,8 @@ export default function Projects() {
         : "Kostenlose öffentliche Fußballdaten für die Weltmeisterschaften als JSON.",
       alt: "worldcup.json",
     },
-    {
-      id: 5, title: "Data Engineering Journey", 
-      tag: "Education",
-      tech: ["Data Engineering", "Roadmap", "Python"],
-      image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=800",
-      description: language === "en"
-        ? "Repo focusing on data engineering learning path."
-        : "Repository mit Fokus auf den Data-Engineering-Lernpfad.",
-      alt: "Data Engineering Journey",
-    }
   ], [language]);
+
 
   const filters = [t.filter_all, "ETL", "Automation", "Dashboards", "APIs", "Python", "SQL", "Docker"];
   const [activeFilter, setActiveFilter] = useState(t.filter_all);
@@ -197,48 +177,52 @@ export default function Projects() {
 
   const featured = filtered.filter((p) => PROJECT_META[p.id]?.featured);
   const rest = filtered.filter((p) => !PROJECT_META[p.id]?.featured);
+  const mainHero = featured.length > 0 ? featured[0] : filtered[0];
+  const repoProjects = filtered.filter((p) => p.id !== mainHero?.id);
+
+  const repoScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollRepos = (direction: "left" | "right") => {
+    if (repoScrollRef.current) {
+      const scrollAmount = 260;
+      repoScrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
-    <section className="w-full space-y-12" id="projects" aria-label="Projects Portfolio">
-      {/* Header */}
-      <div>
-        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-3">
-          {t.title}
-        </p>
-        <h2 className="section-heading text-[28px] font-black text-[var(--text-primary)] mb-1">
-          {t.subtitle}
-        </h2>
-        <p className="text-[13px] text-[var(--text-secondary)] opacity-50 max-w-lg">
-          {t.subheading}
-        </p>
-      </div>
+    <div className="w-full h-full flex flex-col justify-between py-1" aria-label="Projects Portfolio">
+      {/* Header & Filter tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 shrink-0">
+        <div>
+          <p className="text-[9.5px] font-black uppercase tracking-[0.35em] text-[var(--accent)] mb-0.5">
+            {t.title}
+          </p>
+          <h2 className="section-heading text-[22px] md:text-[26px] font-black text-[var(--text-primary)] leading-tight">
+            {t.subtitle}
+          </h2>
+        </div>
 
-      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)]/70 p-4 max-w-2xl">
-        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[var(--text-muted)] mb-2">
-          Project Summary
-        </p>
-        <p className="text-[13px] text-[var(--text-secondary)] opacity-70 leading-relaxed">
-          I focus on projects that are practical, live-ready, and simple to understand — from data pipelines to analytics tools that people can actually use.
-        </p>
-      </div>
-
-      {/* Filter tabs */}
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter projects by technology">
-        {filters.map((f) => (
-          <button
-            key={f}
-            role="tab"
-            aria-selected={activeFilter === f}
-            onClick={() => setActiveFilter(f)}
-            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-              activeFilter === f
-                ? "bg-[var(--accent)] text-black shadow-[0_0_12px_rgba(var(--accent-rgb),0.25)]"
-                : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
+        {/* Filter tabs */}
+        <div className="flex flex-wrap gap-1" role="tablist" aria-label="Filter projects by technology">
+          {filters.map((f) => (
+            <button
+              key={f}
+              role="tab"
+              aria-selected={activeFilter === f}
+              onClick={() => setActiveFilter(f)}
+              className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-wider transition-all ${
+                activeFilter === f
+                  ? "bg-[var(--accent)] text-black shadow-sm font-black"
+                  : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -248,66 +232,65 @@ export default function Projects() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="space-y-12"
+          className="flex flex-col justify-between flex-1 gap-2.5 my-1"
         >
-          {/* ── Top Hero Featured Project ── */}
-          {featured.length > 0 && (
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-[0.35em] text-[var(--text-muted)] mb-5 flex items-center gap-2">
-                <Star size={10} className="text-yellow-400" />
-                Featured Project
-              </p>
-              
-              <div className="flex flex-col mb-8">
-                <HeroProjectCard
-                  project={featured[0]}
-                  meta={PROJECT_META[featured[0].id]}
-                  onOpen={() => setSelectedProject(featured[0])}
-                  onOpenArch={() => setArchProject(featured[0])}
-                  viewLabel={t.view_case_study}
-                />
+          {/* 1. Flagship Hero Project */}
+          {mainHero && (
+            <div className="w-full">
+              <HeroProjectCard
+                project={mainHero}
+                meta={PROJECT_META[mainHero.id]}
+                onOpen={() => setSelectedProject(mainHero)}
+                onOpenArch={() => setArchProject(mainHero)}
+                viewLabel={t.view_case_study}
+              />
+            </div>
+          )}
+
+          {/* 2. GitHub Repositories (All Other Projects) */}
+          {repoProjects.length > 0 && (
+            <div className="space-y-1.5 shrink-0">
+              <div className="flex items-center justify-between px-0.5">
+                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-[var(--text-muted)] flex items-center gap-1.5">
+                  <Github size={12} className="text-[var(--accent)]" />
+                  GitHub Repositories ({repoProjects.length})
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => scrollRepos("left")}
+                    className="w-5 h-5 rounded bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:border-[var(--accent)] transition-all text-[10px]"
+                    aria-label="Scroll repos left"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={() => scrollRepos("right")}
+                    className="w-5 h-5 rounded bg-[var(--bg-secondary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:border-[var(--accent)] transition-all text-[10px]"
+                    aria-label="Scroll repos right"
+                  >
+                    →
+                  </button>
+                </div>
               </div>
 
-              {featured.length > 1 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 mt-5">
-                  {featured.slice(1).map((project, i) => (
+              {/* Horizontal Scrollable Strip of GitHub Repos */}
+              <div
+                ref={repoScrollRef}
+                className="flex gap-2.5 overflow-x-auto pb-0.5 scrollbar-none snap-x snap-mandatory"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {repoProjects.map((project, i) => (
+                  <div key={project.id} className="min-w-[240px] max-w-[270px] flex-shrink-0 snap-start">
                     <ProjectCard
-                      key={project.id}
                       project={project}
                       meta={PROJECT_META[project.id]}
-                      featured
+                      featured={!!PROJECT_META[project.id]?.featured}
                       index={i}
                       onOpen={() => setSelectedProject(project)}
                       onOpenArch={() => setArchProject(project)}
                       viewLabel={t.view_case_study}
                     />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── Rest of projects ── */}
-          {rest.length > 0 && (
-            <div>
-              {featured.length > 0 && (
-                <p className="text-[9px] font-black uppercase tracking-[0.35em] text-[var(--text-muted)] mb-5 flex items-center gap-2">
-                  <Layers size={10} />
-                  Other Projects
-                </p>
-              )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {rest.map((project, i) => (
-                  <ProjectCard
-                    key={project.id}
-                    project={project}
-                    meta={PROJECT_META[project.id]}
-                    featured={false}
-                    index={i}
-                    onOpen={() => setSelectedProject(project)}
-                    onOpenArch={() => setArchProject(project)}
-                    viewLabel={t.view_case_study}
-                  />
+                  </div>
                 ))}
               </div>
             </div>
@@ -332,7 +315,7 @@ export default function Projects() {
         onClose={() => setArchProject(null)}
         project={archProject}
       />
-    </section>
+    </div>
   );
 }
 
@@ -350,120 +333,87 @@ function ProjectCard({
   const { language } = useLanguage();
   return (
     <motion.article
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ delay: index * 0.07, duration: 0.3 }}
-      className={`group relative flex flex-col rounded-2xl overflow-hidden bg-[var(--bg-secondary)] border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.04, duration: 0.25 }}
+      className={`group relative flex flex-col rounded-xl overflow-hidden bg-[var(--bg-secondary)] border transition-all duration-300 hover:shadow-md ${
         featured
-          ? "border-[var(--accent)]/25 hover:border-[var(--accent)]/60 hover:shadow-[0_10px_30px_rgba(var(--accent-rgb),0.1)]"
+          ? "border-[var(--accent)]/25 hover:border-[var(--accent)]/60"
           : "border-[var(--border-subtle)] hover:border-[var(--border)]"
       }`}
     >
       {/* Thumbnail */}
-      <div className="relative w-full aspect-[16/9] overflow-hidden shrink-0">
+      <div className="relative w-full h-[76px] overflow-hidden shrink-0">
         <Image
           src={project.image || "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800"}
           alt={project.alt || project.title || "Project"}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, 260px"
           quality={75}
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.04] grayscale-[0.2]"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03] grayscale-[0.2]"
           loading="lazy"
         />
         {/* Featured badge */}
         {featured && (
-          <span className="absolute top-3 left-3 px-2 py-0.5 bg-[var(--accent)] text-black text-[9px] font-black uppercase tracking-widest rounded-md z-10 flex items-center gap-1">
-            <Star size={8} />
+          <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-[var(--accent)] text-black text-[7.5px] font-black uppercase tracking-wider rounded z-10 flex items-center gap-0.5">
+            <Star size={6} />
             Featured
-          </span>
-        )}
-        
-        {/* Type Badge */}
-        {!featured && (
-          <span className="absolute top-3 left-3 px-2 py-0.5 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[9px] font-black uppercase tracking-widest rounded-md z-10 border border-white/10">
-            {project.tag === 'FastAPI' ? 'API' : project.tag === 'Next.js' ? 'Frontend' : 'Data App'}
           </span>
         )}
         
         {/* Metric Badge */}
         {meta?.metric && (
-          <span className="absolute top-3 right-3 px-2.5 py-1 bg-emerald-500/90 backdrop-blur-sm text-black text-[10px] font-black tracking-widest rounded-md z-10 shadow-lg border border-emerald-400">
+          <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-emerald-500/90 backdrop-blur-sm text-black text-[8px] font-black tracking-wider rounded z-10">
             {meta.metric}
           </span>
         )}
 
         {/* Tag */}
-        <span className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[9px] font-black uppercase tracking-wider rounded-md z-10 border border-white/10">
+        <span className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[7.5px] font-black uppercase tracking-wider rounded border border-white/10">
           {project.tag}
         </span>
         {/* Architecture Thumbnail Trigger */}
         <button 
           onClick={(e) => { e.stopPropagation(); onOpenArch(); }}
-          className="absolute bottom-3 left-3 w-7 h-7 bg-black/60 backdrop-blur-sm text-[var(--text-secondary)] hover:text-[var(--accent)] border border-white/10 rounded-md z-10 flex items-center justify-center transition-colors"
+          className="absolute bottom-1.5 left-1.5 w-5 h-5 bg-black/60 backdrop-blur-sm text-[var(--text-secondary)] hover:text-[var(--accent)] border border-white/10 rounded z-10 flex items-center justify-center transition-colors"
           aria-label="View Architecture"
           title="View Architecture"
         >
-          <Layers size={12} />
+          <Layers size={9} />
         </button>
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
-          <button
-            onClick={onOpen}
-            className="px-5 py-2.5 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center gap-2 translate-y-3 group-hover:translate-y-0 transition-all duration-300"
-            aria-label={`${viewLabel} for ${project.title}`}
-          >
-            {viewLabel}
-            <ArrowRight size={14} />
-          </button>
-        </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-5 gap-4">
-        {/* Title */}
-        <h3 className="text-[14px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-snug">
-          {project.title}
-        </h3>
+      <div className="flex flex-col flex-1 p-2.5 gap-1.5 justify-between">
+        <div>
+          {/* Title */}
+          <h3 className="text-[11px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-tight truncate">
+            {project.title}
+          </h3>
 
-        {/* Problem / Outcome rows */}
-        {meta && (
-          <div className="space-y-2.5">
-            <div className="flex gap-2.5">
-              <span className="text-[9px] font-black uppercase tracking-wider text-[var(--text-muted)] w-14 shrink-0 pt-0.5">
-                {language === "de" ? "Problem" : "Problem"}
-              </span>
-              <span className="text-[11px] text-[var(--text-secondary)] opacity-60 leading-relaxed">
-                {meta.problem[language as 'en'|'de'] || meta.problem.en}
-              </span>
-            </div>
-            <div className="flex gap-2.5">
-              <span className="text-[9px] font-black uppercase tracking-wider text-[var(--accent)] w-14 shrink-0 pt-0.5">
-                {language === "de" ? "Resultat" : "Result"}
-              </span>
-              <span className="text-[11px] text-[var(--text-secondary)] opacity-70 leading-relaxed">
-                {meta.outcome[language as 'en'|'de'] || meta.outcome.en}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {!meta && (
-          <p className="text-[11px] text-[var(--text-secondary)] opacity-50 line-clamp-2 leading-relaxed">
-            {project.description}
-          </p>
-        )}
+          {/* Outcome / Problem */}
+          {meta ? (
+            <p className="text-[9.5px] text-[var(--text-secondary)] opacity-70 line-clamp-1 leading-tight mt-1">
+              {meta.outcome[language as 'en'|'de'] || meta.outcome.en}
+            </p>
+          ) : (
+            <p className="text-[9.5px] text-[var(--text-secondary)] opacity-70 line-clamp-1 leading-tight mt-1">
+              {project.description}
+            </p>
+          )}
+        </div>
 
         {/* Actions */}
-        <div className="mt-auto pt-3 border-t border-[var(--border-subtle)] flex items-center gap-3">
+        <div className="pt-1.5 border-t border-[var(--border-subtle)] flex items-center justify-between gap-1.5">
           <button
             onClick={onOpen}
-            className="flex-1 text-[10px] font-black uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors flex items-center gap-1.5"
+            className="text-[8.5px] font-black uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors flex items-center gap-1"
             aria-label={`Open case study for ${project.title}`}
           >
             Case Study
-            <ArrowRight size={11} />
+            <ArrowRight size={8} />
           </button>
           {(meta?.github || project.link) && (
             <a
@@ -472,21 +422,9 @@ function ProjectCard({
               rel="noopener noreferrer"
               aria-label={`View ${project.title} on GitHub`}
               onClick={(e) => e.stopPropagation()}
-              className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:bg-white/[0.08] transition-all"
+              className="w-5 h-5 rounded bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[var(--text-secondary)] hover:text-white"
             >
-              <Github size={13} />
-            </a>
-          )}
-          {meta?.demo && (
-            <a
-              href={meta.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View live demo for ${project.title}`}
-              onClick={(e) => e.stopPropagation()}
-              className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-all hover:scale-105"
-            >
-              <ExternalLink size={13} />
+              <Github size={10} />
             </a>
           )}
         </div>
@@ -508,110 +446,103 @@ function HeroProjectCard({
   const { language } = useLanguage();
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      exit={{ opacity: 0, y: -10 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.4 }}
-      className="group relative flex flex-col lg:flex-row rounded-3xl overflow-hidden bg-[var(--bg-secondary)] border border-[var(--accent)]/30 hover:border-[var(--accent)]/70 transition-all duration-500 hover:shadow-[0_12px_40px_rgba(var(--accent-rgb),0.15)] hover:-translate-y-1"
+      transition={{ duration: 0.3 }}
+      className="group relative flex flex-col sm:flex-row rounded-xl overflow-hidden bg-[var(--bg-secondary)] border border-[var(--accent)]/30 hover:border-[var(--accent)]/60 transition-all duration-300 shadow-md"
     >
-      {/* Thumbnail (Left side on large screens) */}
-      <div className="relative w-full lg:w-[55%] aspect-video lg:aspect-auto overflow-hidden shrink-0">
+      {/* Thumbnail */}
+      <div className="relative w-full sm:w-[36%] min-h-[120px] sm:min-h-[140px] overflow-hidden shrink-0">
         <Image
           src={project.image || "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800"}
           alt={project.alt || project.title || "Project"}
           fill
-          sizes="(max-width: 1024px) 100vw, 55vw"
+          sizes="(max-width: 640px) 100vw, 36vw"
           quality={80}
-          className="object-cover transition-transform duration-700 group-hover:scale-105 mix-blend-luminosity hover:mix-blend-normal"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--bg-secondary)] hidden lg:block pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent lg:hidden pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--bg-secondary)] hidden sm:block pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent sm:hidden pointer-events-none" />
         
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span className="px-3 py-1 bg-[var(--accent)] text-black text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 shadow-lg">
-            <Star size={10} />
-            Flagship Project
+        <div className="absolute top-2 left-2 flex gap-1">
+          <span className="px-1.5 py-0.5 bg-[var(--accent)] text-black text-[8px] font-black uppercase tracking-wider rounded flex items-center gap-0.5 shadow">
+            <Star size={7} />
+            Flagship
           </span>
-          <span className="px-3 py-1 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[10px] font-black uppercase tracking-wider rounded-lg border border-white/10 shadow-lg">
+          <span className="px-1.5 py-0.5 bg-black/60 backdrop-blur-sm text-[var(--text-primary)] text-[8px] font-black uppercase tracking-wider rounded border border-white/10">
             {project.tag}
           </span>
-          {meta?.metric && (
-            <span className="px-3 py-1 bg-emerald-500/90 backdrop-blur-sm text-black text-[10px] font-black tracking-widest rounded-lg shadow-lg border border-emerald-400">
-              {meta.metric}
-            </span>
-          )}
         </div>
         
         {/* Architecture Thumbnail Trigger */}
         <button 
           onClick={(e) => { e.stopPropagation(); onOpenArch(); }}
-          className="absolute bottom-4 left-4 px-3 py-2 bg-black/60 backdrop-blur-sm text-[var(--text-secondary)] hover:text-[var(--accent)] border border-white/10 rounded-xl z-10 flex items-center gap-2 transition-colors hover:bg-black/80 shadow-lg"
+          className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-sm text-[var(--text-secondary)] hover:text-[var(--accent)] border border-white/10 rounded z-10 flex items-center gap-1 transition-colors"
           aria-label="View Architecture"
         >
-          <Layers size={14} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Architecture Preview</span>
+          <Layers size={9} />
+          <span className="text-[8px] font-bold uppercase tracking-wider">Arch</span>
         </button>
       </div>
 
-      {/* Content (Right side on large screens) */}
-      <div className="flex flex-col flex-1 p-6 lg:p-8 justify-center z-10 bg-[var(--bg-secondary)] lg:bg-transparent">
-        <h3 className="text-2xl lg:text-3xl font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mb-6 leading-tight">
-          {project.title}
-        </h3>
-
-        {meta && (
-          <div className="space-y-5 mb-8">
-            <div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] mb-1">
-                {language === "de" ? "Die Herausforderung" : "The Challenge"}
-              </h4>
-              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-                {meta.problem[language as 'en'|'de'] || meta.problem.en}
-              </p>
-            </div>
-            <div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-1">
-                {language === "de" ? "Das Ergebnis" : "The Outcome"}
-              </h4>
-              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-                {meta.outcome[language as 'en'|'de'] || meta.outcome.en}
-              </p>
-            </div>
-            
-            {/* Tech Stack Tags for Hero */}
-            <div>
-              <span className="block text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-2 mt-4">
-                Core Technologies
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-3 sm:p-3.5 justify-between z-10 bg-[var(--bg-secondary)] sm:bg-transparent gap-2">
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <h3 className="text-base sm:text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-tight">
+              {project.title}
+            </h3>
+            {meta?.metric && (
+              <span className="px-1.5 py-0.5 bg-emerald-500/90 text-black text-[8px] font-black tracking-wider rounded shadow shrink-0">
+                {meta.metric}
               </span>
-              <div className="flex flex-wrap gap-2">
-                {["Python", "Airflow", "dbt", "Docker", "SQL"].map(tech => (
-                  <span key={tech} className="px-2.5 py-1 bg-[var(--bg-primary)] border border-white/5 text-[var(--text-secondary)] text-[10px] font-bold tracking-wider rounded-md">
-                    {tech}
-                  </span>
-                ))}
+            )}
+          </div>
+
+          {meta && (
+            <div className="space-y-1 mb-1.5">
+              <div>
+                <span className="text-[8px] font-black uppercase tracking-wider text-[var(--accent)] mr-1">
+                  {language === "de" ? "Problem:" : "Challenge:"}
+                </span>
+                <span className="text-[10px] text-[var(--text-secondary)] opacity-85 leading-tight">
+                  {meta.problem[language as 'en'|'de'] || meta.problem.en}
+                </span>
+              </div>
+              <div>
+                <span className="text-[8px] font-black uppercase tracking-wider text-emerald-400 mr-1">
+                  {language === "de" ? "Ergebnis:" : "Outcome:"}
+                </span>
+                <span className="text-[10px] text-[var(--text-secondary)] opacity-85 leading-tight">
+                  {meta.outcome[language as 'en'|'de'] || meta.outcome.en}
+                </span>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {!meta && (
-          <p className="text-[14px] text-[var(--text-secondary)] opacity-80 leading-relaxed mb-8">
-            {project.description}
-          </p>
-        )}
+          {/* Tech Stack Tags */}
+          <div className="flex flex-wrap gap-1 mt-1">
+            {["Python", "Airflow", "dbt", "Docker", "SQL"].map(tech => (
+              <span key={tech} className="px-1.5 py-0.5 bg-[var(--bg-primary)] border border-white/5 text-[var(--text-secondary)] text-[8px] font-bold tracking-wider rounded">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
 
         {/* Actions */}
-        <div className="mt-auto pt-6 border-t border-white/5 flex items-center gap-4">
+        <div className="pt-2 border-t border-white/5 flex items-center gap-2">
           <button
             onClick={onOpen}
-            className="flex-1 lg:flex-none px-6 py-3.5 bg-[var(--accent)] text-black text-[11px] font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(var(--accent-rgb),0.2)]"
+            className="px-3 py-1.5 bg-[var(--accent)] text-black text-[9px] font-black uppercase tracking-widest rounded-md hover:scale-105 transition-transform flex items-center justify-center gap-1 shadow"
             aria-label={`${viewLabel} for ${project.title}`}
           >
             {viewLabel}
-            <ArrowRight size={14} />
+            <ArrowRight size={10} />
           </button>
           {(meta?.github || project.link) && (
             <a
@@ -620,9 +551,9 @@ function HeroProjectCard({
               rel="noopener noreferrer"
               aria-label={`View ${project.title} on GitHub`}
               onClick={(e) => e.stopPropagation()}
-              className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:bg-white/10 hover:border-white/20 transition-all hover:scale-110"
+              className="w-7 h-7 rounded-md bg-white/[0.03] border border-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-white transition-all"
             >
-              <Github size={18} />
+              <Github size={12} />
             </a>
           )}
           {meta?.demo && (
@@ -632,9 +563,9 @@ function HeroProjectCard({
               rel="noopener noreferrer"
               aria-label={`View live demo for ${project.title}`}
               onClick={(e) => e.stopPropagation()}
-              className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent)]/10 hover:border-[var(--accent)]/30 transition-all hover:scale-110"
+              className="w-7 h-7 rounded-md bg-white/[0.03] border border-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent)] transition-all"
             >
-              <ExternalLink size={18} />
+              <ExternalLink size={12} />
             </a>
           )}
         </div>

@@ -1,22 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
-import { Languages, ListChecks } from "lucide-react";
+import { 
+  Languages, 
+  Film, 
+  BookOpen, 
+  Mountain, 
+  Headphones, 
+  Flame, 
+  Sparkles, 
+  Compass, 
+  Clapperboard, 
+  Music
+} from "lucide-react";
+
+type TabKey = "languages" | "cinema" | "books" | "outdoors" | "music";
 
 export default function LanguageSkills() {
   const { language } = useLanguage();
   const t = translations[language].languageSkills;
 
+  // Default active tab is Languages (first one)
+  const [activeTab, setActiveTab] = useState<TabKey>("languages");
   const [adminLangs, setAdminLangs] = useState<any[]>([]);
-  const [practices, setPractices] = useState<string[]>([
-    "DWH & DB Concepts", "Data Analytics Engineering", "Data Preparation",
-    "Oracle SQL", "Data Integration", "Data Provisioning",
-    "Data Solution Architecture", "ETL/ELT Solutions"
-  ]);
+  const [adminMovies, setAdminMovies] = useState<any[]>([]);
+  const [adminBooks, setAdminBooks] = useState<any[]>([]);
 
   // Duolingo dynamic states
   const [duoStreak, setDuoStreak] = useState<number | null>(null);
@@ -31,20 +42,23 @@ export default function LanguageSkills() {
           const { data } = await resLangs.json();
           if (data && data.length > 0) setAdminLangs(data);
         }
+        const resMovies = await fetch("/api/data/admin?key=admin-movies");
+        if (resMovies.ok) {
+          const { data } = await resMovies.json();
+          if (data && data.length > 0) setAdminMovies(data);
+        }
+        const resBooks = await fetch("/api/data/admin?key=admin-books");
+        if (resBooks.ok) {
+          const { data } = await resBooks.json();
+          if (data && data.length > 0) setAdminBooks(data);
+        }
       } catch (err) {
         const storedLangs = localStorage.getItem("admin-languages");
         if (storedLangs) setAdminLangs(JSON.parse(storedLangs));
-      }
-
-      try {
-        const resPrac = await fetch("/api/data/admin?key=admin-practices");
-        if (resPrac.ok) {
-          const { data } = await resPrac.json();
-          if (data && data.length > 0) setPractices(data);
-        }
-      } catch (err) {
-        const storedPractices = localStorage.getItem("admin-practices");
-        if (storedPractices) setPractices(JSON.parse(storedPractices));
+        const storedMovies = localStorage.getItem("admin-movies");
+        if (storedMovies) setAdminMovies(JSON.parse(storedMovies));
+        const storedBooks = localStorage.getItem("admin-books");
+        if (storedBooks) setAdminBooks(JSON.parse(storedBooks));
       }
     };
 
@@ -73,127 +87,464 @@ export default function LanguageSkills() {
     fetchDuolingo();
   }, []);
 
-
   // Default languages
   const defaultLanguages = [
-    { name: "English", flag: "us", level: 90 },
-    { name: "German", flag: "de", level: 70 },
-    { name: "Spanish", flag: "es", level: 60 },
-    { name: "French", flag: "fr", level: 70 }
+    { name: "English", flag: "us", level: 95, cefr: "C2 (Fluent / Professional)", note: "Primary working & writing medium" },
+    { name: "German", flag: "de", level: 70, cefr: "B1 / B2 (Intermediate)", note: "Active daily practice & Duolingo focus" },
+    { name: "Spanish", flag: "es", level: 50, cefr: "A2 (Elementary)", note: "Conversational exploration & reading" },
+    { name: "French", flag: "fr", level: 60, cefr: "A2 / B1 (Learning)", note: "Grammar & vocabulary foundations" }
   ];
 
   const languages = adminLangs.length > 0 ? adminLangs : defaultLanguages;
 
+  // Cinema: Favorite Nolan & Sci-Fi Masterpieces
+  const favoriteMovies = [
+    {
+      title: "Interstellar",
+      year: "2014",
+      director: "Christopher Nolan",
+      quote: "Love is the one thing that transcends time and space.",
+      theme: "General Relativity • Gargantua • The Tesseract • Human Grit",
+      badge: "Masterpiece",
+      border: "hover:border-amber-500/40"
+    },
+    {
+      title: "Tenet",
+      year: "2020",
+      director: "Christopher Nolan",
+      quote: "Don't try to understand it. Feel it.",
+      theme: "Inverted Entropy • Temporal Mechanics • Non-Linear Reality",
+      badge: "Mind-Bending",
+      border: "hover:border-cyan-500/40"
+    },
+    {
+      title: "2001: A Space Odyssey",
+      year: "1968",
+      director: "Stanley Kubrick",
+      quote: "The mystery of human evolution and conscious artificial intelligence.",
+      theme: "Cosmic Scale • The Monolith • HAL 9000 • Transhumanism",
+      badge: "Visionary",
+      border: "hover:border-purple-500/40"
+    },
+    {
+      title: "The Dark Knight Trilogy",
+      year: "2005–2012",
+      director: "Christopher Nolan",
+      quote: "Why do we fall? So we can learn to pick ourselves up.",
+      theme: "Moral Philosophy • Order vs Chaos • Incorruptible Resolve",
+      badge: "Classic",
+      border: "hover:border-emerald-500/40"
+    }
+  ];
+
+  const movies = adminMovies.length > 0 ? adminMovies : favoriteMovies;
+
+  // Books: Literature & Authors
+  const influentialBooks = [
+    {
+      title: "Sapiens & Homo Deus",
+      author: "Yuval Noah Harari",
+      category: "Macro-History & Human Systems",
+      takeaway: "Deep exploration of how shared fictions, cognitive revolutions, and algorithmic dataism shape human civilizations.",
+      tag: "Foundational",
+      color: "text-amber-400 bg-amber-500/10 border-amber-500/20"
+    },
+    {
+      title: "Rich Dad Poor Dad",
+      author: "Robert Kiyosaki",
+      category: "Financial Mindset & Assets",
+      takeaway: "Transforming how one views capital, asset building, financial literacy, and escaping reactive financial loops.",
+      tag: "Mindset Shift",
+      color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+    },
+    {
+      title: "The Alchemist & Philosophical Works",
+      author: "Paulo Coelho",
+      category: "Philosophy & Personal Legends",
+      takeaway: "The universal language of perseverance, listening to intuition, and the transformative power of pursuing one's true quest.",
+      tag: "Philosophy",
+      color: "text-purple-400 bg-purple-500/10 border-purple-500/20"
+    }
+  ];
+
+  const books = adminBooks.length > 0 ? adminBooks : influentialBooks;
+
+  // Mountaineering & Outdoors
+  const outdoorPillars = [
+    {
+      title: "High Altitude Summits",
+      desc: "Trekking through demanding alpine elevations (4,000m+ passes) where grit, route discipline, and cold resilience are tested.",
+      icon: <Mountain size={20} className="text-[var(--accent)]" />,
+      metric: "4,000m+ Altitudes"
+    },
+    {
+      title: "Endurance & Trail Mindset",
+      desc: "Long-distance trekking translates directly to software engineering: pacing yourself through complexity, calculating risks, and persevering to the top.",
+      icon: <Compass size={20} className="text-emerald-400" />,
+      metric: "Calculated Grit"
+    },
+    {
+      title: "Unplugged Problem Solving",
+      desc: "Stepping away from screens into rugged terrain provides absolute mental clarity and novel perspectives for system architectures.",
+      icon: <Sparkles size={20} className="text-amber-400" />,
+      metric: "Deep Clarity"
+    }
+  ];
+
+  // Soundscape / Music
+  const soundscapeItems = [
+    {
+      title: "Cinematic Film Scores",
+      artists: "Hans Zimmer & Ludwig Göransson",
+      highlight: "Interstellar ('No Time for Caution'), Inception ('Time'), Oppenheimer",
+      vibe: "High Stakes & Epic Focus",
+      icon: <Clapperboard size={18} className="text-cyan-400" />
+    },
+    {
+      title: "Deep Ambient & Lofi Frequencies",
+      artists: "Synthwave / Dark Ambient / Chillhop",
+      highlight: "Continuous flow state background beats without vocal distractions",
+      vibe: "Zero Interruption Coding",
+      icon: <Headphones size={18} className="text-purple-400" />
+    }
+  ];
+
+  const tabs = [
+    { key: "languages" as TabKey, label: "Languages", icon: <Languages size={15} /> },
+    { key: "cinema" as TabKey, label: "Cinema (Nolan)", icon: <Film size={15} /> },
+    { key: "books" as TabKey, label: "Bookshelf", icon: <BookOpen size={15} /> },
+    { key: "outdoors" as TabKey, label: "Mountaineering", icon: <Mountain size={15} /> },
+    { key: "music" as TabKey, label: "Soundscapes", icon: <Music size={15} /> },
+  ];
+
   return (
-    <div className="w-full space-y-12">
+    <div className="w-full max-w-5xl mx-auto flex flex-col justify-center gap-4 py-2">
       
-      {/* Languages Section */}
-      <div className="w-full space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] border border-[var(--accent)]/20">
-            <Languages size={18} />
-          </div>
-          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[var(--text-primary)] px-4 py-1.5 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-full">
-            Languages
-          </span>
+      {/* 1. TOP TITLE */}
+      <div className="text-center space-y-2 max-w-3xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[var(--border-subtle)] text-[var(--accent)] font-bold text-[10px] uppercase tracking-widest bg-white/[0.01]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+          Beyond The Code
         </div>
-        
-        <div className="space-y-5">
-          {languages.map((lang: any, idx: number) => {
-            const proficiency = Math.round((lang.level || 0) / 10); // Convert to 0-10 scale for dots
-            const flagUrl = lang.flag?.includes('http') || lang.flag?.includes('data:image') 
-              ? lang.flag 
-              : `https://flagcdn.com/w40/${lang.flag || 'us'}.png`;
-            
+        <h3 className="text-2xl sm:text-3xl font-black text-[var(--text-primary)] leading-tight tracking-tight">
+          Languages, Passions & <span className="text-[var(--accent)]">Mental Models</span>
+        </h3>
+        <p className="text-[12px] sm:text-[13px] text-[var(--text-secondary)] font-medium max-w-2xl mx-auto">
+          The linguistic disciplines, cinematic philosophies, influential literature, and alpine trails that shape my perspective.
+        </p>
+      </div>
+
+      {/* 2. CATEGORY TABS (Right below title, centered) */}
+      <div className="flex justify-center">
+        <div className="flex items-center gap-1.5 p-1.5 bg-white/[0.03] border border-white/10 rounded-2xl overflow-x-auto no-scrollbar max-w-full">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.key;
             return (
-              <motion.div
-                key={lang.name}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05 }}
-                className="flex items-center justify-between gap-3 sm:gap-6 p-3 sm:p-4 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl hover:border-[var(--accent)]/30 transition-all"
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-bold tracking-wide transition-all whitespace-nowrap ${
+                  isActive
+                    ? "bg-[var(--accent)] text-black shadow-md font-black scale-[1.02]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.05]"
+                }`}
               >
-                <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                  <div className="w-12 h-9 sm:w-16 sm:h-12 rounded-lg overflow-hidden border border-[var(--border-subtle)] shrink-0 flex items-center justify-center bg-[var(--bg-secondary)]">
-                    <img src={flagUrl} alt={lang.name} className="w-full h-full object-cover" />
-                  </div>
-                  <span className="text-[13px] sm:text-[14px] font-bold text-[var(--text-primary)] min-w-[60px] sm:min-w-[80px]">
-                    {lang.name}
-                  </span>
-                </div>
-
-                {/* Progress Dots */}
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
-                        i < proficiency 
-                          ? 'bg-[#00e87a]' 
-                          : 'bg-white/20'
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                <span className="text-[12px] sm:text-[13px] font-black text-[var(--accent)] w-[35px] sm:min-w-[45px] text-right shrink-0">
-                  {lang.level || 0}%
-                </span>
-              </motion.div>
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
             );
           })}
         </div>
-
-        {/* Duolingo Streak Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-5 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-2xl relative overflow-hidden mt-6 hover:border-[#58cc02]/40 transition-all group"
-        >
-          {/* Authentic Duolingo Owl Watermark */}
-          <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none text-[#58cc02]">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="140" height="140">
-              <path d="M12.005 0a8.04 8.04 0 0 0-4.048.975A6.096 6.096 0 0 0 6.64 0a6.046 6.046 0 0 0-6.042 6.047 6.075 6.075 0 0 0 1.252 3.693c-.496 1.4-.737 2.87-.737 4.364 0 3.738 1.765 6.837 4.475 8.441a5.617 5.617 0 0 0 1.984.77v.64c0 .888.646 1.624 1.503 1.76l2.916.488a1.76 1.76 0 0 0 2.03-1.737v-1.121a10.662 10.662 0 0 0 2.03.111 10.378 10.378 0 0 0 1.94-.108v1.121c0 1.05.908 1.868 1.948 1.732l3-.497c.866-.144 1.516-.885 1.516-1.78v-.643a5.6 5.6 0 0 0 1.964-.785C23.11 20.916 24 17.82 24 14.104c0-1.508-.246-2.983-.75-4.385a6.07 6.07 0 0 0 1.254-3.672 6.046 6.046 0 0 0-6.046-6.047 6.097 6.097 0 0 0-1.32.146 8.053 8.053 0 0 0-5.133-1.12zm-3.11 7.234a2.222 2.222 0 0 1 2.213 2.226 2.222 2.222 0 0 1-2.213 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zm6.22 0a2.222 2.222 0 0 1 2.214 2.226 2.222 2.222 0 0 1-2.214 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zM12 17.29c1.69 0 3.012-.662 4.148-1.517.29-.22.695-.145.894.167l.487.766a.653.653 0 0 1-.16.924C16.035 18.665 14.343 19.5 12 19.5c-2.342 0-4.035-.835-5.369-1.87a.655.655 0 0 1-.16-.924l.487-.766a.656.656 0 0 1 .894-.167C9.01 16.634 10.334 17.29 12 17.29z" />
-            </svg>
-          </div>
-          
-          <div className="flex items-center gap-5 relative z-10">
-            <div className="w-[52px] h-[52px] rounded-2xl bg-[#ff9600]/10 text-[#ff9600] flex items-center justify-center border border-[#ff9600]/30 shadow-[0_0_20px_rgba(255,150,0,0.15)] group-hover:scale-105 transition-transform">
-              {duoLoading ? (
-                <div className="w-5 h-5 border-2 border-[#ff9600]/30 border-t-[#ff9600] rounded-full animate-spin"></div>
-              ) : (
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M11.66 22.88c5.12 0 9.14-3.9 9.14-8.91 0-2.51-1.21-5.11-2.81-6.93-.66-.75-1.84-.57-2.07.41-.43 1.95-1.8 3.25-3.6 3.59-.84.22-1.63-.5-1.42-1.37.75-2.71.3-5.6-1.42-8.02-.51-.76-1.75-.75-2.22.04-2.48 3.8-4.09 6.94-4.09 10.08 0 1.28.32 2.53.86 3.6-1.5-.96-2.38-2.57-2.38-4.32 0-.85-.98-1.34-1.62-.77-3.08 2.66-3.51 4.74-3.51 6.69 0 3.9 3.14 7.02 7.18 7.02 1.63 0 3.03-.53 4.23-1.5 1.07-1 2.39-1.5 3.68-1.5z" />
-                </svg>
-              )}
-            </div>
-            <div>
-              <h4 className="text-[16px] font-black text-[var(--text-primary)] flex items-center gap-2">
-                {duoStreak !== null ? `${duoStreak}` : "600+"} {t.duolingoStreak}
-              </h4>
-              <p className="text-[12px] text-[var(--text-secondary)] font-medium mt-0.5">
-                {t.learningJourney}
-              </p>
-            </div>
-          </div>
-          
-          <div className="relative z-10 flex flex-col sm:items-end gap-2 mt-4 sm:mt-0">
-            <span className="w-fit text-[11px] font-black uppercase tracking-[0.15em] text-[#58cc02] bg-[#58cc02]/10 px-4 py-1.5 rounded-xl border border-[#58cc02]/20 shadow-[0_0_15px_rgba(88,204,2,0.1)] flex items-center gap-1.5">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-                <path d="M12.005 0a8.04 8.04 0 0 0-4.048.975A6.096 6.096 0 0 0 6.64 0a6.046 6.046 0 0 0-6.042 6.047 6.075 6.075 0 0 0 1.252 3.693c-.496 1.4-.737 2.87-.737 4.364 0 3.738 1.765 6.837 4.475 8.441a5.617 5.617 0 0 0 1.984.77v.64c0 .888.646 1.624 1.503 1.76l2.916.488a1.76 1.76 0 0 0 2.03-1.737v-1.121a10.662 10.662 0 0 0 2.03.111 10.378 10.378 0 0 0 1.94-.108v1.121c0 1.05.908 1.868 1.948 1.732l3-.497c.866-.144 1.516-.885 1.516-1.78v-.643a5.6 5.6 0 0 0 1.964-.785C23.11 20.916 24 17.82 24 14.104c0-1.508-.246-2.983-.75-4.385a6.07 6.07 0 0 0 1.254-3.672 6.046 6.046 0 0 0-6.046-6.047 6.097 6.097 0 0 0-1.32.146 8.053 8.053 0 0 0-5.133-1.12zm-3.11 7.234a2.222 2.222 0 0 1 2.213 2.226 2.222 2.222 0 0 1-2.213 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zm6.22 0a2.222 2.222 0 0 1 2.214 2.226 2.222 2.222 0 0 1-2.214 2.213 2.222 2.222 0 0 1-2.213-2.213 2.222 2.222 0 0 1 2.214-2.226zM12 17.29c1.69 0 3.012-.662 4.148-1.517.29-.22.695-.145.894.167l.487.766a.653.653 0 0 1-.16.924C16.035 18.665 14.343 19.5 12 19.5c-2.342 0-4.035-.835-5.369-1.87a.655.655 0 0 1-.16-.924l.487-.766a.656.656 0 0 1 .894-.167C9.01 16.634 10.334 17.29 12 17.29z" />
-              </svg>
-              Duolingo
-            </span>
-            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-              {duoStreak !== null ? `Total XP: ${duoTotalXp}` : t.nextMilestone}
-            </span>
-          </div>
-        </motion.div>
       </div>
 
+      {/* 3. CARDS BELOW TABS (Only active category displayed) */}
+      <div className="min-h-[260px]">
+        <AnimatePresence mode="wait">
+          
+          {/* TAB 1: LANGUAGES (Default Open) */}
+          {activeTab === "languages" && (
+            <motion.div
+              key="tab-languages"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-3"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {languages.map((lang: any, idx: number) => {
+                  const proficiency = Math.round((lang.level || 0) / 10);
+                  const flagUrl = lang.flag?.includes("http") || lang.flag?.includes("data:image")
+                    ? lang.flag
+                    : `https://flagcdn.com/w40/${lang.flag || "us"}.png`;
 
+                  return (
+                    <motion.div
+                      key={lang.name}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.04 }}
+                      className="flex flex-col justify-between p-3.5 bg-white/[0.02] border border-white/10 rounded-xl hover:border-[var(--accent)]/30 hover:bg-white/[0.04] transition-all"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-6 rounded overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-black/40">
+                            <img src={flagUrl} alt={lang.name} className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                            <h4 className="text-[13px] font-black text-[var(--text-primary)] leading-none">
+                              {lang.name}
+                            </h4>
+                            <span className="text-[10px] text-[var(--text-muted)] font-medium">
+                              {lang.cefr || (lang.level >= 80 ? "Advanced" : "Intermediate")}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="text-[11px] font-black text-[var(--accent)] px-2 py-0.5 rounded bg-[var(--accent)]/10 border border-[var(--accent)]/20">
+                          {lang.level || 0}%
+                        </span>
+                      </div>
+
+                      {/* Progress Dots */}
+                      <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-white/5">
+                        <span className="text-[9px] text-[var(--text-muted)]">Fluency Scale</span>
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: 10 }).map((_, i) => (
+                            <div
+                              key={i}
+                              className={`w-1.5 h-1.5 rounded-full transition-all ${
+                                i < proficiency ? "bg-[#00e87a]" : "bg-white/15"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Duolingo Streak Card */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-[#ff9600]/10 via-white/[0.02] to-transparent border border-[#ff9600]/20 rounded-xl relative overflow-hidden group hover:border-[#ff9600]/40 transition-all">
+                <div className="flex items-center gap-3 relative z-10">
+                  <div className="w-10 h-10 rounded-xl bg-[#ff9600]/15 text-[#ff9600] flex items-center justify-center border border-[#ff9600]/30 shadow-sm shrink-0">
+                    {duoLoading ? (
+                      <div className="w-4 h-4 border-2 border-[#ff9600]/30 border-t-[#ff9600] rounded-full animate-spin" />
+                    ) : (
+                      <Flame size={20} className="animate-pulse" />
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="text-[13px] font-black text-[var(--text-primary)] flex items-center gap-1.5">
+                      {duoStreak !== null ? `${duoStreak} Days` : "600+ Days"} {t.duolingoStreak}
+                    </h4>
+                    <p className="text-[11px] text-[var(--text-secondary)] font-medium">
+                      Continuous German & multi-language micro-learning journey
+                    </p>
+                  </div>
+                </div>
+
+                <div className="relative z-10 flex items-center gap-2">
+                  <span className="text-[9px] font-black uppercase tracking-[0.15em] text-[#58cc02] bg-[#58cc02]/10 px-2.5 py-1 rounded-lg border border-[#58cc02]/20 flex items-center gap-1">
+                    Duolingo Live
+                  </span>
+                  <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                    {duoStreak !== null ? `${duoTotalXp.toLocaleString()} Total XP` : t.nextMilestone}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* TAB 2: CINEMA & NOLAN */}
+          {activeTab === "cinema" && (
+            <motion.div
+              key="tab-cinema"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            >
+              {movies.map((movie, idx) => (
+                <motion.div
+                  key={movie.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className={`group relative p-4 bg-white/[0.02] border border-white/10 rounded-xl ${movie.border} hover:bg-white/[0.04] transition-all duration-300 flex flex-col justify-between`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/10 border border-white/10 text-[var(--text-primary)]">
+                        {movie.year} • {movie.director}
+                      </span>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-[var(--accent)]">
+                        {movie.badge}
+                      </span>
+                    </div>
+
+                    <h4 className="text-[15px] font-black text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+                      {movie.title}
+                    </h4>
+
+                    <p className="text-[11px] text-[var(--text-secondary)] italic my-2 pl-2 border-l-2 border-[var(--accent)]/40 leading-relaxed font-serif">
+                      "{movie.quote}"
+                    </p>
+                  </div>
+
+                  <div className="pt-2 mt-1 border-t border-white/5 flex items-center justify-between">
+                    <span className="text-[10px] text-[var(--text-muted)] font-medium">
+                      {movie.theme}
+                    </span>
+                    <Clapperboard size={13} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors shrink-0" />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* TAB 3: BOOKSHELF */}
+          {activeTab === "books" && (
+            <motion.div
+              key="tab-books"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-3"
+            >
+              {books.map((book, idx) => (
+                <motion.div
+                  key={book.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-4 bg-white/[0.02] border border-white/10 rounded-xl hover:border-white/20 hover:bg-white/[0.04] transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded border ${book.color}`}>
+                        {book.tag}
+                      </span>
+                      <BookOpen size={14} className="text-[var(--text-muted)]" />
+                    </div>
+
+                    <h4 className="text-[14px] font-black text-[var(--text-primary)] leading-snug">
+                      {book.title}
+                    </h4>
+                    <p className="text-[11px] text-[var(--accent)] font-bold mb-2">
+                      {book.author}
+                    </p>
+
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
+                      {book.takeaway}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-2 border-t border-white/5 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                    {book.category}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* TAB 4: MOUNTAINEERING */}
+          {activeTab === "outdoors" && (
+            <motion.div
+              key="tab-outdoors"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-3"
+            >
+              {outdoorPillars.map((pillar, idx) => (
+                <motion.div
+                  key={pillar.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-4 bg-white/[0.02] border border-white/10 rounded-xl hover:border-white/20 hover:bg-white/[0.04] transition-all flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        {pillar.icon}
+                      </div>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-[var(--accent)] bg-[var(--accent)]/10 px-2 py-0.5 rounded border border-[var(--accent)]/20">
+                        {pillar.metric}
+                      </span>
+                    </div>
+
+                    <h4 className="text-[13px] font-black text-[var(--text-primary)] mb-1.5">
+                      {pillar.title}
+                    </h4>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
+                      {pillar.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* TAB 5: SOUNDSCAPES */}
+          {activeTab === "music" && (
+            <motion.div
+              key="tab-music"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            >
+              {soundscapeItems.map((item, idx) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-4 bg-white/[0.02] border border-white/10 rounded-xl hover:border-white/20 hover:bg-white/[0.04] transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                          {item.icon}
+                        </div>
+                        <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-wider">
+                          {item.vibe}
+                        </span>
+                      </div>
+
+                      {/* Animated Equalizer Wave */}
+                      <div className="flex items-end gap-0.5 h-3">
+                        <span className="w-0.5 h-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-0.5 h-2/3 bg-[var(--accent)] animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-0.5 h-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <span className="w-0.5 h-1/2 bg-[var(--accent)] animate-bounce" style={{ animationDelay: '450ms' }} />
+                      </div>
+                    </div>
+
+                    <h4 className="text-[14px] font-black text-[var(--text-primary)] mt-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-[11px] text-[var(--accent)] font-bold mb-1">
+                      {item.artists}
+                    </p>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
+                      {item.highlight}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
