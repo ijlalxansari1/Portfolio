@@ -139,9 +139,14 @@ span, li, button, input, textarea, div {
 
 /* ── FULL-PAGE SCROLL-SNAP SYSTEM ── */
 .scroll-snap-container {
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 1024px) {
+  .scroll-snap-container {
+    scroll-snap-type: y mandatory;
+  }
 }
 
 .scroll-snap-section {

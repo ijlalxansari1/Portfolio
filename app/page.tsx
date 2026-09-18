@@ -231,77 +231,16 @@ export default function Home() {
       }
     };
 
-    // Touch swipe gesture listener for mobile (1 swipe = 1 section jump)
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isTouchSwiping = false;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      touchStartY = e.touches[0].clientY;
-      touchStartX = e.touches[0].clientX;
-      isTouchSwiping = true;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isTouchSwiping || e.touches.length !== 1) return;
-      if (showLogin || showAdmin || showTerminal) return;
-      if (isExcluded(e.target)) return;
-
-      const currentY = e.touches[0].clientY;
-      const currentX = e.touches[0].clientX;
-      const deltaY = touchStartY - currentY;
-      const deltaX = touchStartX - currentX;
-
-      // Prevent continuous native scroll jitter if it's a vertical swipe gesture
-      if (Math.abs(deltaY) > 20 && Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
-        if (e.cancelable) e.preventDefault();
-      }
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (!isTouchSwiping) return;
-      isTouchSwiping = false;
-
-      if (showLogin || showAdmin || showTerminal) return;
-      if (isExcluded(e.target)) return;
-      if (e.changedTouches.length !== 1) return;
-
-      const touchEndY = e.changedTouches[0].clientY;
-      const touchEndX = e.changedTouches[0].clientX;
-      const deltaY = touchStartY - touchEndY;
-      const deltaX = touchStartX - touchEndX;
-
-      // Significant vertical swipe threshold
-      if (Math.abs(deltaY) > 35 && Math.abs(deltaY) > Math.abs(deltaX) * 1.1) {
-        if (isAnimatingRef.current) return;
-
-        if (deltaY > 0) {
-          if (currentIndexRef.current < SECTION_IDS.length - 1) {
-            scrollToSectionIndex(currentIndexRef.current + 1);
-          }
-        } else {
-          if (currentIndexRef.current > 0) {
-            scrollToSectionIndex(currentIndexRef.current - 1);
-          }
-        }
-      }
-    };
-
     // Attach to window so anywhere the user scrolls (card, sidebar, background), it jumps cleanly
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("touchstart", handleTouchStart, { passive: true });
-    window.addEventListener("touchmove", handleTouchMove, { passive: false });
-    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    if (!isMobileView) {
+      window.addEventListener("wheel", handleWheel, { passive: false });
+    }
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd);
       if (wheelResetTimer) clearTimeout(wheelResetTimer);
     };
-  }, [isMounted, showLogin, showAdmin, showTerminal, SECTION_IDS]);
+  }, [isMounted, showLogin, showAdmin, showTerminal, SECTION_IDS, isMobileView]);
 
   useEffect(() => {
     const TARGET = "ijlal";
