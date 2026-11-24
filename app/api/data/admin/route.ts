@@ -3,30 +3,7 @@ export const dynamic = 'force-dynamic';
 import { verifyAuth } from '../../../utils/auth';
 import fs from 'fs';
 import path from 'path';
-
-const STORE_FILE = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
-
-let memoryStore: any = null;
-let lastModified: number = 0;
-
-// Helper to get all data
-function getStoreData() {
-  try {
-    if (fs.existsSync(STORE_FILE)) {
-      const stats = fs.statSync(STORE_FILE);
-      if (memoryStore && lastModified === stats.mtimeMs) {
-        return memoryStore;
-      }
-      const content = fs.readFileSync(STORE_FILE, 'utf8');
-      memoryStore = JSON.parse(content);
-      lastModified = stats.mtimeMs;
-      return memoryStore;
-    }
-  } catch (error) {
-    console.error("Error reading admin store:", error);
-  }
-  return {};
-}
+import { getStoreData, STORE_FILE } from '../../../utils/adminStore';
 
 // Helper to save data
 function saveStoreData(data: any) {
@@ -80,9 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     const store = getStoreData();
-    store[key] = data;
-    
-    if (saveStoreData(store)) {
+    if (saveStoreData({ ...store, [key]: data })) {
       return NextResponse.json({ success: true });
     } else {
       return NextResponse.json({ success: false, error: "Failed to save" }, { status: 500 });

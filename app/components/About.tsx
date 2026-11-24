@@ -29,18 +29,26 @@ const PRINCIPLES = [
   { title: "Data Lineage", icon: Layers, desc: "Complete observability. Every transformation is version-controlled and fully auditable." }
 ];
 
-export default function About() {
+interface HeroConfig {
+  label: string;
+  titles: string[];
+  techTags: string[];
+}
+
+const defaultHero: HeroConfig = {
+  label: "Data Platform Engineer",
+  titles: ["Data Platform Engineer", "Distributed Systems Architect", "Streaming Data Specialist", "Analytics Engineer"],
+  techTags: TECH_TAGS,
+};
+
+export default function About({ initialHero, initialMilestones }: { initialHero?: HeroConfig; initialMilestones?: any[] }) {
   const { language } = useLanguage();
   const heroText = translations[language].hero;
   const tAbout = translations[language].about;
   const t = heroText;
 
-  const [heroConfig, setHeroConfig] = useState({
-    label: "Data Engineer",
-    titles: ["Data Platform Engineer", "Distributed Systems Architect", "Streaming Data Specialist", "Analytics Engineer"],
-    techTags: TECH_TAGS,
-  });
-  const [milestones, setMilestones] = useState<any[]>(tAbout.timeline);
+  const [heroConfig, setHeroConfig] = useState(initialHero ?? defaultHero);
+  const [milestones, setMilestones] = useState(initialMilestones ?? tAbout.timeline);
 
   const [titleIndex, setTitleIndex] = useState(0);
 
@@ -54,22 +62,13 @@ export default function About() {
 
   useEffect(() => {
     const loadData = () => {
-      setHeroConfig(storage.get("admin-hero", {
-        label: "Data Platform Engineer",
-        titles: ["Data Platform Engineer", "Distributed Systems Architect", "Streaming Data Specialist", "Analytics Engineer"],
-        techTags: TECH_TAGS,
-      }));
-      const adminMilestones = storage.get("admin-milestones", null);
-      if (adminMilestones) {
-         setMilestones(adminMilestones);
-      } else {
-         setMilestones(translations[language].about.timeline);
-      }
+      setHeroConfig(storage.get("admin-hero", (language === "en" ? initialHero : undefined) ?? defaultHero));
+      setMilestones(storage.get("admin-milestones", (language === "en" ? initialMilestones : undefined) ?? tAbout.timeline));
     };
     loadData();
     window.addEventListener("admin-updated", loadData);
     return () => window.removeEventListener("admin-updated", loadData);
-  }, [heroText, language]);
+  }, [initialHero, initialMilestones, language, tAbout.timeline]);
 
 
   const scrollTo = (id: string) => {
@@ -88,7 +87,7 @@ export default function About() {
         <div className="space-y-2">
           {/* Availability badge */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-full w-fit shadow-sm"
@@ -102,7 +101,7 @@ export default function About() {
           {/* Greeting & Name */}
           <div className="space-y-3">
             <motion.p
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.15 }}
               className="text-[11px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)]"
@@ -110,7 +109,7 @@ export default function About() {
               {t.greeting}
             </motion.p>
             <motion.h1
-              initial={{ opacity: 0, y: 16 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
               className="text-[36px] sm:text-[44px] lg:text-[52px] font-black text-[var(--text-primary)] leading-[0.95] tracking-tight"
@@ -120,13 +119,13 @@ export default function About() {
             </motion.h1>
 
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/[0.03] border border-[var(--border-subtle)] rounded-xl mt-1 max-w-full backdrop-blur-sm"
             >
               <Database size={14} className="text-[var(--accent)] shrink-0 animate-pulse" />
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={titleIndex}
                   initial={{ opacity: 0, y: 5 }}
@@ -144,7 +143,7 @@ export default function About() {
 
           {/* Recruiter-Optimized TL;DR Tech Stack Ribbon */}
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.5 }}
             className="relative flex overflow-hidden w-full max-w-[620px] border border-white/5 bg-white/[0.02] rounded-lg py-1.5 mask-image-fade"
@@ -179,7 +178,7 @@ export default function About() {
 
         {/* Bottom Storytelling & Milestones Section (Balanced 2-Column Grid) */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
           className="grid md:grid-cols-2 gap-5 lg:gap-6 pt-1"
@@ -198,7 +197,7 @@ export default function About() {
 
               {/* CTA Buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45, duration: 0.5 }}
                 className="flex flex-wrap gap-3 pt-1"

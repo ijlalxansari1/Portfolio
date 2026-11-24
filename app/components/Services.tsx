@@ -6,67 +6,27 @@ import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 import { ArrowRight, Database, Workflow, ShieldCheck, Code2, LineChart, Network, Activity, Globe, Zap, BookOpen } from "lucide-react";
 
-export default function Services() {
+import { getPublishedServices } from "../utils/services";
+import { storage } from "../utils/storage";
+
+export default function Services({ initialServices }: { initialServices: ReturnType<typeof getPublishedServices> }) {
   const { language } = useLanguage();
   const t = translations[language].services;
-  
-  
-const defaultServices_EN = [
-    { id: 1, title: "ETL / ELT Pipelines", icon: "Workflow", status: "Published", summary: "Building and maintaining basic data pipelines to extract, transform, and load data.", link: "Let's Connect", href: "#contact" },
-    { id: 2, title: "SQL & Database Maintenance", icon: "Database", status: "Published", summary: "Writing efficient queries, managing tables, and assisting with database upkeep.", link: "Let's Connect", href: "#contact" },
-    { id: 3, title: "Data Cleaning & Prep", icon: "Globe", status: "Published", summary: "Scraping, cleaning, and formatting raw datasets for analysis or dashboards.", link: "Let's Connect", href: "#contact" },
-    { id: 4, title: "Documentation & Testing", icon: "BookOpen", status: "Published", summary: "Writing clear technical docs and adding basic data quality tests to pipelines.", link: "Let's Connect", href: "#contact" },
-];
-
-const defaultServices_DE = [
-    { id: 1, title: "ETL / ELT Pipelines", icon: "Workflow", status: "Published", summary: "Aufbau und Pflege grundlegender Datenpipelines zum Extrahieren, Transformieren und Laden von Daten.", link: "Lass uns verbinden", href: "#contact" },
-    { id: 2, title: "SQL & Datenbankwartung", icon: "Database", status: "Published", summary: "Schreiben effizienter Abfragen, Verwalten von Tabellen und Unterstützung bei der Datenbankwartung.", link: "Lass uns verbinden", href: "#contact" },
-    { id: 3, title: "Datenbereinigung & Vorbereitung", icon: "Globe", status: "Published", summary: "Scraping, Bereinigung und Formatierung von Rohdaten für Analysen oder Dashboards.", link: "Lass uns verbinden", href: "#contact" },
-    { id: 4, title: "Dokumentation & Tests", icon: "BookOpen", status: "Published", summary: "Erstellen klarer technischer Dokumentationen und Hinzufügen grundlegender Datenqualitätstests.", link: "Lass uns verbinden", href: "#contact" },
-];
 
 
-  const [dynamicServices, setDynamicServices] = useState<any[]>(language === "de" ? defaultServices_DE : defaultServices_EN);
+  const [publishedServices, setPublishedServices] = useState(initialServices);
 
   useEffect(() => {
     const handleStorage = () => {
-      const data = localStorage.getItem("admin-services-jr");
-      if (data) {
-        try {
-          const parsed = JSON.parse(data);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const mergedMap = new Map();
-            
-            // First add defaults
-            (language === "de" ? defaultServices_DE : defaultServices_EN).forEach(s => mergedMap.set(s.title, s));
-            
-            // Then overwrite/append with admin panel data
-            parsed.forEach(s => {
-              const title = s.title || s.name;
-              if (title) {
-                mergedMap.set(title, {
-                  ...s,
-                  deliverables: s.deliverables || ["Requirement gathering", "Custom Implementation", "Testing & CI/CD"],
-                  summary: s.summary || s.body?.substring(0, 80) + '...'
-                });
-              }
-            });
-            
-            setDynamicServices(Array.from(mergedMap.values()));
-          }
-        } catch {
-          setDynamicServices(language === "de" ? defaultServices_DE : defaultServices_EN);
-        }
-      } else {
-        setDynamicServices(language === "de" ? defaultServices_DE : defaultServices_EN);
-      }
+      const saved = storage.get<unknown>("admin-services-jr", null);
+      setPublishedServices(saved === null && language === "en"
+        ? initialServices
+        : getPublishedServices(saved, language));
     };
     handleStorage();
     window.addEventListener("admin-updated", handleStorage);
     return () => window.removeEventListener("admin-updated", handleStorage);
-  }, [language]);
-
-  const publishedServices = dynamicServices.filter((service) => String(service?.status || "Published").toLowerCase() === "published");
+  }, [initialServices, language]);
 
   const getIcon = (iconStr: string) => {
     switch (iconStr) {
@@ -121,7 +81,7 @@ const defaultServices_DE = [
                     {getIcon(service.icon || 'Network')}
                   </div>
                   <h3 className="text-base font-black text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent)] transition-colors">
-                    {service.title || service.name}
+                    {service.title}
                   </h3>
                 </div>
 

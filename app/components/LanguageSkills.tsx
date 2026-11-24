@@ -19,13 +19,13 @@ import {
 
 type TabKey = "languages" | "cinema" | "books" | "outdoors" | "music";
 
-export default function LanguageSkills() {
+export default function LanguageSkills({ initialLanguages }: { initialLanguages?: any[] }) {
   const { language } = useLanguage();
   const t = translations[language].languageSkills;
 
   // Default active tab is Languages (first one)
   const [activeTab, setActiveTab] = useState<TabKey>("languages");
-  const [adminLangs, setAdminLangs] = useState<any[]>([]);
+  const [adminLangs, setAdminLangs] = useState<any[]>(initialLanguages ?? []);
   const [adminMovies, setAdminMovies] = useState<any[]>([]);
   const [adminBooks, setAdminBooks] = useState<any[]>([]);
 

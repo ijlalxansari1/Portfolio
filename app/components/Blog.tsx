@@ -167,11 +167,11 @@ function TiltCard({ children, className, onClick }: { children: React.ReactNode,
 }
 
 
-export default function Blog() {
+export default function Blog({ initialPosts, initialArticle }: { initialPosts?: typeof articles; initialArticle: number | null }) {
   const { language } = useLanguage();
   const t = translations[language].blog;
-  const [posts, setPosts] = useState(articles);
-  const [selectedArticle, setSelectedArticle] = useState<number | null>(null);
+  const [posts, setPosts] = useState(initialPosts ?? articles);
+  const [selectedArticle, setSelectedArticle] = useState(initialArticle);
 
   // Reader Scroll Tracking
   const readerRef = useRef<HTMLDivElement>(null);
@@ -198,10 +198,6 @@ export default function Blog() {
     handleUpdate();
     window.addEventListener("admin-updated", handleUpdate);
     
-    const params = new URLSearchParams(window.location.search);
-    const articleId = params.get("article");
-    if (articleId) setSelectedArticle(parseInt(articleId));
-
     return () => window.removeEventListener("admin-updated", handleUpdate);
   }, []);
 
@@ -361,7 +357,7 @@ export default function Blog() {
       </div>
 
       {/* Full Page Article Reader */}
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {selectedArticle !== null && activeArticle && (
           <div className="fixed inset-0 z-[5000] bg-[var(--bg-primary)] overflow-hidden">
             <motion.div

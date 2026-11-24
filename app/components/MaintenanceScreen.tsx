@@ -1,25 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Wrench } from "lucide-react";
 
 
 export default function MaintenanceScreen() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   return (
     <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center text-white overflow-hidden bg-[#02040A]/80">
 
       
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={false}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative z-10 flex flex-col items-center text-center max-w-2xl px-6"

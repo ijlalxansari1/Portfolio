@@ -114,11 +114,11 @@ const CLOUD_PLATFORMS_DE = [
   },
 ];
 
-export default function Skills() {
+export default function Skills({ initialCoreStack, initialCloudPlatforms }: { initialCoreStack?: any[]; initialCloudPlatforms?: any[] }) {
   const { language } = useLanguage();
   
-  const [dynamicCoreStack, setDynamicCoreStack] = useState<any[] | null>(null);
-  const [dynamicCloudPlatforms, setDynamicCloudPlatforms] = useState<any[] | null>(null);
+  const [dynamicCoreStack, setDynamicCoreStack] = useState<any[] | null>(initialCoreStack ?? null);
+  const [dynamicCloudPlatforms, setDynamicCloudPlatforms] = useState<any[] | null>(initialCloudPlatforms ?? null);
   const [activeFilter, setActiveFilter] = useState<'All' | 'Engineering' | 'Infrastructure'>('All');
 
   useEffect(() => {

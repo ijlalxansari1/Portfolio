@@ -1,11 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, Award, Calendar, ExternalLink } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
+import { storage } from "../utils/storage";
 
 interface Certification {
   id: number;
@@ -16,93 +17,63 @@ interface Certification {
   image: string;
   verificationUrl?: string;
   verification_url?: string;
+  status?: string;
 }
 
-export default function Certifications() {
+const fallbackCerts = [
+  { id: 1, title: "Python for Data Science, AI & Development", issuer: "IBM", date: "2024-05-01", credentialId: "87.5%", image: "" },
+  { id: 2, title: "Introduction to Data Engineering", issuer: "IBM", date: "2024-06-01", credentialId: "92.6%", image: "" },
+  { id: 3, title: "Business Intelligence (BI) Essentials", issuer: "IBM", date: "2024-07-01", credentialId: "88.33%", image: "" },
+  { id: 4, title: "Foundations: Data, Data, Everywhere", issuer: "Google", date: "2024-04-01", credentialId: "91.75%", image: "" },
+  { id: 5, title: "SQL for Data Science", issuer: "Coursera", date: "2024-08-01", credentialId: "In Progress", image: "" },
+];
+
+function normalizeCertifications(entries: Certification[]) {
+  return entries.filter((cert) => cert.status !== "Draft").map((cert) => ({
+    ...cert,
+    verificationUrl: cert.verificationUrl || cert.verification_url,
+  }));
+}
+
+export default function Certifications({ initialCertifications }: { initialCertifications?: Certification[] }) {
   const { language } = useLanguage();
   const t = translations[language].certifications;
-  const [certifications, setCertifications] = useState<Certification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [certifications, setCertifications] = useState(() =>
+    normalizeCertifications(initialCertifications ?? fallbackCerts));
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    // Delay fetching by 2 seconds to ensure it doesn't block the initial LCP
-    // but without relying on IntersectionObserver which fails in nested scroll containers
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 2000);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
-    
     const fetchCerts = async () => {
       try {
         const res = await fetch("/api/data/admin?key=admin-certs");
         if (res.ok) {
           const { data } = await res.json();
-          if (data && data.length > 0) {
-            setCertifications(data.filter((c: any) => c.status !== 'Draft').map((c: any) => ({
-              ...c,
-              verificationUrl: c.verificationUrl || c.verification_url,
-            })));
-            setLoading(false);
+          if (Array.isArray(data) && data.length > 0) {
+            setCertifications(normalizeCertifications(data));
             return;
           }
         }
       } catch (err) {
         console.error("Failed to fetch certs from API, falling back to local storage", err);
       }
-      
-      const adminData = localStorage.getItem("admin-certs");
-      if (adminData) {
-        const parsed = JSON.parse(adminData);
-        if (parsed.length > 0) {
-          setCertifications(parsed.filter((c: any) => c.status !== 'Draft').map((c: any) => ({
-            ...c,
-            verificationUrl: c.verificationUrl || c.verification_url,
-          })));
-          setLoading(false);
-          return;
-        }
-      }
-      
-      const fallbackCerts = [
-        { id: 1, title: "Python for Data Science, AI & Development", issuer: "IBM", date: "2024-05-01", credentialId: "87.5%", image: "" },
-        { id: 2, title: "Introduction to Data Engineering", issuer: "IBM", date: "2024-06-01", credentialId: "92.6%", image: "" },
-        { id: 3, title: "Business Intelligence (BI) Essentials", issuer: "IBM", date: "2024-07-01", credentialId: "88.33%", image: "" },
-        { id: 4, title: "Foundations: Data, Data, Everywhere", issuer: "Google", date: "2024-04-01", credentialId: "91.75%", image: "" },
-        { id: 5, title: "SQL for Data Science", issuer: "Coursera", date: "2024-08-01", credentialId: "In Progress", image: "" },
-      ];
-      
-      // Fallback to static data if no localStorage data
-      setCertifications(fallbackCerts);
-      setLoading(false);
+
+      const saved = storage.get<Certification[]>("admin-certs", []);
+      setCertifications(normalizeCertifications(saved.length > 0 ? saved : fallbackCerts));
     };
 
-    fetchCerts();
-    
-    const handleUpdate = () => fetchCerts();
-    window.addEventListener("admin-updated", handleUpdate);
-    return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, [isVisible]);
+    window.addEventListener("admin-updated", fetchCerts);
+    return () => window.removeEventListener("admin-updated", fetchCerts);
+  }, []);
 
   return (
-    <div className="w-full" ref={sectionRef}>
+    <div className="w-full">
       <div className="mb-4">
         <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider mb-1">{t.label}</p>
         <h2 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">{t.title}</h2>
         <div className="w-10 h-0.5 mt-1.5 bg-neon-mint rounded-full" />
       </div>
 
-      {loading ? (
-        <div className="text-center py-10 text-gray-400 text-xs">{t.loading}</div>
-      ) : certifications.length === 0 ? (
+      {certifications.length === 0 ? (
         <div className="text-center py-10 text-[var(--text-muted)] text-xs font-medium">{t.empty}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -132,7 +103,7 @@ export default function Certifications() {
                 <h3 className="text-[var(--text-primary)] font-bold text-xs sm:text-sm mb-2 line-clamp-2 group-hover:text-neon-mint transition-colors">{cert.title}</h3>
                 <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider">
                   <Calendar size={11} className="text-neon-mint" />
-                  <span>{cert.date ? new Date(cert.date).toLocaleDateString("en-US", { year: "numeric", month: "short" }) : "N/A"}</span>
+                  <span>{cert.date ? new Date(cert.date).toLocaleDateString("en-US", { year: "numeric", month: "short", timeZone: "UTC" }) : "N/A"}</span>
                 </div>
               </div>
             </motion.div>
@@ -182,7 +153,7 @@ export default function Certifications() {
 
                 <div className="flex items-center gap-2 text-[var(--text-muted)] text-xs font-bold uppercase tracking-wider mb-8">
                   <Calendar size={14} className="text-neon-mint" />
-                  <span>{t.issued} {selectedCert.date ? new Date(selectedCert.date).toLocaleDateString(language === 'en' ? "en-US" : "de-DE", { year: "numeric", month: "long", day: "numeric" }) : "N/A"}</span>
+                  <span>{t.issued} {selectedCert.date ? new Date(selectedCert.date).toLocaleDateString(language === 'en' ? "en-US" : "de-DE", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }) : "N/A"}</span>
                 </div>
 
                 <a

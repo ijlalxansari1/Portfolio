@@ -5,6 +5,7 @@ import { ToastProvider } from "./components/Toast";
 import { ThemeProvider } from "./components/ThemeProvider";
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import { getStoreData } from "./utils/adminStore";
 import { LanguageProvider } from "./context/LanguageContext";
 const TemporalRadiation = dynamic(() => import("./components/TemporalRadiation"));
 const DataLoader = dynamic(() => import("./components/DataLoader"));
@@ -30,31 +31,8 @@ export const viewport = {
   initialScale: 1,
 };
 
-import fs from 'fs/promises';
-import path from 'path';
-import { existsSync } from 'fs';
-
-let cachedConfig: any = null;
-let lastModified: number = 0;
-
-export async function generateMetadata(): Promise<Metadata> {
-  let config: any = {};
-  try {
-    const storePath = path.join(process.cwd(), 'app', 'api', 'data', 'admin-store.json');
-    if (existsSync(storePath)) {
-      const stats = await fs.stat(storePath);
-      if (cachedConfig && lastModified === stats.mtimeMs) {
-        config = cachedConfig;
-      } else {
-        const data = await fs.readFile(storePath, 'utf8');
-        cachedConfig = JSON.parse(data)['admin-config'] || {};
-        lastModified = stats.mtimeMs;
-        config = cachedConfig;
-      }
-    }
-  } catch (e) {
-    console.error("Failed to read SEO config", e);
-  }
+export function generateMetadata(): Metadata {
+  const config = getStoreData()["admin-config"] || {};
 
   const title = config.title || 'Ijlal Ansari — Data Engineer';
   const description = config.description || "Data Engineer focused on building reliable data pipelines, modern analytics systems, and practical data platforms. Skilled in Python, SQL, dbt, Airflow, FastAPI, DuckDB, PostgreSQL, and cloud tooling.";
@@ -176,12 +154,12 @@ export default function RootLayout({
     <html lang="en" className={`${poppins.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <head>
         <link rel="dns-prefetch" href="https://api.github.com" />
-        <Script
+        <script
           id="person-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
-        <Script
+        <script
           id="website-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}

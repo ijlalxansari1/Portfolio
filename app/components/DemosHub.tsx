@@ -6,6 +6,7 @@ import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, Graduatio
 import { trackEvent } from "./AnalyticsTracker";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
+import { storage } from "../utils/storage";
 
 import AetherDemo from "./demos/AetherDemo";
 import ETLPipelineDemo from "./demos/ETLPipelineDemo";
@@ -23,37 +24,36 @@ const getDemoList = (language: string) => [
   { id: 6, title: "Analytics Dashboard", tag: "Next.js", icon: <BarChart3 size={24} />, description: language === 'de' ? "Interaktives OLAP-Dashboard, unterstützt durch DuckDB-Architektur." : "Interactive OLAP dashboard powered by DuckDB architecture.", component: <AnalyticsDashboardDemo /> },
 ];
 
-export default function DemosHub() {
+function getDemos(language: string, entries?: any[]) {
+  const defaults = getDemoList(language);
+  return entries?.map((demo) => {
+    const match = defaults.find((item) => item.title === demo.title || item.id === demo.id);
+    return {
+      ...demo,
+      icon: demo.iconUrl ? <img src={demo.iconUrl} alt={demo.title + " icon"} className="w-full h-full object-cover rounded-2xl" /> : (match?.icon || <FlaskConical size={24} />),
+      component: match?.component || null,
+    };
+  }) ?? defaults;
+}
+
+export default function DemosHub({ initialDemos }: { initialDemos?: any[] }) {
   const { language } = useLanguage();
   const t = translations[language].demosHub;
   const [activeDemo, setActiveDemo] = useState<number | null>(null);
-  const [demos, setDemos] = useState<any[]>(getDemoList(language));
+  const [demos, setDemos] = useState<any[]>(() => getDemos(language, initialDemos));
 
   useEffect(() => {
     const handleUpdate = () => {
-      const adminData = localStorage.getItem("admin-demos");
-      if (adminData) {
-        const parsed = JSON.parse(adminData);
-        if (parsed.length > 0) {
-          const currentDemoList = getDemoList(language);
-          const merged = parsed.filter((d: any) => d.status !== 'Draft').map((d: any) => {
-            const staticMatch = currentDemoList.find(s => s.title === d.title || s.id === d.id);
-            return {
-              ...d,
-              icon: d.iconUrl ? <img src={d.iconUrl} alt={`${d.title || 'Demo'} icon`} className="w-full h-full object-cover rounded-2xl" /> : (staticMatch?.icon || <FlaskConical size={24} />),
-              component: staticMatch?.component || null
-            };
-          });
-          setDemos(merged);
-        } else {
-          setDemos(getDemoList(language));
-        }
-      }
+      const saved = storage.get<any[] | null>("admin-demos", null);
+      const entries = saved?.length
+        ? saved.filter((demo) => demo.status !== "Draft")
+        : (language === "en" && saved === null ? initialDemos : undefined);
+      setDemos(getDemos(language, entries));
     };
     handleUpdate();
     window.addEventListener("admin-updated", handleUpdate);
     return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, [language]);
+  }, [initialDemos, language]);
 
   const currentDemo = demos.find(d => d.id === activeDemo);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -97,7 +97,7 @@ export default function DemosHub() {
         onMouseEnter={() => setIsPaused(true)} 
         onMouseLeave={() => setIsPaused(false)}
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {demos.length > 0 && demos[currentIndex] && (
             <motion.div
               key={demos[currentIndex].id}

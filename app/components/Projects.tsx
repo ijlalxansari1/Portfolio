@@ -68,7 +68,7 @@ const PROJECT_META: Record<number, { problem: {en: string, de: string}; outcome:
 };
 
 
-export default function Projects() {
+export default function Projects({ initialProjects }: { initialProjects?: any[] }) {
   const { language } = useLanguage();
   const t = translations[language].projects;
 
@@ -120,7 +120,7 @@ export default function Projects() {
   const [activeFilter, setActiveFilter] = useState(t.filter_all);
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [archProject, setArchProject] = useState<any>(null);
-  const [projects, setProjects] = useState<any[]>(defaultProjects);
+  const [projects, setProjects] = useState<any[]>(initialProjects ?? defaultProjects);
 
   useEffect(() => {
     const loadLocalProjects = () => {
@@ -131,7 +131,7 @@ export default function Projects() {
           return parsed.filter((p: any) => p.status !== "Draft");
         }
       }
-      return defaultProjects;
+      return (language === "en" ? initialProjects : undefined) ?? defaultProjects;
     };
 
     setProjects(loadLocalProjects());
@@ -142,7 +142,7 @@ export default function Projects() {
     
     window.addEventListener("admin-updated", handleUpdate);
     return () => window.removeEventListener("admin-updated", handleUpdate);
-  }, [defaultProjects]);
+  }, [defaultProjects, initialProjects, language]);
 
   // Use Admin projects exclusively
   const allProjects = projects;
