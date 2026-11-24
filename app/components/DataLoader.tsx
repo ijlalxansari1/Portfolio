@@ -10,17 +10,17 @@ export default function DataLoader() {
         if (res.ok) {
           const { data } = await res.json();
           if (data) {
-            let hasUpdates = false;
+            const updatedKeys: string[] = [];
             Object.keys(data).forEach(key => {
               if (key.startsWith('portfolio-')) return;
               const strData = JSON.stringify(data[key]);
               if (localStorage.getItem(key) !== strData) {
                 localStorage.setItem(key, strData);
-                hasUpdates = true;
+                updatedKeys.push(key);
               }
             });
-            if (hasUpdates) {
-              window.dispatchEvent(new CustomEvent("admin-updated"));
+            if (updatedKeys.length > 0) {
+              window.dispatchEvent(new CustomEvent("admin-updated", { detail: { keys: updatedKeys, data } }));
             }
           }
         }

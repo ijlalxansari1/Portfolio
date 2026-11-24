@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Poppins", "sans-serif"],
-        jakarta: ["Plus Jakarta Sans", "sans-serif"],
+        sans: ["var(--font-poppins)", "sans-serif"],
+        jakarta: ["var(--font-jakarta)", "sans-serif"],
       },
       colors: {
         neon: {

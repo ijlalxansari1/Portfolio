@@ -20,7 +20,9 @@ export default function AmbientBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
+    let animationFrameId = 0;
+    let lastFrame = -Infinity;
+    let animateUntil = 0;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
@@ -36,6 +38,8 @@ export default function AmbientBackground() {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.targetX = e.clientX;
       mouse.targetY = e.clientY;
+      animateUntil = performance.now() + 350;
+      scheduleFrame();
     };
 
     let lastWidth = window.innerWidth;
@@ -46,6 +50,7 @@ export default function AmbientBackground() {
       height = canvas.height = window.innerHeight;
       
       initGrass();
+      scheduleFrame();
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -354,9 +359,9 @@ export default function AmbientBackground() {
       midgroundGrass = [];
       foregroundGrass = [];
 
-      const bgCount = Math.floor(width / 14);
-      const mdCount = Math.floor(width / 18);
-      const fgCount = Math.floor(width / 24);
+      const bgCount = Math.min(95, Math.floor(width / 18));
+      const mdCount = Math.min(75, Math.floor(width / 23));
+      const fgCount = Math.min(60, Math.floor(width / 30));
 
       // Background grass
       for (let i = 0; i < bgCount; i++) {
@@ -393,9 +398,9 @@ export default function AmbientBackground() {
     
     // SETUP TSUSHIMA LEAVES (18 floating nodes)
     const leaves: FallingLeaf[] = Array.from({ length: 18 }, () => new FallingLeaf());
-    const snowflakes: Snowflake[] = Array.from({ length: 75 }, () => new Snowflake());
+    const snowflakes: Snowflake[] = Array.from({ length: 38 }, () => new Snowflake());
     
-    const particles: Particle[] = Array.from({ length: 55 }, () => new Particle());
+    const particles: Particle[] = Array.from({ length: 34 }, () => new Particle());
     
     let time = 0;
     
@@ -409,11 +414,18 @@ export default function AmbientBackground() {
       } catch(e) {}
     };
     updateColors();
-    // Re-fetch colors if theme changes by polling every second or just rely on the initial fetch if theme changes remount component
-    const colorInterval = setInterval(updateColors, 1000);
+    const colorsObserver = new MutationObserver(() => {
+      updateColors();
+      scheduleFrame();
+    });
+    colorsObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-accent"] });
 
-    const render = () => {
-      time += 1.2;
+    const render = (timestamp: number) => {
+      animationFrameId = 0;
+      if (timestamp < animateUntil || timestamp - lastFrame < 31) scheduleFrame();
+      if (timestamp - lastFrame < 31) return;
+      lastFrame = timestamp;
+      time += 2.4;
       const isGhost = themeRef.current === "ghost";
 
       mouse.x += (mouse.targetX - mouse.x) * 0.06;
@@ -521,16 +533,19 @@ export default function AmbientBackground() {
         s.draw(ctx);
       });
 
-      animationFrameId = requestAnimationFrame(render);
     };
 
-    render();
+    function scheduleFrame() {
+      if (!animationFrameId) animationFrameId = requestAnimationFrame(render);
+    }
+
+    scheduleFrame();
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       motionQuery.removeEventListener("change", handleMotionChange);
-      clearInterval(colorInterval);
+      colorsObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

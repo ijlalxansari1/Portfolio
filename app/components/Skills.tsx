@@ -7,6 +7,7 @@ import {
 import Image from "next/image";
 import { useLanguage } from "../context/LanguageContext";
 import { useState, useEffect } from "react";
+import { storage } from "../utils/storage";
 
 const CORE_STACK = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", role: "Core Language", desc: "Data processing, API development, and automation scripts.", tags: ["ETL", "Automation", "APIs"] },
@@ -122,33 +123,13 @@ export default function Skills({ initialCoreStack, initialCloudPlatforms }: { in
   const [activeFilter, setActiveFilter] = useState<'All' | 'Engineering' | 'Infrastructure'>('All');
 
   useEffect(() => {
-    const loadDynamic = async () => {
-      try {
-        const res = await fetch('/api/data/admin?key=admin-core-stack');
-        if (res.ok) {
-          const { data } = await res.json();
-          if (data && data.length > 0) setDynamicCoreStack(data);
-        }
-      } catch (e) {
-        const stored = localStorage.getItem('admin-core-stack');
-        if (stored) setDynamicCoreStack(JSON.parse(stored));
-      }
-
-      try {
-        const res = await fetch('/api/data/admin?key=admin-cloud-platforms');
-        if (res.ok) {
-          const { data } = await res.json();
-          if (data && data.length > 0) setDynamicCloudPlatforms(data);
-        }
-      } catch (e) {
-        const stored = localStorage.getItem('admin-cloud-platforms');
-        if (stored) setDynamicCloudPlatforms(JSON.parse(stored));
-      }
+    const loadDynamic = () => {
+      setDynamicCoreStack(storage.get("admin-core-stack", initialCoreStack ?? null));
+      setDynamicCloudPlatforms(storage.get("admin-cloud-platforms", initialCloudPlatforms ?? null));
     };
-    loadDynamic();
     window.addEventListener("admin-updated", loadDynamic);
     return () => window.removeEventListener("admin-updated", loadDynamic);
-  }, []);
+  }, [initialCoreStack, initialCloudPlatforms]);
 
   const getServiceIcon = (name: string) => {
     switch (name) {

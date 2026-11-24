@@ -1,0 +1,159 @@
+html.loki .portfolio-backdrop {
+  background:
+    linear-gradient(90deg, #04140eb3, #09190d44 45%, #04140ec7),
+    linear-gradient(0deg, #03100b 5%, transparent 58%),
+    url("/loki-ascension.webp") center 18% / cover no-repeat;
+}
+
+html.loki .portfolio-content {
+  background: linear-gradient(90deg, #0b1c15ec, #0b1c15a0 62%, #0b1c1585);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html.loki .portfolio-rail { background: #0e1e16e0; }
+
+.loki-audio {
+  position: fixed;
+  z-index: 10001;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1.2rem, env(safe-area-inset-bottom));
+  display: grid;
+  justify-items: end;
+  gap: 0.6rem;
+  max-width: calc(100vw - 2rem);
+  color: #effff2;
+}
+
+.loki-audio-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #67d49985;
+  border-radius: 0.55rem;
+  background: #0c2319;
+  color: #bdf9ca;
+  font-weight: 750;
+  box-shadow: 0 8px 25px #00140790;
+}
+
+.loki-audio-panel, .doom-trailer {
+  width: min(25rem, calc(100vw - 2rem));
+  overflow: hidden;
+  background: #101510;
+  color: #f4f6f3;
+  border: 1px solid #395044;
+  border-radius: 0.65rem;
+  box-shadow: 0 22px 52px #0009;
+}
+
+.theme-media-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0.85rem;
+}
+
+.theme-media-title small { display: block; color: #b3bdb7; font-size: 0.74rem; }
+.loki-audio-panel .theme-media-title {
+  background: linear-gradient(90deg, #0c1912 5%, #0c19125e 62%, #0c19128c), url("/loki-ascension.webp") center 36% / cover;
+}
+.theme-media-title button { display: grid; place-items: center; width: 44px; height: 44px; flex: none; }
+.theme-media-title button:hover { color: #bdf9ca; }
+.loki-music-embed { display: block; border: 0; width: 100%; height: 150px; background: #141414; }
+.doom-trailer iframe { display: block; border: 0; width: 100%; min-height: 200px; aspect-ratio: 16 / 9; background: black; }
+.theme-media-link { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; margin-left: 0.85rem; font-size: 0.75rem; color: #c8decf; }
+.theme-media-link:hover { text-decoration: underline; }
+html.loki .portfolio-scroll-top { bottom: 5.1rem; }
+
+html.doom .portfolio-backdrop {
+  background: linear-gradient(180deg, #080b0988, #080b09 65%), url("/doom-portrait.webp") center top / cover no-repeat;
+}
+
+html.doom .portfolio-profile { display: none; }
+html.doom .portfolio-content { border: 0; border-radius: 0; box-shadow: none; background: #090b0a; }
+html.doom .portfolio-content::before { display: none; }
+html.doom .portfolio-mobile-header { background: #0a0b0a; border-top: 3px solid #d52236; }
+html.doom #content-scroll-panel { scroll-snap-type: none; }
+html.doom #sections-container { height: auto; }
+html.doom .scroll-snap-section { height: auto; min-height: 0; max-height: none; justify-content: flex-start; padding-block: clamp(1.75rem, 4vw, 3.5rem); }
+html.doom .scroll-snap-section + .scroll-snap-section { border-top: 1px solid #fff2; }
+html.doom #about { padding-top: 0; }
+html.doom #about-content { height: auto; margin-top: clamp(1.75rem, 4vw, 3.5rem); }
+html.doom .section-heading { text-transform: uppercase; font-weight: 900; letter-spacing: -0.045em; }
+.doom-wordmark { font-size: 1.25rem; text-transform: uppercase; letter-spacing: -0.045em; font-weight: 950; border-left: 4px solid #e93246; padding-left: 0.65rem; color: #f6faf4; }
+
+.doom-poster {
+  display: grid;
+  align-items: end;
+  min-height: clamp(22rem, 43vw, 39rem);
+  border-bottom: 3px solid #d52236;
+  background:
+    linear-gradient(90deg, #050705f0, #05070552 52%, transparent 75%),
+    linear-gradient(0deg, #080b09 0%, transparent 66%),
+    url("/doom-portrait.webp") center 38% / cover no-repeat, #12251a;
+  color: #fff;
+}
+
+.doom-poster-copy { padding: clamp(1.05rem, 4vw, 3.5rem); }
+.doom-credit { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.16em; color: #e0e9e1; font-weight: 800; }
+.doom-poster h2 { margin-block: 0.45rem 1.3rem; font-size: clamp(2.9rem, 8vw, 7rem); letter-spacing: -0.075em; line-height: 0.83; font-weight: 950; text-transform: uppercase; }
+.doom-play { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 46px; padding: 0.55rem 1rem; border-radius: 0.3rem; background: #c52133; color: #fff; font-size: 0.84rem; font-weight: 800; }
+.doom-play:hover { background: #e73145; }
+.doom-feature-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; border: 1px solid #30342f; border-top: 0; background: #30342f; }
+.doom-feature-links a { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 72px; padding: 0.85rem clamp(0.65rem, 2vw, 1.5rem); background: #131614; font-size: 0.72rem; color: #a8b4ab; }
+.doom-feature-links a:hover { background: #242a24; }
+.doom-feature-links strong { display: block; color: #f3f5f3; font-size: clamp(0.8rem, 2vw, 1rem); }
+.doom-feature-links svg { color: #d3e4d1; flex: none; }
+.doom-trailer { width: min(60rem, calc(100vw - 2rem)); margin: auto; max-height: 96dvh; overflow: auto; }
+.doom-trailer::backdrop { background: rgb(0 0 0 / 84%); }
+.doom-trailer iframe { max-height: 72dvh; }
+.doom-premiere :focus-visible, .loki-audio :focus-visible { outline: 2px solid #f5fff3; outline-offset: -3px; }
+
+@media (min-width: 1024px) {
+  html.doom .portfolio-rail {
+    inset: 0 0 auto;
+    width: 100%;
+    height: 65px;
+    min-height: 0;
+    flex-direction: row;
+    padding: 0 1.25rem;
+    border-radius: 0;
+    border-top: 3px solid #d52236;
+    background: #0a0b0a;
+  }
+  html.doom .portfolio-rail-links { flex-direction: row; width: auto; gap: 0.35rem; padding-inline: 0; }
+  html.doom .portfolio-rail-links > a { gap: 0.35rem; padding-inline: 0.55rem; opacity: 1; }
+  html.doom .portfolio-rail-links > a > span {
+    position: static;
+    padding: 0;
+    margin: 0;
+    transform: none;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    opacity: 1;
+    color: inherit;
+    letter-spacing: 0;
+  }
+  html.doom .portfolio-theme-control { order: 1; margin: 0 0 0 0.4rem; }
+  html.doom .theme-picker-desktop { top: 3rem; right: 0; left: auto; }
+  html.doom .portfolio-layout { top: 65px; padding: 1rem clamp(1rem, 3vw, 2.5rem) 0; }
+}
+
+@media (min-width: 1024px) and (max-width: 1160px) {
+  html.doom .portfolio-rail-links > a > svg { display: none; }
+  html.doom .portfolio-rail-links > a { padding-inline: 0.33rem; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  html.doom .portfolio-rail { display: none; }
+}
+
+@media (max-width: 600px) {
+  html.loki .portfolio-backdrop { background-position: center 10%; }
+  .doom-poster { background-position: 57% 50%; }
+  .doom-feature-links a { min-height: 62px; }
+}

@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle2, Mail, Globe, Loader2, Copy, Check } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
-import emailjs from '@emailjs/browser';
 
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -90,6 +89,7 @@ export default function Contact() {
       // 2. Try EmailJS (Non-blocking if it fails)
       try {
         if (formRef.current) {
+          const { default: emailjs } = await import("@emailjs/browser");
           await emailjs.sendForm(
             'YOUR_SERVICE_ID', 
             'YOUR_TEMPLATE_ID', 

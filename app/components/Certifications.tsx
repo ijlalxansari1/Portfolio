@@ -43,7 +43,9 @@ export default function Certifications({ initialCertifications }: { initialCerti
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
   useEffect(() => {
-    const fetchCerts = async () => {
+    const fetchCerts = async (event: Event) => {
+      const keys = (event as CustomEvent<{ keys?: string[] }>).detail?.keys;
+      if (keys && !keys.includes("admin-certs")) return;
       try {
         const res = await fetch("/api/data/admin?key=admin-certs");
         if (res.ok) {

@@ -1,26 +1,21 @@
 import type { Metadata } from "next";
 import { Poppins, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import "./theme-experiences.css";
 import { ToastProvider } from "./components/Toast";
 import { ThemeProvider } from "./components/ThemeProvider";
-import dynamic from "next/dynamic";
-import Script from "next/script";
 import { getStoreData } from "./utils/adminStore";
 import { LanguageProvider } from "./context/LanguageContext";
-const TemporalRadiation = dynamic(() => import("./components/TemporalRadiation"));
-const DataLoader = dynamic(() => import("./components/DataLoader"));
-const CustomCursor = dynamic(() => import("./components/CustomCursor"));
 
 const poppins = Poppins({ 
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "600", "700"],
   display: "swap",
   variable: "--font-poppins",
 });
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
   variable: "--font-jakarta",
 });
@@ -164,14 +159,10 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
-        <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" strategy="lazyOnload" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'slate', 'doom', 'loki']}>
           <LanguageProvider>
-              <CustomCursor />
-              <TemporalRadiation />
-              <DataLoader />
               <ToastProvider>
                 {children}
               </ToastProvider>

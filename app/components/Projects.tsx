@@ -462,7 +462,6 @@ function HeroProjectCard({
           sizes="(max-width: 640px) 100vw, 36vw"
           quality={80}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
-          priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--bg-secondary)] hidden sm:block pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent sm:hidden pointer-events-none" />

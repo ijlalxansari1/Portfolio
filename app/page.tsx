@@ -31,6 +31,8 @@ function getHomepageContent(article?: string) {
     cloudPlatforms: publicEntries(store["admin-cloud-platforms"]),
     projects: publicEntries(store["admin-projects"]),
     languages: publicEntries(store["admin-languages"]),
+    movies: publicEntries(store["admin-movies"]),
+    books: publicEntries(store["admin-books"]),
     certifications: publicEntries(store["admin-certs"]),
     posts: publicEntries(store["admin-posts"]),
   };

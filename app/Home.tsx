@@ -29,10 +29,17 @@ const ThemeBuddy = dynamic(() => import("./components/ThemeBuddy"), { ssr: false
 const Terminal = dynamic(() => import("./components/Terminal"), { ssr: false });
 const DemosHub = dynamic(() => import("./components/DemosHub"));
 
+const DoomPremiere = dynamic(() => import("./components/ThemeMedia").then((module) => module.DoomPremiere), { ssr: false });
+const LokiSoundtrack = dynamic(() => import("./components/ThemeMedia").then((module) => module.LokiSoundtrack), { ssr: false });
+const LokiTimeline = dynamic(() => import("./components/LokiTimeline"), { ssr: false });
+const CustomCursor = dynamic(() => import("./components/CustomCursor"), { ssr: false });
+
+const DataLoader = dynamic(() => import("./components/DataLoader"), { ssr: false });
 const AmbientBackground = dynamic(() => import("./components/AmbientBackground"), { ssr: false });
 
 import AnalyticsTracker, { trackEvent } from "./components/AnalyticsTracker";
 import MaintenanceScreen from "./components/MaintenanceScreen";
+import { storage } from "./utils/storage";
 import type { HomepageContent } from "./page";
 
 import { FiverrIcon, SpotifyIcon, SoundCloudIcon } from "./components/icons/SocialIcons";
@@ -45,8 +52,12 @@ export default function Home({ content }: { content: HomepageContent }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalOpened, setTerminalOpened] = useState(false);
+  const openTerminal = () => { setTerminalOpened(true); setShowTerminal(true); };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme } = useTheme();
+  const isDoom = isMounted && theme === "doom";
+  const isLoki = isMounted && theme === "loki";
   const { language } = useLanguage();
   const t = translations[language].sidebar;
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -80,6 +91,22 @@ export default function Home({ content }: { content: HomepageContent }) {
 
   const [isTimeSlipping, setIsTimeSlipping] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const [desktopEffects, setDesktopEffects] = useState(false);
+  const [ambientReady, setAmbientReady] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const update = () => setDesktopEffects(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!desktopEffects || isDoom || isLoki || ambientReady) return;
+    const timer = window.setTimeout(() => setAmbientReady(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, [desktopEffects, isDoom, isLoki, ambientReady]);
 
   useEffect(() => {
     const check = () => setIsMobileView(window.innerWidth < 1024);
@@ -103,29 +130,15 @@ export default function Home({ content }: { content: HomepageContent }) {
   const isScrollingRef = useRef(false);
   const isAnimatingRef = useRef(false);
 
-  useEffect(() => { 
-    setIsMounted(true); 
-    const loadConfig = async () => {
-      try {
-        // Fast local check
-        const configStr = localStorage.getItem("admin-config");
-        if (configStr) {
-          const config = JSON.parse(configStr);
-          setIsMaintenanceMode(!!config.maintenanceMode);
-        }
-        
-        // Accurate server check
-        const res = await fetch("/api/data/admin?key=admin-config");
-        if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
-          const { data } = await res.json();
-          if (data) {
-            setIsMaintenanceMode(!!data.maintenanceMode);
-            localStorage.setItem("admin-config", JSON.stringify(data));
-          }
-        }
-      } catch (e) { console.error(e); }
+  useEffect(() => {
+    setIsMounted(true);
+    const loadConfig = (event: Event) => {
+      const change = (event as CustomEvent<{ keys?: string[]; data?: Record<string, { maintenanceMode?: boolean }> }>).detail;
+      const keys = change?.keys;
+      if (keys && !keys.includes("admin-config")) return;
+      const config = change?.data?.["admin-config"] ?? storage.get<{ maintenanceMode?: boolean } | null>("admin-config", null);
+      if (config) setIsMaintenanceMode(Boolean(config.maintenanceMode));
     };
-    loadConfig();
     window.addEventListener("admin-updated", loadConfig);
     return () => window.removeEventListener("admin-updated", loadConfig);
   }, []);
@@ -239,7 +252,7 @@ export default function Home({ content }: { content: HomepageContent }) {
     };
 
     // Attach to window so anywhere the user scrolls (card, sidebar, background), it jumps cleanly
-    if (!isMobileView) {
+    if (!isMobileView && !isDoom) {
       window.addEventListener("wheel", handleWheel, { passive: false });
     }
 
@@ -247,7 +260,7 @@ export default function Home({ content }: { content: HomepageContent }) {
       window.removeEventListener("wheel", handleWheel);
       if (wheelResetTimer) clearTimeout(wheelResetTimer);
     };
-  }, [isMounted, showLogin, showAdmin, showTerminal, SECTION_IDS, isMobileView]);
+  }, [isMounted, showLogin, showAdmin, showTerminal, SECTION_IDS, isMobileView, isDoom]);
 
   useEffect(() => {
     const TARGET = "ijlal";
@@ -275,7 +288,7 @@ export default function Home({ content }: { content: HomepageContent }) {
 
       keyBuffer += e.key.toLowerCase();
       if (keyBuffer.length > TARGET.length) keyBuffer = keyBuffer.slice(-TARGET.length);
-      if (keyBuffer === TARGET) { keyBuffer = ""; setShowTerminal(true); trackEvent("terminal_open"); }
+      if (keyBuffer === TARGET) { keyBuffer = ""; openTerminal(); trackEvent("terminal_open"); }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -354,14 +367,14 @@ export default function Home({ content }: { content: HomepageContent }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   useEffect(() => {
+    if (!desktopEffects || isDoom) return;
     const handleMouseMove = (e: MouseEvent) => {
-      if (window.innerWidth < 1024) return;
       mouseX.set((e.clientX / window.innerWidth - 0.5) * 2);
       mouseY.set((e.clientY / window.innerHeight - 0.5) * 2);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, desktopEffects, isDoom]);
 
   const rotateX = useTransform(mouseY, [-1, 1], [3, -3]);
   const rotateY = useTransform(mouseX, [-1, 1], [-3, 3]);
@@ -382,7 +395,8 @@ export default function Home({ content }: { content: HomepageContent }) {
           {/* ── Dynamic Background Layer ── */}
           {isMounted && (
             <div className="portfolio-backdrop fixed inset-0 z-0 pointer-events-none">
-              {theme !== "doom" && theme !== "loki" && (!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
+              {ambientReady && desktopEffects && !isDoom && !isLoki && <AmbientBackground />}
+              {isLoki && <LokiTimeline />}
               <AnimatePresence>
               </AnimatePresence>
             </div>
@@ -403,14 +417,14 @@ export default function Home({ content }: { content: HomepageContent }) {
         />
 
         {/* ── Mobile Header ── */}
-        <header className="lg:hidden fixed top-0 left-0 right-0 h-[70px] bg-[var(--bg-card)]/80 backdrop-blur-xl border-b border-[var(--border-subtle)] z-[10000] flex items-center justify-between px-6 shadow-lg">
+        <header className="portfolio-mobile-header lg:hidden fixed top-0 left-0 right-0 h-[70px] bg-[var(--bg-card)]/80 backdrop-blur-xl border-b border-[var(--border-subtle)] z-[10000] flex items-center justify-between px-6 shadow-lg">
           <div className="flex flex-col">
             <span className="text-[15px] font-black text-[var(--text-primary)] tracking-tight">Ijlal Ansari</span>
             <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-[0.2em]">{translations[language].mobileHeader.role}</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="ml-1.5"><ThemeBuddy /></div>
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] shadow-sm">
+            <button type="button" aria-label={translations[language].mobileHeader.nav} aria-expanded={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-11 h-11 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-primary)] shadow-sm">
               {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
@@ -444,9 +458,10 @@ export default function Home({ content }: { content: HomepageContent }) {
         </AnimatePresence>
 
         {/* ── Desktop/Tablet Navigation ── */}
-        <nav className="hidden md:flex fixed left-4 top-4 bottom-4 lg:w-[62px] lg:min-h-[calc(100dvh-2rem)] bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-4 rounded-[24px] flex-row md:flex-col items-center justify-between gap-4 md:gap-6 lg:gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
-          <div className="flex flex-row md:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-3 overflow-x-auto md:overflow-x-visible custom-scrollbar-hidden w-full md:w-auto px-1 md:px-0">
-            <div className="block lg:mb-2"><ThemeBuddy /></div>
+        <nav className="portfolio-rail hidden md:flex fixed left-4 top-4 bottom-4 lg:w-[62px] lg:min-h-[calc(100dvh-2rem)] bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-subtle)] p-2 lg:py-4 rounded-[24px] flex-row md:flex-col items-center justify-between gap-4 md:gap-6 lg:gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-[9999]">
+          {isDoom && <a className="doom-wordmark" href="#about" onClick={(event) => handleSectionLink(event, "about")}>Dataden</a>}
+          <div className="portfolio-rail-links flex flex-row md:flex-col items-center justify-center gap-4 md:gap-6 lg:gap-3 overflow-x-auto md:overflow-x-visible custom-scrollbar-hidden w-full md:w-auto px-1 md:px-0">
+            <div className="portfolio-theme-control block lg:mb-2"><ThemeBuddy /></div>
             {navItems.map((item) => (
               <a key={item.id} href={"#" + item.id} aria-label={item.label} onClick={(event) => handleSectionLink(event, item.id)} className={`group relative min-w-[38px] h-[38px] flex items-center justify-center rounded-xl transition-all duration-300 ${activeSection === item.id ? "bg-[var(--accent)]/15 text-[var(--accent)]" : "text-[var(--text-secondary)] opacity-50 hover:opacity-100 hover:bg-[var(--border-subtle)]"}`}>
                 {item.icon}
@@ -459,21 +474,24 @@ export default function Home({ content }: { content: HomepageContent }) {
         </nav>
 
         {/* ── Main Layout ── */}
-        <div className="relative lg:absolute lg:inset-0 flex justify-center p-4 md:p-6 lg:pr-[24px] lg:pl-[96px] min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full lg:items-center pointer-events-none">
+        <div className="portfolio-layout relative lg:absolute lg:inset-0 flex justify-center p-4 md:p-6 lg:pr-[24px] lg:pl-[96px] min-h-screen lg:min-h-0 pt-[90px] lg:pt-0 w-full max-w-full lg:items-center pointer-events-none">
           <motion.div
             className="w-full lg:h-full max-w-[1380px] flex flex-col lg:flex-row gap-[14px] pointer-events-auto"
-            style={!isMobileView ? { rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" } : {}}
+            style={desktopEffects && !isDoom ? { rotateX, rotateY, transformStyle: "preserve-3d", transition: "transform 0.1s ease-out" } : {}}
           >
-            <div className="w-full lg:w-[300px] shrink-0 lg:h-full max-w-full lg:overflow-hidden" style={{ transform: "translateZ(30px)" }}>
+            <div className="portfolio-profile w-full lg:w-[300px] shrink-0 lg:h-full max-w-full lg:overflow-hidden" style={{ transform: "translateZ(30px)" }}>
               <ProfileSidebar activeTab={activeSection} onTabChange={() => {}} />
             </div>
 
-            <div className="flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={!isMobileView ? { transform: "translateZ(20px)" } : {}}>
+            <div className="portfolio-content flex-1 lg:h-full bg-[var(--bg-card)] rounded-[28px] border border-[var(--border-subtle)] shadow-2xl flex flex-col transition-all duration-400 relative top-glow lg:overflow-hidden" style={!isMobileView && !isDoom ? { transform: "translateZ(20px)" } : {}}>
               <main ref={scrollPanelRef} id="content-scroll-panel" className="flex-1 lg:overflow-y-auto custom-scrollbar-hidden relative scroll-snap-container" style={{ scrollbarWidth: "none" }}>
                 <div id="sections-container" className="px-3 md:px-6 lg:px-8 py-0 relative origin-center">
 
                   {/* 1. Hero / About */}
-                  <section className="scroll-snap-section" id="about"><About initialHero={content.hero} initialMilestones={content.milestones} /></section>
+                  <section className="scroll-snap-section" id="about">
+                    {isDoom && <DoomPremiere />}
+                    <About initialHero={content.hero} initialMilestones={content.milestones} />
+                  </section>
 
                   {/* 1.2 Why Hire Me */}
                   <section className="scroll-snap-section" id="whyhireme"><WhyHireMe /></section>
@@ -491,7 +509,7 @@ export default function Home({ content }: { content: HomepageContent }) {
                   <section className="scroll-snap-section" id="projects"><Projects initialProjects={content.projects} /></section>
 
                   {/* 5. Languages */}
-                  <section className="scroll-snap-section" id="languages"><LanguageSkills initialLanguages={content.languages} /></section>
+                  <section className="scroll-snap-section" id="languages"><LanguageSkills initialLanguages={content.languages} initialMovies={content.movies} initialBooks={content.books} /></section>
 
                   {/* 7. Certifications */}
                   <section className="scroll-snap-section" id="certifications"><Certifications initialCertifications={content.certifications} /></section>
@@ -509,7 +527,7 @@ export default function Home({ content }: { content: HomepageContent }) {
                     <div className="pt-3 mt-2 border-t border-white/5 flex flex-col sm:flex-row gap-3 justify-between items-center shrink-0">
                       <div className="flex items-center gap-3">
                         <span className="text-[9px] font-black uppercase tracking-[0.18em] text-[var(--text-muted)]">{translations[language].footer.copy}</span>
-                        <button onClick={() => setShowTerminal(true)} className="group flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.03] border border-white/5 rounded-lg hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all">
+                        <button onClick={openTerminal} className="group flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.03] border border-white/5 rounded-lg hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/5 transition-all">
                           <TerminalIcon size={11} className="text-[var(--accent)]" />
                           <span className="text-[8px] font-black uppercase tracking-widest text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-all">{translations[language].footer.launch}</span>
                         </button>
@@ -541,9 +559,12 @@ export default function Home({ content }: { content: HomepageContent }) {
         </>
       )}
 
-      <Terminal isOpen={showTerminal} onClose={() => setShowTerminal(false)} />
-      <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} onLoginSuccess={() => { setShowLogin(false); setShowAdmin(true); }} />
-      <AdminPanel isOpen={showAdmin} onClose={() => setShowAdmin(false)} />
+      {isLoki && (!isMaintenanceMode || showAdmin) && <LokiSoundtrack />}
+      <DataLoader />
+      {desktopEffects && <CustomCursor />}
+      {terminalOpened && <Terminal isOpen={showTerminal} onClose={() => setShowTerminal(false)} />}
+      {showLogin && <LoginModal isOpen onClose={() => setShowLogin(false)} onLoginSuccess={() => { setShowLogin(false); setShowAdmin(true); }} />}
+      {showAdmin && <AdminPanel isOpen onClose={() => setShowAdmin(false)} />}
 
       <AnimatePresence>
         {showScrollTop && (
@@ -558,7 +579,7 @@ export default function Home({ content }: { content: HomepageContent }) {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }} 
-            className="fixed bottom-[28px] right-[28px] w-[44px] h-[44px] bg-[var(--accent)] text-black rounded-full flex items-center justify-center shadow-lg z-[999] hover:scale-110 transition-all border-none"
+            className="portfolio-scroll-top fixed bottom-[28px] right-[28px] w-[44px] h-[44px] bg-[var(--accent)] text-black rounded-full flex items-center justify-center shadow-lg z-[999] hover:scale-110 transition-all border-none"
           >
             <ArrowUp size={18} />
           </motion.button>

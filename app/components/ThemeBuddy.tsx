@@ -225,7 +225,7 @@ export default function ThemeBuddy() {
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="absolute right-auto left-[54px] top-0 max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
+              className="theme-picker-desktop absolute right-auto left-[54px] top-0 max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 backgroundImage: "linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0.03))",

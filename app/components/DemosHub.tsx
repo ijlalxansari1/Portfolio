@@ -1,19 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap, ChevronLeft, ChevronRight, ExternalLink, ArrowRight, GitBranch } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
 import { storage } from "../utils/storage";
 
-import AetherDemo from "./demos/AetherDemo";
-import ETLPipelineDemo from "./demos/ETLPipelineDemo";
-import BiasAuditDemo from "./demos/BiasAuditDemo";
-import FastAPIGatewayDemo from "./demos/FastAPIGatewayDemo";
-import AnalyticsDashboardDemo from "./demos/AnalyticsDashboardDemo";
-import DataEngTrackerDemo from "./demos/DataEngTrackerDemo";
+const ETLPipelineDemo = dynamic(() => import("./demos/ETLPipelineDemo"), { ssr: false });
+const BiasAuditDemo = dynamic(() => import("./demos/BiasAuditDemo"), { ssr: false });
+const FastAPIGatewayDemo = dynamic(() => import("./demos/FastAPIGatewayDemo"), { ssr: false });
+const AnalyticsDashboardDemo = dynamic(() => import("./demos/AnalyticsDashboardDemo"), { ssr: false });
+const DataEngTrackerDemo = dynamic(() => import("./demos/DataEngTrackerDemo"), { ssr: false });
 
 const getDemoList = (language: string) => [
   { id: 1, title: "TraceFlow", tag: "Python", icon: <FlaskConical size={24} />, description: language === 'de' ? "Erkunden Sie einen nachvollziehbaren Daten-Workflow mit Lineage, Überprüfbarkeit und praktischen Kontrollen." : "Explore a traceable data workflow with lineage, auditability, and practical controls.", iframeUrl: "https://aether-blond-nine.vercel.app/" },
@@ -28,9 +29,14 @@ function getDemos(language: string, entries?: any[]) {
   const defaults = getDemoList(language);
   return entries?.map((demo) => {
     const match = defaults.find((item) => item.title === demo.title || item.id === demo.id);
+    const iconUrl = typeof demo.iconUrl === "string" ? demo.iconUrl : "";
+    const isLocalIcon = iconUrl.startsWith("/") && !iconUrl.startsWith("//");
     return {
       ...demo,
-      icon: demo.iconUrl ? <img src={demo.iconUrl} alt={demo.title + " icon"} className="w-full h-full object-cover rounded-2xl" /> : (match?.icon || <FlaskConical size={24} />),
+      icon: iconUrl && !isLocalIcon
+        ? <img src={iconUrl} alt="" loading="lazy" className="w-full h-full object-cover rounded-2xl" />
+        : (match?.icon || <FlaskConical size={24} />),
+      localIcon: isLocalIcon ? iconUrl : undefined,
       component: match?.component || null,
     };
   }) ?? defaults;
@@ -58,17 +64,20 @@ export default function DemosHub({ initialDemos }: { initialDemos?: any[] }) {
   const currentDemo = demos.find(d => d.id === activeDemo);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const carousel = useRef<HTMLDivElement>(null);
+  const isVisible = useInView(carousel);
+  const reducedMotion = useReducedMotion();
 
   const handleNext = () => setCurrentIndex((prev) => (demos.length > 0 ? (prev + 1) % demos.length : 0));
   const handlePrev = () => setCurrentIndex((prev) => (demos.length > 0 ? (prev - 1 + demos.length) % demos.length : 0));
 
   useEffect(() => {
-    if (isPaused || demos.length === 0) return;
+    if (!isVisible || isPaused || reducedMotion || demos.length < 2) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (demos.length > 0 ? (prev + 1) % demos.length : 0));
     }, 4000);
     return () => clearInterval(interval);
-  }, [isPaused, demos.length]);
+  }, [isVisible, isPaused, reducedMotion, demos.length]);
 
   return (
     <div className="w-full">
@@ -105,6 +114,7 @@ export default function DemosHub({ initialDemos }: { initialDemos?: any[] }) {
       </a>
 
       <div 
+        ref={carousel}
         className="relative w-full overflow-hidden py-4"
         onMouseEnter={() => setIsPaused(true)} 
         onMouseLeave={() => setIsPaused(false)}
@@ -123,7 +133,11 @@ export default function DemosHub({ initialDemos }: { initialDemos?: any[] }) {
               <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10 h-full pointer-events-none text-center md:text-left">
                 <div className="w-24 h-24 rounded-[32px] flex items-center justify-center bg-[var(--bg-card)] border border-[var(--border)] text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-black group-hover:shadow-[0_0_40px_rgba(var(--accent-rgb),0.3)] transition-all duration-500 shrink-0">
                   {/* Using a clone to increase icon size slightly for this large card */}
-                  {React.isValidElement(demos[currentIndex].icon) ? React.cloneElement(demos[currentIndex].icon as React.ReactElement<any>, { size: 40 }) : demos[currentIndex].icon}
+                  {demos[currentIndex].localIcon ? (
+                    <Image src={demos[currentIndex].localIcon} width={96} height={96} alt="" className="w-full h-full object-cover rounded-2xl" />
+                  ) : (
+                    React.isValidElement(demos[currentIndex].icon) ? React.cloneElement(demos[currentIndex].icon as React.ReactElement<any>, { size: 40 }) : demos[currentIndex].icon
+                  )}
                 </div>
                 
                 <div className="flex-1 flex flex-col items-center md:items-start">

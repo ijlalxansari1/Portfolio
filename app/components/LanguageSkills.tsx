@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { storage } from "../utils/storage";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -19,53 +20,32 @@ import {
 
 type TabKey = "languages" | "cinema" | "books" | "outdoors" | "music";
 
-export default function LanguageSkills({ initialLanguages }: { initialLanguages?: any[] }) {
+export default function LanguageSkills({ initialLanguages, initialMovies, initialBooks }: { initialLanguages?: any[]; initialMovies?: any[]; initialBooks?: any[] }) {
   const { language } = useLanguage();
   const t = translations[language].languageSkills;
 
   // Default active tab is Languages (first one)
   const [activeTab, setActiveTab] = useState<TabKey>("languages");
   const [adminLangs, setAdminLangs] = useState<any[]>(initialLanguages ?? []);
-  const [adminMovies, setAdminMovies] = useState<any[]>([]);
-  const [adminBooks, setAdminBooks] = useState<any[]>([]);
+  const [adminMovies, setAdminMovies] = useState<any[]>(initialMovies ?? []);
+  const [adminBooks, setAdminBooks] = useState<any[]>(initialBooks ?? []);
 
   // Duolingo dynamic states
   const [duoStreak, setDuoStreak] = useState<number | null>(null);
   const [duoTotalXp, setDuoTotalXp] = useState<number>(0);
   const [duoLoading, setDuoLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const updateAdminData = async () => {
-      try {
-        const resLangs = await fetch("/api/data/admin?key=admin-languages");
-        if (resLangs.ok) {
-          const { data } = await resLangs.json();
-          if (data && data.length > 0) setAdminLangs(data);
-        }
-        const resMovies = await fetch("/api/data/admin?key=admin-movies");
-        if (resMovies.ok) {
-          const { data } = await resMovies.json();
-          if (data && data.length > 0) setAdminMovies(data);
-        }
-        const resBooks = await fetch("/api/data/admin?key=admin-books");
-        if (resBooks.ok) {
-          const { data } = await resBooks.json();
-          if (data && data.length > 0) setAdminBooks(data);
-        }
-      } catch (err) {
-        const storedLangs = localStorage.getItem("admin-languages");
-        if (storedLangs) setAdminLangs(JSON.parse(storedLangs));
-        const storedMovies = localStorage.getItem("admin-movies");
-        if (storedMovies) setAdminMovies(JSON.parse(storedMovies));
-        const storedBooks = localStorage.getItem("admin-books");
-        if (storedBooks) setAdminBooks(JSON.parse(storedBooks));
-      }
-    };
+  const section = useRef<HTMLDivElement>(null);
 
-    updateAdminData();
+  useEffect(() => {
+    const updateAdminData = () => {
+      setAdminLangs(storage.get("admin-languages", initialLanguages ?? []));
+      setAdminMovies(storage.get("admin-movies", initialMovies ?? []));
+      setAdminBooks(storage.get("admin-books", initialBooks ?? []));
+    };
     window.addEventListener("admin-updated", updateAdminData);
     return () => window.removeEventListener("admin-updated", updateAdminData);
-  }, []);
+  }, [initialLanguages, initialMovies, initialBooks]);
 
   // Fetch live Duolingo data
   useEffect(() => {
@@ -84,7 +64,15 @@ export default function LanguageSkills({ initialLanguages }: { initialLanguages?
       }
     };
 
-    fetchDuolingo();
+    const target = section.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      void fetchDuolingo();
+    }, { rootMargin: "160px" });
+    observer.observe(target);
+    return () => observer.disconnect();
   }, []);
 
   // Default languages
@@ -218,7 +206,7 @@ export default function LanguageSkills({ initialLanguages }: { initialLanguages?
   ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col justify-center gap-4 py-2">
+    <div ref={section} className="w-full max-w-5xl mx-auto flex flex-col justify-center gap-4 py-2">
       
       {/* 1. TOP TITLE */}
       <div className="text-center space-y-2 max-w-3xl mx-auto">
@@ -274,7 +262,7 @@ export default function LanguageSkills({ initialLanguages }: { initialLanguages?
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {languages.map((lang: any, idx: number) => {
                   const proficiency = Math.round((lang.level || 0) / 10);
-                  const flagUrl = lang.flag?.includes("http") || lang.flag?.includes("data:image")
+                  const flagUrl = /^(?:https?:\/\/|data:image\/|\/(?!\/))/i.test(lang.flag || "")
                     ? lang.flag
                     : `https://flagcdn.com/w40/${lang.flag || "us"}.png`;
 
@@ -289,7 +277,7 @@ export default function LanguageSkills({ initialLanguages }: { initialLanguages?
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2.5">
                           <div className="w-9 h-6 rounded overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-black/40">
-                            <img src={flagUrl} alt={lang.name} className="w-full h-full object-cover" />
+                            <img src={flagUrl} loading="lazy" alt={lang.name} className="w-full h-full object-cover" />
                           </div>
                           <div>
                             <h4 className="text-[13px] font-black text-[var(--text-primary)] leading-none">
