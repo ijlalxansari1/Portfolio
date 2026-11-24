@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Moon, Check, Palette } from "lucide-react";
+import { Moon, Check, Palette, Shield, GitBranch } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
@@ -30,6 +30,8 @@ const themes: Array<{
   { id: "dark",      label: "Dark",     icon: <Moon size={14} /> },
   { id: "midnight",  label: "Midnight", dot: "#0a0b1e" },
   { id: "slate",     label: "Slate",    dot: "#1a1d23" },
+  { id: "doom",      label: "Doom",     icon: <Shield size={16} />, iconClass: "text-[#b5e487]" },
+  { id: "loki",      label: "Loki",     icon: <GitBranch size={16} />, iconClass: "text-[#f7c779]" },
 ];
 
 function ThemeButton({ themeId, label, icon, iconClass, labelClass, dot, dotBorder, active, onClick }: {
@@ -40,6 +42,8 @@ function ThemeButton({ themeId, label, icon, iconClass, labelClass, dot, dotBord
 }) {
   return (
     <button
+      type="button"
+      aria-pressed={active}
       onClick={onClick}
       className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
         active
@@ -79,7 +83,7 @@ function PanelContent({ theme, accent, language, onThemeChange, onAccentChange, 
         </div>
       </div>
 
-      <div>
+      {theme !== "doom" && theme !== "loki" && <div>
         <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">{t.accents}</p>
         <div className="flex flex-wrap gap-2.5">
           {accents.map((acc) => (
@@ -98,7 +102,7 @@ function PanelContent({ theme, accent, language, onThemeChange, onAccentChange, 
             </button>
           ))}
         </div>
-      </div>
+      </div>}
 
       <div className="pt-4 border-t border-[var(--border-subtle)]">
         <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-4">{t.languages}</p>
@@ -171,6 +175,8 @@ export default function ThemeBuddy() {
   return (
     <div className="relative" ref={menuRef}>
       <button
+        type="button"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className={`flex w-[38px] h-[38px] rounded-xl items-center justify-center transition-all duration-300 border ${
           isOpen
@@ -219,7 +225,7 @@ export default function ThemeBuddy() {
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="absolute right-auto left-[54px] top-[-100px] rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
+              className="absolute right-auto left-[54px] top-0 max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-2xl p-6 shadow-2xl w-64 z-[1001]"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 backgroundImage: "linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0.03))",
@@ -229,14 +235,6 @@ export default function ThemeBuddy() {
               }}
             >
               <PanelContent {...panelProps} />
-              <div
-                className="absolute top-[114px] -left-1.5 w-3 h-3 rotate-45"
-                style={{
-                  backgroundColor: "var(--bg-primary)",
-                  borderLeft: "1px solid var(--border-subtle)",
-                  borderBottom: "1px solid var(--border-subtle)",
-                }}
-              />
             </motion.div>
           )}
         </AnimatePresence>

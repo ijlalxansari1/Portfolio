@@ -50,6 +50,48 @@ html[data-accent="pink"] { --accent: #ec4899; --accent-rgb: 236, 72, 153; }
 html[data-accent="cyan"] { --accent: #06b6d4; --accent-rgb: 6, 182, 212; }
 html[data-accent="yellow"] { --accent: #f59e0b; --accent-rgb: 245, 158, 11; }
 
+html.doom {
+  --bg-primary: #08110b;
+  --bg-secondary: rgba(20, 40, 25, 0.83);
+  --bg-card: rgba(13, 28, 17, 0.9);
+  --foreground: #edf4e4;
+  --accent: #b5e487;
+  --accent-rgb: 181, 228, 135;
+  --text-primary: #edf4e4;
+  --text-secondary: #becfba;
+  --text-muted: #9db49a;
+  --border: #3d5942;
+  --border-subtle: rgba(156, 195, 126, 0.24);
+}
+
+html.loki {
+  --bg-primary: #151009;
+  --bg-secondary: rgba(48, 34, 18, 0.8);
+  --bg-card: rgba(34, 24, 15, 0.9);
+  --foreground: #fff3dc;
+  --accent: #f7c779;
+  --accent-rgb: 247, 199, 121;
+  --text-primary: #fff3dc;
+  --text-secondary: #e0ccaf;
+  --text-muted: #bda98d;
+  --border: #654b2f;
+  --border-subtle: rgba(224, 172, 99, 0.24);
+}
+
+html.doom .portfolio-backdrop {
+  background:
+    radial-gradient(ellipse at 75% 0%, #355039, transparent 65%),
+    repeating-linear-gradient(135deg, transparent 0 65px, #96b5a12e 66px, transparent 68px 132px),
+    linear-gradient(150deg, #24332d, #08110b 65%);
+}
+
+html.loki .portfolio-backdrop {
+  background:
+    radial-gradient(ellipse at 80% 12%, #76471e, transparent 67%),
+    repeating-linear-gradient(104deg, transparent 0 42px, #f7c7792e 43px, transparent 45px 88px),
+    linear-gradient(153deg, #3c2915, #151009 65%);
+}
+
 /* ── LIGHT MODE ACCENT OVERRIDE ── */
 /* Removed global black accent to keep buttons colored */
 

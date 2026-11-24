@@ -15,6 +15,16 @@
   color-scheme: dark;
 }
 
+:global(html.loki) .console {
+  --drill-bg: #151009;
+  --drill-panel: #22180f;
+  --drill-line: #654b2f;
+  --drill-muted: #e0ccaf;
+  --drill-accent: #f7c779;
+  --drill-surface: #302212;
+}
+
+:global(html.doom) .console,
 .console[data-doom-mode="true"] {
   --drill-bg: #0b1511;
   --drill-panel: #111f18;

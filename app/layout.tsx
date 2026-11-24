@@ -167,7 +167,7 @@ export default function RootLayout({
         <Script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" strategy="lazyOnload" />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'slate']}>
+        <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'slate', 'doom', 'loki']}>
           <LanguageProvider>
               <CustomCursor />
               <TemporalRadiation />

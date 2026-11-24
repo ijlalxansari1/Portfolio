@@ -381,8 +381,8 @@ export default function Home({ content }: { content: HomepageContent }) {
         <>
           {/* ── Dynamic Background Layer ── */}
           {isMounted && (
-            <div className="fixed inset-0 z-0 pointer-events-none">
-              {(!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
+            <div className="portfolio-backdrop fixed inset-0 z-0 pointer-events-none">
+              {theme !== "doom" && theme !== "loki" && (!isNarrativeTheme || !isMobileView) && <AmbientBackground />}
               <AnimatePresence>
               </AnimatePresence>
             </div>
