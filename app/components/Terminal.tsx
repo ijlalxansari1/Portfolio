@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
@@ -15,7 +15,7 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [input, setInput] = useState("");
-  const [output, setOutput] = useState<string[]>([]);
+  const [output, setOutput] = useState<ReactNode[]>([]);
   const [isBooting, setIsBooting] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -99,6 +99,17 @@ export default function Terminal({ isOpen, onClose }: TerminalProps) {
           "Fiverr: fiverr.com/s/8xdmv6g",
           "Spotify: open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615",
           "SoundCloud: on.soundcloud.com/mLoNh7A9s8me4liNZ8"
+        ]);
+        break;
+      case "doomsday":
+        setOutput((prev) => [
+          ...prev,
+          language === "de"
+            ? "[TVA] Drei Zeitlinien melden dieselben Ereignis-IDs. Loki hält die Zweige offen."
+            : "[TVA] Three timelines are reporting the same event IDs. Loki is holding the branches open.",
+          <a key="drill" className="font-bold underline underline-offset-4 hover:text-white" href="/demos/doomsday">
+            {language === "de" ? "Doomsday Drill öffnen" : "Open the Doomsday Drill"}
+          </a>,
         ]);
         break;
       case "loki":

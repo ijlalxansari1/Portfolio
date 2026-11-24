@@ -301,6 +301,7 @@ export const translations = {
         "projects       Lists all 6 projects",
         "contact        Shows social links",
         "loki           Special protocol info",
+        "doomsday       Shows the TVA incident briefing",
         "hire           Go to contact section",
         "clear          Clears terminal",
         "exit           Closes terminal"
@@ -634,6 +635,7 @@ export const translations = {
         "projects       Listet alle 6 Projekte auf",
         "contact        Zeigt soziale Links",
         "loki           Spezielle Protokollinformationen",
+        "doomsday       Zeigt den TVA-Störfallbericht",
         "hire           Gehe zum Kontaktbereich",
         "clear          Löscht das Terminal",
         "exit           Schließt das Terminal"

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { Play, X, FlaskConical, Database, ShieldCheck, Zap, BarChart3, GraduationCap, ChevronLeft, ChevronRight, ExternalLink, ArrowRight, GitBranch } from "lucide-react";
 import { trackEvent } from "./AnalyticsTracker";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../context/translations";
@@ -72,7 +72,7 @@ export default function DemosHub({ initialDemos }: { initialDemos?: any[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
         <div>
           <div className="section-pill"><FlaskConical size={14} /> {t.label}</div>
           <h2 className="section-heading text-[32px] font-black text-white">{t.title}</h2>
@@ -91,6 +91,18 @@ export default function DemosHub({ initialDemos }: { initialDemos?: any[] }) {
           </div>
         </div>
       </div>
+
+      <a
+        href="/demos/doomsday"
+        className="group flex items-center gap-3 rounded-2xl border border-amber-300/30 bg-amber-300/5 px-4 py-3 text-amber-100 transition-colors hover:bg-amber-300/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-200"
+      >
+        <GitBranch size={21} className="shrink-0 text-amber-300" aria-hidden />
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <strong className="text-sm font-black">Doomsday Drill</strong>
+          <span className="text-xs text-amber-100/75">{language === "de" ? "Ein TVA-Störfall. Drei Zeitlinien. Eine Entscheidung." : "A TVA incident. Three timelines. One decision."}</span>
+        </span>
+        <ArrowRight size={19} className="shrink-0 text-amber-300 motion-safe:transition-transform motion-safe:group-hover:translate-x-1" aria-hidden />
+      </a>
 
       <div 
         className="relative w-full overflow-hidden py-4"
