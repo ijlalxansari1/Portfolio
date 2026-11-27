@@ -456,8 +456,8 @@
     }
   ],
   "admin-config": {
-    "title": "Portfolio",
-    "description": "Data Engineer Portfolio",
+    "title": "Ijlal Ansari | Data Engineer & Analytics Portfolio",
+    "description": "Explore Ijlal Ansari’s data engineering portfolio, including ETL pipelines, analytics platforms, and data governance projects built with Python and SQL.",
     "maintenanceMode": false,
     "keywords": "data engineer , elt , elt"
   },

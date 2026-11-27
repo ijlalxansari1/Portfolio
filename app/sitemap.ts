@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "./utils/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    { url: "https://dataden.vercel.app/" },
-    { url: "https://dataden.vercel.app/demos/doomsday" },
+    { url: `${SITE_URL}/` },
+    { url: `${SITE_URL}/demos/doomsday` },
   ];
 }

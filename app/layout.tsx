@@ -4,8 +4,8 @@ import "./globals.css";
 import "./theme-experiences.css";
 import { ToastProvider } from "./components/Toast";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { getStoreData } from "./utils/adminStore";
 import { LanguageProvider } from "./context/LanguageContext";
+import { SITE_NAME, SITE_URL } from "./utils/seo";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -26,118 +26,18 @@ export const viewport = {
   initialScale: 1,
 };
 
-export function generateMetadata(): Metadata {
-  const config = getStoreData()["admin-config"] || {};
-
-  const title = config.title || 'Ijlal Ansari — Data Engineer';
-  const description = config.description || "Data Engineer focused on building reliable data pipelines, modern analytics systems, and practical data platforms. Skilled in Python, SQL, dbt, Airflow, FastAPI, DuckDB, PostgreSQL, and cloud tooling.";
-  const keywords = config.keywords || "data engineer, data engineering portfolio, Python data engineer, dbt developer, data ops engineer, FastAPI developer, DuckDB analytics, data pipeline engineer, Ijlal Ansari, data governance, ETL pipeline, Airflow orchestration, open source data platform";
-
-  return {
-    title: {
-      default: title,
-      template: '%s | Ijlal Ansari',
-    },
-    description: description,
-    keywords: keywords,
-    authors: [{ name: "Ijlal Ansari" }],
-    creator: 'Ijlal Ansari',
-    metadataBase: new URL('https://dataden.vercel.app'),
-    robots: "index, follow",
-    alternates: {
-      canonical: "https://dataden.vercel.app/",
-    },
-    openGraph: {
-      type: "website",
-      url: "https://dataden.vercel.app/",
-      title: title,
-      description: description,
-      images: [
-        {
-          url: "/og-image.jpg",
-          width: 1200,
-          height: 630,
-          alt: "Ijlal Ansari Portfolio",
-        },
-      ],
-      siteName: "Ijlal Ansari — Data Den",
-      locale: "en_GB",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: title,
-      description: description,
-      images: ["https://dataden.vercel.app/og-image.jpg"],
-    },
-    icons: {
-      icon: [
-        { url: '/favicon.ico', sizes: 'any' },
-        { url: '/icon.png', type: 'image/png', sizes: '32x32' },
-        { url: '/icon.svg', type: 'image/svg+xml' },
-      ],
-      apple: [
-        { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
-      ],
-    },
-    verification: {
-      google: '5be1d19eb21097d3',
-    },
-  };
-}
-
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Ijlal Ansari",
-  "url": "https://dataden.vercel.app",
-  "image": "https://dataden.vercel.app/profile.jpg",
-  "jobTitle": "Data Engineer",
-  "description": "Data Engineer building reliable pipelines, analytics systems, and practical data platforms with a strong focus on maintainability and trust.",
-  "knowsAbout": [
-    "Data Engineering",
-    "ETL Pipeline Design",
-    "Python",
-    "dbt Core",
-    "Dagster",
-    "Apache Airflow",
-    "Apache Kafka",
-    "FastAPI",
-    "DuckDB",
-    "PostgreSQL",
-    "Fairlearn",
-    "SHAP",
-    "Ethical AI",
-    "Data Governance",
-    "RBAC Design"
-  ],
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "Remote"
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
-  "sameAs": [
-    "https://github.com/ijlalxansari1",
-    "https://linkedin.com/in/ijlal-ansari-56b0371b0",
-    "https://dataden.vercel.app",
-    "https://www.fiverr.com/s/8xdmv6g",
-    "https://open.spotify.com/user/317wnqu4ns3xrkhibk5djcuhfmq4?si=ba33e571a6044615",
-    "https://on.soundcloud.com/mLoNh7A9s8me4liNZ8"
-  ],
-  "alumniOf": {
-    "@type": "EducationalOrganization",
-    "name": "Self-Taught Researcher"
-  }
-};
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Ijlal Ansari — Data Engineer Portfolio",
-  "url": "https://dataden.vercel.app",
-  "description": "Portfolio of Ijlal Ansari, Data Engineer and AI Ethics Researcher.",
-  "author": {
-    "@type": "Person",
-    "name": "Ijlal Ansari"
-  }
+  icons: {
+    icon: { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+  },
+  verification: {
+    google: "5be1d19eb21097d3",
+  },
 };
 
 export default function RootLayout({
@@ -149,16 +49,6 @@ export default function RootLayout({
     <html lang="en" className={`${poppins.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <head>
         <link rel="dns-prefetch" href="https://api.github.com" />
-        <script
-          id="person-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-        />
-        <script
-          id="website-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
       </head>
       <body className="antialiased font-sans transition-colors duration-300" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" storageKey="portfolio-theme-v4" enableSystem={false} themes={['dark', 'midnight', 'slate', 'doom', 'loki']}>

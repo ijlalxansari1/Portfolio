@@ -11,6 +11,7 @@ import {
   Calendar, Clock, Monitor, Smartphone, Tablet, TrendingUp, Inbox, Quote, ArrowUpRight, Users, FlaskConical, Github, Landmark, Briefcase as BriefcaseIcon, Server, Music
 } from "lucide-react";
 import Image from "next/image";
+import { DEFAULT_HOME_SEO } from "../utils/seo";
 import { storage } from "../utils/storage";
 import ImageUpload from "./ImageUpload";
 
@@ -255,7 +256,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
             saveData("admin-services-jr", mergedArr);
           }
           setGithubRepos(get("admin-github-repos", defaultGithubRepos));
-          setSiteConfig(get("admin-config", { title: "Portfolio", description: "Data Engineer Portfolio", maintenanceMode: false }));
+          setSiteConfig(get("admin-config", { ...DEFAULT_HOME_SEO, maintenanceMode: false }));
           setSystemAudit({ totalSize: "Remote Server", items: Object.keys(data || {}).length });
 
           // Fetch system logs
